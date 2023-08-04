@@ -27,11 +27,14 @@ class ISAppraisalsOverviewController extends Controller
         $user = Employees::where('account_id', $account_id)->first();
 
         $department_id = $user->department_id;
-        $appraisals = Employees::where('department_id', $department_id)->get();
+        $appraisals = Employees::where('department_id', $department_id)
+            ->whereNotIn('account_id', [$account_id])
+            ->get();
 
         $data = [
             'success' => true,
-            'appraisals' => $appraisals
+            'appraisals' => $appraisals,
+            'is' => $user
         ];
 
         return response()->json($data);
@@ -61,7 +64,10 @@ class ISAppraisalsOverviewController extends Controller
         return response()->json($data);
     }
 
-    public function displayAppraisal() {
+    public function displayAppraisal()
+    {
         return view('is-pages.is_appraisal');
     }
+
+
 }

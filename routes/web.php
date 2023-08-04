@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 
 use App\Http\Controllers\ImmediateSuperior\ISAppraisalsOverviewController;
 use App\Http\Controllers\ImmediateSuperior\ISDashboardController;
+use App\Http\Controllers\ImmediateSuperior\ISAppraisalController;
 
 use App\Http\Controllers\PermanentEmployee\PEAppraisalsController;
 use App\Http\Controllers\PermanentEmployee\PEDashboardController;
@@ -84,6 +85,11 @@ Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::
 Route::get('/is-appraisals-overview/get-employees', [ISAppraisalsOverviewController::class, 'getEmployees'])->name('getEmployeesData');
 Route::get('/is-appraisal', [ISAppraisalsOverviewController::class, 'displayAppraisal'])->name('is.viewAppraisal');
 
+Route::get('/is-appraisal/{employee_id}', [ISAppraisalsOverviewController::class, 'displayAppraisalSE'])->name('displayAppraisalSE');
+Route::get('/is-appraisal/{is_employee_id}/{employee_id}', [ISAppraisalsOverviewController::class, 'displayAppraisalIS'])->name('displayAppraisalIS');
+
+Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisal'])->name('saveISAppraisal');
+
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
 
@@ -91,6 +97,7 @@ Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('v
 /* ----- PERMANENT EMPLOYEE ----- */
 // Dashboard
 Route::get('/pe-dashboard', [PEDashboardController::class, 'displayPEDashboard'])->name('viewPEDashboard');
+Route::get('/get-is-appraisal-data', [SelfEvaluationController::class, 'showAppraisalForm'])->name('getISAppraisalData');
 
 // Appraisals Overview
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');

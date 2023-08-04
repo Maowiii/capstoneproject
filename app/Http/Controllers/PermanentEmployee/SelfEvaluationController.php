@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\PermanentEmployee;
 
+
+use App\Models\KRA;
 use App\Http\Controllers\Controller;
 use App\Models\FormQuestions;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SelfEvaluationController extends Controller
 {
-    public function displaySelfEvaluationForm() {
+    public function displaySelfEvaluationForm()
+    {
         return view('pe-pages.pe_self_evaluation');
     }
 
@@ -28,5 +32,13 @@ class SelfEvaluationController extends Controller
 
         return response()->json($data);
     }
+    
+    public function showAppraisalForm()
+    {
+        // Retrieve the KRA data from the database
+        $kraData = KRA::where('appraisal_id', '1')->get(); // Replace '1' with the appropriate appraisal_id that you want to display
 
+        // Return the KRA data as a JSON response
+        return response()->json(['success' => true, 'isAppraisalData' => $kraData]);
+    }
 }

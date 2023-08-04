@@ -55,9 +55,6 @@ class EmployeeController extends Controller
         return response()->json($data);
     }
 
-
-
-
     public function addEmployee(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -122,6 +122,15 @@ class EvaluationYearController extends Controller
                 $table->integer('performance_plan_order');
             });
 
+            Schema::connection('mysql')->create('job_incumbent' . $sy, function ($table) {
+                $table->bigIncrements('performance_plan_id');
+                $table->integer('appraisal_id');
+                $table->text('continue_doing')->nullable();
+                $table->text('stop_doing')->nullable();
+                $table->text('start_doing')->nullable();
+                $table->integer('performance_plan_order');
+            });
+
             Schema::connection('mysql')->create('comments' . $sy, function ($table) {
                 $table->bigIncrements('comment_id');
                 $table->integer('appraisal_id');
@@ -154,7 +163,6 @@ class EvaluationYearController extends Controller
                     ]);
                 }
             }
-
 
             return redirect()->back()->with('success', 'Evaluation Year added successfully.');
         }

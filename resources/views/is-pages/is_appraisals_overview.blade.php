@@ -243,9 +243,6 @@
 
         selectedRows = [];
     });
-
-
-
 </script>
 
 @endsection
