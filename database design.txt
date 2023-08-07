@@ -6,6 +6,7 @@ password (null)
 password_changed (default: false)
 type (AD, IS, PE, CE)
 verification_code (null)
+first_login (true or false or null)
 status (default: active) or deactivated
 
 employees (Model: Employees)

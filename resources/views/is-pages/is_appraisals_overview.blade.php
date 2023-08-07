@@ -1,25 +1,29 @@
 @extends('layout.master')
-
+ 
 @section('title')
 <h1>Appraisals Overview</h1>
-@endsection
+@end  ction
 
 @section('content')
-
+ 
 <div class='d-flex gap-3'>
     <div class="content-container text-middle">
         <h4>School Year:</h4>
     </div>
+    
     <div class="content-container text-middle">
         <h4>KRA Encoding:</h4>
     </div>
+     
     <div class="content-container text-middle">
-        <h4>Performance Review:</h4>
+    <h4>Performance Review:</h4>
     </div>
+
     <div class="content-container text-middle">
         <h4>Evaluation:</h4>
     </div>
 </div>
+
 
 <div class="content-container">
     <table class='table' id="IS_appraisals_table">
@@ -72,7 +76,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="ISModal" data-bs-backdrop="static">
+<div class="modal fade" id="ISModal2" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -108,60 +112,95 @@
     var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     function loadTableData() {
-        $.ajax({
-            url: '{{ route('getISData') }}',
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#IS_appraisals_table_body').empty();
+    $.ajax({
+        url: '{{ route('getISData') }}',
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#IS_appraisals_table_body').empty();
 
-                    var appraisals = response.appraisals;
-                    for (var i = 0; i < appraisals.length; i++) {
-                        var appraisal = appraisals[i];
+                var appraisees = response.appraisee;
+                var appraisals = response.appraisals;
 
-                        var newRow = $('<tr>').attr('id', appraisal.employee_id).append(
-                            $('<td>').text(appraisal.first_name + ' ' + appraisal.last_name),
-                            $('<td>').append(
-                                $('<div>').append(
-                                    $('<a>').addClass('btn btn-outline-primary').attr('href', '{{ route("is.viewAppraisal") }}').text('View')
-                                )
-                            ),
-                            $('<td>').append(
-                                $('<div>').append(
-                                    $('<a>').addClass('btn btn-outline-primary').attr('data-bs-target', '#ISModal1').attr('data-bs-toggle', 'modal').text('Choose IC1')
-                                )
-                            ),
-                            $('<td>').append(
-                                $('<div>').append(
-                                    $('<a>').addClass('btn btn-outline-primary').attr('data-bs-target', '#ISModal2').attr('data-bs-toggle', 'modal').text('Choose IC2')
-                                )
-                            ),
-                            $('<td>').text('Pending')
-                        );
+                appraisees.forEach(function(appraisee) {
+                    var newRow = $('<tr>').attr('id', appraisee.employee_id).append(
+                        $('<td>').text(appraisee.first_name + ' ' + appraisee.last_name)
+                    );
 
-                        newRow.append($('<td>').append(
-                            $('<div>').append(
-                                $('<a>').addClass('btn btn-outline-primary').attr('href', '{{ route("is.viewAppraisal") }}').text('Appraise')
-                            )
-                        ));
+                    var employeeAppraisals = appraisals.filter(function(appraisal) {
+                        return appraisal.employee_id === appraisee.employee_id;
+                    });
 
-                        $('#IS_appraisals_table_body').append(newRow);
-                    }
-                } else {
-                    console.log(response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log(error);
+                    var viewLink = null;
+                    var ic1Link = null;
+                    var ic2Link = null;
+                    var AppraiseLink = null;
+
+                    employeeAppraisals.forEach(function(appraisal) {
+                        var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
+
+                        if (appraisal.evaluation_type === 'self evaluation') {
+                            viewLink = $('<a>').addClass('btn btn-outline-primary')
+                                .attr('href', `{{ route("viewAppraisal", ["appraisal_id" => ":appraisal_id"]) }}`.replace(':appraisal_id', appraisal_id))
+                                .text('View');
+                        } else if (appraisal.evaluation_type === 'internal customer 1') {
+                                if (appraisal.evaluator_id === null) {
+                                ic1Link = $('<a>').addClass('btn btn-outline-primary')
+                                    .attr('data-bs-target', '#ISModal1')
+                                    .attr('data-bs-toggle', 'modal')
+                                    .text('Choose IC1');
+                            } else {
+                                ic1Link = $('<a>').addClass('btn btn-outline-primary')
+                                    .attr('href', `{{ route("viewAppraisal", ["appraisal_id" => ":appraisal_id"]) }}`.replace(':appraisal_id', appraisal_id))
+                                    .text(appraisal.evaluator.first_name+' '+appraisal.evaluator.last_name);
+                            }
+                        }else if (appraisal.evaluation_type === 'internal customer 2') {
+                            if (appraisal.evaluator_id === null) {
+                                ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                    .attr('data-bs-target', '#ISModal2')
+                                    .attr('data-bs-toggle', 'modal')
+                                    .text('Choose IC2');
+                                }else{
+                                    ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                    .attr('href', `{{ route("viewAppraisal", ["appraisal_id" => ":appraisal_id"]) }}`.replace(':appraisal_id', appraisal_id))
+                                    .text(appraisal.evaluator.first_name+' '+appraisal.evaluator.last_name);
+                                    }
+                        }
+                        else if (appraisal.evaluation_type === 'is evaluation') {
+                            AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                .attr('href', `{{ route("viewAppraisal", ["appraisal_id" => ":appraisal_id"]) }}`.replace(':appraisal_id', appraisal_id))
+                                .text('Appraise');
+                        }
+                    });
+
+                    newRow.append(
+                        $('<td>').append(viewLink),
+                        $('<td>').append($('<div>').append(ic1Link)),
+                        $('<td>').append($('<div>').append(ic2Link)),
+                        $('<td>').text('Pending'),
+                        $('<td>').append(
+                            $('<div>').append(AppraiseLink)
+                        )
+                    );
+
+                    $('#IS_appraisals_table_body').append(newRow);
+                });
+            } else {
+                console.log(response.error);
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            console.log(error);
+        }
+    });
+}
+
 
     function toggleRowCheckbox(rowId) {
-    $('#' + rowId).toggleClass('selected');
+        $('#' + rowId).toggleClass('selected');
     }
 
     function saveSelection() {
@@ -174,52 +213,54 @@
     var selectedRows = [];
 
     function loadEmployeeData() {
-    $.ajax({
-        url: '{{ route('getEmployeesData') }}',
-        type: 'GET',
-        headers: {
-        'X-CSRF-TOKEN': csrfToken
-        },
-        success: function(response) {
-        if (response.success) {
-            $('#employee_table_body').empty();
+        $.ajax({
+            url: '{{ route('getEmployeesData') }}',
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#employee_table_body').empty();
 
-            var employees = response.employees;
-            for (var i = 0; i < employees.length; i++) {
-            var employee = employees[i];
+                    var employees = response.employees;
+                    for (var i = 0; i < employees.length; i++) {
+                        var employee = employees[i];
 
-            var newRow = $('<tr>').addClass('row-checkbox').append(
-                $('<div>').attr('id','checkboxes').append(
-                $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr('value', employee.employee_id),
-                $('<label>').addClass('chooseIC text-justify').attr('for', employee.employee_id).append(
-                    $('<td>').text(employee.first_name + ' ' + employee.last_name),
-                ),
-                ),
-                $('<td>').text(employee.department_name)
-            );
+                        var newRow = $('<tr>').addClass('row-checkbox').append(
+                            $('<div>').attr('id', 'checkboxes').append(
+                                $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr('value',
+                                    employee.employee_id),
+                                $('<label>').addClass('chooseIC text-justify').attr('for', employee
+                                    .employee_id).append(
+                                    $('<td>').text(employee.first_name + ' ' + employee.last_name),
+                                ),
+                            ),
+                            $('<td>').text(employee.department_name)
+                        );
 
-            newRow.on('click', function() {
-                var checkbox = $(this).find('input[type="checkbox"]');
-                var isChecked = checkbox.prop('checked');
-                var checkedCount = $('input[type="checkbox"]:checked').length;
+                        newRow.on('click', function() {
+                            var checkbox = $(this).find('input[type="checkbox"]');
+                            var isChecked = checkbox.prop('checked');
+                            var checkedCount = $('input[type="checkbox"]:checked').length;
 
-                if (isChecked || checkedCount < 2) {
-                checkbox.prop('checked', !isChecked);
-                $(this).toggleClass('row-selected', !isChecked);
-                updateSelectedRows();
+                            if (isChecked || checkedCount < 2) {
+                                checkbox.prop('checked', !isChecked);
+                                $(this).toggleClass('row-selected', !isChecked);
+                                updateSelectedRows();
+                            }
+                        });
+
+                        $('#employee_table_body').append(newRow);
+                    }
+                } else {
+                    console.log(response.error);
                 }
-            });
-
-            $('#employee_table_body').append(newRow);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
             }
-        } else {
-            console.log(response.error);
-        }
-        },
-        error: function(xhr, status, error) {
-        console.log(error);
-        }
-    });
+        });
     }
 
     function updateSelectedRows() {
@@ -233,7 +274,7 @@
     $(document).on('click', '#ISModal1 .btn-primary', function() {
         $('#employee_table_body').empty();
         $('#ISModal1 .search-box').hide();
-            
+
         for (var i = 0; i < selectedRows.length; i++) {
             var row = selectedRows[i];
             $('#employee_table_body').append(row);
@@ -243,9 +284,6 @@
 
         selectedRows = [];
     });
-
-
-
 </script>
 
 @endsection
