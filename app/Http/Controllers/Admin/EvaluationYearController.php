@@ -49,12 +49,11 @@ class EvaluationYearController extends Controller
     ]);
 
     if ($validator->fails()) {
-      return back()->withErrors($validator)->withInput()->with('fail');
+      return back()->withErrors($validator)->withInput();
     } else {
-      return response()->json([
-        'success' => true,
-      ]);
+      return back();
     }
+
   }
 
   public function addEvalYear(Request $request)
