@@ -66,7 +66,7 @@ Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmplo
 // Evaluation Year
 Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');
 Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
-Route::get('/evaluation-year/add-new-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('add-new-eval-year');
+Route::post('/evaluation-year/check-eval-year', [EvaluationYearController::class, 'checkEvalYear'])->name('check-eval-year');
 
 // Editable Appraisal Form
 Route::get('/editable-appraisal-form', [EditableAppraisalFormController::class, 'displayEditableAppraisalForm'])->name('viewEditableAppraisalForm');
