@@ -35,7 +35,7 @@
                         <h1 class="modal-title fs-5">Start New Evaluation Year</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="GET" action="{{ route('add-new-eval-year') }}">
+                    <form method="POST" action="{{ route('check-eval-year') }}" id="evalYearForm">
                         @csrf
                         <div class="modal-body">
                             <p>Fill up the following information to start a new evaluation year:</p>
@@ -53,18 +53,27 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
+                                    <select class='form-control @error('sy_start') is-invalid @enderror' name="sy_start"
+                                        id="sy_start" onchange="updateEndYear()">
                                         <?php $currentYear = now()->format('Y'); ?>
                                         @for ($year = $currentYear; $year <= 2099; $year++)
-                                            <option value="{{ $year }}">{{ $year }}</option>
+                                            <option value="{{ $year }}"
+                                                @if (old('sy_end') == $year) selected @endif>{{ $year }}
+                                            </option>
                                         @endfor
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='number' name="sy_end" id="sy_end" readonly>
+                                    <input class='form-control @error('sy_end') is-invalid @enderror' type='number'
+                                        name="sy_end" id="sy_end" value="{{ old('sy_end') }}" disabled>
                                 </div>
                                 <span class="text-danger">
-                                    @error('email')
+                                    @error('sy_start')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <span class="text-danger">
+                                    @error('sy_end')
                                         {{ $message }}
                                     @enderror
                                 </span>
@@ -83,15 +92,22 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="KRA starting date"
-                                        name="kra_start" id="kra_start" onchange="updateEndDate('kra', true)">
+                                    <input class='form-control @error('kra_start') is-invalid @enderror' type='date'
+                                        placeholder="KRA starting date" name="kra_start" id="kra_start"
+                                        onchange="updateEndDate('kra', true)" value="{{ old('kra_start') }}">
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="KRA ending date" name="kra_end"
-                                        id="kra_end" onchange="updateEndDate('kra')">
+                                    <input class='form-control @error('kra_start') is-invalid @enderror' type='date'
+                                        placeholder="KRA ending date" name="kra_end" id="kra_end"
+                                        onchange="updateEndDate('kra')" value="{{ old('kra_end') }}" disabled>
                                 </div>
                                 <span class="text-danger">
-                                    @error('email')
+                                    @error('kra_start')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <span class="text-danger">
+                                    @error('kra_end')
                                         {{ $message }}
                                     @enderror
                                 </span>
@@ -110,16 +126,22 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control' type='date'
+                                    <input class='form-control @error('pr_start') is-invalid @enderror' type='date'
                                         placeholder="Performance review starting date" name="pr_start" id="pr_start"
-                                        onchange="updateEndDate('pr', true)">
+                                        onchange="updateEndDate('pr', true)" value="{{ old('pr_start') }}" disabled>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="Performance review ending date"
-                                        name="pr_end" id="pr_end" onchange="updateEndDate('pr')">
+                                    <input class='form-control @error('pr_end') is-invalid @enderror' type='date'
+                                        placeholder="Performance review ending date" name="pr_end" id="pr_end"
+                                        onchange="updateEndDate('pr')" value="{{ old('pr_end') }}" disabled>
                                 </div>
                                 <span class="text-danger">
-                                    @error('email')
+                                    @error('pr_start')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <span class="text-danger">
+                                    @error('pr_end')
                                         {{ $message }}
                                     @enderror
                                 </span>
@@ -138,22 +160,29 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="Evaluation starting date"
-                                        id="eval_start" name="eval_start" onchange="updateEndDate('eval', true)">
+                                    <input class='form-control @error('eval_start') is-invalid @enderror' type='date'
+                                        placeholder="Evaluation starting date" id="eval_start" name="eval_start"
+                                        onchange="updateEndDate('eval', true)" value="{{ old('eval_start') }}" disabled>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="Evaluation ending date"
-                                        id="eval_end" name="eval_end" onchange="updateEndDate('eval')">
+                                    <input class='form-control @error('eval_end') is-invalid @enderror' type='date'
+                                        placeholder="Evaluation ending date" id="eval_end" name="eval_end"
+                                        onchange="updateEndDate('eval')" value="{{ old('eval_end') }}" disabled>
                                 </div>
                                 <span class="text-danger">
-                                    @error('email')
+                                    @error('eval_start')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <span class="text-danger">
+                                    @error('eval_end')
                                         {{ $message }}
                                     @enderror
                                 </span>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary" id="submitbtn">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -162,6 +191,10 @@
     </div>
 
     <script>
+        const sy_start_value = parseInt(document.getElementById('sy_start').value);
+        const sy_end = document.getElementById('sy_end');
+        sy_end.value = sy_start_value + 1;
+
         function formatDate(dateString) {
             const date = new Date(dateString);
             const options = {
@@ -183,50 +216,82 @@
         function updateEndDate(type, updateStart = false) {
             if (type === 'kra') {
                 if (updateStart) {
-                    const kraStartDate = new Date(document.getElementById('kra_start').value);
-                    const kraEndInput = document.getElementById('kra_end');
+                    const kraStartDate = new Date($('#kra_start').val());
+                    const kraEndInput = $('#kra_end');
                     const minEndDate = new Date(kraStartDate);
                     minEndDate.setDate(kraStartDate.getDate() + 1);
                     const kraMinEndDate = minEndDate.toISOString().split('T')[0];
-                    kraEndInput.min = kraMinEndDate;
+                    kraEndInput.prop('min', kraMinEndDate);
+                    kraEndInput.prop('disabled', false);
                 } else {
-                    const kraEndDate = new Date(document.getElementById('kra_end').value);
-                    const prStartInput = document.getElementById('pr_start');
+                    const kraEndDate = new Date($('#kra_end').val());
+                    const prStartInput = $('#pr_start');
                     const minStartDate = new Date(kraEndDate);
                     minStartDate.setDate(kraEndDate.getDate() + 1);
                     const prMinStartDate = minStartDate.toISOString().split('T')[0];
-                    prStartInput.min = prMinStartDate;
+                    prStartInput.prop('min', prMinStartDate);
+                    prStartInput.prop('disabled', false);
                 }
             } else if (type === 'pr') {
                 if (updateStart) {
-                    const prStartDate = new Date(document.getElementById('pr_start').value);
-                    const prEndInput = document.getElementById('pr_end');
+                    const prStartDate = new Date($('#pr_start').val());
+                    const prEndInput = $('#pr_end');
                     const minEndDate = new Date(prStartDate);
                     minEndDate.setDate(prStartDate.getDate() + 1);
                     const prMinEndDate = minEndDate.toISOString().split('T')[0];
-                    prEndInput.min = prMinEndDate;
+                    prEndInput.prop('min', prMinEndDate);
+                    prEndInput.prop('disabled', false);
                 } else {
-                    const prEndDate = new Date(document.getElementById('pr_end').value);
-                    const evalStartInput = document.getElementById('eval_start');
+                    const prEndDate = new Date($('#pr_end').val());
+                    const evalStartInput = $('#eval_start');
                     const minStartDate = new Date(prEndDate);
                     minStartDate.setDate(prEndDate.getDate() + 1);
                     const evalMinStartDate = minStartDate.toISOString().split('T')[0];
-                    evalStartInput.min = evalMinStartDate;
+                    evalStartInput.prop('min', evalMinStartDate);
+                    evalStartInput.prop('disabled', false);
                 }
             } else {
-              if (updateStart) {
-                const evalStartDate = new Date(document.getElementById('eval_start').value);
-                const evalEndInput = document.getElementById('eval_end');
-                const minEndDate = new Date(evalStartDate);
-                minEndDate.setDate(evalStartDate.getDate() + 1);
-                const evalMinEndDate = minEndDate.toISOString().split('T')[0];
-                evalEndInput.min = evalMinEndDate;
-              }
+                if (updateStart) {
+                    const evalStartDate = new Date($('#eval_start').val());
+                    const evalEndInput = $('#eval_end');
+                    const minEndDate = new Date(evalStartDate);
+                    minEndDate.setDate(evalStartDate.getDate() + 1);
+                    const evalMinEndDate = minEndDate.toISOString().split('T')[0];
+                    evalEndInput.prop('min', evalMinEndDate);
+                    evalEndInput.prop('disabled', false);
+                }
             }
         }
 
-
         $(document).ready(function() {
+            function handleSubmitForm(event) {
+                event.preventDefault();
+
+                const formData = new FormData(document.getElementById('evalYearForm'));
+
+                $.ajax({
+                    url: '{{ route('check-eval-year') }}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#startNewEvalYear').modal('hide');
+                        } else {
+                            $('#startNewEvalYear').modal('show');
+                            $('#startNewEvalYear .modal-content').scrollTop(0);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error occurred:', error);
+                    }
+                });
+            }
+
             function loadEvaluationYearTable() {
                 $.ajax({
                     url: '/evaluation-year/displayEvaluationYear',
@@ -238,8 +303,10 @@
 
                             $.each(response.evalyears, function(index, evalyear) {
                                 var row = '<tr>' +
-                                    '<td class="align-middle">' + evalyear.eval_id + '</td>' +
-                                    '<td class="align-middle">' + evalyear.sy_start + ' - ' +
+                                    '<td class="align-middle">' + evalyear.eval_id +
+                                    '</td>' +
+                                    '<td class="align-middle">' + evalyear.sy_start +
+                                    ' - ' +
                                     evalyear.sy_end +
                                     '</td>' +
                                     '<td class="align-middle">' + formatDate(evalyear
@@ -258,7 +325,6 @@
                                     '<button type="button" class="btn btn-outline-primary">View</button>' +
                                     '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
                                     '</tr>';
-
                                 tbody.append(row);
                             });
                         } else {
@@ -272,6 +338,22 @@
             }
 
             loadEvaluationYearTable();
+
+            const kra_end = $('kra_end');
+            const pr_start = $('pr_start');
+            const pr_end = $('pr_end');
+            const eval_start = $('eval_start');
+            const eval_end = $('eval_end');
+
+            
+
         });
     </script>
+    @if (count($errors) > 0)
+        <script>
+            $(document).ready(function() {
+                $('#startNewEvalYear').modal('show');
+            });
+        </script>
+    @endif
 @endsection
