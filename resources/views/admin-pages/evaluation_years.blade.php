@@ -35,7 +35,7 @@
                         <h1 class="modal-title fs-5">Start New Evaluation Year</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="POST" action="{{ route('check-eval-year') }}" id="evalYearForm">
+                    <form method="POST" onsubmit="submitEvalYear(event)" id="evalYearForm">
                         @csrf
                         <div class="modal-body">
                             <p>Fill up the following information to start a new evaluation year:</p>
@@ -53,8 +53,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <select class='form-control @error('sy_start') is-invalid @enderror' name="sy_start"
-                                        id="sy_start" onchange="updateEndYear()">
+                                    <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
                                         <?php $currentYear = now()->format('Y'); ?>
                                         @for ($year = $currentYear; $year <= 2099; $year++)
                                             <option value="{{ $year }}"
@@ -64,15 +63,15 @@
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control @error('sy_end') is-invalid @enderror' type='number'
-                                        name="sy_end" id="sy_end" value="{{ old('sy_end') }}" disabled>
+                                    <input class='form-control' type='number' name="sy_end" id="sy_end"
+                                        value="{{ old('sy_end') }}" readonly>
                                 </div>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="sy_start_error">
                                     @error('sy_start')
                                         {{ $message }}
                                     @enderror
                                 </span>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="sy_end_error">
                                     @error('sy_end')
                                         {{ $message }}
                                     @enderror
@@ -92,21 +91,21 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control @error('kra_start') is-invalid @enderror' type='date'
-                                        placeholder="KRA starting date" name="kra_start" id="kra_start"
-                                        onchange="updateEndDate('kra', true)" value="{{ old('kra_start') }}">
+                                    <input class='form-control' type='date' placeholder="KRA starting date"
+                                        name="kra_start" id="kra_start" onchange="updateEndDate('kra', true)"
+                                        value="{{ old('kra_start') }}">
                                 </div>
                                 <div class="col">
-                                    <input class='form-control @error('kra_start') is-invalid @enderror' type='date'
-                                        placeholder="KRA ending date" name="kra_end" id="kra_end"
-                                        onchange="updateEndDate('kra')" value="{{ old('kra_end') }}" disabled>
+                                    <input class='form-control' type='date' placeholder="KRA ending date" name="kra_end"
+                                        id="kra_end" onchange="updateEndDate('kra')" value="{{ old('kra_end') }}"
+                                        disabled>
                                 </div>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="kra_start_error">
                                     @error('kra_start')
                                         {{ $message }}
                                     @enderror
                                 </span>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="kra_end_error">
                                     @error('kra_end')
                                         {{ $message }}
                                     @enderror
@@ -126,21 +125,21 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control @error('pr_start') is-invalid @enderror' type='date'
+                                    <input class='form-control' type='date'
                                         placeholder="Performance review starting date" name="pr_start" id="pr_start"
                                         onchange="updateEndDate('pr', true)" value="{{ old('pr_start') }}" disabled>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control @error('pr_end') is-invalid @enderror' type='date'
-                                        placeholder="Performance review ending date" name="pr_end" id="pr_end"
-                                        onchange="updateEndDate('pr')" value="{{ old('pr_end') }}" disabled>
+                                    <input class='form-control' type='date' placeholder="Performance review ending date"
+                                        name="pr_end" id="pr_end" onchange="updateEndDate('pr')"
+                                        value="{{ old('pr_end') }}" disabled>
                                 </div>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="pr_start_error">
                                     @error('pr_start')
                                         {{ $message }}
                                     @enderror
                                 </span>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="pr_end_error">
                                     @error('pr_end')
                                         {{ $message }}
                                     @enderror
@@ -160,26 +159,30 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input class='form-control @error('eval_start') is-invalid @enderror' type='date'
-                                        placeholder="Evaluation starting date" id="eval_start" name="eval_start"
-                                        onchange="updateEndDate('eval', true)" value="{{ old('eval_start') }}" disabled>
+                                    <input class='form-control' type='date' placeholder="Evaluation starting date"
+                                        id="eval_start" name="eval_start" onchange="updateEndDate('eval', true)"
+                                        value="{{ old('eval_start') }}" disabled>
                                 </div>
                                 <div class="col">
-                                    <input class='form-control @error('eval_end') is-invalid @enderror' type='date'
-                                        placeholder="Evaluation ending date" id="eval_end" name="eval_end"
-                                        onchange="updateEndDate('eval')" value="{{ old('eval_end') }}" disabled>
+                                    <input class='form-control' type='date' placeholder="Evaluation ending date"
+                                        id="eval_end" name="eval_end" onchange="updateEndDate('eval')"
+                                        value="{{ old('eval_end') }}" disabled>
                                 </div>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="eval_start_error">
                                     @error('eval_start')
                                         {{ $message }}
                                     @enderror
                                 </span>
-                                <span class="text-danger">
+                                <span class="text-danger error-message" id="eval_end_error">
                                     @error('eval_end')
                                         {{ $message }}
                                     @enderror
                                 </span>
                             </div>
+                        </div>
+                        <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
+                            <i class='bx bx-info-circle'></i> Please double-check the inputted values before submitting.
+                            Once submitted, they cannot be changed.
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="submitbtn">Submit</button>
@@ -216,6 +219,8 @@
         function updateEndDate(type, updateStart = false) {
             if (type === 'kra') {
                 if (updateStart) {
+                    $('#kra_start').removeClass('is-invalid');
+                    $('#kra_start_error').hide();
                     const kraStartDate = new Date($('#kra_start').val());
                     const kraEndInput = $('#kra_end');
                     const minEndDate = new Date(kraStartDate);
@@ -224,6 +229,8 @@
                     kraEndInput.prop('min', kraMinEndDate);
                     kraEndInput.prop('disabled', false);
                 } else {
+                    $('#kra_end').removeClass('is-invalid');
+                    $('#kra_end_error').hide();
                     const kraEndDate = new Date($('#kra_end').val());
                     const prStartInput = $('#pr_start');
                     const minStartDate = new Date(kraEndDate);
@@ -234,6 +241,8 @@
                 }
             } else if (type === 'pr') {
                 if (updateStart) {
+                    $('#pr_start').removeClass('is-invalid');
+                    $('#pr_start_error').hide();
                     const prStartDate = new Date($('#pr_start').val());
                     const prEndInput = $('#pr_end');
                     const minEndDate = new Date(prStartDate);
@@ -242,6 +251,8 @@
                     prEndInput.prop('min', prMinEndDate);
                     prEndInput.prop('disabled', false);
                 } else {
+                    $('#pr_end').removeClass('is-invalid');
+                    $('#pr_end_error').hide();
                     const prEndDate = new Date($('#pr_end').val());
                     const evalStartInput = $('#eval_start');
                     const minStartDate = new Date(prEndDate);
@@ -252,6 +263,8 @@
                 }
             } else {
                 if (updateStart) {
+                    $('#eval_start').removeClass('is-invalid');
+                    $('#eval_start_error').hide();
                     const evalStartDate = new Date($('#eval_start').val());
                     const evalEndInput = $('#eval_end');
                     const minEndDate = new Date(evalStartDate);
@@ -259,101 +272,195 @@
                     const evalMinEndDate = minEndDate.toISOString().split('T')[0];
                     evalEndInput.prop('min', evalMinEndDate);
                     evalEndInput.prop('disabled', false);
+                } else {
+                    $('#eval_end').removeClass('is-invalid');
+                    $('#eval_end_error').hide();
                 }
             }
         }
 
-        $(document).ready(function() {
-            function handleSubmitForm(event) {
-                event.preventDefault();
+        function loadEvaluationYearTable() {
+            $.ajax({
+                url: '/evaluation-year/displayEvaluationYear',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        var tbody = $('#evalyear_table tbody');
+                        tbody.empty();
 
-                const formData = new FormData(document.getElementById('evalYearForm'));
-
-                $.ajax({
-                    url: '{{ route('check-eval-year') }}',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $('#startNewEvalYear').modal('hide');
-                        } else {
-                            $('#startNewEvalYear').modal('show');
-                            $('#startNewEvalYear .modal-content').scrollTop(0);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error occurred:', error);
+                        $.each(response.evalyears, function(index, evalyear) {
+                            var row = '<tr>' +
+                                '<td class="align-middle">' + evalyear.eval_id +
+                                '</td>' +
+                                '<td class="align-middle">' + evalyear.sy_start +
+                                ' - ' +
+                                evalyear.sy_end +
+                                '</td>' +
+                                '<td class="align-middle">' + formatDate(evalyear
+                                    .kra_start) + ' - ' + formatDate(evalyear.kra_end) +
+                                '</td>' +
+                                '<td class="align-middle">' + formatDate(evalyear
+                                    .pr_start) + ' - ' + formatDate(evalyear.pr_end) +
+                                '</td>' +
+                                '<td class="align-middle">' + formatDate(evalyear
+                                    .eval_start) + ' - ' + formatDate(evalyear
+                                    .eval_end) + '</td>' +
+                                '<td class="align-middle">' + evalyear.status +
+                                '<td class="align-middle">' +
+                                '<div class="btn-group" role="group" aria-label="Basic example">' +
+                                '<button type="button" class="btn btn-outline-info">Load</button>' +
+                                '<button type="button" class="btn btn-outline-primary">View</button>' +
+                                '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
+                                '</tr>';
+                            tbody.append(row);
+                        });
+                    } else {
+                        console.log(response.error);
                     }
-                });
-            }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
 
-            function loadEvaluationYearTable() {
-                $.ajax({
-                    url: '/evaluation-year/displayEvaluationYear',
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            var tbody = $('#evalyear_table tbody');
-                            tbody.empty();
+        function submitEvalYear(event) {
+            event.preventDefault();
+            var formData = $('#evalYearForm').serialize();
 
-                            $.each(response.evalyears, function(index, evalyear) {
-                                var row = '<tr>' +
-                                    '<td class="align-middle">' + evalyear.eval_id +
-                                    '</td>' +
-                                    '<td class="align-middle">' + evalyear.sy_start +
-                                    ' - ' +
-                                    evalyear.sy_end +
-                                    '</td>' +
-                                    '<td class="align-middle">' + formatDate(evalyear
-                                        .kra_start) + ' - ' + formatDate(evalyear.kra_end) +
-                                    '</td>' +
-                                    '<td class="align-middle">' + formatDate(evalyear
-                                        .pr_start) + ' - ' + formatDate(evalyear.pr_end) +
-                                    '</td>' +
-                                    '<td class="align-middle">' + formatDate(evalyear
-                                        .eval_start) + ' - ' + formatDate(evalyear
-                                        .eval_end) + '</td>' +
-                                    '<td class="align-middle">' + evalyear.status +
-                                    '<td class="align-middle">' +
-                                    '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                    '<button type="button" class="btn btn-outline-info">Load</button>' +
-                                    '<button type="button" class="btn btn-outline-primary">View</button>' +
-                                    '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
-                                    '</tr>';
-                                tbody.append(row);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('addEvalYear') }}',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    console.log('AJAX Success Response:', response);
+
+                    if (response.success) {
+                        $('#evalYearForm input, #evalYearForm select').addClass('is-grayed').prop('readonly',
+                            true);
+                        console.log('success');
+                        $('#submitbtn').text('Confirm');
+
+                    } else {
+                        console.log('fail');
+                        $('.text-danger').hide();
+                        $('.error-message').text('');
+
+                        if (response.errors) {
+                            $.each(response.errors, function(field, messages) {
+                                $('#' + field + '_error').show().text(messages[0]);
+                                $('#' + field).addClass('is-invalid');
                             });
-                        } else {
-                            console.log(response.error);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(error);
                     }
-                });
-            }
+                },
+                error: function(xhr) {
+                    alert('Error.');
+                }
+            });
+        }
+
+
+        $(document).ready(function() {
 
             loadEvaluationYearTable();
 
-            const kra_end = $('kra_end');
-            const pr_start = $('pr_start');
-            const pr_end = $('pr_end');
-            const eval_start = $('eval_start');
-            const eval_end = $('eval_end');
+            /*
+            const oldInput = @json(Session::get('old_input'));
+            console.log(oldInput);
+            if (oldInput) {
+                $('#startNewEvalYear').modal('show');
+                $('#submitbtn').text('Confirm');
 
-            
+                const evalForm = $('#startNewEvalYear');
+                evalForm.setAttribute('action', '{{ route('addEvalYear') }}')
+
+                $('#sy_start').val(oldInput.sy_start);
+                $('#sy_end').val(oldInput.sy_end);
+                $('#kra_start').val(oldInput.kra_start);
+                $('#kra_end').val(oldInput.kra_end);
+                $('#pr_start').val(oldInput.pr_start);
+                $('#pr_end').val(oldInput.pr_end);
+                $('#eval_start').val(oldInput.eval_start);
+                $('#eval_end').val(oldInput.eval_end);
+            }
+            */
 
         });
     </script>
+    /*
     @if (count($errors) > 0)
         <script>
             $(document).ready(function() {
                 $('#startNewEvalYear').modal('show');
+
+                // Enable inputs with old values
+                $("input[type='date'], select").each(function() {
+                    if ($(this).val() !== '') {
+                        $(this).prop("disabled", false);
+                    }
+                });
+
+                const kra_start = $('#kra_start');
+                const kra_end = $('#kra_end');
+                const pr_start = $('#pr_start');
+                const pr_end = $('#pr_end');
+                const eval_start = $('#eval_start');
+                const eval_end = $('#eval_end');
+
+                if (kra_start.val()) {
+                    const kraStartDate = new Date($('#kra_start').val());
+                    const minEndDate = new Date(kraStartDate);
+                    minEndDate.setDate(kraStartDate.getDate() + 1);
+                    const kraMinEndDate = minEndDate.toISOString().split('T')[0];
+                    kra_end.prop('min', kraMinEndDate);
+                    kra_end.prop('disabled', false);
+                }
+
+                if (kra_end.val()) {
+                    pr_start.prop('disabled', false);
+                    const kraEndDate = new Date($('#kra_end').val());
+                    const prStartInput = $('#pr_start');
+                    const minStartDate = new Date(kraEndDate);
+                    minStartDate.setDate(kraEndDate.getDate() + 1);
+                    const prMinStartDate = minStartDate.toISOString().split('T')[0];
+                    pr_start.prop('min', prMinStartDate);
+                }
+
+                if (pr_start.val()) {
+                    const prStartDate = new Date($('#pr_start').val());
+                    const prEndInput = $('#pr_end');
+                    const minEndDate = new Date(prStartDate);
+                    minEndDate.setDate(prStartDate.getDate() + 1);
+                    const prMinEndDate = minEndDate.toISOString().split('T')[0];
+                    pr_end.prop('min', prMinEndDate);
+                    pr_end.prop('disabled', false);
+                }
+
+                if (pr_end.val()) {
+                    const prEndDate = new Date($('#pr_end').val());
+                    const evalStartInput = $('#eval_start');
+                    const minStartDate = new Date(prEndDate);
+                    minStartDate.setDate(prEndDate.getDate() + 1);
+                    const evalMinStartDate = minStartDate.toISOString().split('T')[0];
+                    eval_start.prop('min', evalMinStartDate);
+                    eval_start.prop('disabled', false);
+                }
+
+                if (eval_start.val()) {
+                    const evalStartDate = new Date($('#eval_start').val());
+                    const evalEndInput = $('#eval_end');
+                    const minEndDate = new Date(evalStartDate);
+                    minEndDate.setDate(evalStartDate.getDate() + 1);
+                    const evalMinEndDate = minEndDate.toISOString().split('T')[0];
+                    eval_end.prop('min', evalMinEndDate);
+                    eval_end.prop('disabled', false);
+                }
             });
         </script>
     @endif
+    */
 @endsection

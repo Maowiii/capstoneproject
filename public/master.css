@@ -250,7 +250,7 @@
     font-weight: 600;
 }
 .bx-menu {
-  cursor: pointer;
+    cursor: pointer;
 }
 @media (max-width: 400px) {
     .sidebar.close .nav-links li .sub-menu {
@@ -281,11 +281,13 @@ body {
 h1,
 h2,
 h3,
-h4, h5{
+h4,
+h5 {
     color: #164783 !important;
 }
 
-p, label {
+p,
+label {
     color: #212427 !important;
 }
 
@@ -299,15 +301,16 @@ p, label {
     flex: 1;
 }
 
-text, .text-blue {
+text,
+.text-blue {
     color: #143a67 !important;
 }
 
 .xxs-column {
     width: 35px !important;
 }
-.extra-small-column{
-    width: 50px !important; 
+.extra-small-column {
+    width: 50px !important;
 }
 .small-column {
     width: 100px !important;
@@ -419,7 +422,7 @@ textarea {
 
 .btn-outline-primary {
     border: solid #0b2a51 1px !important;
-    color: #0b2a51 !important
+    color: #0b2a51 !important;
 }
 
 .btn-outline-primary:hover {
@@ -436,30 +439,34 @@ textarea {
 
 /* MODALS */
 
-.row-checkbox{
+.row-checkbox {
     margin: 0px;
     padding: 0px;
 }
-.chooseIC{
-
+.chooseIC {
     width: 100%;
     display: inline-block;
 }
 
-.chooseIC:hover{
+.chooseIC:hover {
     cursor: pointer;
 }
 
-#checkboxes input[type=checkbox]{
+#checkboxes input[type="checkbox"] {
     display: none;
 }
 
-#checkboxes input[type=checkbox]:checked + .chooseIC{
-    background-color: #ACE1AF;
+#checkboxes input[type="checkbox"]:checked + .chooseIC {
+    background-color: #ace1af;
 }
 
 .row-selected {
-    background-color: #ACE1AF;
-    border: #ACE1AF;
-  }
-  
+    background-color: #ace1af;
+    border: #ace1af;
+}
+
+.is-grayed {
+    background-color: #E9ECEF; /* Light gray background color */
+    color: #999; /* Gray text color */
+}
+
