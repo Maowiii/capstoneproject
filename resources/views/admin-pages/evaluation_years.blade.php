@@ -9,8 +9,8 @@
         <table class="table table-bordered" id="evalyear_table">
             <thead>
                 <tr>
-                    <th class='small-column align-middle text-center'>#</th>
-                    <th class='medium-column align-middle text-center'>School Year</th>
+                    <th class='xxs-column align-middle text-center'>#</th>
+                    <th class='small-column align-middle text-center'>School Year</th>
                     <th class='medium-column align-middle text-center'>KRA Encoding Date</th>
                     <th class='medium-column align-middle text-center'>Performace Review Date</th>
                     <th class='medium-column align-middle text-center'>Employee Review Date</th>
@@ -185,6 +185,8 @@
                             Once submitted, they cannot be changed.
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="backbtn"
+                                onclick="backButton()">Back</button>
                             <button type="submit" class="btn btn-primary" id="submitbtn">Submit</button>
                         </div>
                     </form>
@@ -343,7 +345,12 @@
                             true);
                         console.log('success');
                         $('#submitbtn').text('Confirm');
+                        $('#confirmationAlert').removeClass('d-none');
+                        $('#backbtn').show();
 
+                        $('#evalYearForm').off('submit').on('submit', function(confirmEvent) {
+                            confirmEvalYear(confirmEvent, formData);
+                        });
                     } else {
                         console.log('fail');
                         $('.text-danger').hide();
@@ -358,36 +365,59 @@
                     }
                 },
                 error: function(xhr) {
-                    alert('Error.');
+                    if (xhr.responseText) {
+                        alert('Error: ' + xhr.responseText);
+                    } else {
+                        alert('An error occurred.');
+                    }
                 }
             });
         }
 
+        function backButton() {
+            $('#evalYearForm input, #evalYearForm select').removeClass('is-grayed').prop('readonly', false);
+            $('#evalYearForm').off('submit').on('submit', function(event) {
+                submitEvalYear(event);
+            });
+            $('#confirmationAlert').addClass('d-none');
+            $('backbtn').hide();
+            $('#submitbtn').text('Submit');
+
+        }
+
+        function confirmEvalYear(event, formData) {
+            event.preventDefault();
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('confirmEvalYear') }}',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    console.log('AJAX Confirm Response:', response);
+
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        // Handle confirmation failure if needed
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.responseText) {
+                        alert('Error: ' + xhr.responseText);
+                    } else {
+                        alert('An error occurred.');
+                    }
+                }
+            });
+        }
 
         $(document).ready(function() {
 
+            $('#backbtn').hide();
             loadEvaluationYearTable();
-
-            /*
-            const oldInput = @json(Session::get('old_input'));
-            console.log(oldInput);
-            if (oldInput) {
-                $('#startNewEvalYear').modal('show');
-                $('#submitbtn').text('Confirm');
-
-                const evalForm = $('#startNewEvalYear');
-                evalForm.setAttribute('action', '{{ route('addEvalYear') }}')
-
-                $('#sy_start').val(oldInput.sy_start);
-                $('#sy_end').val(oldInput.sy_end);
-                $('#kra_start').val(oldInput.kra_start);
-                $('#kra_end').val(oldInput.kra_end);
-                $('#pr_start').val(oldInput.pr_start);
-                $('#pr_end').val(oldInput.pr_end);
-                $('#eval_start').val(oldInput.eval_start);
-                $('#eval_end').val(oldInput.eval_end);
-            }
-            */
 
         });
     </script>
