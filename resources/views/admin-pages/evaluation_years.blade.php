@@ -387,7 +387,7 @@
 
         function confirmEvalYear(event, formData) {
             event.preventDefault();
-
+            $('#submitbtn').prop('disabled', true);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
