@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class EvaluationYearController extends Controller
 {
@@ -30,8 +31,18 @@ class EvaluationYearController extends Controller
   public function addEvalYear(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'sy_start' => 'required',
-      'sy_end' => 'required',
+      'sy_start' => [
+        'required',
+        Rule::unique('evaluation_years', 'sy_start')->where(function ($query) use ($request) {
+          return $query->where('sy_end', $request->input('sy_end'));
+        }),
+      ],
+      'sy_end' => [
+        'required',
+        Rule::unique('evaluation_years', 'sy_end')->where(function ($query) use ($request) {
+          return $query->where('sy_start', $request->input('sy_start'));
+        }),
+      ],
       'kra_start' => 'required',
       'kra_end' => 'required',
       'pr_start' => 'required',
@@ -41,6 +52,8 @@ class EvaluationYearController extends Controller
     ], [
       'sy_start.required' => 'Please choose a date for the start of the school year.',
       'sy_end.required' => 'Please choose a date for the end of the school year.',
+      'sy_start.unique' => 'The chosen start date for the school year already exists.',
+      'sy_end.unique' => 'The chosen end date for the school year already exists.',
       'kra_start.required' => 'Please choose a starting date for kra encoding.',
       'kra_end.required' => 'Please choose an ending date for kra encoding.',
       'pr_start.required' => 'Please choose a starting date for performance review.',
@@ -63,7 +76,7 @@ class EvaluationYearController extends Controller
     }
   }
 
-  public function addEvalYear123(Request $request)
+  public function confirmEvalYear(Request $request)
   {
     EvalYear::where('status', 'active')->update(['status' => 'inactive']);
     $eval_year = EvalYear::create([
@@ -178,8 +191,6 @@ class EvaluationYearController extends Controller
       }
     }
 
-
-    return redirect()->back()->with('success', 'Evaluation Year added successfully.');
-
+    return response()->json(['success' => true]);
   }
 }
