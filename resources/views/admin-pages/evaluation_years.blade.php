@@ -85,10 +85,11 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <input class='form-control' type='date' placeholder="KRA starting date"
-                                        name="kra_start">
+                                        name="kra_start" id="kra_start" onchange="updateEndDate('kra', true)">
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='date' placeholder="KRA ending date" name="kra_end">
+                                    <input class='form-control' type='date' placeholder="KRA ending date" name="kra_end"
+                                        id="kra_end" onchange="updateEndDate('kra')">
                                 </div>
                                 <span class="text-danger">
                                     @error('email')
@@ -111,11 +112,12 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <input class='form-control' type='date'
-                                        placeholder="Performance review starting date" name="pr_start">
+                                        placeholder="Performance review starting date" name="pr_start" id="pr_start"
+                                        onchange="updateEndDate('pr', true)">
                                 </div>
                                 <div class="col">
-                                    <input class='form-control' type='date'
-                                        placeholder="Performance review starting date" name="pr_end">
+                                    <input class='form-control' type='date' placeholder="Performance review ending date"
+                                        name="pr_end" id="pr_end" onchange="updateEndDate('pr')">
                                 </div>
                                 <span class="text-danger">
                                     @error('email')
@@ -138,11 +140,11 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <input class='form-control' type='date' placeholder="Evaluation starting date"
-                                        name="eval_start">
+                                        id="eval_start" name="eval_start" onchange="updateEndDate('eval', true)">
                                 </div>
                                 <div class="col">
                                     <input class='form-control' type='date' placeholder="Evaluation ending date"
-                                        name="eval_end">
+                                        id="eval_end" name="eval_end" onchange="updateEndDate('eval')">
                                 </div>
                                 <span class="text-danger">
                                     @error('email')
@@ -179,8 +181,53 @@
             endYearInput.value = endYear;
         }
 
+        function updateEndDate(type, updateStart = false) {
+            if (type === 'kra') {
+                if (updateStart) {
+                    const kraStartDate = new Date(document.getElementById('kra_start').value);
+                    const kraEndInput = document.getElementById('kra_end');
+                    const minEndDate = new Date(kraStartDate);
+                    minEndDate.setDate(kraStartDate.getDate() + 1);
+                    const kraMinEndDate = minEndDate.toISOString().split('T')[0];
+                    kraEndInput.min = kraMinEndDate;
+                } else {
+                    const kraEndDate = new Date(document.getElementById('kra_end').value);
+                    const prStartInput = document.getElementById('pr_start');
+                    const minStartDate = new Date(kraEndDate);
+                    minStartDate.setDate(kraEndDate.getDate() + 1);
+                    const prMinStartDate = minStartDate.toISOString().split('T')[0];
+                    prStartInput.min = prMinStartDate;
+                }
+            } else if (type === 'pr') {
+                if (updateStart) {
+                    const prStartDate = new Date(document.getElementById('pr_start').value);
+                    const prEndInput = document.getElementById('pr_end');
+                    const minEndDate = new Date(prStartDate);
+                    minEndDate.setDate(prStartDate.getDate() + 1);
+                    const prMinEndDate = minEndDate.toISOString().split('T')[0];
+                    prEndInput.min = prMinEndDate;
+                } else {
+                    const prEndDate = new Date(document.getElementById('pr_end').value);
+                    const evalStartInput = document.getElementById('eval_start');
+                    const minStartDate = new Date(prEndDate);
+                    minStartDate.setDate(prEndDate.getDate() + 1);
+                    const evalMinStartDate = minStartDate.toISOString().split('T')[0];
+                    evalStartInput.min = evalMinStartDate;
+                }
+            } else {
+              if (updateStart) {
+                const evalStartDate = new Date(document.getElementById('eval_start').value);
+                const evalEndInput = document.getElementById('eval_end');
+                const minEndDate = new Date(evalStartDate);
+                minEndDate.setDate(evalStartDate.getDate() + 1);
+                const evalMinEndDate = minEndDate.toISOString().split('T')[0];
+                evalEndInput.min = evalMinEndDate;
+              }
+            }
+        }
+
+
         $(document).ready(function() {
-            // Function to load and update the evaluation year table
             function loadEvaluationYearTable() {
                 $.ajax({
                     url: '/evaluation-year/displayEvaluationYear',
@@ -191,20 +238,21 @@
                             tbody.empty();
 
                             $.each(response.evalyears, function(index, evalyear) {
-                                // Create table row using evalyear data
                                 var row = '<tr>' +
                                     '<td class="align-middle">' + evalyear.eval_id + '</td>' +
                                     '<td class="align-middle">' + evalyear.sy_start + ' - ' +
                                     evalyear.sy_end +
                                     '</td>' +
                                     '<td class="align-middle">' + formatDate(evalyear
-                                        .kra_start) + ' - '+ formatDate(evalyear.kra_end) + '</td>' +
+                                        .kra_start) + ' - ' + formatDate(evalyear.kra_end) +
+                                    '</td>' +
                                     '<td class="align-middle">' + formatDate(evalyear
-                                        .pr_start) + ' - ' + formatDate(evalyear.pr_end) + '</td>' +
+                                        .pr_start) + ' - ' + formatDate(evalyear.pr_end) +
+                                    '</td>' +
                                     '<td class="align-middle">' + formatDate(evalyear
                                         .eval_start) + ' - ' + formatDate(evalyear
                                         .eval_end) + '</td>' +
-                                        '<td class="align-middle">' + evalyear.status +
+                                    '<td class="align-middle">' + evalyear.status +
                                     '<td class="align-middle">' +
                                     '<div class="btn-group" role="group" aria-label="Basic example">' +
                                     '<button type="button" class="btn btn-outline-info">Load</button>' +
@@ -212,14 +260,14 @@
                                     '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
                                     '</tr>';
 
-                                tbody.append(row); // Append new row to tbody
+                                tbody.append(row);
                             });
                         } else {
-                            console.log(response.error); // Handle error response
+                            console.log(response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error); // Handle Ajax error
+                        console.log(error);
                     }
                 });
             }
