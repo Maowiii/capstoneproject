@@ -33,6 +33,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Auth Controller
+Route::get('/', function () {
+    return redirect()->route('viewLogin');
+});
+
 Route::get('/login', [AuthController::class, 'displayLogin'])->name('viewLogin');
 Route::get('/two-factor-auth', [AuthController::class, 'displayTwoFactorAuth'])->name('viewTwoFactorAuth');
 Route::get('/reset-password-1', [AuthController::class, 'displayResetPassword'])->name('viewResetPassword');
@@ -54,15 +58,15 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 
 // Employee User Table
-Route::get('/employees', [EmployeeController::class,'displayEmployeeTable'])->name('viewEmployeeTable');
+Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
 Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('employees.getData');
 Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
 Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmployee'])->name('add-new-employee');
 
 // Evaluation Year
-Route::get('/evaluation-year', [EvaluationYearController::class,'viewEvaluationYears'])->name('viewEvaluationYears');
-Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class,'displayEvaluationYear'])->name('displayEvaluationYear');
-Route::get('/evaluation-year/add-new-eval-year', [EvaluationYearController::class,'addEvalYear'])->name('add-new-eval-year');
+Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');
+Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
+Route::get('/evaluation-year/add-new-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('add-new-eval-year');
 
 // Editable Appraisal Form
 Route::get('/editable-appraisal-form', [EditableAppraisalFormController::class, 'displayEditableAppraisalForm'])->name('viewEditableAppraisalForm');
@@ -83,12 +87,12 @@ Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternal
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
 Route::get('/is-appraisals-overview/get-employees', [ISAppraisalsOverviewController::class, 'getEmployees'])->name('getEmployeesData');
-Route::get('/is-appraisal', [ISAppraisalsOverviewController::class, 'displayAppraisal'])->name('is.viewAppraisal');
 
-Route::get('/is-appraisal/{employee_id}', [ISAppraisalsOverviewController::class, 'displayAppraisalSE'])->name('displayAppraisalSE');
-Route::get('/is-appraisal/{is_employee_id}/{employee_id}', [ISAppraisalsOverviewController::class, 'displayAppraisalIS'])->name('displayAppraisalIS');
-
+Route::get('/is-appraisal/{appraisal_id}', [ISAppraisalController::class, 'viewAppraisal'])->name('viewAppraisal');
+Route::get('/get-KRA-data', [ISAppraisalController::class, 'getKRA'])->name('getKRA');
 Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisal'])->name('saveISAppraisal');
+
+Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
@@ -103,10 +107,12 @@ Route::get('/get-is-appraisal-data', [SelfEvaluationController::class, 'showAppr
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');
 Route::get('/self-evaluation', [SelfEvaluationController::class, 'displaySelfEvaluationForm'])->name('viewSelfEvaluationForm');
 Route::get('/self-evaluation/get-appraisal-questions', [SelfEvaluationController::class, 'getQuestions'])->name('pe.getAppraisalQuestions');
+Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'])->name('getPEData');
+Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
+
 
 // Internal Customers
 Route::get('/pe-internal-customers-overview', [PEInternalCustomerController::class, 'displayICOverview'])->name('viewICOverview');
 Route::get('/pe-internal-customers-overview/getICAssign', [PEInternalCustomerController::class, 'getICAssign'])->name('getICAssign');
 Route::get('/pe-internal-customers-overview/getICQuestions', [PEInternalCustomerController::class, 'getICQuestions'])->name('getICQuestions');
 Route::get('/pe-internal-customers-overview/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
-

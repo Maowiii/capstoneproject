@@ -43,9 +43,11 @@ class Employees extends Model
         return $this->belongsTo(Departments::class, 'department_id')->withDefault();
     }
 
-
     public function immediateSuperior(): BelongsTo
+
     {
-        return $this->belongsTo(Employees::class, 'immediate_superior_id', 'employee_id')->optional();
+
+        return $this->belongsTo(Employees::class, 'immediate_superior_id', 'employee_id');
+
     }
 }
