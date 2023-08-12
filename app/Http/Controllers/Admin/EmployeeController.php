@@ -112,7 +112,7 @@ class EmployeeController extends Controller
 
       $newPassword = Str::random(8);
       $employee->update([
-        'password' => $newPassword
+        'default_password' => $newPassword
       ]);
 
       Mail::to($employee->email)->send(new NewPasswordEmail($newPassword));

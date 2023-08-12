@@ -2,7 +2,7 @@
  
 @section('title')
 <h1>Appraisals Overview</h1>
-@end  ction
+@endsection
 
 @section('content')
  
