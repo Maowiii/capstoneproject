@@ -108,6 +108,51 @@ class EmployeeController extends Controller
     try {
       $accountId = $request->input('account_id');
 
+    public function addEmployee(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|ends_with:adamson.edu.ph',
+            'employee_number' => 'required|max:9',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'type' => 'required',
+            'department' => 'required'
+        ], [
+            'email.required' => 'Please enter an Adamson email address.',
+            'email.ends_with' => 'Please enter an Adamson email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'employee_number.required' => 'Please enter an employee number.',
+            'employee_number.max' => 'Please enter a valid employee number.',
+            'first_name.required' => 'Please enter the employee\'s first name.',
+            'last_name.required' => 'Please enter the employee\'s last name.',
+            'type.required' => 'Please choose a user level.',
+            'department.required' => 'Please choose a department.'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput()->with('showAddUserModal', true);
+        } else {
+            $randomPassword = Str::random(8);
+            $account = Accounts::create([
+                'email' => $request->input('email'),
+                'default_password' => $randomPassword,
+                'type' => $request->input('type'),
+                'first_login' => 'true'
+            ]);
+
+            $account_id = $account->account_id;
+
+            $employee = Employees::create([
+                'account_id' => $account_id,
+                'employee_number' => $request->input('employee_number'),
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'department_id' => $request->input('department')
+            ]);
+
+            return response()->json(['success' => true]);
+        }
+
       $employee = Accounts::findOrFail($accountId);
 
       $newPassword = Str::random(8);

@@ -199,13 +199,13 @@
                 <tbody>
                     <tr>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
 
                     </tr>
@@ -227,10 +227,10 @@
                 <tbody>
                     <tr>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -265,7 +265,7 @@
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -285,7 +285,7 @@
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
 
                     </tr>
@@ -304,7 +304,7 @@
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea'disabled></textarea>
                         </td>
 
                     </tr>
@@ -323,7 +323,7 @@
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea'></textarea>
+                            <textarea class='textarea' disabled></textarea>
                         </td>
 
                     </tr>

@@ -62,7 +62,6 @@ class EditableInternalCustomerFormController extends Controller
         }
     }
 
-
     public function addICQuestions(Request $request)
     {
         try {
