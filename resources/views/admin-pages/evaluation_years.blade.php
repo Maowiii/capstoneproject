@@ -54,7 +54,8 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
-                                        <?php $currentYear = now()->format('Y'); ?>
+                                    <option value="">--Select School Year--</option>    
+                                    <?php $currentYear = now()->format('Y'); ?>
                                         @for ($year = $currentYear; $year <= 2099; $year++)
                                             <option value="{{ $year }}"
                                                 @if (old('sy_end') == $year) selected @endif>{{ $year }}

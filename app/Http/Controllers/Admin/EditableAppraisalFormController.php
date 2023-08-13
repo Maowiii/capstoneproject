@@ -28,7 +28,6 @@ class EditableAppraisalFormController extends Controller
             'SID' => $SID,
             'SR' => $SR,
             'S' => $S,
-
         ]);
     }
 

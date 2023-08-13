@@ -13,7 +13,7 @@ class AppraisalAnswers extends Model
 
     protected $table = 'appraisal_answers_2023_2024';
     protected $primaryKey = 'appraisal_answer_id';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'appraisal_id',

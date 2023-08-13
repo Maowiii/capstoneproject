@@ -7,6 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class KRA extends Model
 {
+    use HasFactory;
+
+    protected $table = 'kras_2023_2024';
+
+    protected $primaryKey = 'kra_id';
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'appraisal_id',
+        'kra',
+        'kra_weight',
+        'objective',
+        'performance_indicator',
+        'actual_result',
+        'performance_level',
+        'weighted_total',
+        'kra_order'
+    ];
+}
   use HasFactory;
 
   protected $primaryKey = 'kra_id';
