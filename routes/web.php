@@ -108,11 +108,14 @@ Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPE
 Route::get('/self-evaluation', [SelfEvaluationController::class, 'displaySelfEvaluationForm'])->name('viewSelfEvaluationForm');
 Route::get('/self-evaluation/get-appraisal-questions', [SelfEvaluationController::class, 'getQuestions'])->name('pe.getAppraisalQuestions');
 Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'])->name('getPEData');
+Route::get('/get-KRA-data', [SelfEvaluationController::class, 'getPEKRA'])->name('getPEKRA');
 Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
-
+Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppraisal'])->name('savePEAppraisal');
 
 // Internal Customers
 Route::get('/pe-internal-customers-overview', [PEInternalCustomerController::class, 'displayICOverview'])->name('viewICOverview');
 Route::get('/pe-internal-customers-overview/getICAssign', [PEInternalCustomerController::class, 'getICAssign'])->name('getICAssign');
 Route::get('/pe-internal-customers-overview/getICQuestions', [PEInternalCustomerController::class, 'getICQuestions'])->name('getICQuestions');
 Route::get('/pe-internal-customers-overview/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
+
+// Signature of Party Involved

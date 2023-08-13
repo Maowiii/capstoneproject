@@ -22,6 +22,7 @@ class KRA extends Model
         'objective',
         'performance_indicator',
         'actual_result',
+        'performance_level',
         'weighted_total',
         'kra_order'
     ];

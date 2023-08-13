@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <form method="post" action="{{ route('saveISAppraisal') }}">
+    <form method="post" action="{{ route('savePEAppraisal') }}">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
 
         <div class='content-container'>
@@ -377,7 +377,8 @@
                         <td class='text-right'>Weight Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input id="KRA_Weight_Total" class="small-column form-control total-weight" type="text" readonly>
+                                <input id="KRA_Weight_Total" class="small-column form-control total-weight"
+                                    type="text" readonly>
                             </div>
                         </td>
                         <td></td>
@@ -386,8 +387,8 @@
                         <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input id="KRA_Total" class="small-column form-control total-weighted text-center" type="text"
-                                    readonly>
+                                <input id="KRA_Total" class="small-column form-control total-weighted text-center"
+                                    type="text" readonly>
                             </div>
                         </td>
                     </tr>
@@ -446,7 +447,7 @@
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
-            <table class='table table-bordered'>
+            <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
                         <th class='medium-column'>Question</th>
@@ -454,25 +455,26 @@
                         <th class='large-column'>Comments</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id='jic_table_body'>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I agree with my performance rating." name="feedback[1][question]" readonly></textarea>
+                            <textarea class='textarea' value="I agree with my performance rating."
+                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[1][comment]" readonly></textarea>
+                            <textarea class='textarea' name="feedback[1][{{ $appraisalId }}][comment]"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -480,65 +482,65 @@
                             <textarea class='textarea'
                                 value="My future work objectives and learning opportunities have been set for the
                             next review period."
-                                name="feedback[2][question]" readonly></textarea>
+                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[2][comment]" readonly></textarea>
+                            <textarea class='textarea' name="feedback[2][{{ $appraisalId }}][comment]" ></textarea>
                         </td>
 
                     </tr>
                     <tr>
                         <td class='text-justify'>
                             <textarea class='textarea' value="I am satisfied with the performance review discussion."
-                                name="feedback[3][question]" readonly></textarea>
+                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[3][comment]" readonly></textarea>
+                            <textarea class='textarea' name="feedback[3][{{ $appraisalId }}][comment]" ></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review process." name="feedback[4][question]"
-                                readonly></textarea>
+                            <textarea class='textarea' value="I am satisfied with the performance review process."
+                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[4][comment]" readonly></textarea>
+                            <textarea class='textarea' name="feedback[4][{{ $appraisalId }}][comment]" ></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -553,10 +555,10 @@
 
     <script>
         // Get the <textarea> elements by their names
-        const textareaElement1 = document.querySelector('[name="feedback[1][question]"]');
-        const textareaElement2 = document.querySelector('[name="feedback[2][question]"]');
-        const textareaElement3 = document.querySelector('[name="feedback[3][question]"]');
-        const textareaElement4 = document.querySelector('[name="feedback[4][question]"]');
+        const textareaElement1 = document.querySelector('[name="feedback[1][{{ $appraisalId }}][question]"]');
+        const textareaElement2 = document.querySelector('[name="feedback[2][{{ $appraisalId }}][question]"]');
+        const textareaElement3 = document.querySelector('[name="feedback[3][{{ $appraisalId }}][question]"]');
+        const textareaElement4 = document.querySelector('[name="feedback[4][{{ $appraisalId }}][question]"]');
 
         // Set the values you want to display
         const valueToDisplay1 =
@@ -644,10 +646,6 @@
             });
 
             $(document).on('change', '#KRA_table_body input[type="radio"]', function() {
-                updateWeightedTotal();
-            });
-
-            $(document).on('change', '#KRA_table_body select', function() {
                 updateWeightedTotal();
             });
 
@@ -810,7 +808,7 @@
             });
 
             $.ajax({
-                url: '{{ route('getKRA') }}',
+                url: '{{ route('getPEKRA') }}',
                 type: 'GET',
                 data: {
                     appraisal_id: {{ $appraisalId }}
@@ -877,7 +875,7 @@
                                     $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                                         kraID +
                                         '][' +
-                                        {{ $appraisalId }} + '][KRA_actual_results]').prop(
+                                        {{ $appraisalId }} + '][KRA_actual_result]').prop(
                                         'readonly', false).val(kra.actual_result)
                                 ).appendTo(row);
 
@@ -894,6 +892,15 @@
                                         value: i
                                     });
                                     label.append(input, i);
+
+                                    var kraPL = parseFloat(kra.performance_level);
+
+                                    if (Math.abs(kraPL - i) < 0.01) {
+                                        input.prop('checked',
+                                            true
+                                        ); // Set the radio input as checked if the condition is met
+                                    }
+
                                     $('<div>').addClass('col-auto').append(label).appendTo(
                                         performanceLevelDiv);
                                 }
@@ -902,17 +909,14 @@
                                     $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                                         kraID +
                                         '][' +
-                                        {{ $appraisalId }} + '][kra_total_weight]').prop(
-                                        'readonly', true)
+                                        {{ $appraisalId }} + '][KRA_weighted_total]').prop(
+                                        'readonly', true).val(kra.weighted_total)
                                 ).appendTo(row);
 
                                 tbody.append(row);
 
                                 row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
-                                        {{ $appraisalId }} + '][KRA_answer]"]')
-                                    .trigger('change');
-                                row.find('select[name^="KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_weight]"]')
+                                        {{ $appraisalId }} + '][KRA_performance_level]"]')
                                     .trigger('change');
                             });
                             updateWeightedTotal();
@@ -1015,6 +1019,27 @@
                             });
                         }
                     }
+
+                    // Loop through the jicData and populate the table rows with data
+                    data.jicData.forEach(function(jic, index) {
+                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="0"]');
+                        if (jic.answer === 1) {
+                            answerRadioYes.checked = true;
+                        } else if (jic.answer === 0) {
+                            answerRadioNo.checked = true;
+                        }
+
+                        // Populate comment textarea
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
+                            1) + '][{{ $appraisalId }}][comment]"]');
+                        commentTextarea.value = jic.comments;
+                    });
+
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -1104,13 +1129,13 @@
                 $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                     nextKRAID +
                     '][' +
-                    {{ $appraisalId }} + '][kra_total_weight]').prop('readonly', true)
+                    {{ $appraisalId }} + '][KRA_weighted_total]').prop('readonly', true)
             ).appendTo(row);
 
             tbody.append(row);
 
             row.find('input[type="radio"][name^="KRA[' + nextKRAID + '][' +
-                    {{ $appraisalId }} + '][KRA_answer]"]')
+                    {{ $appraisalId }} + '][KRA_performance_level]"]')
                 .trigger('change');
 
             row.find('select[name^="KRA[' + nextKRAID + '][' + {{ $appraisalId }} +
@@ -1250,7 +1275,7 @@
 
                     console.log(weightedValue);
 
-                    row.find('textarea[name^="KRA"][name$="[kra_total_weight]"]').val(weightedValue.toFixed(2));
+                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]').val(weightedValue.toFixed(2));
                 }
             });
 
