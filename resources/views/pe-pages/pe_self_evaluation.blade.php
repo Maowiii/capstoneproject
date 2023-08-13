@@ -33,6 +33,7 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->last_name }}" readonly>
+
             </div>
             <div class="col-auto">
                 <label class="col-form-label">First Name:</label>
@@ -1232,6 +1233,7 @@
             ldptbody.append(ldprow);
         }
 
+
         function updateFrequencyCounter(tableId) {
             var frequencyCounters = [0, 0, 0, 0, 0];
             var total = 0;
@@ -1268,6 +1270,7 @@
                 var performanceLevel = parseInt(row.find(
                     'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked').val());
 
+
                 if (!isNaN(weight) && !isNaN(performanceLevel)) {
                     var weightedValue = weight * performanceLevel;
                     totalWeight += weight;
@@ -1276,6 +1279,7 @@
                     console.log(weightedValue);
 
                     row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]').val(weightedValue.toFixed(2));
+
                 }
             });
 

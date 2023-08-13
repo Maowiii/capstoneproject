@@ -1,5 +1,5 @@
 @extends('layout.master')
-
+ 
 @section('title')
     <h1>Appraisals Overview</h1>
 @endsection
@@ -68,6 +68,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Submit</button>
+
                 </div>
             </div>
         </div>
@@ -198,6 +199,7 @@
                         });
                     } else {
                         console.log(response.error);
+
                     }
                 },
                 error: function(xhr, status, error) {
@@ -289,6 +291,7 @@
             }
 
             $('#ISModal1 .modal-body').append(container);
+
 
             selectedRows = [];
         });

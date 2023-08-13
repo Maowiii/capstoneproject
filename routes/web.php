@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\Route;
 
 // Auth Controller
 Route::get('/', function () {
-    return redirect()->route('viewLogin');
+  return redirect()->route('viewLogin');
 });
 
 Route::get('/login', [AuthController::class, 'displayLogin'])->name('viewLogin');
@@ -62,11 +62,14 @@ Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->n
 Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('employees.getData');
 Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
 Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmployee'])->name('add-new-employee');
+Route::post('/employees/reset-password', [EmployeeController::class, 'employeeResetPassword'])->name('employeeResetPassword');
 
 // Evaluation Year
 Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');
 Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
-Route::get('/evaluation-year/add-new-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('add-new-eval-year');
+
+Route::post('/evaluation-year/add-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('addEvalYear');
+Route::post('/evaluation-year/confirm-eval-year', [EvaluationYearController::class, 'confirmEvalYear'])->name('confirmEvalYear');
 
 // Editable Appraisal Form
 Route::get('/editable-appraisal-form', [EditableAppraisalFormController::class, 'displayEditableAppraisalForm'])->name('viewEditableAppraisalForm');
@@ -94,6 +97,7 @@ Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisa
 
 Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
 
+
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
 
@@ -119,3 +123,4 @@ Route::get('/pe-internal-customers-overview/getICQuestions', [PEInternalCustomer
 Route::get('/pe-internal-customers-overview/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
 
 // Signature of Party Involved
+

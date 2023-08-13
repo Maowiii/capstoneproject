@@ -39,6 +39,7 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->first_name }}" readonly>
+
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -47,12 +48,14 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->job_title }}" readonly>
+
             </div>
             <div class="col-auto">
                 <label class="col-form-label">Department:</label>
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->department->department_name }}" readonly>
+
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -72,12 +75,14 @@
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->immediateSuperior->position ?? 'N/A' }}"
                     readonly>
+
             </div>
         </div>
     </div>
 
     <form method="post" action="{{ route('saveISAppraisal') }}">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
+
 
         <div class='content-container'>
             <h2>Instructions</h2>
@@ -187,6 +192,7 @@
                 </thead>
                 <tbody id="SR_table_body">
                     <!-- CONTENT -->
+
                 </tbody>
                 <tfoot>
                     <tr>
@@ -247,6 +253,7 @@
                 </thead>
                 <tbody id='S_table_body'>
                     <!-- CONTENT -->
+
                 </tbody>
                 <tfoot>
                     <tr>
@@ -372,6 +379,7 @@
                 </thead>
                 <tbody id="KRA_table_body">
                     <!-- CONTENT -->
+
                 </tbody>
                 <tfoot>
                     <tr>
@@ -414,6 +422,7 @@
                 </thead>
                 <tbody id='wpa_table_body'>
 
+
                 </tbody>
             </table>
             <div class="d-flex justify-content-end">
@@ -433,6 +442,7 @@
                     </tr>
                 </thead>
                 <tbody id='ldp_table_body'>
+
                     <tr id="ldp_1">
                         <td class='td-textarea'>
                             <textarea class='textarea' name="learning_need"></textarea>
@@ -478,6 +488,7 @@
                         </td>
                         <td class='td-textarea'>
                             <textarea class='textarea' name="feedback[1][comment]" readonly></textarea>
+
                         </td>
                     </tr>
                     <tr>
@@ -501,6 +512,7 @@
                         </td>
                         <td class='td-textarea'>
                             <textarea class='textarea' name="feedback[2][comment]" readonly></textarea>
+
                         </td>
 
                     </tr>
@@ -508,6 +520,7 @@
                         <td class='text-justify'>
                             <textarea class='textarea' value="I am satisfied with the performance review discussion."
                                 name="feedback[3][question]" readonly></textarea>
+
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
@@ -523,6 +536,7 @@
                         </td>
                         <td class='td-textarea'>
                             <textarea class='textarea' name="feedback[3][comment]" readonly></textarea>
+
                         </td>
                     </tr>
                     <tr>
@@ -544,6 +558,7 @@
                         </td>
                         <td class='td-textarea'>
                             <textarea class='textarea' name="feedback[4][comment]" readonly></textarea>
+
                         </td>
                     </tr>
                 </tbody>
@@ -714,6 +729,7 @@
                 data: {
                     appraisal_id: {{ $appraisalId }}
                 },
+
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -721,6 +737,7 @@
                     $('#SID_table_body').empty();
                     var SIDQuestions = response.SID;
                     var storedValues = response.storedValues;
+
 
                     SIDQuestions.forEach(function(question) {
                         var questionId = question.question_id;
@@ -730,6 +747,7 @@
 
                         var row = $('<tr>');
                         row.attr('data-question-id', (questionId.toString() + {{ $appraisalId }}));
+
 
                         var orderCell = $('<td>').text(questionOrder);
                         var questionCell = $('<td>').text(questionText).addClass('text-justify');
@@ -749,6 +767,7 @@
 
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
+
                                 input.prop('checked', true);
                             }
 
@@ -756,6 +775,7 @@
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
                         }
+
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
                         $('#SID_table_body').append(row);
@@ -1309,6 +1329,7 @@
             // Update the total weight and weighted total fields in the table footer
             $('#KRA_Weight_Total').val((totalWeight * 100).toFixed(2)); // Convert back to percentage for display
             $('#KRA_Total').val(totalWeighted.toFixed(2));
+
         }
     </script>
 @endsection

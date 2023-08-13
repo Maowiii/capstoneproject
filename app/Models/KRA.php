@@ -27,3 +27,31 @@ class KRA extends Model
         'kra_order'
     ];
 }
+  use HasFactory;
+
+  protected $primaryKey = 'kra_id';
+
+  public $timestamps = false;
+
+  protected $fillable = [
+    'appraisal_id',
+    'kra',
+    'kra_weight',
+    'objective',
+    'performance_indicator',
+    'actual_result',
+    'weighted_total',
+    'kra_order'
+  ];
+
+  public function __construct(array $attributes = [])
+  {
+    parent::__construct($attributes);
+
+    $activeEvaluationYear = EvalYear::where('status', 'active')->first();
+    if ($activeEvaluationYear) {
+      $activeYear = 'kras_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
+      $this->setTable($activeYear);
+    }
+  }
+}
