@@ -6,7 +6,6 @@ namespace App\Http\Controllers\PermanentEmployee;
 use App\Models\KRA;
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
-use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
 use App\Models\JIC;
@@ -16,6 +15,8 @@ use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class SelfEvaluationController extends Controller
 {
     public function displaySelfEvaluationForm()
@@ -163,7 +164,7 @@ class SelfEvaluationController extends Controller
         $validator = $this->validatePEAppraisal($request);
         if ($validator->fails()) {
             // Log the validation errors
-            \Log::error('Validation Errors: ' . json_encode($validator->errors()));
+            Log::error('Validation Errors: ' . json_encode($validator->errors()));
 
             // Display validation errors using dd()
             dd($validator->errors());
@@ -190,8 +191,8 @@ class SelfEvaluationController extends Controller
             DB::rollBack();
 
             // Log the exception
-            \Log::error('Exception Message: ' . $e->getMessage());
-            \Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
             // Display exception details using dd()
             dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
@@ -470,37 +471,4 @@ class SelfEvaluationController extends Controller
             }
         }
     }
-}
-
-class SelfEvaluationController extends Controller
-{
-  public function displaySelfEvaluationForm()
-  {
-    return view('pe-pages.pe_self_evaluation');
-  }
-
-  public function getQuestions(Request $request)
-  {
-    $SID = FormQuestions::where('table_initials', 'SID')->get();
-    $SR = FormQuestions::where('table_initials', 'SR')->get();
-    $S = FormQuestions::where('table_initials', 'S')->get();
-
-    $data = [
-      'success' => true,
-      'SID' => $SID,
-      'SR' => $SR,
-      'S' => $S
-    ];
-
-    return response()->json($data);
-  }
-
-  public function showAppraisalForm()
-  {
-    // Retrieve the KRA data from the database
-    $kraData = KRA::where('appraisal_id', '1')->get(); // Replace '1' with the appropriate appraisal_id that you want to display
-
-    // Return the KRA data as a JSON response
-    return response()->json(['success' => true, 'isAppraisalData' => $kraData]);
-  }
 }
