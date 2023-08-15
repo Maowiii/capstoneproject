@@ -19,7 +19,6 @@ class Appraisals extends Model
         'employee_id',
         'evaluator_id',
         'date_submitted',
-        'status',
         'signature',
     ];
 

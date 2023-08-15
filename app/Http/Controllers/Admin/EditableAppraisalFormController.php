@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\FormQuestions;
+use App\Models\EditableFormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,11 +16,11 @@ class EditableAppraisalFormController extends Controller
     }
     public function getAppraisalQuestions()
     {
-        $SID = FormQuestions::where('table_initials', 'SID')->where('status', 'active')
+        $SID = EditableFormQuestions::where('table_initials', 'SID')->where('status', 'active')
             ->get();
-        $SR = FormQuestions::where('table_initials', 'SR')->where('status', 'active')
+        $SR = EditableFormQuestions::where('table_initials', 'SR')->where('status', 'active')
             ->get();
-        $S = FormQuestions::where('table_initials', 'S')->where('status', 'active')
+        $S = EditableFormQuestions::where('table_initials', 'S')->where('status', 'active')
             ->get();
         ;
         return response()->json([
@@ -34,7 +34,7 @@ class EditableAppraisalFormController extends Controller
     public function updateAppraisalQuestions(Request $request, $questionId)
     {
         try {
-            $ICques = FormQuestions::find($questionId);
+            $ICques = EditableFormQuestions::find($questionId);
 
             $validatedData = $request->validate([
                 'question' => 'required|string',
@@ -54,7 +54,7 @@ class EditableAppraisalFormController extends Controller
     public function deleteAppraisalQuestions(Request $request, $questionId)
     {
         try {
-            $ICques = FormQuestions::find($questionId);
+            $ICques = EditableFormQuestions::find($questionId);
 
             $validatedData = $request->validate([
                 'status' => 'required|string',
@@ -86,10 +86,10 @@ class EditableAppraisalFormController extends Controller
                 return response()->json(['success' => false, 'error' => $validator->errors()->first()]);
             }
 
-            $lastActiveQuestion = FormQuestions::where('status', 'active')->latest('question_order')->first();
+            $lastActiveQuestion = EditableFormQuestions::where('status', 'active')->latest('question_order')->first();
             $questionOrder = $lastActiveQuestion ? $lastActiveQuestion->question_order + 1 : 1;
 
-            $ICques = FormQuestions::create([
+            $ICques = EditableFormQuestions::create([
                 'question' => $request->input('question'),
                 'form_type' => 'appraisal',
                 'table_initials' => $request->input('table_initials'),

@@ -14,6 +14,7 @@ use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SelfEvaluationController extends Controller
 {
@@ -162,7 +163,7 @@ class SelfEvaluationController extends Controller
         $validator = $this->validatePEAppraisal($request);
         if ($validator->fails()) {
             // Log the validation errors
-            \Log::error('Validation Errors: ' . json_encode($validator->errors()));
+            Log::error('Validation Errors: ' . json_encode($validator->errors()));
 
             // Display validation errors using dd()
             dd($validator->errors());
@@ -188,8 +189,8 @@ class SelfEvaluationController extends Controller
             DB::rollBack();
 
             // Log the exception
-            \Log::error('Exception Message: ' . $e->getMessage());
-            \Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
             // Display exception details using dd()
             dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());

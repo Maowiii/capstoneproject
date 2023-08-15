@@ -1,2 +1,2 @@
-<p>Your new password is: {{$newPassword}}</p>
+<p>Your new default password is: {{$newPassword}}</p>
 <p>Thank you.</p>

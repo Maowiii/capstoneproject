@@ -1,5 +1,5 @@
 @extends('layout.master')
- 
+
 @section('title')
     <h1>Appraisals Overview</h1>
 @endsection
