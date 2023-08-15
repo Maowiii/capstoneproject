@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\PermanentEmployee;
 
-
-use App\Models\KRA;
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\KRA;
@@ -16,6 +14,7 @@ use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+
 class SelfEvaluationController extends Controller
 {
     public function displaySelfEvaluationForm()
@@ -143,7 +142,7 @@ class SelfEvaluationController extends Controller
         $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
         $jicData = JIC::where('appraisal_id', $appraisalId)->get();
 
-        return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData,'jicData' => $jicData]);
+        return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData]);
     }
     public function deleteKRA(Request $request)
     {
@@ -173,15 +172,14 @@ class SelfEvaluationController extends Controller
         }
 
         DB::beginTransaction();
-        try {
-            /*            
+        try {           
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
             $this->createKRA($request);
             $this->createWPA($request);
             $this->createLDP($request);
-            */
+            
             $this->createJIC($request);
 
             DB::commit();
@@ -205,7 +203,7 @@ class SelfEvaluationController extends Controller
     {
         return Validator::make($request->all(), [
             'appraisalID' => 'required|numeric',
-            /*
+
             'SID' => 'required|array',
             'SID.*' => 'required|array',
             'SID.*.*.SIDanswer' => 'required',
@@ -239,7 +237,7 @@ class SelfEvaluationController extends Controller
             'LDP.*' => 'required|array',
             'LDP.*.*.learning_need' => 'required|string',
             'LDP.*.*.methodology' => 'required|string',
-            */
+            
             'feedback' => 'required|array',
             'feedback.*' => 'required|array',
             'feedback.*.*.question' => 'required|string',
@@ -351,7 +349,7 @@ class SelfEvaluationController extends Controller
                     $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator'] ||
                     $existingKRA->actual_result !== $kraData[$request->input('appraisalID')]['KRA_actual_result'] ||
                     $existingKRA->performance_level !== $kraData[$request->input('appraisalID')]['KRA_performance_level'] ||
-                    $existingKRA->weighted_total!== $kraData[$request->input('appraisalID')]['KRA_weighted_total']
+                    $existingKRA->weighted_total !== $kraData[$request->input('appraisalID')]['KRA_weighted_total']
                 ) {
                     $existingKRA->update([
                         'kra' => $kraData[$request->input('appraisalID')]['KRA'],
@@ -445,14 +443,14 @@ class SelfEvaluationController extends Controller
     {
         foreach ($request->input('feedback') as $jicID => $jicData) {
             $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
-                ->where('job_incumbent_id', $jicID)
-                ->first();
+            ->where('job_incumbent_id', $jicID)
+            ->first();
 
             if ($existingJIC) {
                 if (
                     $existingJIC->job_incumbent_question !== $jicData[$request->input('appraisalID')]['question'] ||
                     $existingJIC->answer !== $jicData[$request->input('appraisalID')]['answer'] ||
-                    $existingJIC->comments !== $jicData[$request->input('appraisalID')]['comments']
+                    $existingJIC->comments !== $jicData[$request->input('appraisalID')]['comment']
                 ) {
                     $existingJIC->update([
                         'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
@@ -470,37 +468,4 @@ class SelfEvaluationController extends Controller
             }
         }
     }
-}
-
-class SelfEvaluationController extends Controller
-{
-  public function displaySelfEvaluationForm()
-  {
-    return view('pe-pages.pe_self_evaluation');
-  }
-
-  public function getQuestions(Request $request)
-  {
-    $SID = FormQuestions::where('table_initials', 'SID')->get();
-    $SR = FormQuestions::where('table_initials', 'SR')->get();
-    $S = FormQuestions::where('table_initials', 'S')->get();
-
-    $data = [
-      'success' => true,
-      'SID' => $SID,
-      'SR' => $SR,
-      'S' => $S
-    ];
-
-    return response()->json($data);
-  }
-
-  public function showAppraisalForm()
-  {
-    // Retrieve the KRA data from the database
-    $kraData = KRA::where('appraisal_id', '1')->get(); // Replace '1' with the appropriate appraisal_id that you want to display
-
-    // Return the KRA data as a JSON response
-    return response()->json(['success' => true, 'isAppraisalData' => $kraData]);
-  }
 }
