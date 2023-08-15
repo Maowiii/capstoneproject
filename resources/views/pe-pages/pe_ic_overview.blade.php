@@ -7,19 +7,19 @@
 @section('content')
     <div class="content-container">
         <div class="table-responsive">
-        <table class='table table-bordered' id="ic_overview_table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="ic_overview_body">
+            <table class='table table-bordered' id="ic_overview_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ic_overview_body">
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -44,29 +44,34 @@
                             assignment.employee.last_name);
                         var departmentColumn = $('<td>').text(assignment.employee.department
                             .department_name);
-                        var statusColumn = $('<td>').text(assignment.status);
+                        var statusColumn = $('<td>').text(assignment.date_submitted);
                         var actionColumn;
-                        if (assignment.status === 'complete') {
+                        if (typeof assignment.date_submitted === 'string' && assignment
+                            .date_submitted
+                            .trim() !== '') {
                             actionColumn = $('<td>').append($('<button>').text('View').addClass(
                                 'btn btn-info'));
-                        } else if (assignment.status === 'pending') {
+                        } else if (assignment.date_submitted === null) {
+                            var appraiseeName = assignment.employee.first_name + ' ' +
+                                assignment.employee.last_name;
+                            var appraiseeDepartment = assignment.employee.department
+                                .department_name;
+                            var appraiseeAccountId = assignment.employee.account_id;
+
                             actionColumn = $('<td>').append(
                                 $('<button>').text('Appraise').addClass('btn btn-warning')
                                 .click(function() {
                                     window.location.href =
-                                        "{{ route('appraisalForm') }}" +
-                                        "?appraiser_name=" + assignment.evaluator
-                                        .first_name + "+" + assignment.evaluator
-                                        .last_name +
-                                        "&appraiser_department=" + assignment.evaluator
-                                        .department.department_name +
-                                        "&appraisee_name=" + assignment.employee
-                                        .first_name + "+" + assignment.employee
-                                        .last_name +
-                                        "&appraisee_department=" + assignment.employee
-                                        .department.department_name;
+                                        "/pe-internal-customers-overview/appraisalForm" +
+                                        "?appraisee_account_id=" + encodeURIComponent(
+                                            appraiseeAccountId) +
+                                        "&appraisee_name=" + encodeURIComponent(
+                                            appraiseeName) +
+                                        "&appraisee_department=" + encodeURIComponent(
+                                            appraiseeDepartment);
                                 })
                             );
+
                         } else {
                             actionColumn = $('<td>').text('Unknown');
                         }
