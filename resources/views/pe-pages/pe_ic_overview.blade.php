@@ -16,7 +16,7 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="ic_overview_body">
 
             </tbody>
         </table>
@@ -34,7 +34,7 @@
                 success: function(data) {
                     console.log(data); // Check the structure of the data object
 
-                    var tableBody = $('#ic_overview_table tbody');
+                    var tableBody = $('#ic_overview_body');
                     tableBody.empty();
 
                     // Iterate over the retrieved data
