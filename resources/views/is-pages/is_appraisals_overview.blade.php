@@ -292,7 +292,6 @@
 
             $('#ISModal1 .modal-body').append(container);
 
-
             selectedRows = [];
         });
     </script>

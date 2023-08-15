@@ -173,17 +173,18 @@ class SelfEvaluationController extends Controller
         }
 
         DB::beginTransaction();
-        try {           
+        try {
+            /*           
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
             $this->createKRA($request);
             $this->createWPA($request);
             $this->createLDP($request);
-            
             $this->createJIC($request);
 
             DB::commit();
+            */
             return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submition Complete!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -199,12 +200,13 @@ class SelfEvaluationController extends Controller
         }
 
     }
+        
 
     protected function validatePEAppraisal(Request $request)
     {
         return Validator::make($request->all(), [
             'appraisalID' => 'required|numeric',
-
+            /*
             'SID' => 'required|array',
             'SID.*' => 'required|array',
             'SID.*.*.SIDanswer' => 'required',
@@ -244,7 +246,7 @@ class SelfEvaluationController extends Controller
             'feedback.*.*.question' => 'required|string',
             'feedback.*.*.answer' => 'required|numeric',
             'feedback.*.*.comment' => 'required|string',
-
+            */
         ], [
             // Custom error messages
         ]);
