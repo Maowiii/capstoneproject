@@ -117,7 +117,7 @@ class EvaluationYearController extends Controller
       $table->integer('appraisal_id')->nullable();
       $table->integer('kra_id')->nullable();
       $table->integer('question_id')->nullable();
-      $table->decimal('score');
+      $table->integer('score');
     });
 
     Schema::connection('mysql')->create('kras' . $sy, function ($table) {

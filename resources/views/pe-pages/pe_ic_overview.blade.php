@@ -52,6 +52,7 @@
                             actionColumn = $('<td>').append($('<button>').text('View').addClass(
                                 'btn btn-info'));
                         } else if (assignment.date_submitted === null) {
+                            var appraisalId = assignment.appraisal_id;
                             var appraiseeName = assignment.employee.first_name + ' ' +
                                 assignment.employee.last_name;
                             var appraiseeDepartment = assignment.employee.department
@@ -63,7 +64,9 @@
                                 .click(function() {
                                     window.location.href =
                                         "/pe-internal-customers-overview/appraisalForm" +
-                                        "?appraisee_account_id=" + encodeURIComponent(
+                                        "?appraisal_id=" + encodeURIComponent(
+                                            appraisalId) +
+                                        "&appraisee_account_id=" + encodeURIComponent(
                                             appraiseeAccountId) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             appraiseeName) +
