@@ -9,25 +9,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AppraisalAnswers extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'appraisal_answers_2023_2024';
-    protected $primaryKey = 'appraisal_answer_id';
-    public $timestamps = false;
+  protected $primaryKey = 'appraisal_answer_id';
+  public $timestamps = false;
 
-    protected $fillable = [
-        'appraisal_id',
-        'question_id',
-        'score'
-    ];
+  protected $fillable = [
+    'appraisal_id',
+    'question_id',
+    'score'
+  ];
 
-    public function appraisal(): BelongsTo
-    {
-        return $this->belongsTo(Appraisals::class, 'appraisal_id');
+  public function __construct(array $attributes = [])
+  {
+    parent::__construct($attributes);
+
+    $activeEvaluationYear = EvalYear::where('status', 'active')->first();
+    if ($activeEvaluationYear) {
+      $activeYear = 'appraisal_answers_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
+      $this->setTable($activeYear);
     }
+  }
 
-    public function question(): BelongsTo
-    {
-        return $this->belongsTo(FormQuestions::class, 'question_id');
-    }
+  public function appraisal(): BelongsTo
+  {
+    return $this->belongsTo(Appraisals::class, 'appraisal_id');
+  }
+
+  public function question(): BelongsTo
+  {
+    return $this->belongsTo(FormQuestions::class, 'question_id');
+  }
 }
