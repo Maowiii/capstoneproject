@@ -1270,7 +1270,6 @@
                 var performanceLevel = parseInt(row.find(
                     'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked').val());
 
-
                 if (!isNaN(weight) && !isNaN(performanceLevel)) {
                     var weightedValue = weight * performanceLevel;
                     totalWeight += weight;
@@ -1283,7 +1282,6 @@
                 }
             });
 
-            // Update the total weight and weighted total fields in the table footer
             $('#KRA_Weight_Total').val((totalWeight * 100).toFixed(2)); // Convert back to percentage for display
             $('#KRA_Total').val(totalWeighted.toFixed(2));
         }

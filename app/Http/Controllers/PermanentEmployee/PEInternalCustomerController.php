@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppraisalAnswers;
 use App\Models\Employees;
 use App\Models\Appraisals;
 use App\Models\FormQuestions;
@@ -49,5 +50,40 @@ class PEInternalCustomerController extends Controller
     $appraiseeDepartment = $request->input('appraisee_department');
 
     return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));
+  }
+
+  public function saveICScores(Request $request)
+  {
+    $questionId = $request->input('questionId');
+    $score = $request->input('score');
+    $appraisalId = $request->input('appraisalId');
+
+    $appraisalAnswer = AppraisalAnswers::firstOrCreate(
+      ['appraisal_id' => $appraisalId, 'question_id' => $questionId],
+      ['score' => $score]
+    );
+
+    AppraisalAnswers::updateOrInsert(
+      ['appraisal_id' => $appraisalId, 'question_id' => $questionId],
+      ['score' => $score]
+    );
+
+    return response()->json(['success' => true]);
+  }
+
+  public function getSavedICScores(Request $request)
+  {
+    $appraisalId = $request->input('appraisalId');
+    $questionId = $request->input('questionId');
+
+    $score = AppraisalAnswers::where([
+      'appraisal_id' => $appraisalId,
+      'question_id' => $questionId
+    ])->value('score');
+
+    return response()->json([
+      'success' => true,
+      'score' => $score
+    ]);
   }
 }
