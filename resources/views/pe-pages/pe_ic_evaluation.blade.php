@@ -109,7 +109,7 @@
 
                             $.each(response.ICques, function(index, formquestions) {
                                 var questionId = formquestions
-                                    .question_id; // Retrieve the question ID
+                                    .question_id;
 
                                 var row = `<tr>
                                     <td class="align-middle">${questionId}</td>
