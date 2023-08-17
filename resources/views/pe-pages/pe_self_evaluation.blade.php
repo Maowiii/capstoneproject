@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <form method="post" action="{{ route('savePEAppraisal') }}">
+    <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
 
         <div class='content-container'>
@@ -548,6 +548,82 @@
             </table>
         </div>
 
+        <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content" id="signatory">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-5">Signatories</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid" id="instructioncon">
+                            <div class="table-responsive" id="signaturecon">
+                                <table class="table" id="signtable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
+                                            <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
+                                            <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
+                                            <th scope="col" style="width:15%" id="datehead">DATE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                            <td id="partiescell">Job Incumbent</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id='signcell' class="sign-cell">
+                                                <input type='file' id="uploadsign_1"
+                                                    name="SIGN[JI][{{ $appraisalId }}]" class="form-control"
+                                                    accept='image/jpeg, image/png, image/jpg'>
+                                                <img src="" width="100" id="signatureImage" />
+                                            </td>
+                                            <td id="datecell" class="date-cell"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="partiescell">Immediate Superior</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id='signcell'></td>
+                                            <td id="datecell"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="partiescell">Next Higher Superior</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id='signcell'></td>
+                                            <td id="datecell" style="width:15%"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h3>Notation</h3>
+                            <div class="table-responsive" id="signaturecon">
+                                <table class="table" id="signtable">
+                                    <tbody>
+                                        <tr>
+                                            <td id="partiescell" style="width:20%">HRMD Director</td>
+                                            <td id="fullnamecell" style="width:20%"></td>
+                                            <td id="signcell" style="width:25%"></td>
+                                            <td id="datecell" style="width:15%"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="partiescell">VP for Administrative Affairs</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id="signcell" style="width:25%"></td>
+                                            <td id="datecell" style="width:15%"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="submit-btn" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#confirmation-popup-modal">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="confirmation-popup-modal" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -560,7 +636,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -569,7 +645,7 @@
         <div class="d-flex justify-content-center gap-3">
             <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
             <button type="button" class="btn btn-primary medium-column" id="submit-btn" data-bs-toggle="modal"
-                data-bs-target="#confirmation-popup-modal">Submit</button>
+                data-bs-target="#signatory_modal">Submit</button>
         </div>
     </form>
 
@@ -1058,6 +1134,26 @@
                         var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
                             1) + '][{{ $appraisalId }}][comment]"]');
                         commentTextarea.value = jic.comments;
+                    });
+
+                    data.signData.forEach(function(sign, index) {
+                        var appraisalId = sign.appraisal_id;
+                        var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
+
+                        if (row) {
+                            var signCell = row.querySelector(
+                            '.sign-cell'); // Use a class name for the signature cell
+                            if (sign.sign_data) {
+                                var signatureImage = document.createElement('img');
+                                signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
+                                signatureImage.width = 100; // Set the appropriate width for the image
+                                signCell.appendChild(signatureImage);
+                            }
+
+                            var dateCell = row.querySelector(
+                            '.date-cell'); // Use a class name for the date cell
+                            dateCell.textContent = sign.updated_at;
+                        }
                     });
 
                 },

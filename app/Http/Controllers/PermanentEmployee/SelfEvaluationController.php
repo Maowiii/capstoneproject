@@ -8,6 +8,7 @@ use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
 use App\Models\JIC;
+use App\Models\Signature;
 use App\Models\Appraisals;
 use App\Models\Employees;
 use App\Models\FormQuestions;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
 class SelfEvaluationController extends Controller
 {
@@ -142,8 +144,13 @@ class SelfEvaluationController extends Controller
         $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
         $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
         $jicData = JIC::where('appraisal_id', $appraisalId)->get();
+        $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
-        return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData]);
+        foreach ($signData as &$sign) {
+            $sign->sign_data = base64_encode($sign->sign_data);
+        }
+
+        return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
     }
     public function deleteKRA(Request $request)
     {
@@ -182,9 +189,10 @@ class SelfEvaluationController extends Controller
             $this->createWPA($request);
             $this->createLDP($request);
             $this->createJIC($request);
+            */
+            $this->createSign($request);
 
             DB::commit();
-            */
             return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submition Complete!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -200,12 +208,14 @@ class SelfEvaluationController extends Controller
         }
 
     }
-        
+
 
     protected function validatePEAppraisal(Request $request)
     {
         return Validator::make($request->all(), [
             'appraisalID' => 'required|numeric',
+
+            'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
             /*
             'SID' => 'required|array',
             'SID.*' => 'required|array',
@@ -446,8 +456,8 @@ class SelfEvaluationController extends Controller
     {
         foreach ($request->input('feedback') as $jicID => $jicData) {
             $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
-            ->where('job_incumbent_id', $jicID)
-            ->first();
+                ->where('job_incumbent_id', $jicID)
+                ->first();
 
             if ($existingJIC) {
                 if (
@@ -471,4 +481,43 @@ class SelfEvaluationController extends Controller
             }
         }
     }
+
+    protected function createSign(Request $request)
+    {
+        $appraisalId = $request->input('appraisalID'); // Add a semicolon here
+        $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
+
+        // Check if the file exists and is valid
+        if ($signatureFile && $signatureFile->isValid()) {
+            $existingSignature = Signature::where('appraisal_id', $appraisalId)
+                ->where('sign_type', 'JI')
+                ->first();
+
+            if ($existingSignature) {
+                // Get signature data from uploaded file
+                $signatureData = file_get_contents($signatureFile->getRealPath());
+
+                $existingSignature->update([
+                    'sign_data' => $signatureData,
+                    'sign_type' => 'JI', // Change this according to your needs
+                ]);
+            } else {
+                try {
+                    $signatureData = file_get_contents($signatureFile->getRealPath());
+
+                    Signature::create([
+                        'appraisal_id' => $appraisalId,
+                        'sign_data' => $signatureData,
+                        'sign_type' => 'JI', // Change this according to your needs
+                    ]);
+
+                } catch (QueryException $e) {
+                    // Handle the database connection issue
+                    // You can log the error or display a user-friendly message
+                    dd('Error: ' . $e->getMessage());
+                }
+            }
+        }
+    }
+
 }
