@@ -154,7 +154,6 @@ class EvaluationYearController extends Controller
       $table->integer('appraisal_id');
       $table->text('customer_service')->nullable();
       $table->text('suggestion')->nullable();
-      $table->integer('comment_order');
     });
 
     Schema::connection('mysql')->create('job_incumbents' . $sy, function ($table) {

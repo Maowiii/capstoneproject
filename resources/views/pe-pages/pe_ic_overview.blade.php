@@ -63,7 +63,7 @@
                                 $('<button>').text('Appraise').addClass('btn btn-warning')
                                 .click(function() {
                                     window.location.href =
-                                        "/pe-internal-customers-overview/appraisalForm" +
+                                        "/pe-internal-customers/appraisalForm" +
                                         "?appraisal_id=" + encodeURIComponent(
                                             appraisalId) +
                                         "&appraisee_account_id=" + encodeURIComponent(

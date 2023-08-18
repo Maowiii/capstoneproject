@@ -119,10 +119,13 @@ Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppra
 // Internal Customers
 Route::get('/pe-internal-customers-overview', [PEInternalCustomerController::class, 'displayICOverview'])->name('viewICOverview');
 Route::get('/pe-internal-customers-overview/getICAssign', [PEInternalCustomerController::class, 'getICAssign'])->name('getICAssign');
-Route::get('/pe-internal-customers-overview/getICQuestions', [PEInternalCustomerController::class, 'getICQuestions'])->name('getICQuestions');
-Route::get('/pe-internal-customers-overview/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
+Route::get('/pe-internal-customers/getICQuestions', [PEInternalCustomerController::class, 'getICQuestions'])->name('getICQuestions');
+Route::get('/pe-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
 Route::get('/pe-internal-customers/getICScores', [PEInternalCustomerController::class, 'getSavedICScores'])->name('getSavedICScores');
 Route::post('/pe-internal-customer-overview/saveICScores', [PEInternalCustomerController::class, 'saveICScores'])->name('saveICScores');
+Route::post('/pe-internal-customers/updateService', [PEInternalCustomerController::class, 'updateService'])->name('updateService');
+Route::post('/pe-internal-customers/updateSuggestion', [PEInternalCustomerController::class, 'updateSuggestion'])->name('updateSuggestion');
+Route::post('/pe-internal-customers/getCommentsAndSuggestions', [PEInternalCustomerController::class, 'getCommentsAndSuggestions'])->name('getCommentsAndSuggestions');
 
 
 // Signature of Party Involved

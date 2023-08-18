@@ -36,8 +36,8 @@
                     <td class='text-right'>Total Weighted Score:</td>
                     <td>
                         <div class="d-flex justify-content-center gap-3">
-                            <input id="total-weighted-score" class="small-column form-control total-weighted text-center" type="text"
-                                readonly>
+                            <input id="total-weighted-score" class="small-column form-control total-weighted text-center"
+                                type="text" readonly>
                         </div>
                     </td>
                 </tr>
@@ -45,10 +45,10 @@
         </table>
 
         <p>What did you like best about his/her customer service?</p>
-        <textarea name="best_service" id="best_service"></textarea>
+        <textarea name="best_service" id="service_area"></textarea>
 
         <p>Other comments and suggestions:</p>
-        <textarea name="comments_suggestions" id="comments_suggestions"></textarea>
+        <textarea name="comments_suggestions" id="comments_area"></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
@@ -56,16 +56,119 @@
 
     <script>
         $(document).ready(function() {
+
+            $('#best_service').on('blur', function() {
+                var newService = $(this).val();
+
+                updateService(newService);
+            });
+
+            $('#comments_suggestions').on('blur', function() {
+                var newSuggestion = $(this).val();
+
+                updateSuggestion(newSuggestion);
+            });
+
+            function updateSuggestion(value) {
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                $.ajax({
+                    url: '{{ route('updateSuggestion') }}',
+                    type: 'POST',
+                    data: {
+                        newSuggestion: value,
+                        appraisalId: appraisalId
+                    },
+                    success: function(response) {
+                        console.log('Backend updated successfully.');
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseText) {
+                            console.log('Error: ' + xhr.responseText);
+                        } else {
+                            console.log('An error occurred.');
+                        }
+                    }
+                });
+            }
+
+            function updateService(value) {
+                console.log(value);
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                $.ajax({
+                    url: '{{ route('updateService') }}',
+                    type: 'POST',
+                    data: {
+                        newService: value,
+                        appraisalId: appraisalId
+                    },
+                    success: function(response) {
+                        console.log('Backend updated successfully.');
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseText) {
+                            console.log('Error: ' + xhr.responseText);
+                        } else {
+                            console.log('An error occurred.');
+                        }
+                    }
+                });
+            }
+
+            function totalScore() {
+                var total = 0;
+
+                $('#IC_table .form-check-input[type="radio"]:checked').each(function() {
+                    var score = parseInt($(this).val());
+                    total += score;
+                });
+
+                numQuestions = $('#IC_table tbody tr').length;
+                var averageScore = total / numQuestions;
+                $('#total-weighted-score').val(averageScore.toFixed(2));
+            }
+
+            function loadTextAreas() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('getCommentsAndSuggestions') }}',
+                    type: 'POST',
+                    data: {
+                        appraisalId: appraisalId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#service_area').val(response.customerService);
+                            $('#comments_area').val(response.suggestion);
+                        } else {
+                            console.log('Comments not found or an error occurred.');
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseText) {
+                            console.log('Error: ' + xhr.responseText);
+                        } else {
+                            console.log('An error occurred.');
+                        }
+                    }
+                });
+            }
+
+
             $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
 
-                console.log('Appraisal ID:', appraisalId);
                 var radioButtonId = $(this).attr('id');
                 var questionId = radioButtonId.split('_')[1];
                 var score = $(this).val();
-                var appraisalId = urlParams.get('appraisal_id');
-                console.log('Clicked radio button with ID:', radioButtonId);
                 console.log('Question ID: ', questionId);
 
                 $.ajax({
@@ -81,6 +184,7 @@
                     },
                     success: function(response) {
                         console.log('Score saved for question ID:', questionId);
+                        totalScore();
                     },
                     error: function(xhr) {
                         if (xhr.responseText) {
@@ -127,7 +231,9 @@
                                 </tr>`;
 
                                 tbody.append(row);
+
                                 loadSavedScore(questionId);
+                                totalScore();
 
                             });
 
@@ -168,7 +274,7 @@
             }
 
             loadICTable();
-
+            loadTextAreas();
         });
     </script>
 @endsection

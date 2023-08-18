@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
 use App\Models\Appraisals;
+use App\Models\Comments;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -85,5 +86,52 @@ class PEInternalCustomerController extends Controller
       'success' => true,
       'score' => $score
     ]);
+  }
+
+  public function updateService(Request $request)
+  {
+    $newService = $request->input('newService');
+    $appraisalId = $request->input('appraisalId');
+
+    Comments::updateOrInsert(
+      ['appraisal_id' => $appraisalId],
+      ['customer_service' => $newService]
+    );
+
+    return response()->json(['success' => true]);
+  }
+
+  public function updateSuggestion(Request $request)
+  {
+    $newSuggestion = $request->input('newSuggestion');
+    $appraisalId = $request->input('appraisalId');
+
+    Comments::updateOrInsert(
+      ['appraisal_id' => $appraisalId],
+      ['suggestion' => $newSuggestion]
+    );
+  }
+
+  public function getCommentsAndSuggestions(Request $request)
+  {
+    $appraisalId = $request->input('appraisalId');
+
+    $comments = Comments::where('appraisal_id', $appraisalId)->first();
+
+    if ($comments) {
+      $customerService = $comments->customer_service;
+      $suggestion = $comments->suggestion;
+      return response()->json([
+        'success' => true,
+        'customerService' => $customerService,
+        'suggestion' => $suggestion
+      ]);
+    } else {
+      return response()->json([
+        'success' => true,
+        'customerService' => null,
+        'suggestion' => null
+      ]);
+    }
   }
 }
