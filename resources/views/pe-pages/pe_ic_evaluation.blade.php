@@ -312,6 +312,7 @@
                 }
 
                 if (allRadioChecked && allTextAreasFilled) {
+                  // DITO IOOPEN MODAL
                 } else {
                     console.log('Please complete all fields and select all radio buttons.');
                 }
