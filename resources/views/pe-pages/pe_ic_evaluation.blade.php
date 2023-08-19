@@ -45,10 +45,10 @@
         </table>
 
         <p>What did you like best about his/her customer service?</p>
-        <textarea name="best_service" id="service_area"></textarea>
+        <textarea class="form-control" id="service_area"></textarea>
 
-        <p>Other comments and suggestions:</p>
-        <textarea name="comments_suggestions" id="comments_area"></textarea>
+        <p class="mt-3">Other comments and suggestions:</p>
+        <textarea class="form-control" id="comments_area"></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
@@ -57,13 +57,12 @@
     <script>
         $(document).ready(function() {
 
-            $('#best_service').on('blur', function() {
+            $('#service_area').on('blur', function() {
                 var newService = $(this).val();
-
                 updateService(newService);
             });
 
-            $('#comments_suggestions').on('blur', function() {
+            $('#comments_area').on('blur', function() {
                 var newSuggestion = $(this).val();
 
                 updateSuggestion(newSuggestion);
@@ -82,6 +81,7 @@
                     },
                     success: function(response) {
                         console.log('Backend updated successfully.');
+                        $('#comments_area').removeClass('is-invalid');
                     },
                     error: function(xhr) {
                         if (xhr.responseText) {
@@ -107,6 +107,7 @@
                     },
                     success: function(response) {
                         console.log('Backend updated successfully.');
+                        $('#service_area').removeClass('is-invalid');
                     },
                     error: function(xhr) {
                         if (xhr.responseText) {
@@ -163,12 +164,14 @@
 
 
             $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
+                var clickedRadio = $(this); // Store the radio button that was clicked
+
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
 
-                var radioButtonId = $(this).attr('id');
+                var radioButtonId = clickedRadio.attr('id');
                 var questionId = radioButtonId.split('_')[1];
-                var score = $(this).val();
+                var score = clickedRadio.val();
                 console.log('Question ID: ', questionId);
 
                 $.ajax({
@@ -184,6 +187,8 @@
                     },
                     success: function(response) {
                         console.log('Score saved for question ID:', questionId);
+                        clickedRadio.closest('tr').removeClass(
+                            'table-danger'); // Use the stored clickedRadio to remove the class
                         totalScore();
                     },
                     error: function(xhr) {
@@ -195,6 +200,7 @@
                     }
                 });
             });
+
 
             $.ajaxSetup({
                 headers: {
@@ -211,30 +217,30 @@
                             var tbody = $('#IC_table tbody');
                             tbody.empty();
 
+                            var questionCounter = 1; // Initialize the counter
+
                             $.each(response.ICques, function(index, formquestions) {
-                                var questionId = formquestions
-                                    .question_id;
+                                var questionId = formquestions.question_id;
 
                                 var row = `<tr>
-                                    <td class="align-middle">${questionId}</td>
-                                    <td class="align-baseline text-start editable" data-questionid="${questionId}">
-                                        ${formquestions.question}
-                                    </td>
-                                    <td class="align-middle likert-column">
-                                        @for ($i = 5; $i >= 1; $i--)
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
-                                                <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
-                                            </div>
-                                        @endfor
-                                    </td>
-                                </tr>`;
+                        <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
+                        <td class="align-baseline text-start editable" data-questionid="${questionId}">
+                            ${formquestions.question}
+                        </td>
+                        <td class="align-middle likert-column">
+                            @for ($i = 5; $i >= 1; $i--)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
+                                    <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
+                                </div>
+                            @endfor
+                        </td>
+                    </tr>`;
 
                                 tbody.append(row);
-
                                 loadSavedScore(questionId);
-                                totalScore();
 
+                                questionCounter++; // Increment the counter for the next iteration
                             });
 
                         } else {
@@ -246,6 +252,7 @@
                     }
                 });
             }
+
 
             function loadSavedScore(questionId) {
                 var urlParams = new URLSearchParams(window.location.search);
@@ -266,12 +273,50 @@
                                     'checked', true);
                             }
                         }
+                        totalScore();
                     },
                     error: function(xhr, status, error) {
                         console.log(error);
                     }
                 });
             }
+
+            $('#submit-btn').on('click', function() {
+                $('#IC_table td').removeClass('is-invalid');
+                $('#service_area, #comments_area').removeClass(
+                'is-invalid');
+
+                var allRadioChecked = true;
+                $('#IC_table tbody tr').each(function() {
+                    var questionId = $(this).find('.form-check-input').attr('id').split('_')[1];
+                    var anyRadioChecked = false;
+
+                    $(this).find('.form-check-input').each(function() {
+                        if ($(this).prop('checked')) {
+                            anyRadioChecked = true;
+                        }
+                    });
+
+                    if (!anyRadioChecked) {
+                        allRadioChecked = false;
+                        $(this).find('.form-check-input').closest('tr').addClass('table-danger');
+                    }
+                });
+
+                var serviceValue = $('#service_area').val();
+                var suggestionValue = $('#comments_area').val();
+                var allTextAreasFilled = (serviceValue.trim() !== '') && (suggestionValue.trim() !== '');
+
+                if (!allTextAreasFilled) {
+                    $('#service_area, #comments_area').addClass(
+                    'is-invalid');
+                }
+
+                if (allRadioChecked && allTextAreasFilled) {
+                } else {
+                    console.log('Please complete all fields and select all radio buttons.');
+                }
+            });
 
             loadICTable();
             loadTextAreas();

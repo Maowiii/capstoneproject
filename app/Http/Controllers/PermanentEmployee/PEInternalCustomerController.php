@@ -134,4 +134,8 @@ class PEInternalCustomerController extends Controller
       ]);
     }
   }
+
+  public function submitICForm(Request $request) {
+    
+  }
 }

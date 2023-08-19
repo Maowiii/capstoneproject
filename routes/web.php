@@ -127,6 +127,5 @@ Route::post('/pe-internal-customers/updateService', [PEInternalCustomerControlle
 Route::post('/pe-internal-customers/updateSuggestion', [PEInternalCustomerController::class, 'updateSuggestion'])->name('updateSuggestion');
 Route::post('/pe-internal-customers/getCommentsAndSuggestions', [PEInternalCustomerController::class, 'getCommentsAndSuggestions'])->name('getCommentsAndSuggestions');
 
-
 // Signature of Party Involved
 
