@@ -164,7 +164,7 @@
 
 
             $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
-                var clickedRadio = $(this); // Store the radio button that was clicked
+                var clickedRadio = $(this);
 
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
@@ -188,7 +188,7 @@
                     success: function(response) {
                         console.log('Score saved for question ID:', questionId);
                         clickedRadio.closest('tr').removeClass(
-                            'table-danger'); // Use the stored clickedRadio to remove the class
+                            'table-danger');
                         totalScore();
                     },
                     error: function(xhr) {
@@ -217,7 +217,7 @@
                             var tbody = $('#IC_table tbody');
                             tbody.empty();
 
-                            var questionCounter = 1; // Initialize the counter
+                            var questionCounter = 1;
 
                             $.each(response.ICques, function(index, formquestions) {
                                 var questionId = formquestions.question_id;
@@ -240,7 +240,7 @@
                                 tbody.append(row);
                                 loadSavedScore(questionId);
 
-                                questionCounter++; // Increment the counter for the next iteration
+                                questionCounter++;
                             });
 
                         } else {
@@ -252,7 +252,6 @@
                     }
                 });
             }
-
 
             function loadSavedScore(questionId) {
                 var urlParams = new URLSearchParams(window.location.search);
