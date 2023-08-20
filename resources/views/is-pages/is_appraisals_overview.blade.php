@@ -68,7 +68,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Submit</button>
-
                 </div>
             </div>
         </div>
@@ -291,7 +290,6 @@
             }
 
             $('#ISModal1 .modal-body').append(container);
-
 
             selectedRows = [];
         });

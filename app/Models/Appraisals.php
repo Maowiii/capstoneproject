@@ -42,6 +42,11 @@ class Appraisals extends Model
     {
         return $this->belongsTo(Employees::class, 'evaluator_id')->with('department');
     }
+
+    public function signatures()
+    {
+        return $this->hasMany(Signature::class, 'appraisal_id');
+    }
 }
 
 ?>
