@@ -94,17 +94,13 @@ Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternal
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
 Route::get('/is-appraisals-overview/get-employees', [ISAppraisalsOverviewController::class, 'getEmployees'])->name('getEmployeesData');
-
 Route::get('/is-appraisal/{appraisal_id}', [ISAppraisalController::class, 'viewAppraisal'])->name('viewAppraisal');
 Route::get('/get-KRA-data', [ISAppraisalController::class, 'getKRA'])->name('getKRA');
 Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisal'])->name('saveISAppraisal');
-
 Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
-
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
-
 
 /* ----- PERMANENT EMPLOYEE ----- */
 // Dashboard

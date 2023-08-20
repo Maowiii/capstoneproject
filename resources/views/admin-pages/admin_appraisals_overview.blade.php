@@ -120,7 +120,6 @@
                                     }
                                 } else if (appraisal.evaluation_type.startsWith(
                                         'internal customer')) {
-                                    // Check if internal customer evaluation has been completed
                                     if (appraisal.date_submitted !== null) {
                                         var url =
                                             "{{ route('loadAdminICEvaluationForm', ['appraisal_id' => ':appraisal_id']) }}";
