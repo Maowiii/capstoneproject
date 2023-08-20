@@ -56,6 +56,10 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 /* ----- ADMIN ----- */
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
+Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');
+Route::get('/admin-appraisals-overview/self-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadSelfEvaluationForm'])->name('loadAdminSelfEvaluationForm');
+Route::get('/admin-appraisals-overview/is-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadISEvaluationForm'])->name('loadAdminISEvaluationForm');
+Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadICEvaluationForm'])->name('loadAdminICEvaluationForm');
 
 // Employee User Table
 Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
