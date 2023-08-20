@@ -469,3 +469,19 @@ textarea {
     background-color: #E9ECEF !important;
     color: #999 !important;
 }
+#signatory{
+    display: flex;
+    justify-content: center;
+}
+#signatory_modal .modal-dialog {
+    max-width: 40%;
+}
+#signatory_modal .modal-content {
+    margin-top: 0;
+}
+#signatory_modal .modal-title {
+    text-align: center;
+}
+#signatory_modal .modal-footer {
+    justify-content: center;
+}
