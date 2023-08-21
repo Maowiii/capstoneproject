@@ -33,7 +33,6 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->last_name }}" readonly>
-
             </div>
             <div class="col-auto">
                 <label class="col-form-label">First Name:</label>
@@ -77,7 +76,8 @@
         </div>
     </div>
 
-    <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data">
+    <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
+        id="PEappraisalForm">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
 
         <div class='content-container'>
@@ -644,8 +644,7 @@
 
         <div class="d-flex justify-content-center gap-3">
             <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
-            <button type="button" class="btn btn-primary medium-column" id="submit-btn" data-bs-toggle="modal"
-                data-bs-target="#signatory_modal">Submit</button>
+            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -752,6 +751,86 @@
             updateFrequencyCounter('S_table');
 
             updateWeightedTotal();
+
+            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
+                var form = document.getElementById('PEappraisalForm');
+                var invalidRows = []; // Keep track of invalid rows
+                // KRA table validation
+                $('#KRA_table_body tr').each(function() {
+                    var inputs = $(this).find('textarea, input[type="radio"]');
+                    var isRowValid = true;
+                    var isEmptyRow = true;
+
+                    inputs.each(function() {
+                        if (!this.checkValidity()) {
+                            $(this).addClass('is-invalid');
+                            isRowValid = false;
+                        }
+
+                        if ($(this).is('textarea') && $(this).val().trim() !== '') {
+                            isEmptyRow = false;
+                        }
+
+                        if ($(this).is('input[type="radio"]') && $(this).prop('checked')) {
+                            isEmptyRow = false;
+                        }
+                    });
+
+                    if (!isRowValid || isEmptyRow) {
+                        $(this).addClass('table-danger'); // Add Bootstrap class for highlighting
+                        invalidRows.push($(this));
+                    } else {
+                        $(this).removeClass('table-danger'); // Remove highlighting
+                    }
+                });
+
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // Find all invalid input elements
+                    var invalidInputs = form.querySelectorAll('.is-invalid');
+                    invalidInputs.forEach(function(invalidInput) {
+                        // Scroll to the invalid element
+                        invalidInput.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+
+                        // Highlight the entire row
+                        var invalidRow = $(invalidInput).closest('tr');
+                        invalidRow.addClass(
+                            'text-danger fw-bold');
+
+                        var invalidSpan = $(invalidInput).closest('span');
+                        invalidSpan.addClass(
+                            'text-danger fw-bold');
+
+                        // Add the invalid row to the list
+                        invalidRows.push(invalidRow);
+                    });
+
+                    console.error('Form validation failed.');
+                    return;
+                }
+
+                // Check if all invalid rows have been corrected
+                var allRowsCorrected = invalidRows.every(function(invalidRow) {
+                    return invalidRow.find('.is-invalid').length === 0;
+                });
+
+                if (allRowsCorrected) {
+                    // Clear the is-invalid class and error styling from inputs and rows
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.text-danger').removeClass('text-danger fw-bold');
+
+                    // If the form is valid and all rows are corrected, show the signature modal
+                    $('#signatory_modal').modal('show');
+                    console.info('Form validation succeeded. Signature modal will open.');
+                } else {
+                    console.error('Please correct all invalid rows.');
+                }
+            });
         });
 
         function loadTableData() {
@@ -796,6 +875,8 @@
                                 value: i
                             });
 
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
@@ -804,11 +885,17 @@
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+
+                            // Attach event listener to input for highlighting the row on invalid
+                            input.on('invalid', function() {
+                                $(this).closest('tr').addClass('is-invalid');
+                                $(this).closest('span').addClass('is-invalid');
+                            });
                         }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#SID_table_body').append(row);
 
+                        $('#SID_table_body').append(row);
                         $('#SID_table input[type="radio"]').trigger('change');
                     });
 
@@ -840,20 +927,25 @@
                                 class: 'form-check-input',
                                 value: i
                             });
+
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
                             }
-
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
-                        }
 
+                            input.on('invalid', function() {
+                                $(this).closest('tr').addClass('is-invalid');
+                            });
+                        }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#SR_table_body').append(row);
 
+                        $('#SR_table_body').append(row);
                         $('#SR_table input[type="radio"]').trigger('change');
                     });
 
@@ -884,6 +976,9 @@
                                 class: 'form-check-input',
                                 value: i
                             });
+
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
@@ -892,17 +987,19 @@
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
-                        }
 
+                            input.on('invalid', function() {
+                                $(this).closest('tr').addClass('is-invalid');
+                            });
+                        }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#S_table_body').append(row);
 
+                        $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
                 }
             });
-
             $.ajax({
                 url: '{{ route('getPEKRA') }}',
                 type: 'GET',
@@ -936,15 +1033,17 @@
                                 }).appendTo(row);
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
+                                    $('<textarea>').addClass('textarea').attr('name',
+                                        'KRA[' +
                                         kraID +
-                                        '][' + {{ $appraisalId }} + '][KRA]').prop('readonly',
-                                        false)
+                                        '][' + {{ $appraisalId }} + '][KRA]')
                                     .prop('readonly', true).val(kra.kra)
                                 ).appendTo(row);
 
+
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
+                                    $('<textarea>').addClass('textarea').attr('name',
+                                        'KRA[' +
                                         kraID +
                                         '][' +
                                         {{ $appraisalId }} + '][KRA_weight]').prop('readonly',
@@ -994,7 +1093,7 @@
                                     if (Math.abs(kraPL - i) < 0.01) {
                                         input.prop('checked',
                                             true
-                                        ); // Set the radio input as checked if the condition is met
+                                        );
                                     }
 
                                     $('<div>').addClass('col-auto').append(label).appendTo(
@@ -1009,6 +1108,7 @@
                                         'readonly', true).val(kra.weighted_total)
                                 ).appendTo(row);
 
+
                                 tbody.append(row);
 
                                 row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
@@ -1017,7 +1117,6 @@
                             });
                             updateWeightedTotal();
                         }
-
                         $('#wpa_table_body').empty();
                         var wpatbody = $('#wpa_table_body');
 
@@ -1142,7 +1241,7 @@
 
                         if (row) {
                             var signCell = row.querySelector(
-                            '.sign-cell'); // Use a class name for the signature cell
+                                '.sign-cell'); // Use a class name for the signature cell
                             if (sign.sign_data) {
                                 var signatureImage = document.createElement('img');
                                 signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
@@ -1151,11 +1250,10 @@
                             }
 
                             var dateCell = row.querySelector(
-                            '.date-cell'); // Use a class name for the date cell
+                                '.date-cell'); // Use a class name for the date cell
                             dateCell.textContent = sign.updated_at;
                         }
                     });
-
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
