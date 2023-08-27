@@ -165,6 +165,14 @@ class EvaluationYearController extends Controller
       $table->integer('question_order');
     });
 
+    Schema::connection('mysql')->create('signature' . $sy, function ($table) {
+      $table->bigIncrements('signature_id');
+      $table->integer('appraisal_id');
+      $table->text('sign_data');
+      $table->text('sign_type')->nullable();
+      $table->nullableTimestamps();
+    });
+
     $originalFormQuestionsTable = 'form_questions';
     $newFormQuestionsTable = 'form_questions' . $sy;
 
