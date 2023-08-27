@@ -25,60 +25,69 @@
 
     <script>
         $(document).ready(function() {
-            console.log("Account ID:", {{ session('account_id') }});
-
             $.ajax({
                 url: "{{ route('getICAssign') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-                    console.log(data); // Check the structure of the data object
+                    console.log(data);
 
                     var tableBody = $('#ic_overview_body');
                     tableBody.empty();
 
-                    // Iterate over the retrieved data
                     $.each(data, function(index, assignment) {
-                        var row = $('<tr>');
-                        var nameColumn = $('<td>').text(assignment.employee.first_name + ' ' +
-                            assignment.employee.last_name);
-                        var departmentColumn = $('<td>').text(assignment.employee.department
-                            .department_name);
-                        var statusColumn = $('<td>').text(assignment.date_submitted);
-                        var actionColumn;
-                        if (typeof assignment.date_submitted === 'string' && assignment
-                            .date_submitted
-                            .trim() !== '') {
-                            actionColumn = $('<td>').append($('<button>').text('View').addClass(
-                                'btn btn-info'));
-                        } else if (assignment.date_submitted === null) {
-                            var appraisalId = assignment.appraisal_id;
-                            var appraiseeName = assignment.employee.first_name + ' ' +
-                                assignment.employee.last_name;
-                            var appraiseeDepartment = assignment.employee.department
-                                .department_name;
-                            var appraiseeAccountId = assignment.employee.account_id;
+                        var row = $('<tr>').addClass('align-middle');
 
-                            actionColumn = $('<td>').append(
-                                $('<button>').text('Appraise').addClass('btn btn-warning')
+                        row.append(
+                            $('<td>').text(
+                                `${assignment.employee.first_name} ${assignment.employee.last_name}`
+                                ),
+                            $('<td>').text(assignment.employee.department.department_name),
+                            $('<td>').text(assignment.date_submitted || 'Pending'),
+                            (typeof assignment.date_submitted === 'string' && assignment
+                                .date_submitted.trim() !== '') ?
+                            $('<td>').append(
+                                $('<button>')
+                                .text('View')
+                                .addClass('btn btn-primary')
                                 .click(function() {
                                     window.location.href =
                                         "/pe-internal-customers/appraisalForm" +
-                                        "?appraisal_id=" + encodeURIComponent(
-                                            appraisalId) +
+                                        "?appraisal_id=" + encodeURIComponent(assignment
+                                            .appraisal_id) +
                                         "&appraisee_account_id=" + encodeURIComponent(
-                                            appraiseeAccountId) +
+                                            assignment.employee.account_id) +
                                         "&appraisee_name=" + encodeURIComponent(
-                                            appraiseeName) +
+                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
+                                        ) +
                                         "&appraisee_department=" + encodeURIComponent(
-                                            appraiseeDepartment);
+                                            assignment.employee.department
+                                            .department_name);
                                 })
-                            );
+                            ) :
+                            (assignment.date_submitted === null) ?
+                            $('<td>').append(
+                                $('<button>')
+                                .text('Appraise')
+                                .addClass('btn btn-outline-primary')
+                                .click(function() {
+                                    window.location.href =
+                                        "/pe-internal-customers/appraisalForm" +
+                                        "?appraisal_id=" + encodeURIComponent(assignment
+                                            .appraisal_id) +
+                                        "&appraisee_account_id=" + encodeURIComponent(
+                                            assignment.employee.account_id) +
+                                        "&appraisee_name=" + encodeURIComponent(
+                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
+                                        ) +
+                                        "&appraisee_department=" + encodeURIComponent(
+                                            assignment.employee.department
+                                            .department_name);
+                                })
+                            ) :
+                            $('<td>').text('Unknown')
+                        );
 
-                        } else {
-                            actionColumn = $('<td>').text('Unknown');
-                        }
-                        row.append(nameColumn, departmentColumn, statusColumn, actionColumn);
                         tableBody.append(row);
                     });
                 },
@@ -86,6 +95,7 @@
                     console.log(error);
                 }
             });
+
         });
     </script>
 @endsection

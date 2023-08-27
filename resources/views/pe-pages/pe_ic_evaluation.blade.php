@@ -14,7 +14,14 @@
             option from the provided choices using the radio buttons. This will make us aware of a problem, complaints, or
             an opportunity to make a suggestion, and to recognize or commend for a job well done.</p>
 
-        <h5>Name of the staff to be evaluated: <i><u>{{ urldecode(request('appraisee_name')) }}</u></i></h5>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <h5>Name of the staff to be evaluated:</h5>
+            </div>
+            <div class="col-auto">
+                <input class="form-control" type="text" placeholder="{{ urldecode(request('appraisee_name')) }}" disabled>
+            </div>
+        </div>
 
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
@@ -54,9 +61,53 @@
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
     </div>
 
+    <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="signatory">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">Signatories</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="signtable">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
+                                <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
+                                <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
+                                <th scope="col" style="width:15%" id="datehead">DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
+                    <button type="button" class="btn-close" data-bs-target="#signatory_modal" data-bs-toggle="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
-
             $('#service_area').on('blur', function() {
                 var newService = $(this).val();
                 updateService(newService);
@@ -68,11 +119,54 @@
                 updateSuggestion(newSuggestion);
             });
 
+            $('#esig-submit-btn').on('click', function() {
+                var fileInput = $('#esig')[0];
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                if (fileInput.files.length === 0) {
+                    $('#esig').addClass('is-invalid');
+                    return;
+                } else {
+                    var selectedFile = fileInput.files[0];
+
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var fileData = event.target.result;
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: '{{ route('pe.submitICSignature') }}',
+                            type: 'POST',
+                            data: {
+                                appraisalId: appraisalId,
+                                esignature: fileData
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    loadSignature();
+                                    console.log('Esignature Updated.');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error
+                            }
+                        });
+                    };
+
+                    reader.readAsDataURL(selectedFile); // Read the selected file as a data URL
+                }
+            });
+
             function updateSuggestion(value) {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
 
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: '{{ route('updateSuggestion') }}',
                     type: 'POST',
                     data: {
@@ -99,6 +193,9 @@
                 var appraisalId = urlParams.get('appraisal_id');
 
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: '{{ route('updateService') }}',
                     type: 'POST',
                     data: {
@@ -162,7 +259,6 @@
                 });
             }
 
-
             $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
                 var clickedRadio = $(this);
 
@@ -201,15 +297,11 @@
                 });
             });
 
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
             function loadICTable() {
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: '/editable-internal-customer-form/getICQuestions',
                     type: 'GET',
                     success: function(response) {
@@ -258,6 +350,9 @@
                 var appraisalId = urlParams.get('appraisal_id');
 
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: '{{ route('getSavedICScores') }}',
                     type: 'GET',
                     data: {
@@ -280,10 +375,114 @@
                 });
             }
 
+            function loadSignature() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('pe.loadSignatures') }}',
+                    type: 'GET',
+                    data: {
+                        appraisalId: appraisalId,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log('success');
+                            $('#signtable tbody').empty();
+                            var newRow = $('<tr>').addClass('align-middle');
+                            newRow.append($('<td>').text('Internal Customer'));
+                            newRow.append($('<td>').text(response.full_name));
+
+                            $('#modalImage').attr('src', response.sign_data);
+
+                            if (response.sign_data) {
+                                $('#cancel-btn').hide();
+                                $('#esig-submit-btn').hide();
+                                newRow.append($('<td>').addClass('align-middle').html(
+                                    '<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#imageModal" id="viewSignature">' +
+                                    'View Signature' +
+                                    '</button>'
+                                ));
+                            } else {
+                                newRow.append($('<td>').addClass('align-middle').html(
+                                    '<div>' +
+                                    '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
+                                    '<img src="" width="100" id="signatureImage">' +
+                                    '</div>'
+                                ));
+                            }
+
+                            if (response.date_submitted) {
+                                newRow.append($('<td>').text(response.date_submitted));
+                            } else {
+                                newRow.append($('<td>').text('-'));
+
+                            }
+
+
+                            $('#signtable tbody').append(newRow);
+                        } else {
+                            console.log('fail');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function formChecker() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('pe.ICFormChecker') }}',
+                    type: 'POST',
+                    data: {
+                        appraisalId: appraisalId,
+                    },
+                    success: function(response) {
+                        if (response.form_submitted) {
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                            $('#submit-btn').text('View');
+                        } else {
+                            return;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            $(document).on('click', '#viewSignature', function() {
+                $('#imageModal').modal('show');
+            });
+
+            function dataURItoBlob(dataURI) {
+                var byteString = atob(dataURI.split(',')[1]);
+                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], {
+                    type: mimeString
+                });
+            }
+
             $('#submit-btn').on('click', function() {
                 $('#IC_table td').removeClass('is-invalid');
                 $('#service_area, #comments_area').removeClass(
-                'is-invalid');
+                    'is-invalid');
 
                 var allRadioChecked = true;
                 $('#IC_table tbody tr').each(function() {
@@ -308,11 +507,12 @@
 
                 if (!allTextAreasFilled) {
                     $('#service_area, #comments_area').addClass(
-                    'is-invalid');
+                        'is-invalid');
                 }
 
                 if (allRadioChecked && allTextAreasFilled) {
-                  // DITO IOOPEN MODAL
+                    loadSignature();
+                    $('#signatory_modal').modal('show');
                 } else {
                     console.log('Please complete all fields and select all radio buttons.');
                 }
@@ -320,6 +520,7 @@
 
             loadICTable();
             loadTextAreas();
+            formChecker();
         });
     </script>
 @endsection

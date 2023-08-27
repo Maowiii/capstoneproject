@@ -99,7 +99,6 @@ class EvaluationYearController extends Controller
       $table->integer('employee_id');
       $table->integer('evaluator_id')->nullable();
       $table->date('date_submitted')->nullable();
-      $table->binary('signature')->nullable();
     });
 
     Schema::connection('mysql')->create('form_questions' . $sy, function ($table) {
@@ -168,7 +167,7 @@ class EvaluationYearController extends Controller
     Schema::connection('mysql')->create('signature' . $sy, function ($table) {
       $table->bigIncrements('signature_id');
       $table->integer('appraisal_id');
-      $table->text('sign_data');
+      $table->binary('sign_data');
       $table->text('sign_type')->nullable();
       $table->nullableTimestamps();
     });

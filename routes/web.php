@@ -126,6 +126,9 @@ Route::post('/pe-internal-customer-overview/saveICScores', [PEInternalCustomerCo
 Route::post('/pe-internal-customers/updateService', [PEInternalCustomerController::class, 'updateService'])->name('updateService');
 Route::post('/pe-internal-customers/updateSuggestion', [PEInternalCustomerController::class, 'updateSuggestion'])->name('updateSuggestion');
 Route::post('/pe-internal-customers/getCommentsAndSuggestions', [PEInternalCustomerController::class, 'getCommentsAndSuggestions'])->name('getCommentsAndSuggestions');
+Route::get('/pe-internal-customers/get-signatures', [PEInternalCustomerController::class, 'loadSignatures'])->name('pe.loadSignatures');
+Route::post('/pe-internal-customers/submit-ic-signature', [PEInternalCustomerController::class, 'submitICSignature'])->name('pe.submitICSignature');
+Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController::class, 'formChecker'])->name('pe.ICFormChecker');
 
 // Signature of Party Involved
 

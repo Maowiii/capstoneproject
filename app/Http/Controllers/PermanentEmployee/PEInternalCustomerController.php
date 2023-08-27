@@ -8,6 +8,7 @@ use App\Models\Employees;
 use App\Models\Appraisals;
 use App\Models\Comments;
 use App\Models\FormQuestions;
+use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,13 +22,10 @@ class PEInternalCustomerController extends Controller
   public function getICAssign()
   {
     $accountId = session('account_id');
-
-    // Get the appraiser's employee ID
     $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
-
     $assignments = Appraisals::where('evaluation_type', 'internal customer')
       ->where('evaluator_id', $appraiserId)
-      ->with(['employee.department', 'employee']) // Load employee and its department
+      ->with(['employee.department', 'employee'])
       ->with(['evaluator.department'])
       ->get();
 
@@ -135,7 +133,69 @@ class PEInternalCustomerController extends Controller
     }
   }
 
-  public function submitICForm(Request $request) {
-    
+  public function loadSignatures(Request $request)
+  {
+    $appraisalId = $request->input('appraisalId');
+
+    $appraisal = Appraisals::find($appraisalId);
+    $signature = Signature::where('appraisal_id', $appraisalId)->first();
+
+    $evaluator = $appraisal->evaluator;
+    $full_name = $evaluator->first_name . ' ' . $evaluator->last_name;
+    $date_submitted = $appraisal->date_submitted;
+
+    $sign_data = null;
+
+    if ($signature) {
+      $sign_data = $signature->sign_data;
+    }
+
+    return response()->json([
+      'success' => true,
+      'full_name' => $full_name,
+      'date_submitted' => $date_submitted,
+      'sign_data' => $sign_data,
+    ]);
   }
+
+  public function submitICSignature(Request $request)
+  {
+    $appraisalId = $request->input('appraisalId');
+    $esignature = $request->input('esignature');
+
+    Signature::updateOrCreate(
+      ['appraisal_id' => $appraisalId],
+      ['sign_data' => $esignature, 'sign_type' => 'IC'] // The data to update or create
+    );
+
+    $appraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
+
+    if ($appraisal) {
+      $appraisal->update([
+        'date_submitted' => now()
+      ]);
+      return response()->json(['success' => true]);
+    } else {
+      return response()->json(['success' => false]);
+    }
+  }
+
+  public function formChecker(Request $request)
+  {
+    $appraisalId = $request->input('appraisalId');
+
+    $appraisal = Appraisals::find($appraisalId);
+    $signature = Signature::where('appraisal_id', $appraisalId)->first();
+
+    $dateSubmittedExists = !empty($appraisal->date_submitted);
+    $signDataExists = !empty($signature->sign_data);
+
+    $formSubmitted = $dateSubmittedExists && $signDataExists;
+
+    return response()->json([
+      'form_submitted' => $formSubmitted,
+    ]);
+  }
+
+
 }
