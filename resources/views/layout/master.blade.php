@@ -14,7 +14,6 @@
     </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
@@ -121,7 +120,7 @@
                         <span class="link_name">Dashboard</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="viewPEDashboard">Dashboard</a></li>
+                        <li><a class="link_name" href="{{ route('viewPEDashboard') }}">Dashboard</a></li>
                     </ul>
                 </li>
                 <li id="appraisalsNav">
@@ -154,16 +153,16 @@
                         <span class="link_name">Dashboard</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="">Dashboard</a></li>
+                        <li><a class="link_name" href="viewCEDashboard">Dashboard</a></li>
                     </ul>
                 </li>
                 <li id='internalCustomersNav'>
-                    <a href="">
+                    <a href="{{ route('ce.viewICOverview') }}">
                         <i class='bx bx-group'></i>
                         <span class="link_name">Internal Customer<br>Appraisal</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="">Internal Customer Appraisal</a></li>
+                        <li><a class="link_name" href="{{ route('ce.viewICOverview') }}">Internal Customer Appraisal</a></li>
                     </ul>
                 </li>
             @endif

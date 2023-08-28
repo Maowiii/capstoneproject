@@ -8,6 +8,6 @@ use Illuminate\Http\Request;
 class ISDashboardController extends Controller
 {
     public function displayISDashboard() {
-        return view('dashboard.is_dashboard');
+        return view('is-pages.is_dashboard');
     }
 }

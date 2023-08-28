@@ -7,8 +7,6 @@
 @section('content')
 <div class="content-container">
 
-
-
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Launch static backdrop modal

@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\EditableInternalCustomerFormController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EvaluationYearController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-
+use App\Http\Controllers\ContractualEmployee\CEDashboardController;
+use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
+use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
 use App\Http\Controllers\ImmediateSuperior\ISAppraisalsOverviewController;
 use App\Http\Controllers\ImmediateSuperior\ISDashboardController;
 use App\Http\Controllers\ImmediateSuperior\ISAppraisalController;
@@ -52,14 +54,15 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'displayISDashboard'])->name('viewISDashboard');
+Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
 
 /* ----- ADMIN ----- */
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');
-Route::get('/admin-appraisals-overview/self-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadSelfEvaluationForm'])->name('loadAdminSelfEvaluationForm');
-Route::get('/admin-appraisals-overview/is-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadISEvaluationForm'])->name('loadAdminISEvaluationForm');
-Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadICEvaluationForm'])->name('loadAdminICEvaluationForm');
+Route::get('/admin-appraisals-overview/self-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadSelfEvaluationForm'])->name('ad.viewSelfEvaluationForm');
+Route::get('/admin-appraisals-overview/is-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadISEvaluationForm'])->name('ad.viewISEvaluationForm');
+Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
 
 // Employee User Table
 Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
@@ -132,3 +135,8 @@ Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController:
 
 // Signature of Party Involved
 
+
+/* ----- CONTRACTUAL EMPLOYEE ----- */
+// Internal Customers
+Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
+Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');

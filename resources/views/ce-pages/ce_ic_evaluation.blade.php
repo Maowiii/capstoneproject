@@ -85,7 +85,7 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -151,12 +151,11 @@
                                 }
                             },
                             error: function(xhr, status, error) {
-                                // Handle error
                             }
                         });
                     };
 
-                    reader.readAsDataURL(selectedFile); // Read the selected file as a data URL
+                    reader.readAsDataURL(selectedFile);
                 }
             });
 

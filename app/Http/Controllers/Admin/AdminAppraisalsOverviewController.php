@@ -27,7 +27,6 @@ class AdminAppraisalsOverviewController extends Controller
     ])
       ->get();
 
-    // Group the appraisals by employee
     $groupedAppraisals = [];
     foreach ($appraisals as $appraisal) {
       $employeeId = $appraisal->employee->employee_id;
@@ -51,7 +50,7 @@ class AdminAppraisalsOverviewController extends Controller
     return view('admin-pages.admin_is_evaluation');
   }
 
-  public function loadICEvalationForm() {
+  public function loadICEvaluationForm() {
     return view('admin-pages.admin_ic_evaluation');
   }
 
