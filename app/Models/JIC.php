@@ -18,7 +18,8 @@ class JIC extends Model
     'appraisal_id',
     'job_incumbent_question',
     'answer',
-    'comments'
+    'comments',
+    'question_order'
   ];
 
   public function __construct(array $attributes = [])

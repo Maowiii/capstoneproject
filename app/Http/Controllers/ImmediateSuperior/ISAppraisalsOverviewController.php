@@ -45,7 +45,6 @@ class ISAppraisalsOverviewController extends Controller
       'appraisals' => $appraisals,
       'is' => $user
     ];
-
     return response()->json($data);
   }
 

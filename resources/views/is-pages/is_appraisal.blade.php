@@ -1326,8 +1326,18 @@
                 }
             });
 
-            // Update the total weight and weighted total fields in the table footer
-            $('#KRA_Weight_Total').val((totalWeight * 100).toFixed(2)); // Convert back to percentage for display
+            totalWeight = totalWeight * 100; // Convert back to percentage for comparison
+
+            if (totalWeight > 100) {
+                isTotalWeightInvalid = true;
+                $('#KRA_Weight_Total').addClass('is-invalid');
+                $('textarea[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
+            } else {
+                $('#KRA_Weight_Total').removeClass('is-invalid');
+                $('textarea[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
+            }
+
+            $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
 
         }

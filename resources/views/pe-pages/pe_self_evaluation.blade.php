@@ -474,8 +474,10 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[1][{{ $appraisalId }}][comment]"></textarea>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control" name="feedback[1][{{ $appraisalId }}][comment]"></textarea>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -497,10 +499,11 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[2][{{ $appraisalId }}][comment]"></textarea>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control" name="feedback[2][{{ $appraisalId }}][comment]"></textarea>
+                            </div>
                         </td>
-
                     </tr>
                     <tr>
                         <td class='text-justify'>
@@ -519,8 +522,10 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[3][{{ $appraisalId }}][comment]"></textarea>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control" name="feedback[3][{{ $appraisalId }}][comment]"></textarea>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -540,8 +545,10 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[4][{{ $appraisalId }}][comment]"></textarea>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control" name="feedback[4][{{ $appraisalId }}][comment]"></textarea>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -617,8 +624,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" id="submit-btn" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#confirmation-popup-modal">Submit</button>
+                        <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -636,7 +642,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" id="submit-btn" class="btn btn-primary">Confirm</button>
+                        <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -793,11 +799,6 @@
                         invalidInput.scrollIntoView({
                             behavior: 'smooth'
                         });
-
-                        var invalidRow = $(invalidInput).closest('tr');
-                        invalidRow.addClass('text-danger fw-bold');
-
-                        invalidRows.push(invalidRow);
                     });
 
                     console.error('Form validation failed.');
@@ -812,11 +813,44 @@
                     $('.is-invalid').removeClass('is-invalid');
                     $('.text-danger').removeClass('text-danger fw-bold');
 
+                    var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                    signInput.required = true;
+
                     $('#signatory_modal').modal('show');
                     console.info('Form validation succeeded. Signature modal will open.');
                 } else {
                     console.error('Please correct all invalid rows.');
                 }
+            });
+
+            // Add event listener to the submit button in signatory_modal
+            document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+
+                // Validate the sign input
+                if (!signInput.value) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    signInput.classList.add('is-invalid');
+                    signInput.closest('td').classList.add('border', 'border-danger');
+
+                    signInput.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    console.error('Signature validation failed.');
+                    return;
+                }
+
+                if (signInput.value) {
+                    console.log('if else');
+                    signInput.classList.remove('is-invalid');
+                    signInput.closest('td').classList.remove('border', 'border-danger');
+                }
+
+                $('#signatory_modal').modal('hide');
+                $('#confirmation-popup-modal').modal('show');
             });
         });
 
@@ -1065,33 +1099,6 @@
                                 value: kraID
                             }).appendTo(row);
 
-                            function createTextArea(name, value, isReadonly) {
-                                return $('<div>').addClass('position-relative').append(
-                                    $('<textarea>').addClass('textarea form-control').attr({
-                                        name: name,
-                                        readonly: isReadonly
-                                    }).prop('required', true).val(value)
-                                    .on('input', function() {
-                                        $(this).removeClass('border border-danger');
-                                        $(this).closest('td').removeClass(
-                                            'border border-danger');
-                                        $(this).removeClass('is-invalid');
-                                    }).on('invalid', function() {
-                                        $(this).addClass('is-invalid');
-                                        $(this).closest('td').addClass(
-                                            'border border-danger');
-                                        $(this).val(`Please provide a valid input`);
-                                    }).on('blur', function() {
-                                        if ($(this).val().trim() === '') {
-                                            $(this).addClass('is-invalid');
-                                            $(this).closest('td').addClass(
-                                                'border border-danger');
-                                        }
-                                    })
-                                );
-                            }
-
-
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
                                     'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
@@ -1153,10 +1160,14 @@
 
                                 input[0].required = true;
 
+                                var span = $('<span>').addClass('ms-1').text(i);
+                                label.append(input, span);
+                                performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                    label));
+
                                 input.on('invalid', function() {
                                     $(this).addClass('is-invalid text-danger fw-bold');
-                                    $(this).closest('.form-check').addClass(
-                                        'is-invalid text-danger fw-bold');
+                                    $(this).siblings('span').addClass('text-danger');
                                 });
 
                                 input.on('input', function() {
@@ -1175,7 +1186,7 @@
                                     );
                                 });
 
-                                label.append(input, i);
+                                label.append(input, span);
 
                                 var kraPL = parseFloat(kra.performance_level);
 
@@ -1202,7 +1213,6 @@
                                     {{ $appraisalId }} + '][KRA_performance_level]"]')
                                 .trigger('change');
                         });
-
                         updateWeightedTotal();
                     }
 
@@ -1222,31 +1232,30 @@
                             var wpaID = wpa.performance_plan_id;
 
                             var wparow = $('<tr>').addClass('align-middle');
+
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                    wpaID +
-                                    '][' + {{ $appraisalId }} + '][continue_doing]').prop(
-                                    'readonly',
-                                    false)
-                                .val(wpa.continue_doing)
+                                createTextArea(
+                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                    '][continue_doing]',
+                                    wpa.continue_doing,
+                                    false // Set to false to allow user input
+                                )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                    wpaID +
-                                    '][' + {{ $appraisalId }} + '][stop_doing]').prop(
-                                    'readonly',
-                                    false)
-                                .val(wpa.stop_doing)
+                                createTextArea(
+                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]',
+                                    wpa.stop_doing,
+                                    false // Set to false to allow user input
+                                )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                    wpaID +
-                                    '][' + {{ $appraisalId }} + '][start_doing]').prop(
-                                    'readonly',
-                                    false)
-                                .val(wpa.start_doing)
+                                createTextArea(
+                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]',
+                                    wpa.start_doing,
+                                    false // Set to false to allow user input
+                                )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-action').append(
@@ -1277,21 +1286,20 @@
 
                             var ldprow = $('<tr>').addClass('align-middle');
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
-                                    ldpID +
-                                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
-                                    'readonly',
-                                    false)
-                                .val(ldp.learning_need)
+                                createTextArea(
+                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} +
+                                    '][learning_need]',
+                                    ldp.learning_need,
+                                    false // Set to false to allow user input
+                                )
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
-                                    ldpID +
-                                    '][' + {{ $appraisalId }} + '][methodology]').prop(
-                                    'readonly',
-                                    false)
-                                .val(ldp.methodology)
+                                createTextArea(
+                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]',
+                                    ldp.methodology,
+                                    false // Set to false to allow user input
+                                )
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-action').append(
@@ -1305,49 +1313,98 @@
                             'input'); // Trigger input event
                     }
 
-
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                1) +
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
                             '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                1) +
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
                             '][{{ $appraisalId }}][answer]"][value="0"]');
+
                         if (jic.answer === 1) {
                             answerRadioYes.checked = true;
                         } else if (jic.answer === 0) {
                             answerRadioNo.checked = true;
                         }
 
-                        // Populate comment textarea
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                            index +
+                        $(answerRadioYes).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioNo).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioYes).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        $(answerRadioNo).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
                             1) + '][{{ $appraisalId }}][comment]"]');
                         commentTextarea.value = jic.comments;
+
+                        // Attach input event handlers for validation
+                        $(commentTextarea).on('input', function() {
+                            $(this).removeClass('border border-danger');
+                            $(this).removeClass('is-invalid');
+                        }).on('invalid', function() {
+                            $(this).addClass('is-invalid');
+                            $(this).attr('placeholder', 'Please provide a valid input');
+                        }).on('blur', function() {
+                            if ($(this).val().trim() === '') {
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+
+                        answerRadioYes.required = true;
+                        answerRadioNo.required = true;
+                        commentTextarea.required = true;
                     });
 
                     data.signData.forEach(function(sign, index) {
                         var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('[data-appraisal-id="' + appraisalId +
-                            '"]');
+                        var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
 
                         if (row) {
-                            var signCell = row.querySelector(
-                                '.sign-cell'); // Use a class name for the signature cell
+                            var signCell = row.querySelector('.sign-cell');
+                            var signatureImage = document.createElement('img');
                             if (sign.sign_data) {
-                                var signatureImage = document.createElement('img');
+                                // Validation for signature data
                                 signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
-                                signatureImage.width =
-                                    100; // Set the appropriate width for the image
+                                signatureImage.width = 100;
                                 signCell.appendChild(signatureImage);
+                            } else {
+                                var errorText = document.createElement('p');
+                                errorText.textContent = 'Invalid signature data';
+                                errorText.classList.add('text-danger', 'fw-bold');
+                                signCell.appendChild(errorText);
                             }
 
-                            var dateCell = row.querySelector(
-                                '.date-cell'); // Use a class name for the date cell
-                            dateCell.textContent = sign.updated_at;
+                            var dateCell = row.querySelector('.date-cell');
+
+                            if (sign.updated_at) {
+                                // Validation for date data
+                                dateCell.textContent = sign.updated_at;
+                            } else {
+                                // Handle invalid or missing date data
+                                dateCell.textContent = 'Invalid date';
+                                dateCell.classList.add('text-danger', 'fw-bold');
+                            }
                         }
                     });
                 } else {
@@ -1359,7 +1416,30 @@
             }
         });
 
-
+        function createTextArea(name, value, isReadonly) {
+            return $('<div>').addClass('position-relative').append(
+                $('<textarea>').addClass('textarea form-control').attr({
+                    name: name,
+                    readonly: isReadonly
+                }).prop('required', true).val(value)
+                .on('input', function() {
+                    $(this).removeClass('border border-danger');
+                    $(this).closest('td').removeClass(
+                        'border border-danger');
+                    $(this).removeClass('is-invalid');
+                }).on('invalid', function() {
+                    $(this).addClass('is-invalid');
+                    $(this).closest('div').addClass('border border-danger');
+                    $(this).attr('placeholder', 'Please provide a valid input');
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
+                })
+            );
+        }
 
         function addNewKRARow(tbody) {
             var highestKRAID = 0;
@@ -1599,8 +1679,18 @@
                 }
             });
 
-            $('#KRA_Weight_Total').val((totalWeight * 100).toFixed(
-                2)); // Convert back to percentage for display
+            totalWeight = totalWeight * 100; // Convert back to percentage for comparison
+
+            if (totalWeight > 100) {
+                isTotalWeightInvalid = true;
+                $('#KRA_Weight_Total').addClass('is-invalid');
+                $('textarea[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
+            } else {
+                $('#KRA_Weight_Total').removeClass('is-invalid');
+                $('textarea[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
+            }
+
+            $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
         }
     </script>
