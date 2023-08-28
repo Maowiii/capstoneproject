@@ -99,14 +99,16 @@ class ISAppraisalController extends Controller
         DB::beginTransaction();
 
         try {
-            /*            */
-
+            /*            
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
+            */
             $this->createKRA($request);
+            /*
             $this->createWPA($request);
             $this->createLDP($request);
+            */
 
             DB::commit();
             return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
@@ -129,7 +131,7 @@ class ISAppraisalController extends Controller
     {
         return Validator::make($request->all(), [
             'appraisalID' => 'required|numeric',
-            /**/
+            /*
             'SID' => 'required|array',
             'SID.*' => 'required|array',
             'SID.*.*.SIDanswer' => 'required',
@@ -141,7 +143,7 @@ class ISAppraisalController extends Controller
             'S' => 'required|array',
             'S.*' => 'required|array',
             'S.*.*.Sanswer' => 'required',
-
+            */
             'KRA' => 'required|array',
             'KRA.*' => 'required|array',
             'KRA.*.*.kraID' => 'required|numeric',
@@ -149,7 +151,7 @@ class ISAppraisalController extends Controller
             'KRA.*.*.KRA_weight' => 'required|numeric',
             'KRA.*.*.KRA_objective' => 'required|string',
             'KRA.*.*.KRA_performance_indicator' => 'required|string',
-            
+            /*
             'WPA' => 'required|array',
             'WPA.*' => 'required|array',
             'WPA.*.*.continue_doing' => 'required|string',
@@ -160,7 +162,7 @@ class ISAppraisalController extends Controller
             'LDP.*' => 'required|array',
             'LDP.*.*.learning_need' => 'required|string',
             'LDP.*.*.methodology' => 'required|string',
-            /*
+            
             'feedback.*.question' => 'required|string',
             'feedback.*.answer' => 'required|numeric',
             'feedback.*.comment' => 'required|string',
@@ -237,14 +239,12 @@ class ISAppraisalController extends Controller
                 ->first();
 
             if ($existingRecord) {
-                // Update the record if the score is different
                 if ($existingRecord->score != $score) {
                     $existingRecord->update([
                         'score' => $score,
                     ]);
                 }
             } else {
-                // Create a new record if no existing record is found
                 AppraisalAnswers::create([
                     'appraisal_id' => $request->input('appraisalID'),
                     'question_id' => $questionId,
@@ -257,34 +257,53 @@ class ISAppraisalController extends Controller
     protected function createKRA(Request $request)
     {
         foreach ($request->input('KRA') as $kraID => $kraData) {
-            $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
+            $existingIsEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
+                ->where('kra_id', $kraID)
+                ->first();
+                
+            $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
                 ->where('kra_id', $kraID)
                 ->first();
 
-            if ($existingKRA) {
+            $kraFields = [
+                'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+                'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+                'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+                'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+            ];
+
+            if ($existingIsEvalKRA) {
                 if (
-                    $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
-                    $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
-                    $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-                    $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+                    $existingIsEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+                    $existingIsEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+                    $existingIsEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+                    $existingIsEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
                 ) {
-                    $existingKRA->update([
-                        'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                        'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                        'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                        'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                    ]);
+                    $existingIsEvalKRA->update($kraFields);
                 }
             } else {
-                KRA::create([
+                KRA::create(array_merge([
                     'kra_id' => $kraData[$request->input('appraisalID')]['kraID'],
                     'appraisal_id' => $request->input('appraisalID'),
                     'kra_order' => $kraID,
-                    'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                    'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                    'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                    'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                ]);
+                ], $kraFields));
+            }
+
+            if ($existingSelfEvalKRA) {
+                if (
+                    $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+                    $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+                    $existingSelfEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+                    $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+                ) {
+                    $existingSelfEvalKRA->update($kraFields);
+                }
+            } else {
+                KRA::create(array_merge([
+                    'kra_id' => $kraData[$request->input('appraisalID')]['kraID'],
+                    'appraisal_id' => $request->input('appraisalID') - 1,
+                    'kra_order' => $kraID,
+                ], $kraFields));
             }
         }
     }
@@ -361,43 +380,43 @@ class ISAppraisalController extends Controller
         }
     }
 
-  public function getAppraisalSE($employee_id)
-  {
+    public function getAppraisalSE($employee_id)
+    {
 
-    $evaluatee = Appraisals::where('employee_id', $employee_id)
-      ->where('evaluator_id', $employee_id)
-      ->with(['employee.department', 'employee.immediateSuperior'])
-      ->first();
+        $evaluatee = Appraisals::where('employee_id', $employee_id)
+            ->where('evaluator_id', $employee_id)
+            ->with(['employee.department', 'employee.immediateSuperior'])
+            ->first();
 
-    $firstName = $evaluatee->employee->first_name;
-    $lastName = $evaluatee->employee->last_name;
-    $jobTitle = $evaluatee->employee->job_title;
+        $firstName = $evaluatee->employee->first_name;
+        $lastName = $evaluatee->employee->last_name;
+        $jobTitle = $evaluatee->employee->job_title;
 
-    $department = $evaluatee->employee->department;
-    $appraisalId = $evaluatee->appraisal_id;
+        $department = $evaluatee->employee->department;
+        $appraisalId = $evaluatee->appraisal_id;
 
-    // Access the immediate superior's details (if available)
-    $immediateSuperior = $evaluatee->employee->immediateSuperior;
-    $immediateSuperiorName = $immediateSuperior ? ($immediateSuperior->first_name . ' ' . $immediateSuperior->last_name) : null;
-    $immediateSuperiorPosition = $immediateSuperior ? $immediateSuperior->position : null;
+        // Access the immediate superior's details (if available)
+        $immediateSuperior = $evaluatee->employee->immediateSuperior;
+        $immediateSuperiorName = $immediateSuperior ? ($immediateSuperior->first_name . ' ' . $immediateSuperior->last_name) : null;
+        $immediateSuperiorPosition = $immediateSuperior ? $immediateSuperior->position : null;
 
-    $evaluater = Appraisals::where('evaluator_id', $employee_id)->first();
+        $evaluater = Appraisals::where('evaluator_id', $employee_id)->first();
 
-    $data = [
-      'success' => true,
-      'evaluatee' => $evaluatee,
-      'first_name' => $firstName,
-      'last_name' => $lastName,
-      'job_title' => $jobTitle,
-      'department' => $department,
-      'immediate_superior_name' => $immediateSuperiorName,
-      'immediate_superior_position' => $immediateSuperiorPosition,
-      'appraisal_id' => $appraisalId,
+        $data = [
+            'success' => true,
+            'evaluatee' => $evaluatee,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'job_title' => $jobTitle,
+            'department' => $department,
+            'immediate_superior_name' => $immediateSuperiorName,
+            'immediate_superior_position' => $immediateSuperiorPosition,
+            'appraisal_id' => $appraisalId,
 
-      'evaluater' => $evaluater,
-    ];
+            'evaluater' => $evaluater,
+        ];
 
-    return view('is-pages.is_appraisal', $data);
-  }
+        return view('is-pages.is_appraisal', $data);
+    }
 }
 ?>

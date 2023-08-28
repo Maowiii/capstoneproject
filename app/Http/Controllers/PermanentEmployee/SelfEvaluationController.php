@@ -181,7 +181,7 @@ class SelfEvaluationController extends Controller
 
         DB::beginTransaction();
         try {
-            /*           
+                     
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
@@ -189,7 +189,7 @@ class SelfEvaluationController extends Controller
             $this->createWPA($request);
             $this->createLDP($request);
             $this->createJIC($request);
-            */
+    
             $this->createSign($request);
 
             DB::commit();
@@ -204,9 +204,8 @@ class SelfEvaluationController extends Controller
             // Display exception details using dd()
             dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
 
-            // return redirect()->back()->with('error', 'An error occurred while saving data.');
+            return redirect()->back()->with('error', 'An error occurred while saving data.');
         }
-
     }
 
 
@@ -216,7 +215,7 @@ class SelfEvaluationController extends Controller
             'appraisalID' => 'required|numeric',
 
             'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
-            /*
+            
             'SID' => 'required|array',
             'SID.*' => 'required|array',
             'SID.*.*.SIDanswer' => 'required',
@@ -256,7 +255,6 @@ class SelfEvaluationController extends Controller
             'feedback.*.*.question' => 'required|string',
             'feedback.*.*.answer' => 'required|numeric',
             'feedback.*.*.comment' => 'required|string',
-            */
         ], [
             // Custom error messages
         ]);
@@ -477,6 +475,7 @@ class SelfEvaluationController extends Controller
                     'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
                     'answer' => $jicData[$request->input('appraisalID')]['answer'],
                     'comments' => $jicData[$request->input('appraisalID')]['comment'],
+                    'question_order' => $jicID
                 ]);
             }
         }
@@ -519,5 +518,4 @@ class SelfEvaluationController extends Controller
             }
         }
     }
-
 }
