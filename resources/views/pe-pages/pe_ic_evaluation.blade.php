@@ -85,7 +85,6 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -96,8 +95,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
-                    <button type="button" class="btn-close" data-bs-target="#signatory_modal" data-bs-toggle="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="esig-close-btn"></button>
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
@@ -151,12 +149,11 @@
                                 }
                             },
                             error: function(xhr, status, error) {
-                                // Handle error
                             }
                         });
                     };
 
-                    reader.readAsDataURL(selectedFile); // Read the selected file as a data URL
+                    reader.readAsDataURL(selectedFile);
                 }
             });
 
@@ -332,7 +329,6 @@
 
                                 tbody.append(row);
                                 loadSavedScore(questionId);
-
                                 questionCounter++;
                             });
 
@@ -403,7 +399,7 @@
                                 $('#cancel-btn').hide();
                                 $('#esig-submit-btn').hide();
                                 newRow.append($('<td>').addClass('align-middle').html(
-                                    '<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#imageModal" id="viewSignature">' +
+                                    '<button class="btn btn-outline-primary" id="view-sig-btn">' +
                                     'View Signature' +
                                     '</button>'
                                 ));
@@ -461,8 +457,14 @@
                 });
             }
 
-            $(document).on('click', '#viewSignature', function() {
-                $('#imageModal').modal('show');
+            $(document).on('click', '#view-sig-btn', function() {
+              $('#signatory_modal').modal('hide');
+              $('#imageModal').modal('show');
+            });
+
+            $(document).on('click', '#esig-close-btn', function(){
+              $('#imageModal').modal('hide');
+              $('#signatory_modal').modal('show');
             });
 
             function dataURItoBlob(dataURI) {

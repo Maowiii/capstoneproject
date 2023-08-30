@@ -24,7 +24,8 @@ class PEInternalCustomerController extends Controller
   {
     $accountId = session('account_id');
     $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
-    $assignments = Appraisals::where('evaluation_type', 'internal customer')
+
+    $assignments = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
       ->where('evaluator_id', $appraiserId)
       ->with(['employee.department', 'employee'])
       ->with(['evaluator.department'])
@@ -32,6 +33,7 @@ class PEInternalCustomerController extends Controller
 
     return response()->json($assignments);
   }
+
 
   public function getICQuestions()
   {

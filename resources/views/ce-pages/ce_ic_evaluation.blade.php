@@ -96,8 +96,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
-                    <button type="button" class="btn-close" data-bs-target="#signatory_modal" data-bs-toggle="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="esig-close-btn"></button>
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
@@ -150,8 +149,7 @@
                                     formChecker();
                                 }
                             },
-                            error: function(xhr, status, error) {
-                            }
+                            error: function(xhr, status, error) {}
                         });
                     };
 
@@ -302,7 +300,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '/editable-internal-customer-form/getICQuestions',
+                    url: '{{ route('pe.getICQuestions') }}',
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -314,20 +312,32 @@
                             $.each(response.ICques, function(index, formquestions) {
                                 var questionId = formquestions.question_id;
 
-                                var row = `<tr>
-                        <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
-                        <td class="align-baseline text-start editable" data-questionid="${questionId}">
-                            ${formquestions.question}
-                        </td>
-                        <td class="align-middle likert-column">
-                            @for ($i = 5; $i >= 1; $i--)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
-                                    <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
-                                </div>
-                            @endfor
-                        </td>
-                    </tr>`;
+                                var row = $('<tr>');
+                                row.append($('<td>').addClass('align-middle').text(
+                                    questionCounter));
+                                row.append($('<td>').addClass(
+                                    'align-baseline text-start editable').attr(
+                                    'data-questionid', questionId).text(formquestions
+                                    .question));
+
+                                var likertColumn = $('<td>').addClass(
+                                    'align-middle likert-column');
+                                for (let i = 5; i >= 1; i--) {
+                                    var formCheckDiv = $('<div>').addClass(
+                                        'form-check form-check-inline');
+                                    var input = $('<input>').addClass('form-check-input').attr({
+                                        type: 'radio',
+                                        id: `score_${questionId}_${i}`,
+                                        name: `ic_${questionId}`,
+                                        value: i
+                                    });
+                                    var label = $('<label>').addClass('form-check-label').attr(
+                                        'for', `score_${questionId}_${i}`).text(i);
+
+                                    formCheckDiv.append(input).append(label);
+                                    likertColumn.append(formCheckDiv);
+                                }
+                                row.append(likertColumn);
 
                                 tbody.append(row);
                                 loadSavedScore(questionId);
@@ -366,6 +376,8 @@
                                 $(`input[name="ic_${questionId}"][value="${savedScore}"]`).prop(
                                     'checked', true);
                             }
+                        } else {
+                            console.log('Failed');
                         }
                         totalScore();
                     },
@@ -460,8 +472,14 @@
                 });
             }
 
-            $(document).on('click', '#viewSignature', function() {
+            $(document).on('click', '#view-sig-btn', function() {
+                $('#signatory_modal').modal('hide');
                 $('#imageModal').modal('show');
+            });
+
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
+                $('#signatory_modal').modal('show');
             });
 
             function dataURItoBlob(dataURI) {

@@ -186,8 +186,6 @@
                     <div class="name-job">
                         <div class="profile_name text-capitalize">
                             <?php echo "<h6 style='padding-left: 10px;padding-top:7px;'>" . session()->get('full_name') . '</h6>'; ?>
-                            <!--<?php //echo "<h6 style='padding-left: 10px;padding-top:7px;'>" . $firstname . " " . $lastname . "</h6>"
-                            ?>-->
                         </div>
                         <div class="job">
                             <?php echo "<h6 style='padding-left: 10px;font-size:12px'>" . session()->get('title') . '</h6>'; ?>

@@ -18,7 +18,6 @@ class CEDashboardController extends Controller
       $query->where('department_id', $department_id);
     })->get();
 
-    // $IS now contains the employee accounts of the IS type with the same department ID
     return view('ce-pages.ce_dashboard')->with('IS', $immediate_superiors);
   }
 

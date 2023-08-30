@@ -17,7 +17,6 @@
                     </tr>
                 </thead>
                 <tbody id="ic_overview_body">
-
                 </tbody>
             </table>
         </div>
@@ -43,7 +42,8 @@
                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
                                 ),
                             $('<td>').text(assignment.employee.department.department_name),
-                            $('<td>').text(assignment.date_submitted || 'Pending'),
+                            $('<td>').text(assignment.date_submitted !== null ?
+                                'Submitted' : 'Pending'),
                             (typeof assignment.date_submitted === 'string' && assignment
                                 .date_submitted.trim() !== '') ?
                             $('<td>').append(
@@ -59,7 +59,7 @@
                                             assignment.employee.account_id) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                        ) +
+                                            ) +
                                         "&appraisee_department=" + encodeURIComponent(
                                             assignment.employee.department
                                             .department_name);
@@ -79,7 +79,7 @@
                                             assignment.employee.account_id) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                        ) +
+                                            ) +
                                         "&appraisee_department=" + encodeURIComponent(
                                             assignment.employee.department
                                             .department_name);
@@ -95,7 +95,6 @@
                     console.log(error);
                 }
             });
-
         });
     </script>
 @endsection

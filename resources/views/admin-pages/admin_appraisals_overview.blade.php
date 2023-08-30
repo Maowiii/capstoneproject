@@ -171,10 +171,32 @@
                                             .html('<i class="bx bx-x-circle"></i>')
                                         );
                                     }
-                                }
-                                // Two Internal Customers
-                                else if (appraisal.evaluation_type.startsWith(
-                                        'internal customer')) {
+                                } else if (appraisal.evaluation_type ===
+                                    'internal customer 1') {
+                                    if (appraisal.date_submitted !== null) {
+                                        var url = "{{ route('ad.viewICEvaluationForm') }}";
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
+                                            .appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(
+                                            appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(employee
+                                            .first_name + ' ' + employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(
+                                            appraisal.employee.department.department_name);
+
+                                        cell.append(
+                                            $("<a>")
+                                            .attr("href", url)
+                                            .addClass("appraisal-link")
+                                            .html('<i class="bx bx-check-circle"></i>')
+                                        );
+                                    } else {
+                                        cell.append(
+                                            $("<a>").html('<i class="bx bx-x-circle"></i>')
+                                        );
+                                    }
+                                } else if (appraisal.evaluation_type ===
+                                    'internal customer 2') {
                                     if (appraisal.date_submitted !== null) {
                                         var url = "{{ route('ad.viewICEvaluationForm') }}";
                                         url += "?appraisal_id=" + encodeURIComponent(appraisal

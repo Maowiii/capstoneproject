@@ -19,7 +19,8 @@
                 <h5>Name of the staff to be evaluated:</h5>
             </div>
             <div class="col-auto">
-                <input class="form-control" type="text" placeholder="{{ urldecode(request('appraisee_name')) }}" disabled>
+                <input class="form-control" type="text" placeholder="{{ urldecode(request('appraisee_name')) }}"
+                    name="name" disabled>
             </div>
         </div>
 
@@ -58,8 +59,7 @@
         <textarea class="form-control" id="comments_area"></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
-        <button type="button" class="btn btn-primary medium-column" data-bs-toggle="modal"
-            data-bs-target="#signatory_modal" id='view-btn'>View</button>
+        <button type="button" class="btn btn-primary medium-column" id='view-btn'>View</button>
     </div>
 
     <div class="modal fade" id="signatory_modal">
@@ -73,10 +73,10 @@
                     <table class="table" id="signtable">
                         <thead>
                             <tr>
-                                <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
-                                <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
-                                <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
-                                <th scope="col" style="width:15%" id="datehead">DATE</th>
+                                <th scope="col" style="width:20%" id="partieshead">Parties</th>
+                                <th scope="col" style="width:20%" id="fullnamehead">Name</th>
+                                <th scope="col" style="width:25%" id="signhead">Signature</th>
+                                <th scope="col" style="width:15%" id="datehead">Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,7 +92,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close" id="esig-close-btn"></button>
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
@@ -103,17 +103,22 @@
 
     <script>
         $(document).ready(function() {
-            $('#view-sig-btn').click(function() {
+            $(document).on('click', '#view-btn', function() {
+                loadSignature();
+                $('#signatory_modal').modal('show');
+            });
+
+            $(document).on('click', '#view-sig-btn', function() {
+                $('#signatory_modal').modal('hide');
                 $('#imageModal').modal('show');
             });
 
-            $('#IC_table .form-check-input[type="radio"]').prop('disabled', true);
-            $('textarea').prop('disabled', true);
-
-            $('#view-btn').click(function() {
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
                 $('#signatory_modal').modal('show');
-                loadSignature();
             });
+
+            $('textarea').prop('disabled', true);
 
             function loadSignature() {
                 var urlParams = new URLSearchParams(window.location.search);
@@ -139,7 +144,7 @@
 
                             if (response.sign_data) {
                                 newRow.append($('<td>').addClass('align-middle').html(
-                                    '<button type="button" class="btn btn-outline-primary" data-bs-target="#imageModal" data-bs-toggle="modal" id="view-sig-btn">' +
+                                    '<button type="button" class="btn btn-outline-primary" id="view-sig-btn">' +
                                     'View Signature' +
                                     '</button>'
                                 ));
@@ -191,6 +196,7 @@
                         if (response.success) {
                             $('#service_area').val(response.customerService);
                             $('#comments_area').val(response.suggestion);
+                            $('input[type="radio"]').prop('disabled', true);
                         } else {
                             console.log('Comments not found or an error occurred.');
                         }
@@ -210,7 +216,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '/editable-internal-customer-form/getICQuestions',
+                    url: '{{ route('pe.getICQuestions') }}',
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -222,20 +228,32 @@
                             $.each(response.ICques, function(index, formquestions) {
                                 var questionId = formquestions.question_id;
 
-                                var row = `<tr>
-                        <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
-                        <td class="align-baseline text-start editable" data-questionid="${questionId}">
-                            ${formquestions.question}
-                        </td>
-                        <td class="align-middle likert-column">
-                            @for ($i = 5; $i >= 1; $i--)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
-                                    <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
-                                </div>
-                            @endfor
-                        </td>
-                    </tr>`;
+                                var row = $('<tr>');
+                                row.append($('<td>').addClass('align-middle').text(
+                                    questionCounter));
+                                row.append($('<td>').addClass(
+                                    'align-baseline text-start editable').attr(
+                                    'data-questionid', questionId).text(formquestions
+                                    .question));
+
+                                var likertColumn = $('<td>').addClass(
+                                    'align-middle likert-column');
+                                for (let i = 5; i >= 1; i--) {
+                                    var formCheckDiv = $('<div>').addClass(
+                                        'form-check form-check-inline');
+                                    var input = $('<input>').addClass('form-check-input').attr({
+                                        type: 'radio',
+                                        id: `score_${questionId}_${i}`,
+                                        name: `ic_${questionId}`,
+                                        value: i
+                                    });
+                                    var label = $('<label>').addClass('form-check-label').attr(
+                                        'for', `score_${questionId}_${i}`).text(i);
+
+                                    formCheckDiv.append(input).append(label);
+                                    likertColumn.append(formCheckDiv);
+                                }
+                                row.append(likertColumn);
 
                                 tbody.append(row);
                                 loadSavedScore(questionId);
@@ -274,6 +292,8 @@
                                 $(`input[name="ic_${questionId}"][value="${savedScore}"]`).prop(
                                     'checked', true);
                             }
+                        } else {
+                            console.log('Failed');
                         }
                         totalScore();
                     },
@@ -282,8 +302,6 @@
                     }
                 });
             }
-
-
 
             function dataURItoBlob(dataURI) {
                 var byteString = atob(dataURI.split(',')[1]);
@@ -300,9 +318,6 @@
 
             loadICTable();
             loadTextAreas();
-
-            $('input[type="radio"]').prop('disabled', true);
-
         });
     </script>
 @endsection
