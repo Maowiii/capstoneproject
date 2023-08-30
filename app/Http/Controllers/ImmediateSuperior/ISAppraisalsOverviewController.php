@@ -7,6 +7,7 @@ use App\Models\Accounts;
 use App\Models\Employees;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\EvalYear;
 use Illuminate\Http\Request;
 
 class ISAppraisalsOverviewController extends Controller
@@ -19,7 +20,10 @@ class ISAppraisalsOverviewController extends Controller
     $department_id = $user->department_id;
     $appraisals = Employees::where('department_id', $department_id)->get();
 
-    return view('is-pages.is_appraisals_overview')->with('appraisals', $appraisals);
+    $activeEvalYear = EvalYear::where('status', 'active')->first();
+    return view('is-pages.is_appraisals_overview')
+      ->with('appraisals', $appraisals)
+      ->with('activeEvalYear', $activeEvalYear);
   }
 
   public function getData(Request $request)

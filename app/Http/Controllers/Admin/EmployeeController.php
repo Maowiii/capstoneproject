@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\NewPasswordEmail;
 use App\Models\Accounts;
+use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\Employees;
+use App\Models\EvalYear;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,23 +27,17 @@ class EmployeeController extends Controller
     $accountId = $request->input('account_id');
     $action = $request->input('action');
 
-    // Find the account by ID
     $account = Accounts::find($accountId);
-
     if ($account) {
-      // Update the status based on the action
       if ($action === 'activate') {
         $account->status = 'active';
       } elseif ($action === 'deactivate') {
         $account->status = 'deactivated';
       }
 
-      // Save the changes
       $account->save();
-
       return response()->json(['success' => true]);
     }
-
     return response()->json(['success' => false, 'error' => 'Account not found.']);
   }
 
@@ -60,8 +56,8 @@ class EmployeeController extends Controller
   public function addEmployee(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'email' => 'required|email|ends_with:adamson.edu.ph',
-      'employee_number' => 'required|max:9',
+      'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
+      'employee_number' => 'required|max:9|unique:employees,employee_number',
       'first_name' => 'required',
       'last_name' => 'required',
       'type' => 'required',
@@ -70,7 +66,9 @@ class EmployeeController extends Controller
       'email.required' => 'Please enter an Adamson email address.',
       'email.ends_with' => 'Please enter an Adamson email address.',
       'email.email' => 'Please enter a valid email address.',
+      'email.unique' => 'The email is already in use',
       'employee_number.required' => 'Please enter an employee number.',
+      'employee_number.unique' => 'The employee number is already in use.',
       'employee_number.max' => 'Please enter a valid employee number.',
       'first_name.required' => 'Please enter the employee\'s first name.',
       'last_name.required' => 'Please enter the employee\'s last name.',
@@ -99,7 +97,8 @@ class EmployeeController extends Controller
         'department_id' => $request->input('department')
       ]);
 
-      return response()->json(['success' => true]);
+      $departments = Departments::all();
+      return view('admin-pages.employee_table')->with('departments', $departments);
     }
   }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
 use App\Models\Appraisals;
@@ -23,7 +24,8 @@ class PEInternalCustomerController extends Controller
   {
     $accountId = session('account_id');
     $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
-    $assignments = Appraisals::where('evaluation_type', 'internal customer')
+
+    $assignments = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
       ->where('evaluator_id', $appraiserId)
       ->with(['employee.department', 'employee'])
       ->with(['evaluator.department'])
@@ -31,6 +33,7 @@ class PEInternalCustomerController extends Controller
 
     return response()->json($assignments);
   }
+
 
   public function getICQuestions()
   {
@@ -182,20 +185,24 @@ class PEInternalCustomerController extends Controller
 
   public function formChecker(Request $request)
   {
-    $appraisalId = $request->input('appraisalId');
+    try {
+      $appraisalId = $request->input('appraisalId');
 
-    $appraisal = Appraisals::find($appraisalId);
-    $signature = Signature::where('appraisal_id', $appraisalId)->first();
+      $appraisal = Appraisals::find($appraisalId);
+      $signature = Signature::where('appraisal_id', $appraisalId)->first();
 
-    $dateSubmittedExists = !empty($appraisal->date_submitted);
-    $signDataExists = !empty($signature->sign_data);
+      $dateSubmittedExists = !empty($appraisal->date_submitted);
+      $signDataExists = !empty($signature->sign_data);
 
-    $formSubmitted = $dateSubmittedExists && $signDataExists;
+      $formSubmitted = $dateSubmittedExists && $signDataExists;
 
-    return response()->json([
-      'form_submitted' => $formSubmitted,
-    ]);
+      return response()->json([
+        'form_submitted' => $formSubmitted,
+      ]);
+    } catch (\Exception $e) {
+      Log::error('An error occurred: ' . $e->getMessage()); // Log the error message
+      return response()->json(['error' => 'An error occurred.']); // Return an error response
+    }
   }
-
 
 }

@@ -21,7 +21,6 @@
             </table>
         </div>
     </div>
-
     <script>
         $(document).ready(function() {
             $.ajax({
@@ -42,29 +41,9 @@
                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
                                 ),
                             $('<td>').text(assignment.employee.department.department_name),
-                            $('<td>').text(assignment.date_submitted !== null ?
-                                'Submitted' : 'Pending'),
-                            (typeof assignment.date_submitted === 'string' && assignment
-                                .date_submitted.trim() !== '') ?
-                            $('<td>').append(
-                                $('<button>')
-                                .text('View')
-                                .addClass('btn btn-primary')
-                                .click(function() {
-                                    window.location.href =
-                                        "/pe-internal-customers/appraisalForm" +
-                                        "?appraisal_id=" + encodeURIComponent(assignment
-                                            .appraisal_id) +
-                                        "&appraisee_account_id=" + encodeURIComponent(
-                                            assignment.employee.account_id) +
-                                        "&appraisee_name=" + encodeURIComponent(
-                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
-                                        "&appraisee_department=" + encodeURIComponent(
-                                            assignment.employee.department
-                                            .department_name);
-                                })
-                            ) :
+                            $('<td>').text((typeof assignment.date_submitted === 'string' &&
+                                    assignment.date_submitted.trim() !== '') ? 'Submitted' :
+                                'Pending'),
                             (assignment.date_submitted === null) ?
                             $('<td>').append(
                                 $('<button>')
@@ -72,7 +51,7 @@
                                 .addClass('btn btn-outline-primary')
                                 .click(function() {
                                     window.location.href =
-                                        "/pe-internal-customers/appraisalForm" +
+                                        "{{ route('ce.viewICAppraisalForm') }}" +
                                         "?appraisal_id=" + encodeURIComponent(assignment
                                             .appraisal_id) +
                                         "&appraisee_account_id=" + encodeURIComponent(
@@ -85,9 +64,26 @@
                                             .department_name);
                                 })
                             ) :
-                            $('<td>').text('Unknown')
+                            $('<td>').append(
+                                $('<button>')
+                                .text('View')
+                                .addClass('btn btn-primary')
+                                .click(function() {
+                                    window.location.href =
+                                        "{{ route('ce.viewICAppraisalForm') }}" +
+                                        "?appraisal_id=" + encodeURIComponent(assignment
+                                            .appraisal_id) +
+                                        "&appraisee_account_id=" + encodeURIComponent(
+                                            assignment.employee.account_id) +
+                                        "&appraisee_name=" + encodeURIComponent(
+                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
+                                            ) +
+                                        "&appraisee_department=" + encodeURIComponent(
+                                            assignment.employee.department
+                                            .department_name);
+                                })
+                            )
                         );
-
                         tableBody.append(row);
                     });
                 },
