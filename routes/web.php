@@ -53,7 +53,6 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
-Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
 
 /* ----- ADMIN ----- */
 //Appraisals Overview
@@ -140,6 +139,11 @@ Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController:
 // Signature of Party Involved
 
 /* ----- CONTRACTUAL EMPLOYEE ----- */
+// Dashboard
+Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
+Route::get('/dashboard-contractual-employee/get-notifications', [CEDashboardController::class, 'getNotifications'])->name('ce.getNotifications');
+
+
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
