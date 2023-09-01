@@ -66,6 +66,9 @@ class PEDashboardController extends Controller
       $dateEnd = Carbon::parse($activeYear->eval_end);
       $fiveDaysAfterKraEnd = $kraEnd->copy()->addDays(5);
       $fiveDaysAfterStart = $kraStart->copy()->addDays(5);
+      $fiveDaysAfterPrEnd = $prEnd->copy()->addDays(5);
+
+      $fiveDaysBeforeEvalEnd = $prEnd->copy()->subDays(5);
       $fiveDaysBeforeEnd = $dateEnd->copy()->subDays(5);
 
       $accountId = session('account_id');
@@ -81,27 +84,47 @@ class PEDashboardController extends Controller
       if ($currentDate <= $fiveDaysAfterStart) {
         $notifications[] = "The evaluation period for school year $schoolYear has started. Check your appraisal page for more information.";
       }
+
+      // KRA Encoding
       if ($currentDate >= $fiveDaysAfterKraEnd) {
         $notifications[] = "The KRA encoding has ended. Check your self-evaluation on the appraisal page to view your KRAs.";
       }
 
+      // Performance Review
       if ($currentDate->between($prStart, $prEnd)) {
         $notifications[] = "Please ensure you have completed your Key Result Areas (KRAs) within the Performance Review period.";
       }
+      // KRA NOTIF WALA PA
 
-      if ($hasPendingSelfEvaluation) {
-        $notifications[] = "Please complete your self-evaluation on the appraisal page.";
+
+      if ($currentDate >= $fiveDaysAfterPrEnd) {
+        $notifications[] = "The performance review period has ended.";
       }
+
+      // Evaluation Period
+      if ($currentDate->between($evalStart, $evalEnd)) {
+        if ($currentDate >= $fiveDaysBeforeEvalEnd) {
+          $notifications[] = "Please ensure that all your required appraisals are settled before the evaluation period ends.";
+        }
+        if (!$hasPendingSelfEvaluation) {
+          $notifications[] = "Please complete your self-evaluation. See appraisals page.";
+        }
+        
+      }
+
       if ($pendingAppraisalsCount > 0) {
         $notifications[] = "You have $pendingAppraisalsCount pending appraisals to complete.";
       }
-      if ($currentDate >= $fiveDaysBeforeEnd) {
-        $notifications[] = "Please ensure that all your required appraisals are settled before the evaluation period ends.";
 
-        if ($currentDate > $dateEnd) {
-          $notifications[] = "The evaluation period has ended. You still have $pendingAppraisalsCount appraisals remaining. Please contact the administrator for further assistance.";
+      // Ending
+      if ($currentDate > $dateEnd) {
+        if ($pendingAppraisalsCount > 0) {
+          $notifications[] = "The evaluation period for school year $schoolYear has ended. You still have $pendingAppraisalsCount appraisals remaining. Please contact the administrator for further assistance.";
+        } else {
+          $notifications[] = "The evaluation period for school year $schoolYear has ended.";
         }
       }
+
     }
     return response()->json(['notifications' => $notifications]);
   }
