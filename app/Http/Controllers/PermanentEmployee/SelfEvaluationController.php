@@ -102,12 +102,6 @@ class SelfEvaluationController extends Controller
         // Retrieve the appraisal records for the given employee_id and evaluator_id
         $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
-        // If no appraisal record is found for the given employee and evaluator, handle the error
-        if ($appraisals->isEmpty()) {
-            // Handle the case where appraisal data is not found
-            // You may want to display an error message or redirect to a 404 page
-        }
-
         // Initialize variables for appraisee and evaluator data
         $appraisee = null;
         $evaluator = null;
@@ -137,6 +131,42 @@ class SelfEvaluationController extends Controller
         // Return the view with appraisee, evaluator, and appraisal ID data
         return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
     }
+
+    public function viewGOAppraisal($appraisal_id)
+    {
+        // Retrieve the appraisal records for the given employee_id and evaluator_id
+        $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
+
+        // Initialize variables for appraisee and evaluator data
+        $appraisee = null;
+        $evaluator = null;
+        $appraisal_Id = null;
+
+        // Loop through the appraisal records to find the correct appraisal type and evaluator data
+        foreach ($appraisals as $appraisal) {
+            // Fetch the appraisee data based on the $employee_id
+            $appraisee = Employees::find($appraisal->employee_id);
+            // Determine the appraisal type
+            $appraisalType = $appraisal->evaluation_type;
+
+            // Handle different appraisal types
+            if ($appraisalType === 'self evaluation') {
+                $evaluator = $appraisee;
+                $appraisal_Id = $appraisal->appraisal_id;
+            } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
+                $evaluator = Employees::find($appraisal->evaluator_id);
+                $appraisal_Id = $appraisal->appraisal_id;
+            } elseif ($appraisalType === 'is evaluation') {
+                $evaluator = Employees::find($appraisal->evaluator_id);
+                $appraisal_Id = $appraisal->appraisal_id;
+            }
+            break; // Exit the loop after finding the first matching appraisal
+        }
+
+        // Return the view with appraisee, evaluator, and appraisal ID data
+        return view('pe-pages.pe_self_eval_greyedout', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+    }
+
     public function getPEKRA(Request $request)
     {
         $appraisalId = $request->input('appraisal_id');

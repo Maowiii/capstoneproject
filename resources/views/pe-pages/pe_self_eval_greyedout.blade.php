@@ -406,16 +406,12 @@
                         <th>Continue Doing</th>
                         <th>Stop Doing</th>
                         <th>Start Doing</th>
-                        <th class='small-column'>Action</th>
                     </tr>
                 </thead>
                 <tbody id='wpa_table_body'>
 
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
-            </div>
 
             <h3>Learning Development Plans</h3>
             <p>Identify the learning needs of the job incumbent likewise recommend specific learning methodologies for each
@@ -426,7 +422,6 @@
                     <tr>
                         <th>Learning Need</th>
                         <th>Methodology</th>
-                        <th class='small-column'>Action</th>
                     </tr>
                 </thead>
                 <tbody id='ldp_table_body'>
@@ -441,9 +436,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
-            </div>
+
         </div>
 
         <div class="content-container">
@@ -646,11 +639,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
-            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -872,7 +860,7 @@
                                 value: i
                             });
 
-                            input[0].required = true;
+                            input[0].disabled = true;
 
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
@@ -938,7 +926,7 @@
                                 value: i
                             });
 
-                            input[0].required = true;
+                            input[0].disabled = true;
 
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
@@ -1002,7 +990,7 @@
                                 value: i
                             });
 
-                            input[0].required = true;
+                            input[0].disabled = true;
 
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
@@ -1133,7 +1121,7 @@
                                     value: i
                                 });
 
-                                input[0].required = true;
+                                input[0].disabled = true;
 
                                 var span = $('<span>').addClass('ms-1').text(i);
                                 label.append(input, span);
@@ -1233,11 +1221,6 @@
                                 )
                             ).appendTo(wparow);
 
-                            $('<td>').addClass('td-action').append(
-                                $('<button>').addClass('btn btn-danger delete-btn align-middle')
-                                .text('Delete')
-                            ).appendTo(wparow);
-
                             wpatbody.append(wparow);
                         });
                         $('#wpa_table_body input[type="text"], #wpa_table_body textarea').trigger(
@@ -1275,11 +1258,6 @@
                                     ldp.methodology,
                                     false // Set to false to allow user input
                                 )
-                            ).appendTo(ldprow);
-
-                            $('<td>').addClass('td-action').append(
-                                $('<button>').addClass('btn btn-danger delete-btn align-middle')
-                                .text('Delete')
                             ).appendTo(ldprow);
 
                             ldptbody.append(ldprow);
@@ -1346,9 +1324,9 @@
                             }
                         });
 
-                        answerRadioYes.required = true;
-                        answerRadioNo.required = true;
-                        commentTextarea.required = true;
+                        answerRadioYes.disabled = true;
+                        answerRadioNo.disabled = true;
+                        commentTextarea.disabled = true;
                     });
 
                     data.signData.forEach(function(sign, index) {
@@ -1395,8 +1373,8 @@
             return $('<div>').addClass('position-relative').append(
                 $('<textarea>').addClass('textarea form-control').attr({
                     name: name,
-                    readonly: isReadonly
-                }).prop('required', true).val(value)
+                    disable: isReadonly
+                }).prop('disabled', true).val(value)
                 .on('input', function() {
                     $(this).removeClass('border border-danger');
                     $(this).closest('td').removeClass(

@@ -47,9 +47,9 @@
             <thead>
                 <tr>
                     <th>Self-Evaluation</th>
+                    <th>Immediate Superior</th>
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
-                    <th>Immediate Superior</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -78,75 +78,105 @@
 
                         var appraisees = response.appraisee;
                         var appraisals = response.appraisals;
-                        console.log(appraisals);
-                        console.log(appraisees);
 
                         appraisees.forEach(function(appraisee) {
+                            // Create a new table row for each appraisee
                             var newRow = $('<tr>').attr('id', appraisee.employee_id);
 
+                            // Filter appraisals for the current appraisee
                             var employeeAppraisals = appraisals.filter(function(appraisal) {
                                 return appraisal.employee_id === appraisee.employee_id;
                             });
 
                             var viewLink = null;
-                            var ic1Link = null;
-                            var ic2Link = null;
+                            var icLink = null;
                             var AppraiseLink = null;
 
                             employeeAppraisals.forEach(function(appraisal) {
+                                console.log(appraisal);
                                 var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
 
+                                console.log(appraisal.date_submitted)
                                 if (appraisal.evaluation_type === 'self evaluation') {
-                                    viewLink = $('<a>').addClass('btn btn-outline-primary')
-                                        .attr('href',
-                                            `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                            .replace(':appraisal_id', appraisal_id))
-                                        .text('View');
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 1') {
-                                    if (appraisal.evaluator_id === null) {
-                                        ic1Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .text('N/A');
+                                    if (appraisal.date_submitted !== null) {
+                                        // Append the Self-Evaluation link to the first <td>
+                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('View');
+
+                                        newRow.append($('<td>').append(viewLink));
                                     } else {
-                                        ic1Link = $('<a>').addClass('btn btn-outline-primary')
+                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href',
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
-                                            .text(appraisal.evaluator.first_name + ' ' +
-                                                appraisal.evaluator.last_name);
-                                    }
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 2') {
-                                    if (appraisal.evaluator_id === null) {
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .text('N/A');
-                                    } else {
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text(appraisal.evaluator.first_name + ' ' +
-                                                appraisal.evaluator.last_name);
+                                            .text('Appraise');
+
+                                        newRow.append($('<td>').append(viewLink));
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
-                                    AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
-                                        .attr('href',
-                                            `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                            .replace(':appraisal_id', appraisal_id))
-                                        .text('Appraise');
+                                    if (appraisal.date_submitted !== null) {
+                                        AppraiseLink = $('<a>').addClass(
+                                                'btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('View');
+
+                                        newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(AppraiseLink)
+                                            ),
+                                        );
+                                    } else {
+                                        AppraiseLink = $('<a>').addClass(
+                                                'btn btn-outline-secondary disabled')
+                                            .attr('href',
+                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('View');
+
+                                        AppraiseLink.on('click', function(event) {
+                                            event
+                                        .preventDefault(); // Prevent the default navigation action
+                                            // Optionally, change the visual appearance to indicate it's disabled
+                                            $(this).addClass(
+                                            'disabled'); // Add a CSS class to style it as disabled
+                                        });
+                                        newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(AppraiseLink)
+                                            ),
+                                        );
+                                    }
+                                } else if (appraisal.evaluation_type.startsWith(
+                                        'internal customer')) {
+                                    if (appraisal.evaluator_id === null) {
+                                        // Append "N/A" to the second or third <td>
+                                        icLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .text('N/A');
+                                    } else {
+                                        // Append the Internal Customer link to the second or third <td>
+                                        icLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text(appraisal.evaluator.first_name + ' ' +
+                                                appraisal.evaluator.last_name);
+                                    }
+
+                                    newRow.append($('<td>').append($('<div>').append(icLink)));
                                 }
+
+
                             });
 
-                            newRow.append(
-                                $('<td>').append(viewLink),
-                                $('<td>').append($('<div>').append(ic1Link)),
-                                $('<td>').append($('<div>').append(ic2Link)),
-                                $('<td>').append(
-                                    $('<div>').append(AppraiseLink)
-                                ),
-                                $('<td>').text('Pending'),
-                            );
+                            // Append the "Pending" text to the fifth <td>
+                            newRow.append($('<td>').text('Pending'));
 
+                            // Append the row to the table body
                             $('#PE_appraisals_table_body').append(newRow);
                         });
                     } else {
