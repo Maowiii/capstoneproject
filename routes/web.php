@@ -112,6 +112,8 @@ Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('v
 Route::get('/pe-dashboard', [PEDashboardController::class, 'displayPEDashboard'])->name('viewPEDashboard');
 Route::get('/get-is-appraisal-data', [SelfEvaluationController::class, 'showAppraisalForm'])->name('getISAppraisalData');
 Route::post('/pe-dashboard/submit-fist-login', [PEDashboardController::class, 'submitPEFirstLogin'])->name('pe.submitFirstLogin');
+Route::get('/pe-dashboard/get-notifications', [PEDashboardController::class, 'getNotifications'])->name('pe.getNotifications');
+
 
 // Appraisals Overview
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');

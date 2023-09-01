@@ -14,10 +14,8 @@
     @endif
 
     <div class="content-container">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-            Launch static backdrop modal
-        </button>
+      <h4>Notifications:</h4>
+        <ul class="list-group" id="notifications"></ul>
     </div>
 
     <!-- Modal -->
@@ -58,6 +56,10 @@
     </div>
 
     <script>
+        $(document).ready(function() {
+            getNotifications();
+        });
+
         $('#job_title').change(function() {
             $('#job_title').removeClass('is-invalid');
         });
@@ -102,6 +104,37 @@
                     }
                 });
             }
+        }
+
+        function getNotifications() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.getNotifications') }}',
+                type: 'GET',
+                success: function(response) {
+                    if (response.notifications && response.notifications.length > 0) {
+                        var notificationsContainer = $('#notifications');
+
+                        response.notifications.forEach(function(notification) {
+                            var listItem = $('<li class="list-group-item">');
+                            var notificationContent = $('<div class="d-flex align-items-center">');
+                            var icon = $('<i class="bx bx-fw bx-bell"></i>');
+                            var text = $('<div>').text(notification);
+
+                            notificationContent.append(icon);
+                            notificationContent.append(text);
+                            listItem.append(notificationContent);
+
+                            notificationsContainer.append(listItem);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
         }
     </script>
 @endsection
