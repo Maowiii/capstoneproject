@@ -144,6 +144,8 @@ Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController:
 // Dashboard
 Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
 Route::get('/dashboard-contractual-employee/get-notifications', [CEDashboardController::class, 'getNotifications'])->name('ce.getNotifications');
+Route::get('/dashboard-contractual-employee/get-remaining-appraisals', [CEDashboardController::class, 'getRemainingAppraisals'])->name('ce.getRemainingAppraisals');
+
 
 
 // Internal Customers

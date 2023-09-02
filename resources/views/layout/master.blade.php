@@ -13,6 +13,8 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
     </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.0/dist/chart.umd.js"></script>
+
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -162,7 +164,8 @@
                         <span class="link_name">Internal Customer<br>Appraisal</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{{ route('ce.viewICOverview') }}">Internal Customer Appraisal</a></li>
+                        <li><a class="link_name" href="{{ route('ce.viewICOverview') }}">Internal Customer
+                                Appraisal</a></li>
                     </ul>
                 </li>
             @endif

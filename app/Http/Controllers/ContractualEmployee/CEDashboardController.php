@@ -46,10 +46,10 @@ class CEDashboardController extends Controller
 
       if ($currentDate <= $fiveDaysAfterStart) {
         $notifications[] = "The evaluation period for school year $schoolYear has started. Check your appraisal page for more information.";
-      } 
+      }
       if ($pendingAppraisalsCount > 0) {
         $notifications[] = "You have $pendingAppraisalsCount pending appraisals to complete.";
-      } 
+      }
       if ($currentDate >= $fiveDaysBeforeEnd) {
         $notifications[] = "Please ensure that all your required appraisals are settled before the evaluation period ends.";
 
@@ -60,4 +60,33 @@ class CEDashboardController extends Controller
     }
     return response()->json(['notifications' => $notifications]);
   }
+
+  public function getRemainingAppraisals()
+  {
+    $accountId = session('account_id');
+    $activeYear = EvalYear::where('status', 'active')->first();
+
+    if ($activeYear) {
+      $pendingAppraisalsCount = Appraisals::where('evaluator_id', $accountId)
+        ->whereNull('date_submitted')
+        ->count();
+
+      $completedAppraisalsCount = Appraisals::where('evaluator_id', $accountId)
+        ->whereNotNull('date_submitted') // Changed this condition
+        ->count();
+
+      $totalAppraisalsCount = Appraisals::where('evaluator_id', $accountId)->count();
+
+      return response()->json([
+        'success' => true,
+        'pendingAppraisalsCount' => $pendingAppraisalsCount,
+        'completedAppraisalsCount' => $completedAppraisalsCount,
+        // Matched variable name
+        'totalAppraisalsCount' => $totalAppraisalsCount,
+      ]);
+    } else {
+      return response()->json(['success' => false]);
+    }
+  }
+
 }
