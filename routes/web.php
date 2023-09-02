@@ -145,6 +145,8 @@ Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController:
 Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
 Route::get('/dashboard-contractual-employee/get-notifications', [CEDashboardController::class, 'getNotifications'])->name('ce.getNotifications');
 Route::get('/dashboard-contractual-employee/get-remaining-appraisals', [CEDashboardController::class, 'getRemainingAppraisals'])->name('ce.getRemainingAppraisals');
+Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardController::class, 'submitFirstLogin'])->name('ce.submitFirstLogin');
+
 
 
 

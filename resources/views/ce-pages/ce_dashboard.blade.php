@@ -5,6 +5,13 @@
 @endsection
 
 @section('content')
+    @if ($first_login == 'true')
+        <script>
+            $(document).ready(function() {
+                $('#firstLoginModal').modal('show');
+            });
+        </script>
+    @endif
     <div class="d-flex justify-content-between gap-3">
         <div class="dashboard-container flex-grow-1">
             <h4>Notifications:</h4>
@@ -16,7 +23,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="firstLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -26,38 +33,16 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <p>You must first choose your immediate superior and input your job title.</p>
-                        <div>
-                            <label>Immediate Superior</label>
-                            <select class="form-control" name="department">
-                                <option value="" selected>Select Immediate Superior</option>
-                                @foreach ($IS as $is)
-                                    <option value="{{ $is->account_id }}">
-                                        {{ $is->employee->first_name }} {{ $is->employee->last_name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <p>You must first input your job title.</p>
+                        <div class="mt-3">
+                            <label>Your Job Title:</label>
+                            <input type="text" class="form-control" value="{{ old('job_title') }}" id="job_title"
+                                placeholder="Job Title">
                         </div>
-                        <span class="text-danger">
-                            @error('email')
-                                {{ $message }}
-                            @enderror
-                        </span>
-
-                        <div>
-                            <label class="mt-3">Job Title:</label>
-                            <input class="form-control" type="text" placeholder="Job Title">
-                        </div>
-                        <span class="text-danger">
-                            @error('email')
-                                {{ $message }}
-                            @enderror
-                        </span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+                    <button type="button" class="btn btn-primary" id="submit-btn">Submit</button>
                 </div>
             </div>
         </div>
@@ -102,8 +87,8 @@
                         }
                     } else {
                         $('#chart').html(
-                                '<h4>Appraisals:</h4><p>There is no ongoing evaluation.</p>'
-                            );
+                            '<h4>Appraisals:</h4><p>There is no ongoing evaluation.</p>'
+                        );
                     }
                 },
                 error: function(xhr, status, error) {
@@ -141,6 +126,49 @@
                     console.log(error);
                 }
             });
+        }
+
+        $('#job_title').change(function() {
+            $('#job_title').removeClass('is-invalid');
+        });
+
+        $('#department').change(function() {
+            $('#department').removeClass('is-invalid');
+        });
+
+        $('#submit-btn').click(function() {
+            submitCEFirstLogin();
+        });
+
+        function submitCEFirstLogin() {
+            var job_title = $('#job_title').val();
+
+            if (job_title.trim() === '') {
+                $('#job_title').addClass('is-invalid');
+                return;
+            } else {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ce.submitFirstLogin') }}',
+                    type: 'POST',
+                    data: {
+                        job_title: job_title,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log('Job Title Submitted');
+                            $('#firstLoginModal').modal('hide');
+                        } else {
+
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
         }
     </script>
 @endsection
