@@ -221,9 +221,7 @@
                             );
                             $('#employee_table_body').append(newRow);
                             $('#confirmResetPassword').off('click').click(function() {
-                                // Call the resetPassword function with the account_id
                                 resetPassword(account.account_id);
-                                // Close the modal
                                 $('#resetPasswordModal').modal('hide');
                             });
                         }
@@ -250,7 +248,6 @@
                 success: function(response) {
                     if (response.success) {
                         console.log('Password reset successfully.');
-                        // Create and show a toast message
                         var toast = $('<div>').addClass('toast align-items-center text-bg-primary border-0')
                             .attr('role', 'alert').attr('aria-live', 'assertive').attr('aria-atomic', 'true')
                             .append(
@@ -260,8 +257,6 @@
                                     .attr('data-bs-dismiss', 'toast').attr('aria-label', 'Close')
                                 )
                             );
-
-                        // Append the toast to the container and show it
                         $('.toast-container').append(toast);
                         var toastInstance = new bootstrap.Toast(toast[0]);
                         toastInstance.show();

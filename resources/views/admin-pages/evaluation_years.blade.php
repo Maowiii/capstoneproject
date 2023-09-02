@@ -54,8 +54,8 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
-                                    <option value="">--Select School Year--</option>    
-                                    <?php $currentYear = now()->format('Y'); ?>
+                                        <option value="">--Select School Year--</option>
+                                        <?php $currentYear = now()->format('Y'); ?>
                                         @for ($year = $currentYear; $year <= 2099; $year++)
                                             <option value="{{ $year }}"
                                                 @if (old('sy_end') == $year) selected @endif>{{ $year }}
@@ -227,7 +227,7 @@
                     const kraStartDate = new Date($('#kra_start').val());
                     const kraEndInput = $('#kra_end');
                     const minEndDate = new Date(kraStartDate);
-                    minEndDate.setDate(kraStartDate.getDate() + 1);
+                    minEndDate.setDate(kraStartDate.getDate() + 3);
                     const kraMinEndDate = minEndDate.toISOString().split('T')[0];
                     kraEndInput.prop('min', kraMinEndDate);
                     kraEndInput.prop('disabled', false);
@@ -249,7 +249,7 @@
                     const prStartDate = new Date($('#pr_start').val());
                     const prEndInput = $('#pr_end');
                     const minEndDate = new Date(prStartDate);
-                    minEndDate.setDate(prStartDate.getDate() + 1);
+                    minEndDate.setDate(prStartDate.getDate() + 3);
                     const prMinEndDate = minEndDate.toISOString().split('T')[0];
                     prEndInput.prop('min', prMinEndDate);
                     prEndInput.prop('disabled', false);
@@ -271,7 +271,7 @@
                     const evalStartDate = new Date($('#eval_start').val());
                     const evalEndInput = $('#eval_end');
                     const minEndDate = new Date(evalStartDate);
-                    minEndDate.setDate(evalStartDate.getDate() + 1);
+                    minEndDate.setDate(evalStartDate.getDate() + 3);
                     const evalMinEndDate = minEndDate.toISOString().split('T')[0];
                     evalEndInput.prop('min', evalMinEndDate);
                     evalEndInput.prop('disabled', false);
@@ -401,9 +401,7 @@
 
                     if (response.success) {
                         location.reload();
-                    } else {
-                        // Handle confirmation failure if needed
-                    }
+                    } else {}
                 },
                 error: function(xhr) {
                     if (xhr.responseText) {
@@ -416,6 +414,8 @@
         }
 
         $(document).ready(function() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            $('#kra_start').prop('min', currentDate);
 
             $('#backbtn').hide();
             loadEvaluationYearTable();
@@ -428,7 +428,6 @@
             $(document).ready(function() {
                 $('#startNewEvalYear').modal('show');
 
-                // Enable inputs with old values
                 $("input[type='date'], select").each(function() {
                     if ($(this).val() !== '') {
                         $(this).prop("disabled", false);
@@ -442,10 +441,14 @@
                 const eval_start = $('#eval_start');
                 const eval_end = $('#eval_end');
 
+                // Set minimum value for kra_start as the current date
+                const currentDate = new Date().toISOString().split('T')[0];
+                kra_start.prop('min', currentDate);
+
                 if (kra_start.val()) {
                     const kraStartDate = new Date($('#kra_start').val());
                     const minEndDate = new Date(kraStartDate);
-                    minEndDate.setDate(kraStartDate.getDate() + 1);
+                    minEndDate.setDate(kraStartDate.getDate() + 3);
                     const kraMinEndDate = minEndDate.toISOString().split('T')[0];
                     kra_end.prop('min', kraMinEndDate);
                     kra_end.prop('disabled', false);
@@ -465,7 +468,7 @@
                     const prStartDate = new Date($('#pr_start').val());
                     const prEndInput = $('#pr_end');
                     const minEndDate = new Date(prStartDate);
-                    minEndDate.setDate(prStartDate.getDate() + 1);
+                    minEndDate.setDate(prStartDate.getDate() + 3);
                     const prMinEndDate = minEndDate.toISOString().split('T')[0];
                     pr_end.prop('min', prMinEndDate);
                     pr_end.prop('disabled', false);
@@ -485,7 +488,7 @@
                     const evalStartDate = new Date($('#eval_start').val());
                     const evalEndInput = $('#eval_end');
                     const minEndDate = new Date(evalStartDate);
-                    minEndDate.setDate(evalStartDate.getDate() + 1);
+                    minEndDate.setDate(evalStartDate.getDate() + 3);
                     const evalMinEndDate = minEndDate.toISOString().split('T')[0];
                     eval_end.prop('min', evalMinEndDate);
                     eval_end.prop('disabled', false);

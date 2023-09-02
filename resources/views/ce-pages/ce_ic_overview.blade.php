@@ -5,6 +5,43 @@
 @endsection
 
 @section('content')
+    <div class='d-flex gap-3'>
+        <div class="content-container text-middle">
+            <h4>School Year:</h4>
+            @if ($activeEvalYear)
+                <p>{{ $activeEvalYear->sy_start }} - {{ $activeEvalYear->sy_end }}</p>
+            @else
+                <p>-</p>
+            @endif
+        </div>
+        <div class="content-container text-middle">
+            <h4>KRA Encoding:</h4>
+            @if ($activeEvalYear)
+                <p>{{ date('F d, Y', strtotime($activeEvalYear->kra_start)) }} -
+                    {{ date('F d, Y', strtotime($activeEvalYear->kra_end)) }}</p>
+            @else
+                <p>-</p>
+            @endif
+        </div>
+        <div class="content-container text-middle">
+            <h4>Performance Review:</h4>
+            @if ($activeEvalYear)
+                <p>{{ date('F d, Y', strtotime($activeEvalYear->pr_start)) }} -
+                    {{ date('F d, Y', strtotime($activeEvalYear->pr_end)) }}</p>
+            @else
+                <p>-</p>
+            @endif
+        </div>
+        <div class="content-container text-middle">
+            <h4>Evaluation:</h4>
+            @if ($activeEvalYear)
+                <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_start)) }} -
+                    {{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}</p>
+            @else
+                <p>-</p>
+            @endif
+        </div>
+    </div>
     <div class="content-container">
         <div class="table-responsive">
             <table class='table table-bordered' id="ic_overview_table">
@@ -21,7 +58,6 @@
             </table>
         </div>
     </div>
-
     <script>
         $(document).ready(function() {
             $.ajax({
@@ -40,31 +76,11 @@
                         row.append(
                             $('<td>').text(
                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                ),
+                            ),
                             $('<td>').text(assignment.employee.department.department_name),
-                            $('<td>').text(assignment.date_submitted !== null ?
-                                'Submitted' : 'Pending'),
-                            (typeof assignment.date_submitted === 'string' && assignment
-                                .date_submitted.trim() !== '') ?
-                            $('<td>').append(
-                                $('<button>')
-                                .text('View')
-                                .addClass('btn btn-primary')
-                                .click(function() {
-                                    window.location.href =
-                                        "/pe-internal-customers/appraisalForm" +
-                                        "?appraisal_id=" + encodeURIComponent(assignment
-                                            .appraisal_id) +
-                                        "&appraisee_account_id=" + encodeURIComponent(
-                                            assignment.employee.account_id) +
-                                        "&appraisee_name=" + encodeURIComponent(
-                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
-                                        "&appraisee_department=" + encodeURIComponent(
-                                            assignment.employee.department
-                                            .department_name);
-                                })
-                            ) :
+                            $('<td>').text((typeof assignment.date_submitted === 'string' &&
+                                    assignment.date_submitted.trim() !== '') ? 'Submitted' :
+                                'Pending'),
                             (assignment.date_submitted === null) ?
                             $('<td>').append(
                                 $('<button>')
@@ -72,22 +88,39 @@
                                 .addClass('btn btn-outline-primary')
                                 .click(function() {
                                     window.location.href =
-                                        "/pe-internal-customers/appraisalForm" +
+                                        "{{ route('ce.viewICAppraisalForm') }}" +
                                         "?appraisal_id=" + encodeURIComponent(assignment
                                             .appraisal_id) +
                                         "&appraisee_account_id=" + encodeURIComponent(
                                             assignment.employee.account_id) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
+                                        ) +
                                         "&appraisee_department=" + encodeURIComponent(
                                             assignment.employee.department
                                             .department_name);
                                 })
                             ) :
-                            $('<td>').text('Unknown')
+                            $('<td>').append(
+                                $('<button>')
+                                .text('View')
+                                .addClass('btn btn-primary')
+                                .click(function() {
+                                    window.location.href =
+                                        "{{ route('ce.viewICAppraisalForm') }}" +
+                                        "?appraisal_id=" + encodeURIComponent(assignment
+                                            .appraisal_id) +
+                                        "&appraisee_account_id=" + encodeURIComponent(
+                                            assignment.employee.account_id) +
+                                        "&appraisee_name=" + encodeURIComponent(
+                                            `${assignment.employee.first_name} ${assignment.employee.last_name}`
+                                        ) +
+                                        "&appraisee_department=" + encodeURIComponent(
+                                            assignment.employee.department
+                                            .department_name);
+                                })
+                            )
                         );
-
                         tableBody.append(row);
                     });
                 },

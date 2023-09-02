@@ -184,7 +184,7 @@ class EvaluationYearController extends Controller
     })->get();
 
     foreach ($employeesWithPEAccounts as $employee) {
-      $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer', 'internal customer'];
+      $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
 
       foreach ($evaluationTypes as $evaluationType) {
         $evaluatorId = ($evaluationType === 'self evaluation') ? $employee->employee_id : null;

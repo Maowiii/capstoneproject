@@ -14,7 +14,15 @@
             option from the provided choices using the radio buttons. This will make us aware of a problem, complaints, or
             an opportunity to make a suggestion, and to recognize or commend for a job well done.</p>
 
-        <h5>Name of the staff to be evaluated: <i><u>{{ urldecode(request('appraisee_name')) }}</u></i></h5>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <h5>Name of the staff to be evaluated:</h5>
+            </div>
+            <div class="col-auto">
+                <input class="form-control" type="text" placeholder="{{ urldecode(request('appraisee_name')) }}"
+                    name="name" disabled>
+            </div>
+        </div>
 
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
@@ -51,70 +59,110 @@
         <textarea class="form-control" id="comments_area"></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
-        <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
+        <button type="button" class="btn btn-primary medium-column" id='view-btn'>View</button>
+    </div>
+
+    <div class="modal fade" id="signatory_modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">Signatories</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="signtable">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:20%" id="partieshead">Parties</th>
+                                <th scope="col" style="width:20%" id="fullnamehead">Name</th>
+                                <th scope="col" style="width:25%" id="signhead">Signature</th>
+                                <th scope="col" style="width:15%" id="datehead">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="imageModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
+                    <button type="button" class="btn-close" aria-label="Close" id="esig-close-btn"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         $(document).ready(function() {
-
-            $('#service_area').on('blur', function() {
-                var newService = $(this).val();
-                updateService(newService);
+            $(document).on('click', '#view-btn', function() {
+                loadSignature();
+                $('#signatory_modal').modal('show');
             });
 
-            $('#comments_area').on('blur', function() {
-                var newSuggestion = $(this).val();
-
-                updateSuggestion(newSuggestion);
+            $(document).on('click', '#view-sig-btn', function() {
+                $('#signatory_modal').modal('hide');
+                $('#imageModal').modal('show');
             });
 
-            function updateSuggestion(value) {
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
+                $('#signatory_modal').modal('show');
+            });
+
+            $('textarea').prop('disabled', true);
+
+            function loadSignature() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
 
                 $.ajax({
-                    url: '{{ route('updateSuggestion') }}',
-                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('pe.loadSignatures') }}',
+                    type: 'GET',
                     data: {
-                        newSuggestion: value,
-                        appraisalId: appraisalId
+                        appraisalId: appraisalId,
                     },
                     success: function(response) {
-                        console.log('Backend updated successfully.');
-                        $('#comments_area').removeClass('is-invalid');
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseText) {
-                            console.log('Error: ' + xhr.responseText);
-                        } else {
-                            console.log('An error occurred.');
-                        }
-                    }
-                });
-            }
+                        if (response.success) {
+                            $('#signtable tbody').empty();
+                            var newRow = $('<tr>').addClass('align-middle');
+                            newRow.append($('<td>').text('Internal Customer'));
+                            newRow.append($('<td>').text(response.full_name));
 
-            function updateService(value) {
-                console.log(value);
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
+                            $('#modalImage').attr('src', response.sign_data);
 
-                $.ajax({
-                    url: '{{ route('updateService') }}',
-                    type: 'POST',
-                    data: {
-                        newService: value,
-                        appraisalId: appraisalId
-                    },
-                    success: function(response) {
-                        console.log('Backend updated successfully.');
-                        $('#service_area').removeClass('is-invalid');
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseText) {
-                            console.log('Error: ' + xhr.responseText);
+                            if (response.sign_data) {
+                                newRow.append($('<td>').addClass('align-middle').html(
+                                    '<button type="button" class="btn btn-outline-primary" id="view-sig-btn">' +
+                                    'View Signature' +
+                                    '</button>'
+                                ));
+                            }
+
+                            if (response.date_submitted) {
+                                newRow.append($('<td>').text(response.date_submitted));
+                            } else {
+                                newRow.append($('<td>').text('-'));
+                            }
+
+                            $('#signtable tbody').append(newRow);
                         } else {
-                            console.log('An error occurred.');
+                            console.log('fail');
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
                     }
                 });
             }
@@ -148,6 +196,7 @@
                         if (response.success) {
                             $('#service_area').val(response.customerService);
                             $('#comments_area').val(response.suggestion);
+                            $('input[type="radio"]').prop('disabled', true);
                         } else {
                             console.log('Comments not found or an error occurred.');
                         }
@@ -162,55 +211,12 @@
                 });
             }
 
-
-            $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
-                var clickedRadio = $(this);
-
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
-
-                var radioButtonId = clickedRadio.attr('id');
-                var questionId = radioButtonId.split('_')[1];
-                var score = clickedRadio.val();
-                console.log('Question ID: ', questionId);
-
+            function loadICTable() {
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('saveICScores') }}',
-                    type: 'POST',
-                    data: {
-                        questionId: questionId,
-                        score: score,
-                        appraisalId: appraisalId
-                    },
-                    success: function(response) {
-                        console.log('Score saved for question ID:', questionId);
-                        clickedRadio.closest('tr').removeClass(
-                            'table-danger');
-                        totalScore();
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseText) {
-                            console.log('Error: ' + xhr.responseText);
-                        } else {
-                            console.log('An error occurred.');
-                        }
-                    }
-                });
-            });
-
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            function loadICTable() {
-                $.ajax({
-                    url: '/editable-internal-customer-form/getICQuestions',
+                    url: '{{ route('pe.getICQuestions') }}',
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -222,20 +228,32 @@
                             $.each(response.ICques, function(index, formquestions) {
                                 var questionId = formquestions.question_id;
 
-                                var row = `<tr>
-                        <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
-                        <td class="align-baseline text-start editable" data-questionid="${questionId}">
-                            ${formquestions.question}
-                        </td>
-                        <td class="align-middle likert-column">
-                            @for ($i = 5; $i >= 1; $i--)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
-                                    <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
-                                </div>
-                            @endfor
-                        </td>
-                    </tr>`;
+                                var row = $('<tr>');
+                                row.append($('<td>').addClass('align-middle').text(
+                                    questionCounter));
+                                row.append($('<td>').addClass(
+                                    'align-baseline text-start editable').attr(
+                                    'data-questionid', questionId).text(formquestions
+                                    .question));
+
+                                var likertColumn = $('<td>').addClass(
+                                    'align-middle likert-column');
+                                for (let i = 5; i >= 1; i--) {
+                                    var formCheckDiv = $('<div>').addClass(
+                                        'form-check form-check-inline');
+                                    var input = $('<input>').addClass('form-check-input').attr({
+                                        type: 'radio',
+                                        id: `score_${questionId}_${i}`,
+                                        name: `ic_${questionId}`,
+                                        value: i
+                                    });
+                                    var label = $('<label>').addClass('form-check-label').attr(
+                                        'for', `score_${questionId}_${i}`).text(i);
+
+                                    formCheckDiv.append(input).append(label);
+                                    likertColumn.append(formCheckDiv);
+                                }
+                                row.append(likertColumn);
 
                                 tbody.append(row);
                                 loadSavedScore(questionId);
@@ -258,6 +276,9 @@
                 var appraisalId = urlParams.get('appraisal_id');
 
                 $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: '{{ route('getSavedICScores') }}',
                     type: 'GET',
                     data: {
@@ -271,6 +292,8 @@
                                 $(`input[name="ic_${questionId}"][value="${savedScore}"]`).prop(
                                     'checked', true);
                             }
+                        } else {
+                            console.log('Failed');
                         }
                         totalScore();
                     },
@@ -280,43 +303,18 @@
                 });
             }
 
-            $('#submit-btn').on('click', function() {
-                $('#IC_table td').removeClass('is-invalid');
-                $('#service_area, #comments_area').removeClass(
-                'is-invalid');
-
-                var allRadioChecked = true;
-                $('#IC_table tbody tr').each(function() {
-                    var questionId = $(this).find('.form-check-input').attr('id').split('_')[1];
-                    var anyRadioChecked = false;
-
-                    $(this).find('.form-check-input').each(function() {
-                        if ($(this).prop('checked')) {
-                            anyRadioChecked = true;
-                        }
-                    });
-
-                    if (!anyRadioChecked) {
-                        allRadioChecked = false;
-                        $(this).find('.form-check-input').closest('tr').addClass('table-danger');
-                    }
+            function dataURItoBlob(dataURI) {
+                var byteString = atob(dataURI.split(',')[1]);
+                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], {
+                    type: mimeString
                 });
-
-                var serviceValue = $('#service_area').val();
-                var suggestionValue = $('#comments_area').val();
-                var allTextAreasFilled = (serviceValue.trim() !== '') && (suggestionValue.trim() !== '');
-
-                if (!allTextAreasFilled) {
-                    $('#service_area, #comments_area').addClass(
-                    'is-invalid');
-                }
-
-                if (allRadioChecked && allTextAreasFilled) {
-                  // DITO IOOPEN MODAL
-                } else {
-                    console.log('Please complete all fields and select all radio buttons.');
-                }
-            });
+            }
 
             loadICTable();
             loadTextAreas();
