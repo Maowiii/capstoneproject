@@ -636,10 +636,10 @@
                 clonedRow.find('input[type="radio"]').prop('checked', false);
                 clonedRow.find('select option').prop('selected', false);
 
-                // Change the name attributes of input fields in the cloned row
-                var kraID = clonedRow.find('input[name$="[kraID]"]').val();
-                var newRowNumber = parseInt(kraID) + 1;
+                // Use the number of rows as the index
+                var newRowNumber = 0
 
+                // Change the name attributes of input fields in the cloned row
                 clonedRow.find('[name$="[KRA]"]').attr('name', 'KRA[' + newRowNumber +
                     '][{{ $appraisalId }}][KRA]').prop('readonly', false);
 
