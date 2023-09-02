@@ -237,7 +237,7 @@
                     const kraEndDate = new Date($('#kra_end').val());
                     const prStartInput = $('#pr_start');
                     const minStartDate = new Date(kraEndDate);
-                    minStartDate.setDate(kraEndDate.getDate() + 3);
+                    minStartDate.setDate(kraEndDate.getDate() + 1);
                     const prMinStartDate = minStartDate.toISOString().split('T')[0];
                     prStartInput.prop('min', prMinStartDate);
                     prStartInput.prop('disabled', false);
@@ -259,7 +259,7 @@
                     const prEndDate = new Date($('#pr_end').val());
                     const evalStartInput = $('#eval_start');
                     const minStartDate = new Date(prEndDate);
-                    minStartDate.setDate(prEndDate.getDate() + 3);
+                    minStartDate.setDate(prEndDate.getDate() + 1);
                     const evalMinStartDate = minStartDate.toISOString().split('T')[0];
                     evalStartInput.prop('min', evalMinStartDate);
                     evalStartInput.prop('disabled', false);
@@ -459,7 +459,7 @@
                     const kraEndDate = new Date($('#kra_end').val());
                     const prStartInput = $('#pr_start');
                     const minStartDate = new Date(kraEndDate);
-                    minStartDate.setDate(kraEndDate.getDate() + 3);
+                    minStartDate.setDate(kraEndDate.getDate() + 1);
                     const prMinStartDate = minStartDate.toISOString().split('T')[0];
                     pr_start.prop('min', prMinStartDate);
                 }
@@ -478,7 +478,7 @@
                     const prEndDate = new Date($('#pr_end').val());
                     const evalStartInput = $('#eval_start');
                     const minStartDate = new Date(prEndDate);
-                    minStartDate.setDate(prEndDate.getDate() + 3);
+                    minStartDate.setDate(prEndDate.getDate() + 1);
                     const evalMinStartDate = minStartDate.toISOString().split('T')[0];
                     eval_start.prop('min', evalMinStartDate);
                     eval_start.prop('disabled', false);

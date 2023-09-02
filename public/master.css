@@ -301,6 +301,15 @@ label {
     flex: 1;
 }
 
+.dashboard-container {
+    background: #ffffff;
+    padding: 30px;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    min-width: 400px;
+}
+
 text,
 .text-blue {
     color: #143a67 !important;
@@ -466,10 +475,10 @@ textarea {
 }
 
 .is-grayed {
-    background-color: #E9ECEF !important;
+    background-color: #e9ecef !important;
     color: #999 !important;
 }
-#signatory{
+#signatory {
     display: flex;
     justify-content: center;
 }

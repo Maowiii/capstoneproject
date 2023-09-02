@@ -112,6 +112,8 @@ Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('v
 Route::get('/pe-dashboard', [PEDashboardController::class, 'displayPEDashboard'])->name('viewPEDashboard');
 Route::get('/get-is-appraisal-data', [SelfEvaluationController::class, 'showAppraisalForm'])->name('getISAppraisalData');
 Route::post('/pe-dashboard/submit-fist-login', [PEDashboardController::class, 'submitPEFirstLogin'])->name('pe.submitFirstLogin');
+Route::get('/pe-dashboard/get-notifications', [PEDashboardController::class, 'getNotifications'])->name('pe.getNotifications');
+
 
 // Appraisals Overview
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');
@@ -142,6 +144,10 @@ Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController:
 // Dashboard
 Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'displayCEDashboard'])->name('viewCEDashboard');
 Route::get('/dashboard-contractual-employee/get-notifications', [CEDashboardController::class, 'getNotifications'])->name('ce.getNotifications');
+Route::get('/dashboard-contractual-employee/get-remaining-appraisals', [CEDashboardController::class, 'getRemainingAppraisals'])->name('ce.getRemainingAppraisals');
+Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardController::class, 'submitFirstLogin'])->name('ce.submitFirstLogin');
+
+
 
 
 // Internal Customers
