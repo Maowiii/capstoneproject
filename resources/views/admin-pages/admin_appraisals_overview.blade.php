@@ -59,13 +59,54 @@
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
                     <th>Signatures</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
 
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="signatory">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">Signatories</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="signtable">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
+                                <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
+                                <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
+                                <th scope="col" style="width:15%" id="datehead">DATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Signature Preview</h5>
+                    <button type="button" class="btn-close" id="esig-close-btn"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         $(document).ready(function() {
@@ -74,6 +115,9 @@
 
         function loadAdminAppraisalsTable() {
             $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 url: "{{ route('loadAdminAppraisals') }}",
                 type: 'GET',
                 success: function(response) {
@@ -83,8 +127,9 @@
                         $.each(groupedAppraisals, function(employeeId, data) {
                             var employee = data.employee;
                             var appraisals = data.appraisals;
+                            var employeeID = employee.employee_id;
 
-                            var row = $("<tr>");
+                            var row = $("<tr>").data("employeeID", employeeID);
                             row.append($("<td>").text(employee.first_name + ' ' + employee.last_name));
 
                             if (typeof employee.department.department_name === "undefined") {
@@ -220,8 +265,22 @@
                                         );
                                     }
                                 }
-
                                 row.append(cell);
+                            });
+
+                            row.append($(
+                                "<button type='button' class='btn btn-outline-primary' id='view-btn'>View</button>"
+                            ));
+
+                            $(document).on('click', '#view-btn', function() {
+                                var closestTr = $(this).closest('tr');
+
+                                var employeeID = closestTr.data(
+                                    'employeeID');
+
+                                $('#signatory_modal').modal('show');
+                                loadSignatureOverview(employeeID);
+                                console.log(employeeID);
                             });
 
                             $('#admin_appraisals_table tbody').append(row);
@@ -238,5 +297,107 @@
                 }
             });
         }
+
+        function loadSignatureOverview(employeeID) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ route('ad.loadSignaturesOverview') }}",
+                type: 'GET',
+                data: {
+                    employeeID: employeeID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#signtable tbody').empty();
+                        console.log(response.appraisals);
+
+                        response.appraisals.forEach(function(appraisal) {
+                            const employee = appraisal.employee;
+                            const evaluator = appraisal.evaluator;
+                            const evaluatorFullName = evaluator ? evaluator.first_name + ' ' + evaluator
+                                .last_name : '-';
+
+                            const appraisalType = appraisal.evaluation_type;
+
+                            var row = $('<tr>');
+                            var appraisalId = appraisal.appraisal_id;
+
+
+                            if (appraisalType === 'self evaluation') {
+                                row.append($('<td class="align-middle">').text('Appraisee'));
+                            } else if (appraisalType === 'is evaluation') {
+                                row.append($('<td class="align-middle">').text('Immediate Superior'));
+                            } else if (appraisalType === 'internal customer 1') {
+                                row.append($('<td class="align-middle">').text('Internal Customer 1'));
+                            } else if (appraisalType === 'internal customer 2') {
+                                row.append($('<td class="align-middle">').text('Internal Customer 2'));
+                            }
+
+                            if (employee) {
+                                row.append($('<td class="align-middle">').text(evaluatorFullName));
+                            } else {
+                                row.append($('<td class="align-middle">').text('-'));
+                            }
+
+                            var viewButton =
+                                '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
+                                appraisalId + '">View</button>';
+
+                            if (appraisal.date_submitted != null) {
+                                row.append($('<td class="align-middle">').html(viewButton));
+
+                                row.append($('<td class="align-middle">').text(appraisal.date_submitted));
+                            } else {
+                                row.append($('<td class="align-middle">').text('-'));
+                                row.append($('<td class="align-middle">').text('-'));
+                            }
+
+                            $('#signtable tbody').append(row);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    console.log(errorMessage);
+                }
+            });
+        }
+
+        $(document).on('click', '.view-esig-btn', function() {
+            var appraisalID = $(this).attr('appraisal-id');
+            console.log('Button clicked with appraisal ID: ' + appraisalID);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadSignature') }}',
+                type: 'GET',
+                data: {
+                    appraisalID: appraisalID,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('success');
+                        $('#modalImage').attr('src', response.sign_data);
+                    } else {
+                        console.log('fail');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+
+            $('#signatory_modal').modal('hide');
+            $('#imageModal').modal('show');
+        });
+
+        $(document).on('click', '#esig-close-btn', function() {
+            $('#imageModal').modal('hide');
+        });
     </script>
 @endsection

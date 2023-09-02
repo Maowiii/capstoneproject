@@ -45,7 +45,7 @@ class Appraisals extends Model
 
     public function signatures()
     {
-        return $this->hasMany(Signature::class, 'appraisal_id');
+        return $this->hasOne(Signature::class, 'appraisal_id');
     }
 }
 
