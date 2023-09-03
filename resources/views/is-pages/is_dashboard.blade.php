@@ -14,6 +14,16 @@
         </script>
     @endif
 
+    <div class="d-flex justify-content-between gap-3">
+        <div class="dashboard-small-container flex-fill" id="appraisalContainer"></div>
+        <div class="dashboard-small-container flex-fill" id="KRAsContainer"></div>
+        <div class="dashboard-small-container flex-fill" id="assignedICContainer"></div>
+    </div>
+    <div class="content-container">
+        <h4>Notifications:</h4>
+        <ul class="list-group" id="notifications"></ul>
+    </div>
+
     <div class="modal fade" id="firstLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -35,11 +45,11 @@
         </div>
     </div>
 
-    <div class="content-container">
-      <!-- Content -->
-    </div>
-
     <script>
+        $(document).ready(function() {
+            getNotifications();
+        });
+
         $('#position').change(function() {
             $('#position').removeClass('is-invalid');
         });
@@ -77,6 +87,62 @@
                     }
                 });
             }
+        }
+
+        function getNotifications() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('is.getNotifications') }}',
+                type: 'GET',
+                success: function(response) {
+                    if (response.notifications && response.notifications.length > 0) {
+                        var notificationsContainer = $('#notifications');
+
+                        response.notifications.forEach(function(notification) {
+                            var listItem = $('<li class="list-group-item">');
+                            var notificationContent = $('<div class="d-flex align-items-center">');
+                            var icon = $('<i class="bx bx-fw bx-bell"></i>');
+                            var text = $('<div>').text(notification);
+
+                            notificationContent.append(icon);
+                            notificationContent.append(text);
+                            listItem.append(notificationContent);
+
+                            notificationsContainer.append(listItem);
+                        });
+                    } 
+                    if (response.data) {
+                        console.log(response.data);
+
+                        var totalICCount = response.data.totalICCount;
+                        var assignedICCount = response.data.assignedICCount;
+                        var encodedKRACount = response.data.encodedKRACount;
+                        var totalKRACount = response.data.totalKRACount;
+                        var totalAppraisalCount = response.data.totalAppraisalCount;
+                        var completedAppraisalCount = response.data.completedAppraisalCount;
+
+                        console.log('Encoded KRA Count: ' + encodedKRACount);
+                        console.log('Completed Appraisal Count: ' + completedAppraisalCount);
+                        console.log('Total Appraisal Count: ' + totalAppraisalCount);
+                        console.log('Total IC Count: ' + totalICCount);
+
+                        $('#appraisalContainer').html(
+                            '<h4 class="text-center">Completed Appraisals:</h4><h5 class="text-center">' +
+                            completedAppraisalCount + '/' + totalAppraisalCount + '</h5>');
+                        $('#KRAsContainer').html(
+                            '<h4 class="text-center">KRA Encoded:</h4><h5 class="text-center">' +
+                            encodedKRACount + '/' + totalAppraisalCount + '</h5>');
+                        $('#assignedICContainer').html(
+                            '<h4 class="text-center">Assigned IC:</h4><h5 class="text-center">' +
+                            assignedICCount + '/' + totalICCount + '</h5>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
         }
     </script>
 @endsection

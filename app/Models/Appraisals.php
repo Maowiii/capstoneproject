@@ -20,6 +20,7 @@ class Appraisals extends Model
         'evaluator_id',
         'date_submitted',
         'signature',
+        'locked'
     ];
 
     public function __construct(array $attributes = [])
