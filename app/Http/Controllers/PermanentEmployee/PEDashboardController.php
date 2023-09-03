@@ -113,7 +113,7 @@ class PEDashboardController extends Controller
       }
 
       if ($pendingAppraisalsCount > 0) {
-        $notifications[] = "You have $pendingAppraisalsCount pending appraisals to complete.";
+        $notifications[] = "You have $pendingAppraisalsCount pending internal customer appraisals to complete.";
       }
 
       // Ending
