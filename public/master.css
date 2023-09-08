@@ -310,15 +310,6 @@ label {
     min-width: 400px;
 }
 
-.dashboard-small-container {
-    background: #ffffff;
-    padding: 30px;
-    height: auto;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    min-width: 200px;
-}
-
 text,
 .text-blue {
     color: #143a67 !important;

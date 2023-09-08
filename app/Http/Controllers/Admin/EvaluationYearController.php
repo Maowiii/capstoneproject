@@ -99,7 +99,6 @@ class EvaluationYearController extends Controller
       $table->integer('employee_id');
       $table->integer('evaluator_id')->nullable();
       $table->date('date_submitted')->nullable();
-      $table->boolean('locked')->default(false);
     });
 
     Schema::connection('mysql')->create('form_questions' . $sy, function ($table) {
@@ -184,25 +183,11 @@ class EvaluationYearController extends Controller
       $query->where('type', 'PE');
     })->get();
 
-    $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
-
     foreach ($employeesWithPEAccounts as $employee) {
+      $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+
       foreach ($evaluationTypes as $evaluationType) {
-        $evaluatorId = null;
-
-        if ($evaluationType === 'self evaluation') {
-          $evaluatorId = $employee->employee_id;
-        } elseif ($evaluationType === 'is evaluation') {
-          $departmentId = $employee->department_id;
-          $isAccount = Accounts::where('type', 'IS')
-            ->whereHas('employee', function ($query) use ($departmentId) {
-              $query->where('department_id', $departmentId);
-            })->first();
-
-          if ($isAccount) {
-            $evaluatorId = $isAccount->employee->employee_id;
-          }
-        }
+        $evaluatorId = ($evaluationType === 'self evaluation') ? $employee->employee_id : null;
 
         Appraisals::create([
           'evaluation_type' => $evaluationType,

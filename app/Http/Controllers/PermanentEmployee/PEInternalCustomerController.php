@@ -168,18 +168,15 @@ class PEInternalCustomerController extends Controller
 
     Signature::updateOrCreate(
       ['appraisal_id' => $appraisalId],
-      ['sign_data' => $esignature, 'sign_type' => 'IC']
+      ['sign_data' => $esignature, 'sign_type' => 'IC'] // The data to update or create
     );
 
     $appraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
 
     if ($appraisal) {
-      $appraisal->update(
-        [
-          'date_submitted' => now(),
-          'locked' => true
-        ]
-      );
+      $appraisal->update([
+        'date_submitted' => now()
+      ]);
       return response()->json(['success' => true]);
     } else {
       return response()->json(['success' => false]);
@@ -188,14 +185,24 @@ class PEInternalCustomerController extends Controller
 
   public function formChecker(Request $request)
   {
+    try {
+      $appraisalId = $request->input('appraisalId');
 
-    $appraisalId = $request->input('appraisalId');
-    $appraisal = Appraisals::find($appraisalId);
-    $locked = $appraisal->locked;
+      $appraisal = Appraisals::find($appraisalId);
+      $signature = Signature::where('appraisal_id', $appraisalId)->first();
 
-    return response()->json([
-      'form_submitted' => $locked,
-    ]);
+      $dateSubmittedExists = !empty($appraisal->date_submitted);
+      $signDataExists = !empty($signature->sign_data);
 
+      $formSubmitted = $dateSubmittedExists && $signDataExists;
+
+      return response()->json([
+        'form_submitted' => $formSubmitted,
+      ]);
+    } catch (\Exception $e) {
+      Log::error('An error occurred: ' . $e->getMessage()); // Log the error message
+      return response()->json(['error' => 'An error occurred.']); // Return an error response
+    }
   }
+
 }
