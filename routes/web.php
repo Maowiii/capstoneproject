@@ -97,6 +97,7 @@ Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternal
 // Dashboard
 Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'displayISDashboard'])->name('viewISDashboard');
 Route::post('/dashboard-immediate-superior/submit-position', [ISDashboardController::class, 'submitISPosition'])->name('is.submitISPosition');
+Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardController::class, 'getNotifications'])->name('is.getNotifications');
 
 // Appraisals Overview
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');

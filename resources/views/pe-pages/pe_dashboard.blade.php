@@ -13,9 +13,15 @@
         </script>
     @endif
 
-    <div class="content-container">
-      <h4>Notifications:</h4>
-        <ul class="list-group" id="notifications"></ul>
+    <div class="d-flex justify-content-between gap-3">
+        <div class="dashboard-container flex-grow-1">
+            <h4>Notifications:</h4>
+            <ul class="list-group" id="notifications"></ul>
+        </div>
+        <div class="dashboard-container" id="chart">
+            <h4>Key Results Area:</h4>
+            <canvas id="donutChart"></canvas>
+        </div>
     </div>
 
     <!-- Modal -->
