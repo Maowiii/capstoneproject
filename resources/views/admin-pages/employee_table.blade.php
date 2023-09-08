@@ -174,7 +174,7 @@
             return $('<div>').addClass('input-group').attr('id', 'passwordContainer-' +
                 account.account_id).append(
                 $('<button>').addClass('btn btn-outline-primary').html(
-                    '<i class="bx bx-reset"></i> | Reset Password').click(function() {
+                    'Reset Password').click(function() {
                     $('#resetPasswordName').text(account.employee.first_name +
                         ' ' + account.employee.last_name);
                     $('#resetPasswordModal').modal('show');
@@ -188,7 +188,7 @@
 
         function loadTableData() {
             $.ajax({
-                url: '{{ route('employees.getData') }}',
+                url: '{{ route('ad.getEmployeesData') }}',
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -204,7 +204,7 @@
                             var statusAction = account.status === 'active' ? 'deactivate' : 'activate';
 
                             var newRow = $('<tr>').attr('id', account.account_id).append(
-                                $('<td>').text(account.email),
+                                $('<td>').html(account.email + '<br /><p class="fst-italic">' + account.employee.employee_number + '</p>'),
                                 $('<td>').text(account.employee.first_name),
                                 $('<td>').text(account.employee.last_name),
                                 $('<td>').append(createResetButton(account)),

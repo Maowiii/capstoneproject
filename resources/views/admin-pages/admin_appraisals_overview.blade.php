@@ -5,43 +5,29 @@
 @endsection
 
 @section('content')
+    <select class="form-select mb-3" id="evaluation-year-select">
+        @foreach ($evaluationYears as $year)
+            <option value="{{ $year->sy_start }}_{{ $year->sy_end }}" @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                {{ $year->sy_start }} - {{ $year->sy_end }}
+            </option>
+        @endforeach
+    </select>
+
     <div class='d-flex gap-3'>
-        <div class="content-container text-middle">
-            <h4>School Year:</h4>
-            @if ($activeEvalYear)
-                <p>{{ $activeEvalYear->sy_start }} - {{ $activeEvalYear->sy_end }}</p>
-            @else
-                <p>-</p>
-            @endif
+        <div class="content-container text-middle" id="school-year-container">
+
         </div>
-        <div class="content-container text-middle">
-            <h4>KRA Encoding:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->kra_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->kra_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
+        <div class="content-container text-middle" id="kra-encoding-container">
+
         </div>
-        <div class="content-container text-middle">
-            <h4>Performance Review:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->pr_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->pr_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
+        <div class="content-container text-middle" id="performance-review-container">
+
         </div>
-        <div class="content-container text-middle">
-            <h4>Evaluation:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
+        <div class="content-container text-middle" id="evaluation-container">
+
         </div>
     </div>
+
     <div class="content-container">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Search">
@@ -78,10 +64,11 @@
                     <table class="table" id="signtable">
                         <thead>
                             <tr>
-                                <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
-                                <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
-                                <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
-                                <th scope="col" style="width:15%" id="datehead">DATE</th>
+                                <th scope="col">PARTIES</th>
+                                <th scope="col">FULL NAME</th>
+                                <th scope="col">SIGNATURE</th>
+                                <th scope="col">DATE</th>
+                                <th scope="col">ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,15 +100,19 @@
             loadAdminAppraisalsTable();
         });
 
-        function loadAdminAppraisalsTable() {
+        function loadAdminAppraisalsTable(selectedYear = null) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "{{ route('loadAdminAppraisals') }}",
                 type: 'GET',
+                data: {
+                    selectedYear: selectedYear
+                },
                 success: function(response) {
                     if (response.success) {
+                        $('#admin_appraisals_table tbody').empty();
                         var groupedAppraisals = response.groupedAppraisals;
 
                         $.each(groupedAppraisals, function(employeeId, data) {
@@ -129,7 +120,7 @@
                             var appraisals = data.appraisals;
                             var employeeID = employee.employee_id;
 
-                            var row = $("<tr>").data("employeeID", employeeID);
+                            var row = $("<tr class='align-middle'>").data("employeeID", employeeID);
                             row.append($("<td>").text(employee.first_name + ' ' + employee.last_name));
 
                             if (typeof employee.department.department_name === "undefined") {
@@ -269,7 +260,7 @@
                             });
 
                             row.append($(
-                                "<button type='button' class='btn btn-outline-primary' id='view-btn'>View</button>"
+                                "<td><button type='button' class='btn btn-outline-primary' id='view-btn'>View</button></td>"
                             ));
 
                             $(document).on('click', '#view-btn', function() {
@@ -286,6 +277,29 @@
                             $('#admin_appraisals_table tbody').append(row);
                         });
 
+                        console.log(response.selectedYearDates);
+
+                        if (response.selectedYearDates) {
+                            $('#school-year-container').html('<h4>School Year:</h4><p>' + formatDate(response
+                                    .selectedYearDates.sy_start) + ' - ' + formatDate(response
+                                    .selectedYearDates.sy_end) +
+                                '</p>');
+                            $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + formatDate(response
+                                    .selectedYearDates.kra_start) + ' - ' + formatDate(response
+                                    .selectedYearDates.kra_end) +
+                                '</p>');
+                            $('#performance-review-container').html('<h4>Performance:</h4><p>' + formatDate(
+                                    response
+                                    .selectedYearDates.pr_start) + ' - ' + formatDate(response
+                                    .selectedYearDates.pr_end) +
+                                '</p>');
+                            $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + formatDate(response
+                                    .selectedYearDates.eval_start) + ' - ' + formatDate(response
+                                    .selectedYearDates
+                                    .eval_end) +
+                                '</p>');
+                        }
+
                     } else {
                         console.log(response.error);
                     }
@@ -295,6 +309,14 @@
                         .responseJSON.error : 'An error occurred.';
                     console.log(errorMessage);
                 }
+            });
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: '2-digit',
             });
         }
 
@@ -313,49 +335,64 @@
                         $('#signtable tbody').empty();
                         console.log(response.appraisals);
 
+                        const appraisalTypeMap = {
+                            'self evaluation': 'Appraisee',
+                            'is evaluation': 'Immediate Superior',
+                            'internal customer 1': 'Internal Customer 1',
+                            'internal customer 2': 'Internal Customer 2'
+                        };
+
                         response.appraisals.forEach(function(appraisal) {
                             const employee = appraisal.employee;
                             const evaluator = appraisal.evaluator;
                             const evaluatorFullName = evaluator ? evaluator.first_name + ' ' + evaluator
                                 .last_name : '-';
-
                             const appraisalType = appraisal.evaluation_type;
-
                             var row = $('<tr>');
                             var appraisalId = appraisal.appraisal_id;
 
+                            const appraisalTypeText = appraisalTypeMap[appraisalType] || appraisalType;
 
-                            if (appraisalType === 'self evaluation') {
-                                row.append($('<td class="align-middle">').text('Appraisee'));
-                            } else if (appraisalType === 'is evaluation') {
-                                row.append($('<td class="align-middle">').text('Immediate Superior'));
-                            } else if (appraisalType === 'internal customer 1') {
-                                row.append($('<td class="align-middle">').text('Internal Customer 1'));
-                            } else if (appraisalType === 'internal customer 2') {
-                                row.append($('<td class="align-middle">').text('Internal Customer 2'));
-                            }
+                            row.append($('<td>').text(appraisalTypeText));
 
                             if (employee) {
-                                row.append($('<td class="align-middle">').text(evaluatorFullName));
+                                row.append($('<td>').text(evaluatorFullName));
                             } else {
-                                row.append($('<td class="align-middle">').text('-'));
+                                row.append($('<td>').text('-'));
                             }
 
                             var viewButton =
                                 '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
                                 appraisalId + '">View</button>';
 
-                            if (appraisal.date_submitted != null) {
-                                row.append($('<td class="align-middle">').html(viewButton));
+                            var unlockButton =
+                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
+                                '">Unlock</button>';
 
-                                row.append($('<td class="align-middle">').text(appraisal.date_submitted));
+                            var lockButton =
+                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
+                                '">Lock</button>';
+
+                            if (appraisal.locked == true) {
+                                if (appraisal.date_submitted == null) {
+                                    row.append($('<td>').text('-'));
+                                    row.append($('<td>').text('-'));
+                                } else {
+                                    row.append($('<td>').html(viewButton));
+                                    row.append($('<td>').text(appraisal.date_submitted));
+                                }
+                                row.append($('<td>').html(unlockButton));
                             } else {
-                                row.append($('<td class="align-middle">').text('-'));
-                                row.append($('<td class="align-middle">').text('-'));
+                                row.append($('<td>').text('-'));
+                                row.append($('<td>').text('-'));
+                                row.append($('<td>').html(lockButton));
                             }
 
                             $('#signtable tbody').append(row);
                         });
+
                     }
                 },
                 error: function(xhr, status, error) {
@@ -396,8 +433,53 @@
             $('#imageModal').modal('show');
         });
 
+        $(document).on('click', '.lock-unlock-btn', function() {
+            var appraisalID = $(this).attr('appraisal-id');
+            var buttonID = $(this).attr('id');
+            console.log('Button ID: ' + buttonID);
+            console.log('Appraisal Locked: ' + appraisalID);
+
+            var $button = $('#' + buttonID);
+            console.log('Selected Button:', $button);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.lockUnlockAppraisal') }}',
+                type: 'GET',
+                data: {
+                    appraisalID: appraisalID,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        if (response.locked == true) {
+                            $button.text('Unlock');
+                            console.log('Unlocked');
+                        } else {
+                            $button.text('Lock');
+                            console.log('Locked');
+                        }
+                    } else {
+                        console.log('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+
+
         $(document).on('click', '#esig-close-btn', function() {
             $('#imageModal').modal('hide');
+        });
+
+        $('#evaluation-year-select').change(function() {
+            var selectedYear = $(this).val();
+            console.log(selectedYear);
+
+            loadAdminAppraisalsTable(selectedYear);
         });
     </script>
 @endsection

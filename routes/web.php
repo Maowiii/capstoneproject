@@ -63,10 +63,11 @@ Route::get('/admin-appraisals-overview/is-evaluation-form', [AdminAppraisalsOver
 Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
 Route::get('/admin-appraisals-overview/get-signatures', [AdminAppraisalsOverviewController::class, 'loadSignatureOverview'])->name('ad.loadSignaturesOverview');
 Route::get('/admin-appraisals-overview/load-signature-image', [AdminAppraisalsOverviewController::class, 'loadSignature'])->name('ad.loadSignature');
+Route::get('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
 
 // Employee User Table
 Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
-Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('employees.getData');
+Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('ad.getEmployeesData');
 Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
 Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmployee'])->name('add-new-employee');
 Route::post('/employees/reset-password', [EmployeeController::class, 'employeeResetPassword'])->name('employeeResetPassword');
