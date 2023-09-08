@@ -27,6 +27,7 @@
                 New Evaluation Year</button>
         </div>
 
+        <!-- New Eval Year Modal -->
         <div class="modal fade" id="startNewEvalYear" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -310,7 +311,7 @@
                                 '<td class="align-middle">' + evalyear.status +
                                 '<td class="align-middle">' +
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                '<button type="button" class="btn btn-outline-primary">View</button>' +
+                                '<button type="button" class="btn btn-outline-primary">Activate</button>' +
                                 '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
                                 '</tr>';
                             tbody.append(row);
@@ -439,6 +440,7 @@
                 const eval_start = $('#eval_start');
                 const eval_end = $('#eval_end');
 
+                // Set minimum value for kra_start as the current date
                 const currentDate = new Date().toISOString().split('T')[0];
                 kra_start.prop('min', currentDate);
 

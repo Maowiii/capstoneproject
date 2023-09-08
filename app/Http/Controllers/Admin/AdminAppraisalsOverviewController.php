@@ -7,67 +7,27 @@ use App\Models\Appraisals;
 use App\Models\EvalYear;
 use App\Models\Signature;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AdminAppraisalsOverviewController extends Controller
 {
   public function displayAdminAppraisalsOverview()
   {
-    $evaluationYears = EvalYear::all();
     $activeEvalYear = EvalYear::where('status', 'active')->first();
 
-    return view('admin-pages.admin_appraisals_overview', compact('evaluationYears', 'activeEvalYear'));
+    return view('admin-pages.admin_appraisals_overview', compact('activeEvalYear'));
   }
 
-  public function loadAdminAppraisals(Request $request)
+  public function loadAdminAppraisals()
   {
-    $selectedYear = $request->input('selectedYear');
-
-    $sy_start = null;
-    $sy_end = null;
-    $selectedYearDates = null;
-
-    if ($selectedYear) {
-      $parts = explode('_', $selectedYear);
-
-      if (count($parts) >= 2) {
-        $sy_start = $parts[0];
-        $sy_end = $parts[1];
+    $appraisals = Appraisals::with([
+      'employee' => function ($query) {
+        $query->whereHas('account', function ($subQuery) {
+          $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
+        });
       }
-
-      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
-      Log::info($selectedYearDates);
-
-      if (!$selectedYearDates) {
-        return response()->json(['success' => false, 'error' => 'Selected year not found.']);
-      }
-
-      $appraisalsModel = new Appraisals();
-      $table = 'appraisals_' . $selectedYear;
-      $appraisalsModel->setTable($table);
-
-      $appraisals = $appraisalsModel->with([
-        'employee' => function ($query) {
-          $query->whereHas('account', function ($subQuery) {
-            $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-          });
-        }
-      ])->get();
-    } else {
-      $selectedYearDates = EvalYear::where('status', 'active')->first();
-
-      $appraisals = Appraisals::with([
-        'employee' => function ($query) {
-          $query->whereHas('account', function ($subQuery) {
-            $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-          });
-        }
-      ])->get();
-
-      if (!$selectedYearDates) {
-        return response()->json(['success' => false, 'error' => 'Selected year not found.']);
-      }
-    }
+    ])
+      ->get();
 
     $groupedAppraisals = [];
     foreach ($appraisals as $appraisal) {
@@ -81,11 +41,8 @@ class AdminAppraisalsOverviewController extends Controller
       $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
     }
 
-    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
+    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals]);
   }
-
-
-
 
   public function loadSelfEvaluationForm()
   {
@@ -131,21 +88,4 @@ class AdminAppraisalsOverviewController extends Controller
       'sign_data' => $sign_data,
     ]);
   }
-
-  public function lockUnlockAppraisal(Request $request)
-  {
-    $appraisalID = $request->input('appraisalID');
-    $appraisal = Appraisals::find($appraisalID);
-
-    if ($appraisal) {
-      $locked = $appraisal->locked;
-
-      $appraisal->update(['locked' => !$locked]);
-
-      return response()->json(['success' => true, 'locked' => !$locked]);
-    } else {
-      return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
-    }
-  }
-
 }

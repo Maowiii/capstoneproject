@@ -97,34 +97,6 @@ class EmployeeController extends Controller
         'department_id' => $request->input('department')
       ]);
 
-      $activeYear = EvalYear::where('status', 'active')->first();
-      if ($activeYear && !in_array($account->type, ['AD', 'CE'])) {
-        $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
-        foreach ($evaluationTypes as $evaluationType) {
-          $evaluatorId = null;
-
-          if ($evaluationType === 'self evaluation') {
-            $evaluatorId = $employee->employee_id;
-          } elseif ($evaluationType === 'is evaluation') {
-            $departmentId = $employee->department_id;
-            $isAccount = Accounts::where('type', 'IS')
-              ->whereHas('employee', function ($query) use ($departmentId) {
-                $query->where('department_id', $departmentId);
-              })->first();
-
-            if ($isAccount) {
-              $evaluatorId = $isAccount->employee->employee_id;
-            }
-          }
-
-          Appraisals::create([
-            'evaluation_type' => $evaluationType,
-            'employee_id' => $employee->employee_id,
-            'evaluator_id' => $evaluatorId,
-          ]);
-        }
-      }
-
       $departments = Departments::all();
       return view('admin-pages.employee_table')->with('departments', $departments);
     }
