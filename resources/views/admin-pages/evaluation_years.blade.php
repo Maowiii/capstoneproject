@@ -310,7 +310,7 @@
                                 '<td class="align-middle">' + evalyear.status +
                                 '<td class="align-middle">' +
                                 '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                '<button type="button" class="btn btn-outline-primary">View</button>' +
+                                '<button type="button" class="btn btn-outline-primary">Activate</button>' +
                                 '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
                                 '</tr>';
                             tbody.append(row);
@@ -414,7 +414,6 @@
         $(document).ready(function() {
             const currentDate = new Date().toISOString().split('T')[0];
             $('#kra_start').prop('min', currentDate);
-
             $('#backbtn').hide();
             loadEvaluationYearTable();
 
