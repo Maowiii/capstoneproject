@@ -134,7 +134,7 @@
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
-                },
+                }, 
                 success: function(response) {
                     if (response.success) {
                         $('#IS_appraisals_table_body').empty();

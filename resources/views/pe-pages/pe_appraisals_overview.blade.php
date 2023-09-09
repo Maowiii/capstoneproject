@@ -155,16 +155,15 @@
                                         'internal customer')) {
                                     if (appraisal.evaluator_id === null) {
                                         // Append "N/A" to the second or third <td>
-                                        icLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .text('N/A');
+                                        icLink = $('<a>').addClass('btn btn-outline-secondary disabled')
+                                            .text('View');
                                     } else {
                                         // Append the Internal Customer link to the second or third <td>
                                         icLink = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href',
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
-                                            .text(appraisal.evaluator.first_name + ' ' +
-                                                appraisal.evaluator.last_name);
+                                            .text('View');
                                     }
 
                                     newRow.append($('<td>').append($('<div>').append(icLink)));

@@ -33,7 +33,7 @@ class PEInternalCustomerController extends Controller
 
     return response()->json($assignments);
   }
-
+ 
 
   public function getICQuestions()
   {

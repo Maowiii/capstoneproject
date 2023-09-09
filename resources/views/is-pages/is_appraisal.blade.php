@@ -5,13 +5,13 @@
 @endsection
 
 @section('content')
-    <!-- Modal -->
+     <!-- Modal -->
     <div class="modal fade" id="consentForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Consent Form</h1>
+                    <h1 class="modal-title fs-5" id="staicBackdropLabel">Consent Form</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -39,7 +39,6 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->first_name }}" readonly>
-
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -48,14 +47,12 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->job_title }}" readonly>
-
             </div>
             <div class="col-auto">
                 <label class="col-form-label">Department:</label>
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->department->department_name }}" readonly>
-
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -75,84 +72,81 @@
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->immediateSuperior->position ?? 'N/A' }}"
                     readonly>
-
             </div>
         </div>
-    </div>
+    </div> 
 
-    <form method="post" action="{{ route('saveISAppraisal') }}">
+     <form method="post" action="{{ route('saveISAppraisal') }}" enctype="multipart/form-data" class="needs-validation">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
-
 
         <div class='content-container'>
             <h2>Instructions</h2>
-            <p class='text-justify'>This performance appraisal is designed to improve organizational effectiveness and to
+            <p clas='text-justify'>This performance appraisal is designed to improve organizational effectiveness and to
                 assist
                 the job incumbent in
-                his/her job performance as well as his/her professional growth and development. Please take time to evaluate
+                hi/her job performance as well as his/her professional growth and development. Please take time to evaluate
                 the
                 job incumbent by completing this evaluation form. Please be reflective and candid in your responses. Kindly
-                submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
+                sumit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
         </div>
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
-            <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
+            <p>Givn the following behavioral competencies, you are to assess the incumbent's performance using the scale.
                 Put
                 No. 1 on the number which corresponds to your answer for each item. Please answer each item truthfully.<br>
-
+ 
                 5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
             <h3>Core Values</h3>
-            <h4>Search for Excellence</h4>
+            <h4>Serch for Excellence</h4>
             <p>The highest standards of academic excellence and professionalism in service are the hallmarks of our
                 educative
-                endeavors. We regularly assess and transform our programs to make them effective for leaning, discovery of
+                eneavors. We regularly assess and transform our programs to make them effective for leaning, discovery of
                 knowledge and community service. Our service ethics manifest strong sense of responsibility, competency,
                 efficiency and professional conduct.</p>
-            <h4>Sustained Integral Development</h4>
+            <h4>Sutained Integral Development</h4>
             <p>Education is a lifelong quest whose primary purpose is the full and integral development of the human person.
                 We
-                are committed to provide programs for holistic development and continuous learning. Networking with other
+                ar committed to provide programs for holistic development and continuous learning. Networking with other
                 educational institutions, government agencies, industries, business and other groups enhances our
                 educational
-                services.</p>
+                sevices.</p>
             @csrf
             <table class='table table-bordered' id="SID_table">
                 <thead>
                     <tr>
                         <th class='extra-small-column'>#</th>
-                        <th>Question</th>
+                       <th>Question</th>
                         <th>Performance Level</th>
                     </tr>
-                </thead>
+                </head>
                 <tbody id='SID_table_body'>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td></td>
-                        <td class='text-right'>Frequency:</td>
+                       <td class='text-right'>Frequency:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-2">
-                                <div class="col-auto">
+                               <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
                                         readonly>
-                                </div>
+                               </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
+                                       readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                   <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
+                               <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
                                         readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
+                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text" readonly>
                                 </div>
                             </div>
                         </td>
@@ -295,7 +289,6 @@
                         </td>
                     </tr>
                 </tfoot>
-
             </table>
         </div>
 
@@ -599,27 +592,7 @@
 
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
-            });
-
-            $(document).on('click', '.delete-btn', function() {
-                var row = $(this).closest('tr');
-                var tbody = row.closest('tbody');
-
-                // Delete the row
-                row.remove();
-
-                // Check the number of rows left
-                var rowCount = tbody.find('tr').length;
-
-                // Disable the delete button if there's only one row left
-                if (rowCount === 1) {
-                    tbody.find('.delete-btn').prop('disabled', true);
-                }
-
-                // Update weighted total or perform any other necessary updates
-                updateWeightedTotal();
-            });
-
+            });  
 
             $('#add-ldp-btn').click(function() {
                 addNewLDPRow($('#ldp_table_body'));
@@ -660,36 +633,95 @@
                     '][{{ $appraisalId }}][KRA_answer]').prop('readonly', true);
 
                 clonedRow.find('.td-action').html(
-                    '<button class="btn btn-danger delete-btn align-middle">Delete</button>');
+                    '<button type="button" class="btn btn-danger kra-delete-btn align-middle">Delete</button>');
 
                 clonedRow.appendTo('#kra_table tbody');
             });
 
-            $(document).on('click', '.delete-btn', function() {
-                var row = $(this).closest('tr');
-                var kraID = row.find('input[name$="[kraID]"]').val();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('deleteKRA') }}',
-                    data: {
-                        kraID: kraID
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        row.remove();
-                        updateWeightedTotal();
-                        var rowCount = $('#kra_table tbody tr').length;
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
+// For the KRA delete button
+$(document).on('click', '.kra-delete-btn', function() {
+    var row = $(this).closest('tr');
+    var kraID = row.find('input[name$="[kraID]"]').val();
+    $.ajax({
+        type: 'POST',
+        url: '{{ route('deleteKRA') }}',
+        data: {
+            kraID: kraID
+        },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            // If the database deletion is successful, remove the row from the table
+            row.remove();
+            updateWeightedTotal();
+
+            // Check the number of rows left
+            var rowCount = $('#kra_table tbody tr').length;
+            if (rowCount === 1) {
+                $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+});
+           // For the WPA delete button
+$(document).on('click', '.wpa-delete-btn', function() {
+    var row = $(this).closest('tr');
+    var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+
+    // Send an AJAX request to delete the WPA record from the database
+    $.ajax({
+        type: 'POST',
+        url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
+        data: {
+            wpaID: wpaID // Pass the WPA record ID to be deleted
+        },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            // If the database deletion is successful, remove the row from the table
+            row.remove();
+
+            // Check the number of rows left
+            var rowCount = $('#wpa_table_body tr').length;
+            if (rowCount === 1) {
+                $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+});
+
+// For the LDP delete button
+$(document).on('click', '.ldp-delete-btn', function() {
+    var row = $(this).closest('tr');
+    var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+
+    // Send an AJAX request to delete the LDP record from the database
+    $.ajax({
+        type: 'POST',
+        url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
+        data: {
+            ldpID: ldpID // Pass the LDP record ID to be deleted
+        },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            // If the database deletion is successful, remove the row from the table
+            row.remove();
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+});
 
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
@@ -977,8 +1009,9 @@
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-action').append(
-                                    $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                    $('<button>').addClass('btn btn-danger kra-delete-btn align-middle KRA')
                                     .text('Delete')
+                                    .attr('type', 'button') 
                                 ).appendTo(row);
 
                                 tbody.append(row);
@@ -1055,7 +1088,7 @@
                             var ldprowCount = $('#ldp_table_body tr').length;
 
                             if (ldprowCount === 1) {
-                                $('#ldp_table_body tr .delete-btn').prop('disabled', true);
+                                $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
                             }
                             console.log(wparowCount);
                         } else {
@@ -1083,6 +1116,7 @@
 
                                 $('<td>').addClass('td-action').append(
                                     $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                    .attr('type', 'button')
                                     .text('Delete')
                                 ).appendTo(ldprow);
 
@@ -1186,7 +1220,7 @@
             ).appendTo(row);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle').text('Delete')
+                $('<button>').addClass('btn btn-danger kra-delete-btn align-middle').attr('type', 'button').text('Delete')
             ).appendTo(row);
 
             tbody.append(row);
@@ -1231,8 +1265,9 @@
             ).appendTo(wparow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
-                .text('Delete')
+                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle WPA')
+                    .attr('type', 'button') 
+                    .text('Delete')
             ).appendTo(wparow);
 
             wpatbody.append(wparow);
@@ -1272,7 +1307,8 @@
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                $('<button>').addClass('btn btn-danger ldp-delete-btn align-middle')
+                .attr('type', 'button')     
                 .text('Delete')
             ).appendTo(ldprow);
 

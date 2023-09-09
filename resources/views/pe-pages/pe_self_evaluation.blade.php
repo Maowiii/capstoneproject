@@ -11,7 +11,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Consent Form</h1>
+                    <h1 class="modal-title fs-5" id="staicBackdropLabel">Consent Form</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -289,7 +289,6 @@
                         </td>
                     </tr>
                 </tfoot>
-
             </table>
         </div>
 
@@ -1654,7 +1653,7 @@
                 }
             });
 
-            totalWeight = totalWeight * 100; // Convert back to percentage for comparison
+            totalWeight = totalWeight * 100;
 
             if (totalWeight > 100) {
                 isTotalWeightInvalid = true;

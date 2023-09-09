@@ -118,18 +118,18 @@ class SelfEvaluationController extends Controller
             if ($appraisalType === 'self evaluation') {
                 $evaluator = $appraisee;
                 $appraisal_Id = $appraisal->appraisal_id;
+                return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
             } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
                 $evaluator = Employees::find($appraisal->evaluator_id);
                 $appraisal_Id = $appraisal->appraisal_id;
+                return view('pe-pages.pe_ic_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
             } elseif ($appraisalType === 'is evaluation') {
                 $evaluator = Employees::find($appraisal->evaluator_id);
                 $appraisal_Id = $appraisal->appraisal_id;
+                return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
             }
-            break; // Exit the loop after finding the first matching appraisal
+            break; 
         }
-
-        // Return the view with appraisee, evaluator, and appraisal ID data
-        return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
     }
 
     public function viewGOAppraisal($appraisal_id)
@@ -153,14 +153,14 @@ class SelfEvaluationController extends Controller
             if ($appraisalType === 'self evaluation') {
                 $evaluator = $appraisee;
                 $appraisal_Id = $appraisal->appraisal_id;
-            } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
+            } elseif (str_starts_with($appraisalType, 'internal customer')) {
                 $evaluator = Employees::find($appraisal->evaluator_id);
                 $appraisal_Id = $appraisal->appraisal_id;
             } elseif ($appraisalType === 'is evaluation') {
                 $evaluator = Employees::find($appraisal->evaluator_id);
                 $appraisal_Id = $appraisal->appraisal_id;
             }
-            break; // Exit the loop after finding the first matching appraisal
+            break;
         }
 
         // Return the view with appraisee, evaluator, and appraisal ID data

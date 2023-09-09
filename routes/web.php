@@ -99,6 +99,8 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 Route::post('/dashboard-immediate-superior/submit-position', [ISDashboardController::class, 'submitISPosition'])->name('is.submitISPosition');
 Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardController::class, 'getNotifications'])->name('is.getNotifications');
 
+
+
 // Appraisals Overview
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
@@ -107,6 +109,10 @@ Route::get('/is-appraisal/{appraisal_id}', [ISAppraisalController::class, 'viewA
 Route::get('/get-KRA-data', [ISAppraisalController::class, 'getKRA'])->name('getKRA');
 Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisal'])->name('saveISAppraisal');
 Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
+Route::post('/delete-wpa', [ISAppraisalController::class, 'deleteWPA'])->name('delete-wpa');
+Route::post('/delete-ldp', [ISAppraisalController::class, 'deleteLDP'])->name('deleteLDP');
+
+
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
@@ -117,7 +123,6 @@ Route::get('/pe-dashboard', [PEDashboardController::class, 'displayPEDashboard']
 Route::get('/get-is-appraisal-data', [SelfEvaluationController::class, 'showAppraisalForm'])->name('getISAppraisalData');
 Route::post('/pe-dashboard/submit-fist-login', [PEDashboardController::class, 'submitPEFirstLogin'])->name('pe.submitFirstLogin');
 Route::get('/pe-dashboard/get-notifications', [PEDashboardController::class, 'getNotifications'])->name('pe.getNotifications');
-
 
 // Appraisals Overview
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');
@@ -153,9 +158,6 @@ Route::get('/dashboard-contractual-employee', [CEDashboardController::class, 'di
 Route::get('/dashboard-contractual-employee/get-notifications', [CEDashboardController::class, 'getNotifications'])->name('ce.getNotifications');
 Route::get('/dashboard-contractual-employee/get-remaining-appraisals', [CEDashboardController::class, 'getRemainingAppraisals'])->name('ce.getRemainingAppraisals');
 Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardController::class, 'submitFirstLogin'])->name('ce.submitFirstLogin');
-
-
-
 
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');

@@ -68,18 +68,6 @@ class ISAppraisalController extends Controller
 
         return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData]);
     }
-    public function deleteKRA(Request $request)
-    {
-        $kraID = $request->input('kraID');
-
-        // Perform the actual deletion of the KRA record from the database
-        try {
-            KRA::where('kra_id', $kraID)->delete();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
-        }
-    }
 
     public function saveISAppraisal(Request $request)
     {
@@ -103,12 +91,13 @@ class ISAppraisalController extends Controller
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
+            this->createKRA($request);
             */
-            $this->createKRA($request);
-            /*
+
             $this->createWPA($request);
             $this->createLDP($request);
-            */
+            /*
+             */
 
             DB::commit();
             return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
@@ -143,7 +132,7 @@ class ISAppraisalController extends Controller
             'S' => 'required|array',
             'S.*' => 'required|array',
             'S.*.*.Sanswer' => 'required',
-            */
+            
             'KRA' => 'required|array',
             'KRA.*' => 'required|array',
             'KRA.*.*.kraID' => 'required|numeric',
@@ -151,18 +140,18 @@ class ISAppraisalController extends Controller
             'KRA.*.*.KRA_weight' => 'required|numeric',
             'KRA.*.*.KRA_objective' => 'required|string',
             'KRA.*.*.KRA_performance_indicator' => 'required|string',
-            /*
+            */
             'WPA' => 'required|array',
             'WPA.*' => 'required|array',
             'WPA.*.*.continue_doing' => 'required|string',
             'WPA.*.*.stop_doing' => 'required|string',
             'WPA.*.*.start_doing' => 'required|string',
-            
+
             'LDP' => 'required|array',
             'LDP.*' => 'required|array',
             'LDP.*.*.learning_need' => 'required|string',
             'LDP.*.*.methodology' => 'required|string',
-            
+            /*
             'feedback.*.question' => 'required|string',
             'feedback.*.answer' => 'required|numeric',
             'feedback.*.comment' => 'required|string',
@@ -294,7 +283,7 @@ class ISAppraisalController extends Controller
                 Log::info($existingSelfEvalKRA);
                 Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
                 Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
-                
+
                 if (
                     $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
                     $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
@@ -436,5 +425,43 @@ class ISAppraisalController extends Controller
 
         return view('is-pages.is_appraisal', $data);
     }
+
+    public function deleteKRA(Request $request)
+    {
+        $kraID = $request->input('kraID');
+
+        // Perform the actual deletion of the KRA record from the database
+        try {
+            KRA::where('kra_id', $kraID)->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
+        }
+    }
+    public function deleteWPA(Request $request)
+    {
+        $wpaID = $request->input('wpaID');
+
+        // Perform the actual deletion of the WPA record from the database
+        try {
+            WPP::where('performance_plan_id', $wpaID)->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error deleting WPA record.']);
+        }
+    }
+    public function deleteLDP(Request $request)
+    {
+        $ldpID = $request->input('ldpID');
+
+         // Perform the actual deletion of the WPA record from the database
+         try {
+            WPP::where('development_plan_id', $ldpID)->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error deleting LDP record.']);
+        }
+    }
+
 }
 ?>
