@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-     <!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="consentForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -74,9 +74,9 @@
                     readonly>
             </div>
         </div>
-    </div> 
+    </div>
 
-     <form method="post" action="{{ route('saveISAppraisal') }}" enctype="multipart/form-data" class="needs-validation">
+    <form method="post" action="{{ route('saveISAppraisal') }}" enctype="multipart/form-data" class="needs-validation">
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
 
         <div class='content-container'>
@@ -96,7 +96,7 @@
             <p>Givn the following behavioral competencies, you are to assess the incumbent's performance using the scale.
                 Put
                 No. 1 on the number which corresponds to your answer for each item. Please answer each item truthfully.<br>
- 
+
                 5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
             <h3>Core Values</h3>
             <h4>Serch for Excellence</h4>
@@ -117,36 +117,37 @@
                 <thead>
                     <tr>
                         <th class='extra-small-column'>#</th>
-                       <th>Question</th>
+                        <th>Question</th>
                         <th>Performance Level</th>
                     </tr>
-                </head>
+                    </head>
                 <tbody id='SID_table_body'>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td></td>
-                       <td class='text-right'>Frequency:</td>
+                        <td class='text-right'>Frequency:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-2">
-                               <div class="col-auto">
+                                <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
                                         readonly>
-                               </div>
+                                </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                       readonly>
-                                </div>
-                                <div class="col-auto">
-                                   <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
                                 </div>
-                               <div class="col-auto">
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
                                         readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text" readonly>
+                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                        readonly>
                                 </div>
                             </div>
                         </td>
@@ -379,7 +380,8 @@
                         <td class='text-right'>Weight Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-weight" type="text" readonly>
+                                <input id="KRA_Weight_Total" class="small-column form-control total-weight"
+                                    type="text" readonly>
                             </div>
                         </td>
                         <td></td>
@@ -388,8 +390,8 @@
                         <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-weighted text-center" type="text"
-                                    readonly>
+                                <input id="KRA_Total" class="small-column form-control total-weighted text-center"
+                                    type="text" readonly>
                             </div>
                         </td>
                         <td></td>
@@ -414,7 +416,6 @@
                     </tr>
                 </thead>
                 <tbody id='wpa_table_body'>
-
 
                 </tbody>
             </table>
@@ -592,7 +593,7 @@
 
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
-            });  
+            });
 
             $('#add-ldp-btn').click(function() {
                 addNewLDPRow($('#ldp_table_body'));
@@ -630,98 +631,108 @@
                     'readonly', false);
 
                 clonedRow.find('input[name$="[KRA_answer]"]').attr('name', 'KRA[' + newRowNumber +
-                    '][{{ $appraisalId }}][KRA_answer]').prop('readonly', true);
+                    '][{{ $appraisalId }}][KRA_answer]').prop('disabled', true);
 
                 clonedRow.find('.td-action').html(
-                    '<button type="button" class="btn btn-danger kra-delete-btn align-middle">Delete</button>');
+                    '<button type="button" class="btn btn-danger kra-delete-btn align-middle">Delete</button>'
+                );
 
                 clonedRow.appendTo('#kra_table tbody');
+
+                var krarowCount = $('#KRA_table_body tr').length;
+                if (krarowCount > 1) {
+                    $('#KRA_table_body tr .kra-delete-btn').prop('disabled', false);
+                }
             });
 
-// For the KRA delete button
-$(document).on('click', '.kra-delete-btn', function() {
-    var row = $(this).closest('tr');
-    var kraID = row.find('input[name$="[kraID]"]').val();
-    $.ajax({
-        type: 'POST',
-        url: '{{ route('deleteKRA') }}',
-        data: {
-            kraID: kraID
-        },
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        success: function(response) {
-            // If the database deletion is successful, remove the row from the table
-            row.remove();
-            updateWeightedTotal();
+            // For the KRA delete button
+            $(document).on('click', '.kra-delete-btn', function() {
+                var row = $(this).closest('tr');
+                var kraID = row.find('input[name$="[kraID]"]').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('deleteKRA') }}',
+                    data: {
+                        kraID: kraID
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // If the database deletion is successful, remove the row from the table
+                        row.remove();
+                        updateWeightedTotal();
 
-            // Check the number of rows left
-            var rowCount = $('#kra_table tbody tr').length;
-            if (rowCount === 1) {
-                $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-        }
-    });
-});
-           // For the WPA delete button
-$(document).on('click', '.wpa-delete-btn', function() {
-    var row = $(this).closest('tr');
-    var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                        // Check the number of rows left
+                        var rowCount = $('#KRA_table_body tr').length;
+                        if (rowCount === 1) {
+                            $('#KRA_table_body .kra-delete-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+            // For the WPA delete button
+            $(document).on('click', '.wpa-delete-btn', function() {
+                var row = $(this).closest('tr');
+                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
 
-    // Send an AJAX request to delete the WPA record from the database
-    $.ajax({
-        type: 'POST',
-        url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
-        data: {
-            wpaID: wpaID // Pass the WPA record ID to be deleted
-        },
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        success: function(response) {
-            // If the database deletion is successful, remove the row from the table
-            row.remove();
+                // Send an AJAX request to delete the WPA record from the database
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
+                    data: {
+                        wpaID: wpaID // Pass the WPA record ID to be deleted
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // If the database deletion is successful, remove the row from the table
+                        row.remove();
 
-            // Check the number of rows left
-            var rowCount = $('#wpa_table_body tr').length;
-            if (rowCount === 1) {
-                $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-        }
-    });
-});
+                        var rowCount = $('#wpa_table_body tr').length;
+                        if (rowCount === 1) {
+                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
 
-// For the LDP delete button
-$(document).on('click', '.ldp-delete-btn', function() {
-    var row = $(this).closest('tr');
-    var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+            // For the LDP delete button
+            $(document).on('click', '.ldp-delete-btn', function() {
+                var row = $(this).closest('tr');
+                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
 
-    // Send an AJAX request to delete the LDP record from the database
-    $.ajax({
-        type: 'POST',
-        url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
-        data: {
-            ldpID: ldpID // Pass the LDP record ID to be deleted
-        },
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        success: function(response) {
-            // If the database deletion is successful, remove the row from the table
-            row.remove();
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-        }
-    });
-});
+                // Send an AJAX request to delete the LDP record from the database
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
+                    data: {
+                        ldpID: ldpID // Pass the LDP record ID to be deleted
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // If the database deletion is successful, remove the row from the table
+                        row.remove();
+
+                        var rowCount = $('#ldp_table tbody tr').length;
+                        if (rowCount === 1) {
+                            $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
 
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
@@ -770,7 +781,6 @@ $(document).on('click', '.ldp-delete-btn', function() {
                     var SIDQuestions = response.SID;
                     var storedValues = response.storedValues;
 
-
                     SIDQuestions.forEach(function(question) {
                         var questionId = question.question_id;
                         var questionText = question.question;
@@ -779,7 +789,6 @@ $(document).on('click', '.ldp-delete-btn', function() {
 
                         var row = $('<tr>');
                         row.attr('data-question-id', (questionId.toString() + {{ $appraisalId }}));
-
 
                         var orderCell = $('<td>').text(questionOrder);
                         var questionCell = $('<td>').text(questionText).addClass('text-justify');
@@ -797,24 +806,42 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 value: i
                             });
 
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
-
                                 input.prop('checked', true);
                             }
 
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
-                        }
 
+                            input.on('invalid', function() {
+                                $(this).addClass('is-invalid');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            input.on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass(
+                                    'text-danger fw-bold'); // Remove color change from span
+
+                                $(this).closest('tr').removeClass(
+                                    'text-danger fw-bold');
+
+                                $(this).removeClass(
+                                    'is-invalid'
+                                ); // Also remove is-invalid class from the input
+                            });
+                        }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#SID_table_body').append(row);
 
+                        $('#SID_table_body').append(row);
                         $('#SID_table input[type="radio"]').trigger('change');
                     });
-
 
                     $('#SR_table_body').empty();
                     var SRQuestions = response.SR;
@@ -843,6 +870,9 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 class: 'form-check-input',
                                 value: i
                             });
+
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
@@ -851,12 +881,32 @@ $(document).on('click', '.ldp-delete-btn', function() {
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+
+                            input.on('invalid', function() {
+                                $(this).addClass('is-invalid');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            input.on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass(
+                                    'text-danger fw-bold'); // Remove color change from span
+
+                                $(this).closest('tr').removeClass(
+                                    'text-danger fw-bold');
+
+                                $(this).removeClass(
+                                    'is-invalid'
+                                ); // Also remove is-invalid class from the input
+                            });
+
                         }
 
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#SR_table_body').append(row);
 
+                        $('#SR_table_body').append(row);
                         $('#SR_table input[type="radio"]').trigger('change');
                     });
 
@@ -887,6 +937,9 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 class: 'form-check-input',
                                 value: i
                             });
+
+                            input[0].required = true;
+
                             // Use stored value if available
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
@@ -895,12 +948,31 @@ $(document).on('click', '.ldp-delete-btn', function() {
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+
+                            input.on('invalid', function() {
+                                $(this).addClass('is-invalid');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            input.on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass(
+                                    'text-danger fw-bold'); // Remove color change from span
+
+                                $(this).closest('tr').removeClass(
+                                    'text-danger fw-bold');
+
+                                $(this).removeClass(
+                                    'is-invalid'
+                                ); // Also remove is-invalid class from the input
+                            });
                         }
 
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        $('#S_table_body').append(row);
 
+                        $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
                 }
@@ -921,10 +993,10 @@ $(document).on('click', '.ldp-delete-btn', function() {
                         if (data.kraData.length === 0) {
                             // Add a new empty row if there are no rows
                             addNewKRARow(tbody);
-                            var rowCount = $('#kra_table tbody tr').length;
+                            var rowCount = $('#KRA_table_body tr').length;
 
                             if (rowCount === 1) {
-                                $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+                                $('#KRA_table_body tr .kra-delete-btn').prop('disabled', true);
                             }
                         } else {
                             data.kraData.forEach(function(kra, index) {
@@ -939,11 +1011,11 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 }).appendTo(row);
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                                        kraID +
-                                        '][' + {{ $appraisalId }} + '][KRA]').prop('readonly',
-                                        false)
-                                    .val(kra.kra)
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                                        kra.kra,
+                                        false
+                                    )
                                 ).appendTo(row);
 
                                 var weightSelect = $('<select>').addClass('form-select').attr(
@@ -964,19 +1036,21 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 }
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                                        kraID +
-                                        '][' +
-                                        {{ $appraisalId }} + '][KRA_objective]').prop('readonly',
-                                        false).val(kra.objective)
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_objective]',
+                                        kra.objective,
+                                        false
+                                    )
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                                        kraID +
-                                        '][' +
-                                        {{ $appraisalId }} + '][KRA_performance_indicator]').prop(
-                                        'readonly', false).val(kra.performance_indicator)
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_performance_indicator]',
+                                        kra.performance_indicator,
+                                        false
+                                    )
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-textarea').append(
@@ -995,33 +1069,45 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                         class: 'form-check-input',
                                         value: i
                                     });
+
+                                    input[0].disabled = true;
+
                                     label.append(input, i);
                                     $('<div>').addClass('col-auto').append(label).appendTo(
                                         performanceLevelDiv);
                                 }
 
-                                $('<td>').addClass('td-textarea kra-weighted-total').append(
-                                    $('<input>').addClass('form-control').attr({
-                                        type: 'text',
-                                        name: 'kra_total_weight',
-                                        readonly: true
-                                    }).prop('readonly', true)
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]',
+                                        kra.weighted_total,
+                                        true
+                                    )
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-action').append(
-                                    $('<button>').addClass('btn btn-danger kra-delete-btn align-middle KRA')
+                                    $('<button>').addClass(
+                                        'btn btn-danger kra-delete-btn align-middle KRA')
                                     .text('Delete')
-                                    .attr('type', 'button') 
+                                    .attr('type', 'button')
                                 ).appendTo(row);
 
                                 tbody.append(row);
 
-                                row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
-                                        {{ $appraisalId }} + '][KRA_answer]"]')
-                                    .trigger('change');
-                                row.find('select[name^="KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_weight]"]')
-                                    .trigger('change');
+                                var krarowCount = $('#KRA_table_body tr').length;
+                                if (krarowCount <= 1) {
+                                    $('#KRA_table_body .kra-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#KRA_table_body .kra-delete-btn').prop('disabled', false);
+                                }
+
+                                var kraWeightElements = row.find('select[name^="KRA[' + kraID + '][' +
+                                    {{ $appraisalId }} + '][KRA_weight]"]');
+
+                                kraWeightElements.on('change', function() {
+                                    updateWeightedTotal();
+                                });
                             });
                             updateWeightedTotal();
                         }
@@ -1035,7 +1121,7 @@ $(document).on('click', '.ldp-delete-btn', function() {
                             var wparowCount = $('#wpa_table_body tr').length;
 
                             if (wparowCount === 1) {
-                                $('#wpa_table_body tr .delete-btn').prop('disabled', true);
+                                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
                             }
                             console.log(wparowCount);
                         } else {
@@ -1044,38 +1130,46 @@ $(document).on('click', '.ldp-delete-btn', function() {
 
                                 var wparow = $('<tr>').addClass('align-middle');
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                        wpaID +
-                                        '][' + {{ $appraisalId }} + '][continue_doing]').prop(
-                                        'readonly',
-                                        false)
-                                    .val(wpa.continue_doing)
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][continue_doing]',
+                                        wpa.continue_doing,
+                                        false
+                                    )
                                 ).appendTo(wparow);
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                        wpaID +
-                                        '][' + {{ $appraisalId }} + '][stop_doing]').prop(
-                                        'readonly',
-                                        false)
-                                    .val(wpa.stop_doing)
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][stop_doing]',
+                                        wpa.stop_doing,
+                                        false
+                                    )
                                 ).appendTo(wparow);
 
                                 $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                                        wpaID +
-                                        '][' + {{ $appraisalId }} + '][start_doing]').prop(
-                                        'readonly',
-                                        false)
-                                    .val(wpa.start_doing)
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][start_doing]',
+                                        wpa.start_doing,
+                                        false
+                                    )
                                 ).appendTo(wparow);
 
                                 $('<td>').addClass('td-action').append(
-                                    $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                    $('<button>').addClass(
+                                        'btn btn-danger wpa-delete-btn align-middle')
                                     .text('Delete')
                                 ).appendTo(wparow);
 
                                 wpatbody.append(wparow);
+
+                                var wparowCount = $('#wpa_table_body tr').length;
+                                if (wparowCount === 1) {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
+                                }
                             });
                         }
 
@@ -1090,7 +1184,6 @@ $(document).on('click', '.ldp-delete-btn', function() {
                             if (ldprowCount === 1) {
                                 $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
                             }
-                            console.log(wparowCount);
                         } else {
                             data.ldpData.forEach(function(ldp, index) {
                                 var ldpID = ldp.development_plan_id;
@@ -1115,12 +1208,20 @@ $(document).on('click', '.ldp-delete-btn', function() {
                                 ).appendTo(ldprow);
 
                                 $('<td>').addClass('td-action').append(
-                                    $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                    $('<button>').addClass(
+                                        'btn btn-danger ldp-delete-btn align-middle')
                                     .attr('type', 'button')
                                     .text('Delete')
                                 ).appendTo(ldprow);
 
                                 ldptbody.append(ldprow);
+
+                                var ldprowCount = $('#ldp_table_body tr').length;
+                                if (ldprowCount <= 1) {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
+                                }
                             });
                         }
                     }
@@ -1129,6 +1230,31 @@ $(document).on('click', '.ldp-delete-btn', function() {
                     console.error(xhr.responseText);
                 }
             });
+        }
+
+        function createTextArea(name, value, isReadonly) {
+            return $('<div>').addClass('position-relative').append(
+                $('<textarea>').addClass('textarea form-control').attr({
+                    name: name,
+                    readonly: isReadonly
+                }).prop('required', true).val(value)
+                .on('input', function() {
+                    $(this).removeClass('border border-danger');
+                    $(this).closest('td').removeClass(
+                        'border border-danger');
+                    $(this).removeClass('is-invalid');
+                }).on('invalid', function() {
+                    $(this).addClass('is-invalid');
+                    $(this).closest('div').addClass('border border-danger');
+                    $(this).attr('placeholder', 'Please provide a valid input');
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
+                })
+            );
         }
 
         function addNewKRARow(tbody) {
@@ -1220,10 +1346,16 @@ $(document).on('click', '.ldp-delete-btn', function() {
             ).appendTo(row);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger kra-delete-btn align-middle').attr('type', 'button').text('Delete')
+                $('<button>').addClass('btn btn-danger kra-delete-btn align-middle').attr('type', 'button').text(
+                    'Delete')
             ).appendTo(row);
 
             tbody.append(row);
+
+            var krarowCount = $('#KRA_table_body tr').length;
+            if (krarowCount > 1) {
+                $('#KRA_table_body tr .kra-delete-btn').prop('disabled', false);
+            }
         }
 
         function addNewWPARow(wpatbody) {
@@ -1266,11 +1398,16 @@ $(document).on('click', '.ldp-delete-btn', function() {
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle WPA')
-                    .attr('type', 'button') 
-                    .text('Delete')
+                .attr('type', 'button')
+                .text('Delete')
             ).appendTo(wparow);
 
             wpatbody.append(wparow);
+
+            var wparowCount = $('#wpa_table_body tr').length;
+            if (wparowCount > 1) {
+                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', false);
+            }
         }
 
         function addNewLDPRow(ldptbody) {
@@ -1286,7 +1423,7 @@ $(document).on('click', '.ldp-delete-btn', function() {
                 }
             });
 
-            // Calculate the next available wpaID
+            // Calculate the next available ldpID
             var nextLDPID = highestLDPID + 1;
 
             var ldprow = $('<tr>').addClass('align-middle');
@@ -1308,11 +1445,16 @@ $(document).on('click', '.ldp-delete-btn', function() {
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger ldp-delete-btn align-middle')
-                .attr('type', 'button')     
+                .attr('type', 'button')
                 .text('Delete')
             ).appendTo(ldprow);
 
             ldptbody.append(ldprow);
+
+            var ldprowCount = $('#ldp_table_body tr').length;
+            if (ldprowCount > 1) {
+                $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', false);
+            }
         }
 
         function updateFrequencyCounter(tableId) {
@@ -1340,42 +1482,28 @@ $(document).on('click', '.ldp-delete-btn', function() {
         }
 
         function updateWeightedTotal() {
-            console.log("updateWeightedTotal() called");
-
             var totalWeight = 0;
-            var totalWeighted = 0;
 
-            $('#isAppraisalDataContainer tr').each(function() {
+            $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weight = parseFloat(row.find('select[name="kra_weight"]').val()) /
+                var weight = parseFloat(row.find('select[name^="KRA"][name$="[KRA_weight]"]').val()) /
                     100;
-                var performanceLevel = parseInt(row.find('input[type="radio"][name^="kra"]:checked').val());
 
-                if (!isNaN(weight) && !isNaN(performanceLevel)) {
-                    var weightedValue = weight * performanceLevel;
-                    totalWeight += weight;
-                    totalWeighted += weightedValue;
-
-                    console.log(weightedValue);
-
-                    row.find('.kra-weighted-total input').val(weightedValue.toFixed(2));
-                }
+                totalWeight += weight;
             });
 
-            totalWeight = totalWeight * 100; // Convert back to percentage for comparison
+            totalWeight = totalWeight * 100;
 
             if (totalWeight > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
-                $('textarea[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
             } else {
                 $('#KRA_Weight_Total').removeClass('is-invalid');
-                $('textarea[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
             }
 
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
-            $('#KRA_Total').val(totalWeighted.toFixed(2));
-
         }
     </script>
 @endsection

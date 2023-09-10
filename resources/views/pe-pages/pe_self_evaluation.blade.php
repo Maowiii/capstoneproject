@@ -687,26 +687,7 @@
                 addNewLDPRow($('#ldp_table_body'));
             });
 
-            $(document).on('click', '.delete-btn', function() {
-                var row = $(this).closest('tr');
-                var tbody = row.closest('tbody');
-
-                // Delete the row
-                row.remove();
-
-                // Check the number of rows left
-                var rowCount = tbody.find('tr').length;
-
-                // Disable the delete button if there's only one row left
-                if (rowCount === 1) {
-                    tbody.find('.delete-btn').prop('disabled', true);
-                }
-
-                // Update weighted total or perform any other necessary updates
-                updateWeightedTotal();
-            });
-
-            $(document).on('click', '.delete-btn', function() {
+            $(document).on('click', '.kra-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var kraID = row.find('input[name$="[kraID]"]').val();
                 $.ajax({
@@ -724,6 +705,65 @@
                         var rowCount = $('#kra_table tbody tr').length;
                         if (rowCount === 1) {
                             $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+            // For the WPA delete button
+            $(document).on('click', '.wpa-delete-btn', function() {
+                var row = $(this).closest('tr');
+                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+
+                // Send an AJAX request to delete the WPA record from the database
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
+                    data: {
+                        wpaID: wpaID // Pass the WPA record ID to be deleted
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // If the database deletion is successful, remove the row from the table
+                        row.remove();
+
+                        var rowCount = $('#wpa_table_body tr').length;
+                        if (rowCount === 1) {
+                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            // For the LDP delete button
+            $(document).on('click', '.ldp-delete-btn', function() {
+                var row = $(this).closest('tr');
+                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+
+                // Send an AJAX request to delete the LDP record from the database
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
+                    data: {
+                        ldpID: ldpID // Pass the LDP record ID to be deleted
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // If the database deletion is successful, remove the row from the table
+                        row.remove();
+
+                        var rowCount = $('#ldp_table_body tr').length;
+                        if (rowCount === 1) {
+                            $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -1199,48 +1239,57 @@
                         var wparowCount = $('#wpa_table_body tr').length;
 
                         if (wparowCount === 1) {
-                            $('#wpa_table_body tr .delete-btn').prop('disabled', true);
+                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
                         }
+                        console.log(wparowCount);
                     } else {
                         data.wpaData.forEach(function(wpa, index) {
                             var wpaID = wpa.performance_plan_id;
 
                             var wparow = $('<tr>').addClass('align-middle');
-
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
                                     'WPA[' + wpaID + '][' + {{ $appraisalId }} +
                                     '][continue_doing]',
                                     wpa.continue_doing,
-                                    false // Set to false to allow user input
+                                    false
                                 )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]',
+                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                    '][stop_doing]',
                                     wpa.stop_doing,
-                                    false // Set to false to allow user input
+                                    false
                                 )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]',
+                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                    '][start_doing]',
                                     wpa.start_doing,
-                                    false // Set to false to allow user input
+                                    false
                                 )
                             ).appendTo(wparow);
 
                             $('<td>').addClass('td-action').append(
-                                $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                $('<button>').addClass(
+                                    'btn btn-danger wpa-delete-btn align-middle')
+                                .attr('type', 'button')
                                 .text('Delete')
                             ).appendTo(wparow);
 
                             wpatbody.append(wparow);
+
+                            var wparowCount = $('#wpa_table_body tr').length;
+                            if (wparowCount === 1) {
+                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
+                            } else {
+                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
+                            }
                         });
-                        $('#wpa_table_body input[type="text"], #wpa_table_body textarea').trigger(
-                            'input'); // Trigger input event
                     }
 
                     $('#ldp_table_body').empty();
@@ -1252,7 +1301,7 @@
                         var ldprowCount = $('#ldp_table_body tr').length;
 
                         if (ldprowCount === 1) {
-                            $('#ldp_table_body tr .delete-btn').prop('disabled', true);
+                            $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
                         }
                     } else {
                         data.ldpData.forEach(function(ldp, index) {
@@ -1260,31 +1309,39 @@
 
                             var ldprow = $('<tr>').addClass('align-middle');
                             $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} +
-                                    '][learning_need]',
-                                    ldp.learning_need,
-                                    false // Set to false to allow user input
-                                )
+                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                                    ldpID +
+                                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
+                                    'readonly',
+                                    false)
+                                .val(ldp.learning_need)
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]',
-                                    ldp.methodology,
-                                    false // Set to false to allow user input
-                                )
+                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                                    ldpID +
+                                    '][' + {{ $appraisalId }} + '][methodology]').prop(
+                                    'readonly',
+                                    false)
+                                .val(ldp.methodology)
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-action').append(
-                                $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                                $('<button>').addClass(
+                                    'btn btn-danger ldp-delete-btn align-middle')
+                                .attr('type', 'button')
                                 .text('Delete')
                             ).appendTo(ldprow);
 
                             ldptbody.append(ldprow);
+
+                            var ldprowCount = $('#ldp_table_body tr').length;
+                            if (ldprowCount <= 1) {
+                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
+                            } else {
+                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
+                            }
                         });
-                        $('#ldp_table_body input[type="text"], #ldp_table_body textarea').trigger(
-                            'input'); // Trigger input event
                     }
 
                     // Loop through the jicData and populate the table rows with data
@@ -1552,11 +1609,17 @@
             ).appendTo(wparow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle')
+                .attr('type', 'button')
                 .text('Delete')
             ).appendTo(wparow);
 
             wpatbody.append(wparow);
+
+            var wparowCount = $('#wpa_table_body tr').length;
+            if (wparowCount > 1) {
+                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', false);
+            }
         }
 
         function addNewLDPRow(ldptbody) {
@@ -1572,7 +1635,7 @@
                 }
             });
 
-            // Calculate the next available wpaID
+            // Calculate the next available lpaID
             var nextLDPID = highestLDPID + 1;
 
             var ldprow = $('<tr>').addClass('align-middle');
@@ -1593,13 +1656,18 @@
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
+                $('<button>').addClass('btn btn-danger ldp-delete-btn align-middle')
+                .attr('type', 'button')
                 .text('Delete')
             ).appendTo(ldprow);
 
             ldptbody.append(ldprow);
-        }
 
+            var ldprowCount = $('#ldp_table_body tr').length;
+            if (ldprowCount > 1) {
+                $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', false);
+            }
+        }
 
         function updateFrequencyCounter(tableId) {
             var frequencyCounters = [0, 0, 0, 0, 0];
