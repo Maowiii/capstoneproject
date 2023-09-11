@@ -5,12 +5,12 @@
 @endsection
 
 @section('content')
-    <div class="row g-3 align-items-center">
+    <div class="row g-3 align-items-start mb-3">
         <div class="col-auto">
             <h4>School Year:</h4>
         </div>
         <div class="col">
-            <select class="form-select mb-3" id="evaluation-year-select">
+            <select class="form-select align-middle" id="evaluation-year-select">
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
                         @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
@@ -96,7 +96,7 @@
         });
 
         function loadAdminAppraisalsTable(selectedYear = null) {
-          console.log('Selected Year: ' + selectedYear);
+            ('Selected Year: ' + selectedYear);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

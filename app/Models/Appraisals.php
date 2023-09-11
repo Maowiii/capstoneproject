@@ -36,12 +36,12 @@ class Appraisals extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employees::class, 'employee_id')->with('department');
+        return $this->belongsTo(Employees::class, 'employee_id')->with('department')->from('employees');
     }
 
     public function evaluator(): BelongsTo
     {
-        return $this->belongsTo(Employees::class, 'evaluator_id')->with('department');
+        return $this->belongsTo(Employees::class, 'evaluator_id')->with('department')->from('employees');
     }
 
     public function signatures()

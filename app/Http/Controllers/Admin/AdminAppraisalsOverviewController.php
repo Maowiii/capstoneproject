@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appraisals;
+use App\Models\AdminAppraisals;
 use App\Models\EvalYear;
 use App\Models\Signature;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class AdminAppraisalsOverviewController extends Controller
     $sy_end = null;
     $selectedYearDates = null;
 
-    if ($selectedYear) {
+    if ($selectedYear) { // Selected Year
       Log::debug('Selected Year Condition');
       $parts = explode('_', $selectedYear);
 
@@ -43,21 +44,10 @@ class AdminAppraisalsOverviewController extends Controller
       }
 
       $table = 'appraisals_' . $selectedYear;
-      $appraisalsModel = new Appraisals;
+      $appraisalsModel = new AdminAppraisals;
       $appraisalsModel->setTable($table);
-      $tableName = $appraisalsModel->getTable();
 
-      Log::debug('Table Name: ' . $tableName);
-
-      $appraisals = $appraisalsModel->with([
-        'employee' => function ($query) {
-          $query->whereHas('account', function ($subQuery) {
-            $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-          });
-        }
-      ])->get();
-
-      Log::debug($appraisals);
+      $appraisals = $appraisalsModel->get();
 
       $appraisalsModel->setTable(null);
 
@@ -80,6 +70,8 @@ class AdminAppraisalsOverviewController extends Controller
 
     $groupedAppraisals = [];
     foreach ($appraisals as $appraisal) {
+      Log::debug($appraisal);
+
       $employeeId = $appraisal->employee->employee_id;
       if (!isset($groupedAppraisals[$employeeId])) {
         $groupedAppraisals[$employeeId] = [
