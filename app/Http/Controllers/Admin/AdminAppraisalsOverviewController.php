@@ -28,6 +28,7 @@ class AdminAppraisalsOverviewController extends Controller
     $selectedYearDates = null;
 
     if ($selectedYear) {
+      Log::debug('Selected Year Condition');
       $parts = explode('_', $selectedYear);
 
       if (count($parts) >= 2) {
@@ -42,8 +43,11 @@ class AdminAppraisalsOverviewController extends Controller
       }
 
       $table = 'appraisals_' . $selectedYear;
-      $appraisalsModel = new Appraisals();
+      $appraisalsModel = new Appraisals;
       $appraisalsModel->setTable($table);
+      $tableName = $appraisalsModel->getTable();
+
+      Log::debug('Table Name: ' . $tableName);
 
       $appraisals = $appraisalsModel->with([
         'employee' => function ($query) {
@@ -53,9 +57,12 @@ class AdminAppraisalsOverviewController extends Controller
         }
       ])->get();
 
-      Log::info(json_encode($appraisals));
+      Log::debug($appraisals);
 
-    } else {
+      $appraisalsModel->setTable(null);
+
+    } else { // Active Year
+      Log::debug('Active Year Condition');
       $selectedYearDates = EvalYear::where('status', 'active')->first();
 
       $appraisals = Appraisals::with([
@@ -82,7 +89,6 @@ class AdminAppraisalsOverviewController extends Controller
       }
       $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
     }
-
 
     return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
   }

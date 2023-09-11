@@ -126,6 +126,7 @@
                             }
 
                             $.each(appraisals, function(index, appraisal) {
+                              console.log(appraisal);
                                 var cell = $("<td>");
 
                                 // Self Evaluation
@@ -273,9 +274,9 @@
                         });
 
                         if (response.selectedYearDates) {
-                            $('#school-year-container').html('<h4>School Year:</h4><p>' + formatDate(response
-                                    .selectedYearDates.sy_start) + ' - ' + formatDate(response
-                                    .selectedYearDates.sy_end) +
+                            $('#school-year-container').html('<h4>School Year:</h4><p>' + response
+                                    .selectedYearDates.sy_start + ' - ' + response
+                                    .selectedYearDates.sy_end +
                                 '</p>');
                             $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + formatDate(response
                                     .selectedYearDates.kra_start) + ' - ' + formatDate(response
