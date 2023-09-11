@@ -5,27 +5,27 @@
 @endsection
 
 @section('content')
-    <select class="form-select mb-3" id="evaluation-year-select">
-        @foreach ($evaluationYears as $year)
-            <option value="{{ $year->sy_start }}_{{ $year->sy_end }}" @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
-                {{ $year->sy_start }} - {{ $year->sy_end }}
-            </option>
-        @endforeach
-    </select>
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <h4>School Year:</h4>
+        </div>
+        <div class="col">
+            <select class="form-select mb-3" id="evaluation-year-select">
+                @foreach ($evaluationYears as $year)
+                    <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
+                        @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                        {{ $year->sy_start }} - {{ $year->sy_end }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
     <div class='d-flex gap-3'>
-        <div class="content-container text-middle" id="school-year-container">
-
-        </div>
-        <div class="content-container text-middle" id="kra-encoding-container">
-
-        </div>
-        <div class="content-container text-middle" id="performance-review-container">
-
-        </div>
-        <div class="content-container text-middle" id="evaluation-container">
-
-        </div>
+        <div class="content-container text-middle" id="school-year-container"></div>
+        <div class="content-container text-middle" id="kra-encoding-container"></div>
+        <div class="content-container text-middle" id="performance-review-container"></div>
+        <div class="content-container text-middle" id="evaluation-container"></div>
     </div>
 
     <div class="content-container">
@@ -47,9 +47,7 @@
                     <th>Signatures</th>
                 </tr>
             </thead>
-            <tbody>
-
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
@@ -75,9 +73,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
-
-                </div>
             </div>
         </div>
     </div>
@@ -101,6 +96,7 @@
         });
 
         function loadAdminAppraisalsTable(selectedYear = null) {
+          console.log('Selected Year: ' + selectedYear);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -271,13 +267,10 @@
 
                                 $('#signatory_modal').modal('show');
                                 loadSignatureOverview(employeeID);
-                                console.log(employeeID);
                             });
 
                             $('#admin_appraisals_table tbody').append(row);
                         });
-
-                        console.log(response.selectedYearDates);
 
                         if (response.selectedYearDates) {
                             $('#school-year-container').html('<h4>School Year:</h4><p>' + formatDate(response
@@ -333,7 +326,6 @@
                 success: function(response) {
                     if (response.success) {
                         $('#signtable tbody').empty();
-                        console.log(response.appraisals);
 
                         const appraisalTypeMap = {
                             'self evaluation': 'Appraisee',
@@ -393,6 +385,8 @@
                             $('#signtable tbody').append(row);
                         });
 
+                    } else {
+                      console.log('Error: ' + response.error);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -469,7 +463,6 @@
                 }
             });
         });
-
 
         $(document).on('click', '#esig-close-btn', function() {
             $('#imageModal').modal('hide');

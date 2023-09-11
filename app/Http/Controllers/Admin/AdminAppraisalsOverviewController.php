@@ -36,14 +36,13 @@ class AdminAppraisalsOverviewController extends Controller
       }
 
       $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
-      Log::info($selectedYearDates);
 
       if (!$selectedYearDates) {
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
 
-      $appraisalsModel = new Appraisals();
       $table = 'appraisals_' . $selectedYear;
+      $appraisalsModel = new Appraisals();
       $appraisalsModel->setTable($table);
 
       $appraisals = $appraisalsModel->with([
@@ -53,6 +52,9 @@ class AdminAppraisalsOverviewController extends Controller
           });
         }
       ])->get();
+
+      Log::info(json_encode($appraisals));
+
     } else {
       $selectedYearDates = EvalYear::where('status', 'active')->first();
 
@@ -81,11 +83,9 @@ class AdminAppraisalsOverviewController extends Controller
       $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
     }
 
+
     return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
   }
-
-
-
 
   public function loadSelfEvaluationForm()
   {
