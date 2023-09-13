@@ -18,6 +18,7 @@ class Appraisals extends Model
         'evaluation_type',
         'employee_id',
         'evaluator_id',
+        'score',
         'date_submitted',
         'signature',
         'locked'

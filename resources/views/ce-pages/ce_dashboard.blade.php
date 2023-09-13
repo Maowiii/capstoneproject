@@ -69,7 +69,7 @@
 
                         if (totalAppraisalCount == 0) {
                             $('#chart').html(
-                                '<h4>Appraisals:</h4><p>You are currently not assigned to evaluate anyone.</p>'
+                                '<h4>Appraisals:</h4><p class="text-center">You are currently not assigned to evaluate anyone.</p>'
                             );
                         } else {
                             const donutChartCanvas = $("#donutChart");
