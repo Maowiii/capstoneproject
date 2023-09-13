@@ -101,6 +101,7 @@ class EvaluationYearController extends Controller
       $table->integer('evaluator_id')->nullable();
       $table->decimal('bh_score')->nullable();
       $table->decimal('kra_score')->nullable();
+      $table->decimal('ic_score')->nullable();
       $table->date('date_submitted')->nullable();
       $table->boolean('locked')->default(false);
     });

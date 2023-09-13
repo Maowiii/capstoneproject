@@ -165,6 +165,9 @@ class PEInternalCustomerController extends Controller
   {
     $appraisalId = $request->input('appraisalId');
     $esignature = $request->input('esignature');
+    $totalWeightedScore = $request->input('totalWeightedScore');
+
+    Log::debug('IC Score: ' . $totalWeightedScore);
 
     Signature::updateOrCreate(
       ['appraisal_id' => $appraisalId],
@@ -176,6 +179,7 @@ class PEInternalCustomerController extends Controller
     if ($appraisal) {
       $appraisal->update(
         [
+          'ic_score' => $totalWeightedScore,
           'date_submitted' => now(),
           'locked' => true
         ]

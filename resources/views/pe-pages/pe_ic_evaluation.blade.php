@@ -121,6 +121,8 @@
                 var fileInput = $('#esig')[0];
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var totalWeightedScore = $('#total-weighted-score').val();
+                console.log('Total Weighted Score: ' + totalWeightedScore);
 
                 if (fileInput.files.length === 0) {
                     $('#esig').addClass('is-invalid');
@@ -139,7 +141,8 @@
                             type: 'POST',
                             data: {
                                 appraisalId: appraisalId,
-                                esignature: fileData
+                                esignature: fileData,
+                                totalWeightedScore: totalWeightedScore
                             },
                             success: function(response) {
                                 if (response.success) {
@@ -148,8 +151,7 @@
                                     formChecker();
                                 }
                             },
-                            error: function(xhr, status, error) {
-                            }
+                            error: function(xhr, status, error) {}
                         });
                     };
 
@@ -458,13 +460,13 @@
             }
 
             $(document).on('click', '#view-sig-btn', function() {
-              $('#signatory_modal').modal('hide');
-              $('#imageModal').modal('show');
+                $('#signatory_modal').modal('hide');
+                $('#imageModal').modal('show');
             });
 
-            $(document).on('click', '#esig-close-btn', function(){
-              $('#imageModal').modal('hide');
-              $('#signatory_modal').modal('show');
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
+                $('#signatory_modal').modal('show');
             });
 
             function dataURItoBlob(dataURI) {
@@ -481,6 +483,8 @@
             }
 
             $('#submit-btn').on('click', function() {
+                var totalWeightedScore = $('#total-weighted-score').val();
+                console.log('Total Weighted Score: ' + totalWeightedScore);
                 $('#IC_table td').removeClass('is-invalid');
                 $('#service_area, #comments_area').removeClass(
                     'is-invalid');
