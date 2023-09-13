@@ -359,6 +359,24 @@
                 });
             }
 
+            function editableFormChecker() {
+                $.ajax({
+                    url: '{{ route('ad.formChecker') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.formLocked == true) {
+                            $('button').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'An error occurred.';
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
             // Function to populate a table with question data
             function populateTable(tableId, questions) {
                 var tbody = $('#' + tableId + ' tbody');
@@ -381,6 +399,7 @@
 
             // Initial loading of the appraisal form tables
             loadAppraisalQuestionTable();
+            editableFormChecker();
 
             // Event listener for focusout event
             $('table').on('focusout', '.editable:not(.new-row)', function() {

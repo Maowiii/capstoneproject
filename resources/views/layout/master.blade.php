@@ -85,7 +85,7 @@
                     </div>
                     <ul class="sub-menu">
                         <li><a href="{{ route('viewEditableAppraisalForm') }}">Appraisal Form</a></li>
-                        <li><a href="{{ route('viewEditableInternalCustomerForm') }}">Internal Customer<br>Form</a>
+                        <li><a href="{{ route('viewEditableInternalCustomerForm') }}">Internal Customers<br>Form</a>
                         </li>
                     </ul>
                 </li>
@@ -138,10 +138,10 @@
                 <li id='internalCustomersNav'>
                     <a href="{{ route('viewICOverview') }}">
                         <i class='bx bx-group'></i>
-                        <span class="link_name">Internal Customer<br>Appraisal</span>
+                        <span class="link_name">Internal Customer</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{{ route('viewICOverview') }}">Internal Customer Appraisal</a>
+                        <li><a class="link_name" href="{{ route('viewICOverview') }}">Internal Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -164,8 +164,7 @@
                         <span class="link_name">Internal Customer<br>Appraisal</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{{ route('ce.viewICOverview') }}">Internal Customer
-                                Appraisal</a></li>
+                        <li><a class="link_name" href="{{ route('ce.viewICOverview') }}">Internal Customers</a></li>
                     </ul>
                 </li>
             @endif

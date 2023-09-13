@@ -53,6 +53,26 @@
                 }
             });
 
+            function editableFormChecker() {
+                $.ajax({
+                    url: '{{ route('ad.formChecker') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.formLocked == true) {
+                            $('button').prop('disabled', true);
+                        } else {
+                          
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'An error occurred.';
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
             // Event listener for add question button
             document.querySelector('#addQuestionBtn').addEventListener('click', addRow);
 
@@ -92,6 +112,8 @@
 
             // Initial loading of the IC form table
             loadICQuestionTable();
+            editableFormChecker();
+
 
             // Event listener for focusout event
             $('#IC_table').on('focusout', '.editable:not(.new-row)', function() {
@@ -199,7 +221,8 @@
                                 success: function(response) {
                                     if (response.success) {
                                         console.log(response.message);
-                                        questionId = response.question_id; // Assign the questionId globally
+                                        questionId = response
+                                            .question_id; // Assign the questionId globally
                                         newCell.dataset.questionid = questionId;
                                     } else {
                                         console.error(response.error);

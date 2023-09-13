@@ -25,6 +25,7 @@ class EvaluationYearController extends Controller
   public function displayEvaluationYear()
   {
     $evalyears = EvalYear::all();
+    Log::debug($evalyears);
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
 
@@ -214,4 +215,28 @@ class EvaluationYearController extends Controller
 
     return response()->json(['success' => true]);
   }
+
+  public function toggleEvalYearStatus(Request $request)
+  {
+    $evalID = $request->input('eval_id');
+
+    $evaluationYear = EvalYear::find($evalID);
+
+    if ($evaluationYear) {
+      if ($evaluationYear->status === 'active') {
+        $evaluationYear->status = 'inactive';
+        $evaluationYear->save();
+      } elseif ($evaluationYear->status === 'inactive') {
+        EvalYear::where('status', 'active')->update(['status' => 'inactive']);
+
+        $evaluationYear->status = 'active';
+        $evaluationYear->save();
+      }
+
+      return response()->json(['success' => true]);
+    } else {
+      return response()->json(['success' => false, 'error' => 'Evaluation year not found.']);
+    }
+  }
+
 }
