@@ -23,6 +23,9 @@ class AdminAppraisalsOverviewController extends Controller
   public function loadAdminAppraisals(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
+    $search = $request->input('search');
+
+    Log::debug('Search Query: ' . $search);
 
     $sy_start = null;
     $sy_end = null;
@@ -46,21 +49,57 @@ class AdminAppraisalsOverviewController extends Controller
       $appraisalsModel = new AdminAppraisals;
       $appraisalsModel->setTable($table);
 
+      // TEST
+      if ($search) {
+        // Log::debug('Search Query: ' . $search);
+
+        $appraisals = $appraisalsModel
+          ->join('employees', 'appraisals.employee_id', '=', 'employees.employee_id')
+          ->where(function ($query) use ($search) {
+            $query->where('employees.employee_number', 'like', '%' . $search . '%')
+              ->orWhere('employees.first_name', 'like', '%' . $search . '%')
+              ->orWhere('employees.last_name', 'like', '%' . $search . '%');
+          })
+          ->get();
+          $appraisalsModel->setTable(null);
+        // Log::debug('Appraisal:' . $appraisals);
+
+      } else {
+        $appraisals = $appraisalsModel->get();
+        $appraisalsModel->setTable(null);
+      }
+      /*
+
+      $table = 'appraisals_' . $selectedYear;
+      $appraisalsModel = new AdminAppraisals;
+      $appraisalsModel->setTable($table);
+
       $appraisals = $appraisalsModel->get();
 
       $appraisalsModel->setTable(null);
-
+      */
     } else { // Active Year
       $selectedYearDates = EvalYear::where('status', 'active')->first();
+      if ($search) {
+        $appraisals = Appraisals::with('employee')
+          ->join('employees', 'employees.employee_id', '=', 'appraisals.employee_id')
+          ->where(function ($query) use ($search) {
+            $query->where('employees.employee_number', 'like', '%' . $search . '%')
+              ->orWhere('employees.first_name', 'like', '%' . $search . '%')
+              ->orWhere('employees.last_name', 'like', '%' . $search . '%');
+          })
+          ->get();
 
-      $appraisals = Appraisals::with([
-        'employee' => function ($query) {
-          $query->whereHas('account', function ($subQuery) {
-            $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-          });
-        }
-      ])->get();
-
+      } else {
+        $appraisals = Appraisals::with([
+          'employee' => function ($query) {
+            $query->whereHas('account', function ($subQuery) {
+              $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
+            });
+          }
+        ])->get();
+      }
+      
       if (!$selectedYearDates) {
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }

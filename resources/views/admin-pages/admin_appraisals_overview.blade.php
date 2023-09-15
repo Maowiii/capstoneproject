@@ -30,7 +30,7 @@
 
     <div class="content-container">
         <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
@@ -93,10 +93,24 @@
     <script>
         $(document).ready(function() {
             loadAdminAppraisalsTable();
+
+            var globalSelectedYear = null;
+
+            $('#evaluation-year-select').change(function() {
+                var selectedYear = $(this).val();
+                globalSelectedYear = selectedYear;
+                loadAdminAppraisalsTable(selectedYear, null);
+            });
+
+            $('#search').on('input', function() {
+                var query = $(this).val();
+                loadAdminAppraisalsTable(globalSelectedYear, query)
+            });
         });
 
-        function loadAdminAppraisalsTable(selectedYear = null) {
-            ('Selected Year: ' + selectedYear);
+        function loadAdminAppraisalsTable(selectedYear = null, search = null) {
+          console.log('Selected Year: ' + selectedYear);
+          console.log('Search Query: ' + search);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -104,7 +118,8 @@
                 url: "{{ route('loadAdminAppraisals') }}",
                 type: 'GET',
                 data: {
-                    selectedYear: selectedYear
+                    selectedYear: selectedYear,
+                    search: search
                 },
                 success: function(response) {
                     if (response.success) {
@@ -126,7 +141,6 @@
                             }
 
                             $.each(appraisals, function(index, appraisal) {
-                              console.log(appraisal);
                                 var cell = $("<td>");
 
                                 // Self Evaluation
@@ -275,8 +289,8 @@
 
                         if (response.selectedYearDates) {
                             $('#school-year-container').html('<h4>School Year:</h4><p>' + response
-                                    .selectedYearDates.sy_start + ' - ' + response
-                                    .selectedYearDates.sy_end +
+                                .selectedYearDates.sy_start + ' - ' + response
+                                .selectedYearDates.sy_end +
                                 '</p>');
                             $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + formatDate(response
                                     .selectedYearDates.kra_start) + ' - ' + formatDate(response
@@ -387,7 +401,7 @@
                         });
 
                     } else {
-                      console.log('Error: ' + response.error);
+                        console.log('Error: ' + response.error);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -400,7 +414,6 @@
 
         $(document).on('click', '.view-esig-btn', function() {
             var appraisalID = $(this).attr('appraisal-id');
-            console.log('Button clicked with appraisal ID: ' + appraisalID);
 
             $.ajax({
                 headers: {
@@ -413,7 +426,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log('success');
                         $('#modalImage').attr('src', response.sign_data);
                     } else {
                         console.log('fail');
@@ -431,11 +443,7 @@
         $(document).on('click', '.lock-unlock-btn', function() {
             var appraisalID = $(this).attr('appraisal-id');
             var buttonID = $(this).attr('id');
-            console.log('Button ID: ' + buttonID);
-            console.log('Appraisal Locked: ' + appraisalID);
-
             var $button = $('#' + buttonID);
-            console.log('Selected Button:', $button);
 
             $.ajax({
                 headers: {
@@ -450,10 +458,8 @@
                     if (response.success) {
                         if (response.locked == true) {
                             $button.text('Unlock');
-                            console.log('Unlocked');
                         } else {
                             $button.text('Lock');
-                            console.log('Locked');
                         }
                     } else {
                         console.log('Error: ' + response.message);
@@ -467,13 +473,6 @@
 
         $(document).on('click', '#esig-close-btn', function() {
             $('#imageModal').modal('hide');
-        });
-
-        $('#evaluation-year-select').change(function() {
-            var selectedYear = $(this).val();
-            console.log(selectedYear);
-
-            loadAdminAppraisalsTable(selectedYear);
         });
     </script>
 @endsection

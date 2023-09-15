@@ -184,7 +184,6 @@ class ISDashboardController extends Controller
       }
     }
 
-    Log::info($data);
     return response()->json(['notifications' => $notifications, 'data' => $data]);
   }
 }

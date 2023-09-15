@@ -25,7 +25,6 @@ class EvaluationYearController extends Controller
   public function displayEvaluationYear()
   {
     $evalyears = EvalYear::all();
-    Log::debug($evalyears);
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
 
@@ -65,8 +64,6 @@ class EvaluationYearController extends Controller
 
 
     if ($validator->fails()) {
-      Log::info('Validation Errors:', $validator->errors()->all());
-
       return response()->json([
         'success' => false,
         'errors' => $validator->errors(),

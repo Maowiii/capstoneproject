@@ -167,8 +167,6 @@ class PEInternalCustomerController extends Controller
     $esignature = $request->input('esignature');
     $totalWeightedScore = $request->input('totalWeightedScore');
 
-    Log::debug('IC Score: ' . $totalWeightedScore);
-
     Signature::updateOrCreate(
       ['appraisal_id' => $appraisalId],
       ['sign_data' => $esignature, 'sign_type' => 'IC']
