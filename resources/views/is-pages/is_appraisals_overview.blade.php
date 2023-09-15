@@ -60,7 +60,7 @@
         </table>
     </div>
 
-    <div class="modal fade" id="ISModal1" data-bs-backdrop="static">
+<div class="modal fade" id="ISModal1" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -81,7 +81,7 @@
                                 <th>Department</th>
                             </tr>
                         </thead>
-                        <tbody id="employee_table_body" class="text-justify">
+                        <tbody id="employee_table_body" class="text-justify emp_modal">
 
                         </tbody>
                     </table>
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="ISModal2" data-bs-backdrop="static">
+<div class="modal fade" id="ISModal2" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -101,6 +101,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-2">
+                    <input type="text" id="employee_search" class="form-control" placeholder="Search">
+                    </div>
                     <table class='table table-bordered'>
                         <thead>
                             <tr>
@@ -108,17 +111,18 @@
                                 <th>Department</th>
                             </tr>
                         </thead>
-                        <tbody id="employee_table_body">
+                        <tbody id="employee_table_body" class="text-justify emp_modal">
 
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
+
 
     <script>
         $(document).ready(function() {
@@ -241,7 +245,7 @@
 
         var selectedRows = [];
 
-        function loadEmployeeData() {
+      function loadEmployeeData() {
             $.ajax({
                 url: '{{ route('getEmployeesData') }}',
                 type: 'GET',
@@ -250,7 +254,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#employee_table_body').empty();
+                        $('.emp_modal').empty();
 
                         var employees = response.employees;
                         for (var i = 0; i < employees.length; i++) {
@@ -277,10 +281,12 @@
                                     checkbox.prop('checked', !isChecked);
                                     $(this).toggleClass('row-selected', !isChecked);
                                     updateSelectedRows();
+
+                                    
                                 }
                             });
 
-                            $('#employee_table_body').append(newRow);
+                            $('.emp_modal').append(newRow);
                         }
                     } else {
                         console.log(response.error);
@@ -290,9 +296,9 @@
                     console.log(error);
                 }
             });
-        }
-
-        function updateSelectedRows() {
+        } 
+        
+       function updateSelectedRows() {
             selectedRows = [];
             $('input[type="checkbox"]:checked').each(function() {
                 var row = $(this).closest('tr');

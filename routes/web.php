@@ -114,6 +114,7 @@ Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisa
 Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
 Route::post('/delete-wpa', [ISAppraisalController::class, 'deleteWPA'])->name('delete-wpa');
 Route::post('/delete-ldp', [ISAppraisalController::class, 'deleteLDP'])->name('deleteLDP');
+Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class, 'assignInternalCustomer'])->name('assignInternalCustomer');
 
 
 

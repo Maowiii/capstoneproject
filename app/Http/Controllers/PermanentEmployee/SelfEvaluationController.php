@@ -128,7 +128,7 @@ class SelfEvaluationController extends Controller
                 $appraisal_Id = $appraisal->appraisal_id;
                 return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
             }
-            break; 
+            break;
         }
     }
 
@@ -211,7 +211,7 @@ class SelfEvaluationController extends Controller
 
         DB::beginTransaction();
         try {
-                     
+
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
@@ -219,7 +219,7 @@ class SelfEvaluationController extends Controller
             $this->createWPA($request);
             $this->createLDP($request);
             $this->createJIC($request);
-    
+
             $this->createSign($request);
 
             DB::commit();
@@ -245,7 +245,7 @@ class SelfEvaluationController extends Controller
             'appraisalID' => 'required|numeric',
 
             'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
-            
+
             'SID' => 'required|array',
             'SID.*' => 'required|array',
             'SID.*.*.SIDanswer' => 'required',
@@ -274,12 +274,12 @@ class SelfEvaluationController extends Controller
             'WPA.*.*.continue_doing' => 'required|string',
             'WPA.*.*.stop_doing' => 'required|string',
             'WPA.*.*.start_doing' => 'required|string',
-            
+
             'LDP' => 'required|array',
             'LDP.*' => 'required|array',
             'LDP.*.*.learning_need' => 'required|string',
             'LDP.*.*.methodology' => 'required|string',
-            
+
             'feedback' => 'required|array',
             'feedback.*' => 'required|array',
             'feedback.*.*.question' => 'required|string',
@@ -288,6 +288,38 @@ class SelfEvaluationController extends Controller
         ], [
             // Custom error messages
         ]);
+    }
+
+    public function saveSEISScores(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            if ($request->has('SID')) {
+                $this->createSID($request);
+            }
+
+            if ($request->has('SR')) {
+                $this->createSR($request);
+            }
+
+            if ($request->has('S')) {
+                $this->createS($request);
+            }
+
+            DB::commit();
+            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submition Complete!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Log the exception
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+            // Display exception details using dd()
+            dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
+
+            return redirect()->back()->with('error', 'An error occurred while saving data.');
+        }
     }
 
     protected function createSID(Request $request)
@@ -316,7 +348,6 @@ class SelfEvaluationController extends Controller
             }
         }
     }
-
 
     protected function createSR(Request $request)
     {
@@ -373,7 +404,6 @@ class SelfEvaluationController extends Controller
             }
         }
     }
-
 
     protected function createKRA(Request $request)
     {

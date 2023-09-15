@@ -54,7 +54,7 @@ class ISAppraisalsOverviewController extends Controller
 
   public function getEmployees(Request $request)
   {
-    $accounts = Accounts::where('type', 'PE')->get();
+    $accounts = Accounts::whereIn('type', ['PE', 'IS', 'CE'])->get();
 
     $employeeIds = $accounts->pluck('account_id');
 
@@ -74,4 +74,29 @@ class ISAppraisalsOverviewController extends Controller
     ];
     return response()->json($data);
   }
+  
+  public function assignInternalCustomer(Request $request)
+{
+    // Validate the request data
+    $validatedData = $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'internal_customer_id' => 'required|exists:employees,id', // Assuming internal customers are also employees
+    ]);
+
+    try {
+        // Find the employee by ID
+        $employee = Employees::findOrFail($validatedData['employee_id']);
+
+        // Update the employee's internal_customer_id
+        $employee->internal_customer_id = $validatedData['internal_customer_id'];
+        $employee->save();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Internal Customer assigned successfully.');
+    } catch (\Exception $e) {
+        // Handle any errors, such as database errors or invalid data
+        return redirect()->back()->with('error', 'Failed to assign Internal Customer. Please try again.');
+    }
+}
+
 }

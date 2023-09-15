@@ -939,7 +939,33 @@
 
                                 $(this).removeClass(
                                     'is-invalid'
-                                ); // Also remove is-invalid class from the input
+                                );
+
+                                $.ajax({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    url: '{{ route('saveICScores') }}',
+                                    type: 'POST',
+                                    data: {
+                                        questionId: questionId,
+                                        score: $(this).val(),
+                                        appraisalId: {{ $appraisalId }}
+                                    },
+                                    success: function(response) {
+                                        console.log('Score saved for question ID:',
+                                            questionId);
+                                    },
+                                    error: function(xhr) {
+                                        if (xhr.responseText) {
+                                            console.log('Error: ' + xhr
+                                                .responseText);
+                                        } else {
+                                            console.log('An error occurred.');
+                                        }
+                                    }
+                                });
                             });
                         }
                         performanceCell.append(performanceLevelDiv);
@@ -983,6 +1009,7 @@
                             if (score !== null && Math.round(score * 100) === i * 100) {
                                 input.prop('checked', true);
                             }
+
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
                             performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
@@ -1004,6 +1031,32 @@
                                 $(this).removeClass(
                                     'is-invalid'
                                 ); // Also remove is-invalid class from the input
+
+                                $.ajax({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    url: '{{ route('saveICScores') }}',
+                                    type: 'POST',
+                                    data: {
+                                        questionId: questionId,
+                                        score: $(this).val(),
+                                        appraisalId: {{ $appraisalId }}
+                                    },
+                                    success: function(response) {
+                                        console.log('Score saved for question ID:',
+                                            questionId);
+                                    },
+                                    error: function(xhr) {
+                                        if (xhr.responseText) {
+                                            console.log('Error: ' + xhr
+                                                .responseText);
+                                        } else {
+                                            console.log('An error occurred.');
+                                        }
+                                    }
+                                });
                             });
                         }
                         performanceCell.append(performanceLevelDiv);
@@ -1069,6 +1122,32 @@
                                 $(this).removeClass(
                                     'is-invalid'
                                 ); // Also remove is-invalid class from the input
+
+                                $.ajax({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    url: '{{ route('saveICScores') }}',
+                                    type: 'POST',
+                                    data: {
+                                        questionId: questionId,
+                                        score: $(this).val(),
+                                        appraisalId: {{ $appraisalId }}
+                                    },
+                                    success: function(response) {
+                                        console.log('Score saved for question ID:',
+                                            questionId);
+                                    },
+                                    error: function(xhr) {
+                                        if (xhr.responseText) {
+                                            console.log('Error: ' + xhr
+                                                .responseText);
+                                        } else {
+                                            console.log('An error occurred.');
+                                        }
+                                    }
+                                });
                             });
                         }
                         performanceCell.append(performanceLevelDiv);
