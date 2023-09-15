@@ -15,28 +15,9 @@
             @endif
         </div>
         <div class="content-container text-middle">
-            <h4>KRA Encoding:</h4>
+            <h4>Evaluation Deadline:</h4>
             @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->kra_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->kra_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
-        <div class="content-container text-middle">
-            <h4>Performance Review:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->pr_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->pr_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
-        <div class="content-container text-middle">
-            <h4>Evaluation:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}</p>
+                <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}</p>
             @else
                 <p>-</p>
             @endif

@@ -12,8 +12,8 @@
                     <th class='xxs-column align-middle text-center'>#</th>
                     <th class='small-column align-middle text-center'>School Year</th>
                     <th class='medium-column align-middle text-center'>KRA Encoding Date</th>
-                    <th class='medium-column align-middle text-center'>Performace Review Date</th>
-                    <th class='medium-column align-middle text-center'>Employee Review Date</th>
+                    <th class='medium-column align-middle text-center'>Performance Review Date</th>
+                    <th class='medium-column align-middle text-center'>Evaluation Date</th>
                     <th class='small-column align middle text-center'>Status</th>
                     <th class='small-column align-middle text-center'>Action</th>
                 </tr>
@@ -38,7 +38,6 @@
                         @csrf
                         <div class="modal-body">
                             <p>Fill up the following information to start a new evaluation year:</p>
-                            <?php $currentYear = now()->format('Y'); ?>
                             <label>
                                 <h6>School Year:</h6>
                             </label>
@@ -54,12 +53,16 @@
                                 <div class="col">
                                     <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
                                         <option value="">--Select School Year--</option>
-                                        <?php $currentYear = now()->format('Y'); ?>
-                                        @for ($year = $currentYear; $year <= 2099; $year++)
+                                        <?php
+                                        $currentYear = now()->year;
+                                        $startYear = $currentYear - 2;
+                                        ?>
+                                        @for ($year = $startYear; $year <= 2099; $year++)
                                             <option value="{{ $year }}"
                                                 @if (old('sy_end') == $year) selected @endif>{{ $year }}
                                             </option>
                                         @endfor
+
                                     </select>
                                 </div>
                                 <div class="col">
@@ -193,6 +196,23 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="deleteConfirmationModal" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmation</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -291,30 +311,47 @@
                         tbody.empty();
 
                         $.each(response.evalyears, function(index, evalyear) {
-                            var row = '<tr>' +
-                                '<td class="align-middle">' + evalyear.eval_id +
-                                '</td>' +
-                                '<td class="align-middle">' + evalyear.sy_start +
-                                ' - ' +
-                                evalyear.sy_end +
-                                '</td>' +
-                                '<td class="align-middle">' + formatDate(evalyear
-                                    .kra_start) + ' - ' + formatDate(evalyear.kra_end) +
-                                '</td>' +
-                                '<td class="align-middle">' + formatDate(evalyear
-                                    .pr_start) + ' - ' + formatDate(evalyear.pr_end) +
-                                '</td>' +
-                                '<td class="align-middle">' + formatDate(evalyear
-                                    .eval_start) + ' - ' + formatDate(evalyear
-                                    .eval_end) + '</td>' +
-                                '<td class="align-middle">' + evalyear.status +
-                                '<td class="align-middle">' +
-                                '<div class="btn-group" role="group" aria-label="Basic example">' +
-                                '<button type="button" class="btn btn-outline-primary">Activate</button>' +
-                                '<button type="button" class="btn btn-outline-danger">Delete</button></td></div>' +
-                                '</tr>';
+                            var row = $('<tr>');
+                            row.append($('<td>').addClass('align-middle').text(evalyear.eval_id));
+                            row.append($('<td>').addClass('align-middle').text(evalyear.sy_start +
+                                ' - ' + evalyear.sy_end));
+                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                                .kra_start) + ' - ' + formatDate(evalyear.kra_end)));
+                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                                .pr_start) + ' - ' + formatDate(evalyear.pr_end)));
+                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                                .eval_start) + ' - ' + formatDate(evalyear.eval_end)));
+                            row.append($('<td>').addClass('align-middle').text(evalyear.status));
+
+                            var eval_id = evalyear.eval_id;
+                            var school_year = evalyear.sy_start + ' - ' + evalyear.sy_end;
+                            console.log(school_year);
+                            var buttonGroup = $('<div>').addClass('btn-group').attr('role', 'group');
+
+                            if (evalyear.status == 'inactive') {
+                                buttonGroup.append($('<button>').addClass(
+                                        'btn btn-outline-primary toggle-status-btn')
+                                    .data('eval-id', eval_id)
+                                    .text(
+                                        'Activate'));
+                            } else {
+                                buttonGroup.append($('<button>').addClass(
+                                        'btn btn-outline-primary toggle-status-btn')
+                                    .data('eval-id', eval_id)
+                                    .text(
+                                        'Deactivate'));
+                            }
+
+                            buttonGroup.append($('<button>').addClass(
+                                    'btn btn-outline-danger delete-eval-yr-btn')
+                                .data('eval-id', eval_id)
+                                .data('school-year', school_year)
+                                .text('Delete'));
+                            row.append($('<td>').addClass('align-middle').append(buttonGroup));
+
                             tbody.append(row);
                         });
+
                     } else {
                         console.log(response.error);
                     }
@@ -381,7 +418,6 @@
             $('#confirmationAlert').addClass('d-none');
             $('backbtn').hide();
             $('#submitbtn').text('Submit');
-
         }
 
         function confirmEvalYear(event, formData) {
@@ -411,15 +447,63 @@
             });
         }
 
+        function toggleEvalYearStatus(eval_id) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.toggleEvalYearStatus') }}',
+                type: 'POST',
+                data: {
+                    eval_id: eval_id
+                },
+                success: function(response) {
+                    if (response.success) {
+                        loadEvaluationYearTable();
+                        console.log('Successfully toggled');
+                    } else {
+                        console.log('Error: ' + reponse.error);
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.responseText) {
+                        alert('Error: ' + xhr.responseText);
+                    } else {
+                        alert('An error occurred.');
+                    }
+                }
+            });
+        }
+
         $(document).ready(function() {
             const currentDate = new Date().toISOString().split('T')[0];
             $('#kra_start').prop('min', currentDate);
             $('#backbtn').hide();
             loadEvaluationYearTable();
+        });
 
+        $(document).on('click', '.toggle-status-btn', function() {
+            var evalId = $(this).data('eval-id');
+            toggleEvalYearStatus(evalId);
+        });
+
+        $(document).on('click', '.delete-eval-yr-btn', function() {
+            var evalId = $(this).data('eval-id');
+            var schoolYear = $(this).data('school-year');
+            $('#deleteConfirmationModal').modal('show');
+            var message = $('<p>').text('Are you sure you want to delete all of the evaluations of school year ' +
+                schoolYear + '?');
+
+            var alertDiv = $('<div>').addClass('alert alert-warning mx-0 my-0').attr('role', 'alert').attr('id',
+                'confirmationAlert');
+            alertDiv.html(
+                '<i class="bx bx-info-circle"></i>This cannot be undone.'
+            );
+
+            $('#deleteConfirmationModal .modal-body').empty().append(message, alertDiv);
         });
     </script>
-    /*
+
     @if (count($errors) > 0)
         <script>
             $(document).ready(function() {
@@ -492,5 +576,4 @@
             });
         </script>
     @endif
-    */
 @endsection

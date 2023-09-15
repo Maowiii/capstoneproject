@@ -71,11 +71,13 @@ Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('ad.
 Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
 Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmployee'])->name('add-new-employee');
 Route::post('/employees/reset-password', [EmployeeController::class, 'employeeResetPassword'])->name('employeeResetPassword');
+Route::post('/employees/edit-employee', [EmployeeController::class, 'editEmployee'])->name('ad.editEmployee');
+Route::post('/employees/save-employee', [EmployeeController::class, 'saveEmployee'])->name('ad.saveEmployee');
 
 // Evaluation Year
 Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');
 Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
-
+Route::post('/evaluation-year/toggle-eval-year-status', [EvaluationYearController::class, 'toggleEvalYearStatus'])->name('ad.toggleEvalYearStatus');
 Route::post('/evaluation-year/add-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('addEvalYear');
 Route::post('/evaluation-year/confirm-eval-year', [EvaluationYearController::class, 'confirmEvalYear'])->name('confirmEvalYear');
 
@@ -92,6 +94,7 @@ Route::get('/editable-internal-customer-form/getICQuestions', [EditableInternalC
 Route::post('/editable-internal-customer-form/updateICQuestions/{questionId}', [EditableInternalCustomerFormController::class, 'updateICQuestions'])->name('updateICQuestions');
 Route::post('/editable-internal-customer-form/deleteICQuestions/{questionId}', [EditableInternalCustomerFormController::class, 'deleteICQuestions'])->name('deleteICQuestions');
 Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternalCustomerFormController::class, 'addICQuestions'])->name('addICQuestions');
+Route::get('/editable-internal-customer-form/formChecker', [EditableInternalCustomerFormController::class, 'formChecker'])->name('ad.formChecker');
 
 /* ----- IMMEDIATE SUPERIOR ----- */
 // Dashboard

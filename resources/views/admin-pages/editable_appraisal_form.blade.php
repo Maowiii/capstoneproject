@@ -359,7 +359,24 @@
                 });
             }
 
-            // Function to populate a table with question data
+            function editableFormChecker() {
+                $.ajax({
+                    url: '{{ route('ad.formChecker') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.formLocked == true) {
+                            $('.content-container button').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'An error occurred.';
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
             function populateTable(tableId, questions) {
                 var tbody = $('#' + tableId + ' tbody');
                 tbody.empty();
@@ -379,17 +396,16 @@
                 });
             }
 
-            // Initial loading of the appraisal form tables
             loadAppraisalQuestionTable();
+            editableFormChecker();
 
-            // Event listener for focusout event
             $('table').on('focusout', '.editable:not(.new-row)', function() {
                 const cell = $(this);
                 const originalValue = cell.data('originalvalue');
                 const newValue = cell.text().trim();
                 const row = $(this).closest('tr');
                 const questionId = row.find('.editable').data(
-                    'questionid'); // Assign the questionId to a local variable
+                    'questionid');
                 const tableId = row.closest('table').attr('id'); // Get the ID of the parent table
 
                 if (newValue !== originalValue) {

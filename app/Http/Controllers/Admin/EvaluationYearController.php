@@ -25,6 +25,7 @@ class EvaluationYearController extends Controller
   public function displayEvaluationYear()
   {
     $evalyears = EvalYear::all();
+    Log::debug($evalyears);
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
 
@@ -98,6 +99,9 @@ class EvaluationYearController extends Controller
       $table->string('evaluation_type');
       $table->integer('employee_id');
       $table->integer('evaluator_id')->nullable();
+      $table->decimal('bh_score')->nullable();
+      $table->decimal('kra_score')->nullable();
+      $table->decimal('ic_score')->nullable();
       $table->date('date_submitted')->nullable();
       $table->boolean('locked')->default(false);
     });
@@ -173,6 +177,12 @@ class EvaluationYearController extends Controller
       $table->nullableTimestamps();
     });
 
+    Schema::connection('mysql')->create('final_scores' . $sy, function ($table) {
+      $table->bigIncrements('score_id');
+      $table->integer('employee_id');
+      $table->decimal('final_score')->nullable();
+    });
+
     $originalFormQuestionsTable = 'form_questions';
     $newFormQuestionsTable = 'form_questions' . $sy;
 
@@ -214,4 +224,28 @@ class EvaluationYearController extends Controller
 
     return response()->json(['success' => true]);
   }
+
+  public function toggleEvalYearStatus(Request $request)
+  {
+    $evalID = $request->input('eval_id');
+
+    $evaluationYear = EvalYear::find($evalID);
+
+    if ($evaluationYear) {
+      if ($evaluationYear->status === 'active') {
+        $evaluationYear->status = 'inactive';
+        $evaluationYear->save();
+      } elseif ($evaluationYear->status === 'inactive') {
+        EvalYear::where('status', 'active')->update(['status' => 'inactive']);
+
+        $evaluationYear->status = 'active';
+        $evaluationYear->save();
+      }
+
+      return response()->json(['success' => true]);
+    } else {
+      return response()->json(['success' => false, 'error' => 'Evaluation year not found.']);
+    }
+  }
+
 }

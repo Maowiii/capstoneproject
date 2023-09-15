@@ -18,6 +18,9 @@ class Appraisals extends Model
         'evaluation_type',
         'employee_id',
         'evaluator_id',
+        'bh_score',
+        'kra_score',
+        'ic_score',
         'date_submitted',
         'signature',
         'locked'
@@ -36,12 +39,12 @@ class Appraisals extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employees::class, 'employee_id')->with('department');
+        return $this->belongsTo(Employees::class, 'employee_id')->with('department')->from('employees');
     }
 
     public function evaluator(): BelongsTo
     {
-        return $this->belongsTo(Employees::class, 'evaluator_id')->with('department');
+        return $this->belongsTo(Employees::class, 'evaluator_id')->with('department')->from('employees');
     }
 
     public function signatures()

@@ -78,9 +78,11 @@
                                 <th scope="col" style="width:15%" id="datehead">DATE</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
+                    <div class="alert alert-warning" role="alert" id="confirmation-alert">
+                        Once you have submitted the form, you cannot alter any values.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -121,6 +123,8 @@
                 var fileInput = $('#esig')[0];
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var totalWeightedScore = $('#total-weighted-score').val();
+                console.log('Total Weighted Score: ' + totalWeightedScore);
 
                 if (fileInput.files.length === 0) {
                     $('#esig').addClass('is-invalid');
@@ -139,7 +143,8 @@
                             type: 'POST',
                             data: {
                                 appraisalId: appraisalId,
-                                esignature: fileData
+                                esignature: fileData,
+                                totalWeightedScore: totalWeightedScore
                             },
                             success: function(response) {
                                 if (response.success) {
@@ -148,8 +153,7 @@
                                     formChecker();
                                 }
                             },
-                            error: function(xhr, status, error) {
-                            }
+                            error: function(xhr, status, error) {}
                         });
                     };
 
@@ -419,6 +423,7 @@
                             }
 
                             $('#signtable tbody').append(newRow);
+
                         } else {
                             console.log('fail');
                         }
@@ -446,6 +451,7 @@
                         if (response.form_submitted) {
                             $('input[type="radio"]').prop('disabled', true);
                             $('textarea').prop('disabled', true);
+                            $('#confirmation-alert').addClass('d-none');
                             $('#submit-btn').text('View');
                         } else {
                             return;
@@ -458,13 +464,13 @@
             }
 
             $(document).on('click', '#view-sig-btn', function() {
-              $('#signatory_modal').modal('hide');
-              $('#imageModal').modal('show');
+                $('#signatory_modal').modal('hide');
+                $('#imageModal').modal('show');
             });
 
-            $(document).on('click', '#esig-close-btn', function(){
-              $('#imageModal').modal('hide');
-              $('#signatory_modal').modal('show');
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
+                $('#signatory_modal').modal('show');
             });
 
             function dataURItoBlob(dataURI) {
@@ -481,6 +487,8 @@
             }
 
             $('#submit-btn').on('click', function() {
+                var totalWeightedScore = $('#total-weighted-score').val();
+                console.log('Total Weighted Score: ' + totalWeightedScore);
                 $('#IC_table td').removeClass('is-invalid');
                 $('#service_area, #comments_area').removeClass(
                     'is-invalid');

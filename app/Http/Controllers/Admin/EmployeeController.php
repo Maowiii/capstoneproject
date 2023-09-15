@@ -149,4 +149,41 @@ class EmployeeController extends Controller
       return response()->json(['success' => false, 'message' => 'Password reset failed']);
     }
   }
+
+  public function editEmployee(Request $request)
+  {
+    $employeeId = $request->input('employeeId');
+    $employee = Employees::with('account')->find($employeeId);
+
+    if (!$employee) {
+      return response()->json(['success' => false, 'error' => 'Employee not found']);
+    }
+
+    return response()->json(['success' => true, 'employee' => $employee]);
+  }
+
+  public function saveEmployee(Request $request)
+  {
+    $employeeId = $request->input('employeeId');
+    $account = Accounts::where('account_id', $employeeId)->first();
+    $employee = Employees::find($employeeId)->first();
+
+    if (!$employee) {
+      return response()->json(['success' => false, 'error' => 'User not found']);
+    } else if (!$account) {
+      return response()->json(['success' => false, 'error' => 'User not found']);
+    }
+
+    $account->email = $request->input('email');
+    $account->type = $request->input('type');
+    $employee->employee_number = $request->input('employeeNumber');
+    $employee->first_name = $request->input('firstName');
+    $employee->last_name = $request->input('lastName');
+    $employee->department_id = $request->input('department');
+
+    $employee->save();
+    $account->save();
+
+    return response()->json(['success' => true]);
+  }
 }

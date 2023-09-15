@@ -21,7 +21,7 @@
             <h4>Appraisals:</h4>
             <canvas id="donutChart"></canvas>
         </div>
-    </div>
+      </div>
 
     <div class="modal fade" id="firstLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -69,7 +69,7 @@
 
                         if (totalAppraisalCount == 0) {
                             $('#chart').html(
-                                '<h4>Appraisals:</h4><p>You are currently not assigned to evaluate anyone.</p>'
+                                '<h4>Appraisals:</h4><p class="text-center">You are currently not assigned to evaluate anyone.</p>'
                             );
                         } else {
                             const donutChartCanvas = $("#donutChart");

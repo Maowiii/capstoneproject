@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appraisals;
+use App\Models\AdminAppraisals;
 use App\Models\EvalYear;
 use App\Models\Signature;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class AdminAppraisalsOverviewController extends Controller
     $sy_end = null;
     $selectedYearDates = null;
 
-    if ($selectedYear) {
+    if ($selectedYear) { // Selected Year
       $parts = explode('_', $selectedYear);
 
       if (count($parts) >= 2) {
@@ -36,24 +37,20 @@ class AdminAppraisalsOverviewController extends Controller
       }
 
       $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
-      Log::info($selectedYearDates);
 
       if (!$selectedYearDates) {
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
 
-      $appraisalsModel = new Appraisals();
       $table = 'appraisals_' . $selectedYear;
+      $appraisalsModel = new AdminAppraisals;
       $appraisalsModel->setTable($table);
 
-      $appraisals = $appraisalsModel->with([
-        'employee' => function ($query) {
-          $query->whereHas('account', function ($subQuery) {
-            $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-          });
-        }
-      ])->get();
-    } else {
+      $appraisals = $appraisalsModel->get();
+
+      $appraisalsModel->setTable(null);
+
+    } else { // Active Year
       $selectedYearDates = EvalYear::where('status', 'active')->first();
 
       $appraisals = Appraisals::with([
@@ -83,9 +80,6 @@ class AdminAppraisalsOverviewController extends Controller
 
     return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
   }
-
-
-
 
   public function loadSelfEvaluationForm()
   {
