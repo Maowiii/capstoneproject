@@ -29,7 +29,6 @@ class AdminAppraisalsOverviewController extends Controller
     $selectedYearDates = null;
 
     if ($selectedYear) { // Selected Year
-      Log::debug('Selected Year Condition');
       $parts = explode('_', $selectedYear);
 
       if (count($parts) >= 2) {
@@ -52,7 +51,6 @@ class AdminAppraisalsOverviewController extends Controller
       $appraisalsModel->setTable(null);
 
     } else { // Active Year
-      Log::debug('Active Year Condition');
       $selectedYearDates = EvalYear::where('status', 'active')->first();
 
       $appraisals = Appraisals::with([
@@ -70,8 +68,6 @@ class AdminAppraisalsOverviewController extends Controller
 
     $groupedAppraisals = [];
     foreach ($appraisals as $appraisal) {
-      Log::debug($appraisal);
-
       $employeeId = $appraisal->employee->employee_id;
       if (!isset($groupedAppraisals[$employeeId])) {
         $groupedAppraisals[$employeeId] = [

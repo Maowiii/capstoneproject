@@ -60,9 +60,7 @@
                     success: function(response) {
                         console.log(response);
                         if (response.formLocked == true) {
-                            $('button').prop('disabled', true);
-                        } else {
-                          
+                            $('.content-container button').prop('disabled', true);
                         }
                     },
                     error: function(xhr, status, error) {

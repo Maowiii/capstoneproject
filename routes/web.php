@@ -71,6 +71,8 @@ Route::get('/employees-data', [EmployeeController::class, 'getData'])->name('ad.
 Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
 Route::post('/employees/add-new-employee', [EmployeeController::class, 'addEmployee'])->name('add-new-employee');
 Route::post('/employees/reset-password', [EmployeeController::class, 'employeeResetPassword'])->name('employeeResetPassword');
+Route::post('/employees/edit-employee', [EmployeeController::class, 'editEmployee'])->name('ad.editEmployee');
+Route::post('/employees/save-employee', [EmployeeController::class, 'saveEmployee'])->name('ad.saveEmployee');
 
 // Evaluation Year
 Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');

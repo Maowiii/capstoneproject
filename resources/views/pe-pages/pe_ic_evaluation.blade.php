@@ -78,9 +78,11 @@
                                 <th scope="col" style="width:15%" id="datehead">DATE</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
+                    <div class="alert alert-warning" role="alert" id="confirmation-alert">
+                        Once you have submitted the form, you cannot alter any values.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -421,6 +423,7 @@
                             }
 
                             $('#signtable tbody').append(newRow);
+
                         } else {
                             console.log('fail');
                         }
@@ -448,6 +451,7 @@
                         if (response.form_submitted) {
                             $('input[type="radio"]').prop('disabled', true);
                             $('textarea').prop('disabled', true);
+                            $('#confirmation-alert').addClass('d-none');
                             $('#submit-btn').text('View');
                         } else {
                             return;

@@ -56,6 +56,7 @@
 
         <p class="mt-3">Other comments and suggestions:</p>
         <textarea class="form-control" id="comments_area"></textarea>
+        
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
@@ -81,8 +82,10 @@
                         <tbody>
                         </tbody>
                     </table>
+
                 </div>
                 <div class="modal-footer">
+                    
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
@@ -434,10 +437,12 @@
                             }
 
                             $('#signtable tbody').append(newRow);
+
                         } else {
                             console.log('fail');
                         }
                     },
+
                     error: function(xhr, status, error) {
                         console.log(error);
                     }
@@ -528,6 +533,7 @@
 
                 if (allRadioChecked && allTextAreasFilled) {
                     loadSignature();
+
                     $('#signatory_modal').modal('show');
                 } else {
                     console.log('Please complete all fields and select all radio buttons.');

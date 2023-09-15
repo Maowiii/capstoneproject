@@ -38,7 +38,6 @@
                         @csrf
                         <div class="modal-body">
                             <p>Fill up the following information to start a new evaluation year:</p>
-                            <?php $currentYear = now()->format('Y'); ?>
                             <label>
                                 <h6>School Year:</h6>
                             </label>
@@ -54,12 +53,16 @@
                                 <div class="col">
                                     <select class='form-control' name="sy_start" id="sy_start" onchange="updateEndYear()">
                                         <option value="">--Select School Year--</option>
-                                        <?php $currentYear = now()->format('Y'); ?>
-                                        @for ($year = $currentYear; $year <= 2099; $year++)
+                                        <?php
+                                        $currentYear = now()->year;
+                                        $startYear = $currentYear - 2;
+                                        ?>
+                                        @for ($year = $startYear; $year <= 2099; $year++)
                                             <option value="{{ $year }}"
                                                 @if (old('sy_end') == $year) selected @endif>{{ $year }}
                                             </option>
                                         @endfor
+
                                     </select>
                                 </div>
                                 <div class="col">
@@ -495,7 +498,7 @@
                 'confirmationAlert');
             alertDiv.html(
                 '<i class="bx bx-info-circle"></i>This cannot be undone.'
-                );
+            );
 
             $('#deleteConfirmationModal .modal-body').empty().append(message, alertDiv);
         });

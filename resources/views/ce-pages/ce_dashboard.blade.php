@@ -21,7 +21,7 @@
             <h4>Appraisals:</h4>
             <canvas id="donutChart"></canvas>
         </div>
-    </div>
+      </div>
 
     <div class="modal fade" id="firstLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
