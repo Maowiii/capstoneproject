@@ -867,6 +867,39 @@
                 $('#signatory_modal').modal('hide');
                 $('#confirmation-popup-modal').modal('show');
             });
+
+            $('#KRA_table_body').on('blur', '.autosave-field', function() {
+                var field = $(this);
+                var kraID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveKRAField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        kraID: kraID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveKRAField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
         });
 
         function loadTableData() {
@@ -1528,7 +1561,7 @@
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
-                $('<textarea>').addClass('textarea form-control').attr({
+                $('<textarea>').addClass('textarea form-control autosave-field').attr({
                     name: name,
                     readonly: isReadonly
                 }).prop('required', true).val(value)
@@ -1547,6 +1580,8 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+
+
                 })
             );
         }

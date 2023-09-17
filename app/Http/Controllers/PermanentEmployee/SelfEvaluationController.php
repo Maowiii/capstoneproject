@@ -211,7 +211,6 @@ class SelfEvaluationController extends Controller
 
         DB::beginTransaction();
         try {
-
             $this->createSID($request);
             $this->createSR($request);
             $this->createS($request);
@@ -223,7 +222,7 @@ class SelfEvaluationController extends Controller
             $this->createSign($request);
 
             DB::commit();
-            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submition Complete!');
+            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -290,35 +289,38 @@ class SelfEvaluationController extends Controller
         ]);
     }
 
-    public function saveSEISScores(Request $request)
+    public function autosaveKRAField(Request $request)
     {
-        DB::beginTransaction();
+        // Retrieve the data sent from the frontend
+        $kraID = $request->input('kraID');
+        $fieldName = $request->input('fieldName');
+        
+        $fieldNameParts = explode('_', $fieldName); // Split into parts
+        array_shift($fieldNameParts); // Remove the first part "KRA"
+        $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
+
+        $fieldValue = $request->input('fieldValue');
+
         try {
-            if ($request->has('SID')) {
-                $this->createSID($request);
-            }
+            // Find the KRA by ID
+            $kra = KRA::findOrFail($kraID);
+            Log::info($kra);
 
-            if ($request->has('SR')) {
-                $this->createSR($request);
-            }
+            // Update the specific field value
+            $kra->$newFieldName = $fieldValue;
+            Log::info($kra);
 
-            if ($request->has('S')) {
-                $this->createS($request);
-            }
+            $kra->save();
+            Log::info($kra);
 
-            DB::commit();
-            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submition Complete!');
+            return response()->json(['message' => 'Autosave successful']);
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            // Log the exception
             Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
             Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-            // Display exception details using dd()
-            dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
-
-            return redirect()->back()->with('error', 'An error occurred while saving data.');
+            // Handle errors if any
+            return response()->json(['error' => 'Autosave failed'], 500);
         }
     }
 
@@ -447,7 +449,6 @@ class SelfEvaluationController extends Controller
                 ]);
             }
         }
-
     }
 
     protected function createWPA(Request $request)
@@ -558,7 +559,8 @@ class SelfEvaluationController extends Controller
 
                 $existingSignature->update([
                     'sign_data' => $signatureData,
-                    'sign_type' => 'JI', // Change this according to your needs
+                    'sign_type' => 'JI',
+                    // Change this according to your needs
                 ]);
             } else {
                 try {
@@ -567,7 +569,8 @@ class SelfEvaluationController extends Controller
                     Signature::create([
                         'appraisal_id' => $appraisalId,
                         'sign_data' => $signatureData,
-                        'sign_type' => 'JI', // Change this according to your needs
+                        'sign_type' => 'JI',
+                        // Change this according to your needs
                     ]);
 
                 } catch (QueryException $e) {

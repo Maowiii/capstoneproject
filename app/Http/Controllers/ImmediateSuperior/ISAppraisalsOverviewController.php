@@ -9,6 +9,7 @@ use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\EvalYear;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ISAppraisalsOverviewController extends Controller
 {
@@ -74,29 +75,54 @@ class ISAppraisalsOverviewController extends Controller
     ];
     return response()->json($data);
   }
-  
+
+  public function updateInternalCustomer(Request $request)
+  {
+    $appraisalId = $request->input('appraisal_id');
+    $evaluatorId = $request->input('evaluator_id');
+
+    // Update the evaluator_id in the Appraisals table
+    Appraisals::where('appraisal_id', $appraisalId)
+      ->update(['evaluator_id' => $evaluatorId]);
+
+    // Return a response indicating success
+    return response()->json(['success' => true]);
+  }
+
   public function assignInternalCustomer(Request $request)
-{
+  {
     // Validate the request data
     $validatedData = $request->validate([
-        'employee_id' => 'required|exists:employees,id',
-        'internal_customer_id' => 'required|exists:employees,id', // Assuming internal customers are also employees
+      'employee_id' => 'required',
+      'appraisalId' => 'required',
     ]);
 
     try {
-        // Find the employee by ID
-        $employee = Employees::findOrFail($validatedData['employee_id']);
+      $employeeId = (int) $validatedData['employee_id'][0];
+      $appraisalId = (int) $validatedData['appraisalId'];
 
-        // Update the employee's internal_customer_id
-        $employee->internal_customer_id = $validatedData['internal_customer_id'];
-        $employee->save();
+      $firstAppraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
 
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Internal Customer assigned successfully.');
+      if ($firstAppraisal !== null) {
+        $firstAppraisal->update(['evaluator_id' => $employeeId]);
+      }
+
+      // Return a success response
+      $data = [
+        'success' => true,
+      ];
+      return response()->json($data);
+
     } catch (\Exception $e) {
-        // Handle any errors, such as database errors or invalid data
-        return redirect()->back()->with('error', 'Failed to assign Internal Customer. Please try again.');
-    }
-}
 
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      // Handle any errors, such as database errors or invalid data
+      $data = [
+        'error' => 'Failed to assign Internal Customer. Please try again.',
+      ];
+      return response()->json($data, 400);
+    }
+  }
 }

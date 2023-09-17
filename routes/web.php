@@ -102,8 +102,6 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 Route::post('/dashboard-immediate-superior/submit-position', [ISDashboardController::class, 'submitISPosition'])->name('is.submitISPosition');
 Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardController::class, 'getNotifications'])->name('is.getNotifications');
 
-
-
 // Appraisals Overview
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
@@ -115,8 +113,6 @@ Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('d
 Route::post('/delete-wpa', [ISAppraisalController::class, 'deleteWPA'])->name('delete-wpa');
 Route::post('/delete-ldp', [ISAppraisalController::class, 'deleteLDP'])->name('deleteLDP');
 Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class, 'assignInternalCustomer'])->name('assignInternalCustomer');
-
-
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
@@ -137,6 +133,8 @@ Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'
 Route::get('/get-pe-KRA-data', [SelfEvaluationController::class, 'getPEKRA'])->name('getPEKRA');
 Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
 Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppraisal'])->name('savePEAppraisal');
+
+Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
 
 Route::get('/pe-go-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewGOAppraisal'])->name('viewPEGOAppraisal');
 

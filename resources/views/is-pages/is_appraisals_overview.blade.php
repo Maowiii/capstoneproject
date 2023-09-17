@@ -60,7 +60,7 @@
         </table>
     </div>
 
-<div class="modal fade" id="ISModal1" data-bs-backdrop="static">
+    <div class="modal fade" id="ISModal1" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-<div class="modal fade" id="ISModal2" data-bs-backdrop="static">
+    <div class="modal fade" id="ISModal2" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -102,7 +102,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2">
-                    <input type="text" id="employee_search" class="form-control" placeholder="Search">
+                        <input type="text" id="employee_search" class="form-control" placeholder="Search">
                     </div>
                     <table class='table table-bordered'>
                         <thead>
@@ -121,9 +121,7 @@
                 </div>
             </div>
         </div>
-    </div> 
-
-
+    </div>
     <script>
         $(document).ready(function() {
             loadTableData();
@@ -131,6 +129,7 @@
         });
 
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        var container = null; // Declare the container variable
 
         function loadTableData() {
             $.ajax({
@@ -138,7 +137,7 @@
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
-                }, 
+                },
                 success: function(response) {
                     if (response.success) {
                         $('#IS_appraisals_table_body').empty();
@@ -172,10 +171,20 @@
                                 } else if (appraisal.evaluation_type ===
                                     'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
-                                        ic1Link = $('<a>').addClass('btn btn-outline-primary')
+                                        ic1Link = $('<a>').addClass(
+                                                'btn ic1 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal1')
                                             .attr('data-bs-toggle', 'modal')
-                                            .text('Choose IC1');
+                                            .attr('data-appraisal-id', appraisal
+                                                .appraisal_id)
+                                            .text('Choose IC1').on('click', function() {
+                                                // Get the appraisal_id from the clicked link
+                                                var appraisalId = $(this).data(
+                                                    'appraisal-id');
+                                                // Set the data attribute for the modal
+                                                $('#ISModal1').attr('data-appraisal-id',
+                                                    appraisalId);
+                                            });
                                     } else {
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href',
@@ -187,10 +196,25 @@
                                 } else if (appraisal.evaluation_type ===
                                     'internal customer 2') {
                                     if (appraisal.evaluator_id === null) {
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                        ic2Link = $('<a>').addClass(
+                                                'btn ic2 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal2')
                                             .attr('data-bs-toggle', 'modal')
-                                            .text('Choose IC2');
+                                            .attr('data-appraisal-id', appraisal.appraisal_id)
+                                            // Include the appraisal ID here
+                                            .text('Choose IC2').on('click', function() {
+                                                console.log('waz clicked');
+                                                // Get the appraisal_id from the clicked link
+                                                var appraisalId = $(this).data(
+                                                    'appraisal-id');
+                                                    console.log(appraisalId);
+
+                                                // Set the data attribute for the modal
+                                                $('#ISModal2').attr('data-appraisal-id',
+                                                    appraisalId);
+                                                                                                        console.log(appraisalId);
+
+                                            });
                                     } else {
                                         ic2Link = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href',
@@ -245,7 +269,7 @@
 
         var selectedRows = [];
 
-      function loadEmployeeData() {
+        function loadEmployeeData() {
             $.ajax({
                 url: '{{ route('getEmployeesData') }}',
                 type: 'GET',
@@ -280,9 +304,12 @@
                                 if (isChecked || checkedCount < 2) {
                                     checkbox.prop('checked', !isChecked);
                                     $(this).toggleClass('row-selected', !isChecked);
-                                    updateSelectedRows();
 
-                                    
+                                    // Set the employee ID in the modal title
+                                    $('#ISModal1 .modal-title').data('employee-id', employee
+                                        .employee_id);
+
+                                    updateSelectedRows();
                                 }
                             });
 
@@ -296,16 +323,15 @@
                     console.log(error);
                 }
             });
-        } 
-        
-       function updateSelectedRows() {
+        }
+
+        function updateSelectedRows() {
             selectedRows = [];
             $('input[type="checkbox"]:checked').each(function() {
                 var row = $(this).closest('tr');
                 selectedRows.push(row);
             });
         }
-
         $(document).on('click', '#ISModal1 .btn-primary', function() {
             $('#employee_table_body').empty();
             $('#ISModal1 .search-box').hide();
@@ -315,9 +341,50 @@
                 $('#employee_table_body').append(row);
             }
 
-            $('#ISModal1 .modal-body').append(container);
-
+            // Check if container is defined before appending
+            if (container) {
+                $('#ISModal1 .modal-body').append(container);
+            }
             selectedRows = [];
+        });
+
+        // Event listener for the "Submit" button in ISModal1
+        $('#ISModal1 .btn-primary, #ISModal2 .btn-primary').on('click', function() {
+            // Collect selected ICs
+            var selectedICs = [];
+            $('input[name="ic"]:checked').each(function() {
+                selectedICs.push($(this).val());
+            });
+
+            // Get the employee ID from the modal title (assuming you have set it)
+            var appraisalIdToUpdate = $(this).closest('.modal').data('appraisal-id');
+
+            $.ajax({
+                url: '{{ route('assignInternalCustomer') }}',
+                type: 'POST',
+                data: {
+                    employee_id: selectedICs,
+                    appraisalId: appraisalIdToUpdate
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Assignment successful, you can display a success message if needed
+                        console.log('Internal Customer(s) assigned successfully.');
+                        // Close the modal
+                        $('#ISModal1').modal('hide');
+                    } else {
+                        // Handle errors, e.g., display an error message
+                        console.log('Error: ' + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle AJAX errors
+                    console.log(error);
+                }
+            });
         });
     </script>
 @endsection
