@@ -43,7 +43,7 @@ class SessionExpired
 
   private function performLogout()
   {
-    session()->flush();
+    session()->invalidate();
 
     return redirect('/login'); // Redirect to a URL
   }
