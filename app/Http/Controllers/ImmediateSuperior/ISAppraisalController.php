@@ -20,47 +20,55 @@ class ISAppraisalController extends Controller
 {
   public function viewAppraisal($appraisal_id)
   {
-    // Retrieve the appraisal records for the given employee_id and evaluator_id
-    $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
+    if (session()->has('account_id')) {
+      // Retrieve the appraisal records for the given employee_id and evaluator_id
+      $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
-    // If no appraisal record is found for the given employee and evaluator, handle the error
-    if ($appraisals->isEmpty()) {
-      // Handle the case where appraisal data is not found
-      // You may want to display an error message or redirect to a 404 page
-    }
-
-    // Initialize variables for appraisee and evaluator data
-    $appraisee = null;
-    $evaluator = null;
-    $appraisal_Id = null;
-
-    // Loop through the appraisal records to find the correct appraisal type and evaluator data
-    foreach ($appraisals as $appraisal) {
-      // Fetch the appraisee data based on the $employee_id
-      $appraisee = Employees::find($appraisal->employee_id);
-      // Determine the appraisal type
-      $appraisalType = $appraisal->evaluation_type;
-
-      // Handle different appraisal types
-      if ($appraisalType === 'self evaluation') {
-        $evaluator = $appraisee;
-        $appraisal_Id = $appraisal->appraisal_id;
-      } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
-        $evaluator = Employees::find($appraisal->evaluator_id);
-        $appraisal_Id = $appraisal->appraisal_id;
-      } elseif ($appraisalType === 'is evaluation') {
-        $evaluator = Employees::find($appraisal->evaluator_id);
-        $appraisal_Id = $appraisal->appraisal_id;
+      // If no appraisal record is found for the given employee and evaluator, handle the error
+      if ($appraisals->isEmpty()) {
+        // Handle the case where appraisal data is not found
+        // You may want to display an error message or redirect to a 404 page
       }
-      break; // Exit the loop after finding the first matching appraisal
-    }
 
-    // Return the view with appraisee, evaluator, and appraisal ID data
-    return view('is-pages.is_appraisal', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+      // Initialize variables for appraisee and evaluator data
+      $appraisee = null;
+      $evaluator = null;
+      $appraisal_Id = null;
+
+      // Loop through the appraisal records to find the correct appraisal type and evaluator data
+      foreach ($appraisals as $appraisal) {
+        // Fetch the appraisee data based on the $employee_id
+        $appraisee = Employees::find($appraisal->employee_id);
+        // Determine the appraisal type
+        $appraisalType = $appraisal->evaluation_type;
+
+        // Handle different appraisal types
+        if ($appraisalType === 'self evaluation') {
+          $evaluator = $appraisee;
+          $appraisal_Id = $appraisal->appraisal_id;
+        } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
+          $evaluator = Employees::find($appraisal->evaluator_id);
+          $appraisal_Id = $appraisal->appraisal_id;
+        } elseif ($appraisalType === 'is evaluation') {
+          $evaluator = Employees::find($appraisal->evaluator_id);
+          $appraisal_Id = $appraisal->appraisal_id;
+        }
+        break; // Exit the loop after finding the first matching appraisal
+      }
+
+      // Return the view with appraisee, evaluator, and appraisal ID data
+      return view('is-pages.is_appraisal', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisal_id');
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
@@ -71,6 +79,10 @@ class ISAppraisalController extends Controller
 
   public function saveISAppraisal(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $validator = $this->validateISAppraisal($request);
 
     if ($validator->fails()) {
@@ -111,6 +123,10 @@ class ISAppraisalController extends Controller
 
   protected function validateISAppraisal(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     return Validator::make($request->all(), [
       'appraisalID' => 'required|numeric',
       /*
@@ -156,6 +172,10 @@ class ISAppraisalController extends Controller
 
   protected function createSID(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('SID') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['SIDanswer'];
 
@@ -184,6 +204,10 @@ class ISAppraisalController extends Controller
 
   protected function createSR(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('SR') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['SRanswer'];
 
@@ -212,6 +236,10 @@ class ISAppraisalController extends Controller
 
   protected function createS(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('S') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['Sanswer'];
 
@@ -238,6 +266,10 @@ class ISAppraisalController extends Controller
 
   protected function createKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('KRA') as $kraID => $kraData) {
       $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
         ->where('kra_id', $kraID)
@@ -302,6 +334,10 @@ class ISAppraisalController extends Controller
 
   protected function createWPA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('WPA') as $wpaID => $wppData) {
       $existingWPP = WPP::where('appraisal_id', $request->input('appraisalID'))
         ->where('performance_plan_id', $wpaID)
@@ -333,6 +369,10 @@ class ISAppraisalController extends Controller
 
   protected function createLDP(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('LDP') as $ldpID => $ldpData) {
       $existingLDP = LDP::where('appraisal_id', $request->input('appraisalID'))
         ->where('development_plan_id', $ldpID)
@@ -361,6 +401,10 @@ class ISAppraisalController extends Controller
 
   protected function createJIC(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $JICData = $request->input('feedback');
     foreach ($JICData as $questionNumber => $data) {
       JIC::create([
@@ -374,6 +418,9 @@ class ISAppraisalController extends Controller
 
   public function getAppraisalSE($employee_id)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
 
     $evaluatee = Appraisals::where('employee_id', $employee_id)
       ->where('evaluator_id', $employee_id)
@@ -413,6 +460,10 @@ class ISAppraisalController extends Controller
 
   public function deleteKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $kraID = $request->input('kraID');
 
     // Perform the actual deletion of the KRA record from the database
@@ -425,6 +476,10 @@ class ISAppraisalController extends Controller
   }
   public function deleteWPA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $wpaID = $request->input('wpaID');
 
     // Perform the actual deletion of the WPA record from the database
@@ -437,6 +492,10 @@ class ISAppraisalController extends Controller
   }
   public function deleteLDP(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $ldpID = $request->input('ldpID');
 
     // Perform the actual deletion of the WPA record from the database

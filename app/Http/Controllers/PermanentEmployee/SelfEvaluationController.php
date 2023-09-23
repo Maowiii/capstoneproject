@@ -22,11 +22,19 @@ class SelfEvaluationController extends Controller
 {
   public function displaySelfEvaluationForm()
   {
-    return view('pe-pages.pe_self_evaluation');
+    if (session()->has('account_id')) {
+      return view('pe-pages.pe_self_evaluation');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisal_id');
 
     $SID = FormQuestions::where('table_initials', 'SID')->get();
@@ -63,6 +71,10 @@ class SelfEvaluationController extends Controller
 
   public function showAppraisalForm(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisal_id');
 
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
@@ -73,6 +85,10 @@ class SelfEvaluationController extends Controller
 
   public function getData(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $account_id = session()->get('account_id');
     $user = Employees::where('account_id', $account_id)->first();
 
@@ -99,6 +115,10 @@ class SelfEvaluationController extends Controller
 
   public function viewAppraisal($appraisal_id)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     // Retrieve the appraisal records for the given employee_id and evaluator_id
     $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
@@ -134,6 +154,10 @@ class SelfEvaluationController extends Controller
 
   public function viewGOAppraisal($appraisal_id)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     // Retrieve the appraisal records for the given employee_id and evaluator_id
     $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
@@ -169,6 +193,10 @@ class SelfEvaluationController extends Controller
 
   public function getPEKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisal_id');
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
@@ -184,6 +212,10 @@ class SelfEvaluationController extends Controller
   }
   public function deleteKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $kraID = $request->input('kraID');
 
     // Perform the actual deletion of the KRA record from the database
@@ -197,6 +229,10 @@ class SelfEvaluationController extends Controller
 
   public function savePEAppraisal(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $validator = $this->validatePEAppraisal($request);
     if ($validator->fails()) {
       // Display validation errors using dd()
@@ -233,6 +269,10 @@ class SelfEvaluationController extends Controller
 
   protected function validatePEAppraisal(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     return Validator::make($request->all(), [
       'appraisalID' => 'required|numeric',
 
@@ -284,6 +324,10 @@ class SelfEvaluationController extends Controller
 
   protected function createSID(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('SID') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['SIDanswer'];
 
@@ -312,6 +356,10 @@ class SelfEvaluationController extends Controller
 
   protected function createSR(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('SR') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['SRanswer'];
 
@@ -340,6 +388,10 @@ class SelfEvaluationController extends Controller
 
   protected function createS(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('S') as $questionId => $questionData) {
       $score = $questionData[$request->input('appraisalID')]['Sanswer'];
 
@@ -366,9 +418,12 @@ class SelfEvaluationController extends Controller
     }
   }
 
-
   protected function createKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('KRA') as $kraID => $kraData) {
       $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
         ->where('kra_id', $kraID)
@@ -414,6 +469,10 @@ class SelfEvaluationController extends Controller
 
   protected function createWPA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('WPA') as $wpaID => $wppData) {
       $existingWPP = WPP::where('appraisal_id', $request->input('appraisalID'))
         ->where('performance_plan_id', $wpaID)
@@ -446,6 +505,10 @@ class SelfEvaluationController extends Controller
 
   protected function createLDP(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('LDP') as $ldpID => $ldpData) {
       $existingLDP = LDP::where('appraisal_id', $request->input('appraisalID'))
         ->where('development_plan_id', $ldpID)
@@ -474,6 +537,10 @@ class SelfEvaluationController extends Controller
 
   protected function createJIC(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('feedback') as $jicID => $jicData) {
       $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
         ->where('job_incumbent_id', $jicID)
@@ -505,6 +572,10 @@ class SelfEvaluationController extends Controller
 
   protected function createSign(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $appraisalId = $request->input('appraisalID'); // Add a semicolon here
     $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
 

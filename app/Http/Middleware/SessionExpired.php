@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Support\Facades\Log;
+
+class SessionExpired
+{
+  public function handle($request, Closure $next)
+  {
+    Log::debug('SessionExpired middleware is executing.');
+
+    if ($this->userIsAuthenticated()) {
+      $lastActivity = session('last_activity', 0);
+      Log::debug('Last Activity: ' . $lastActivity);
+
+      $currentTime = time();
+
+      if ($currentTime - $lastActivity > 60) {
+        Log::debug('Session expired; performing logout.');
+        $request->session()->destroy();
+
+        $this->performLogout();
+
+        session()->flash('message', 'Your session has expired. Please log in again.');
+
+        return redirect('/login'); // Redirect to a URL
+      }
+    } else {
+      return redirect('/login'); // Redirect to a URL
+    }
+
+    session(['last_activity' => time()]);
+
+    return $next($request);
+  }
+
+  private function userIsAuthenticated()
+  {
+    return session()->has('account_id');
+  }
+
+  private function performLogout()
+  {
+    session()->flush();
+
+    return redirect('/login'); // Redirect to a URL
+  }
+}

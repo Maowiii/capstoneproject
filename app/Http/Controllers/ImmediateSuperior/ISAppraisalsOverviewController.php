@@ -14,20 +14,28 @@ class ISAppraisalsOverviewController extends Controller
 {
   public function displayISAppraisalsOverview()
   {
-    $account_id = session()->get('account_id');
-    $user = Employees::where('account_id', $account_id)->first();
+    if (session()->has('account_id')) {
+      $account_id = session()->get('account_id');
+      $user = Employees::where('account_id', $account_id)->first();
 
-    $department_id = $user->department_id;
-    $appraisals = Employees::where('department_id', $department_id)->get();
+      $department_id = $user->department_id;
+      $appraisals = Employees::where('department_id', $department_id)->get();
 
-    $activeEvalYear = EvalYear::where('status', 'active')->first();
-    return view('is-pages.is_appraisals_overview')
-      ->with('appraisals', $appraisals)
-      ->with('activeEvalYear', $activeEvalYear);
+      $activeEvalYear = EvalYear::where('status', 'active')->first();
+      return view('is-pages.is_appraisals_overview')
+        ->with('appraisals', $appraisals)
+        ->with('activeEvalYear', $activeEvalYear);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getData(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $account_id = session()->get('account_id');
     $user = Employees::where('account_id', $account_id)->first();
 
@@ -54,6 +62,10 @@ class ISAppraisalsOverviewController extends Controller
 
   public function getEmployees(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $accounts = Accounts::where('type', 'PE')->get();
 
     $employeeIds = $accounts->pluck('account_id');

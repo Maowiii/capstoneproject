@@ -14,14 +14,22 @@ class AdminAppraisalsOverviewController extends Controller
 {
   public function displayAdminAppraisalsOverview()
   {
-    $evaluationYears = EvalYear::all();
-    $activeEvalYear = EvalYear::where('status', 'active')->first();
+    if (session()->has('account_id')) {
+      $evaluationYears = EvalYear::all();
+      $activeEvalYear = EvalYear::where('status', 'active')->first();
 
-    return view('admin-pages.admin_appraisals_overview', compact('evaluationYears', 'activeEvalYear'));
+      return view('admin-pages.admin_appraisals_overview', compact('evaluationYears', 'activeEvalYear'));
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function loadAdminAppraisals(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $selectedYear = $request->input('selectedYear');
     $search = $request->input('search');
 
@@ -61,7 +69,7 @@ class AdminAppraisalsOverviewController extends Controller
               ->orWhere('employees.last_name', 'like', '%' . $search . '%');
           })
           ->get();
-          $appraisalsModel->setTable(null);
+        $appraisalsModel->setTable(null);
         // Log::debug('Appraisal:' . $appraisals);
 
       } else {
@@ -99,7 +107,7 @@ class AdminAppraisalsOverviewController extends Controller
           }
         ])->get();
       }
-      
+
       if (!$selectedYearDates) {
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
@@ -122,21 +130,33 @@ class AdminAppraisalsOverviewController extends Controller
 
   public function loadSelfEvaluationForm()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
     return view('admin-pages.admin_self_evaluation');
   }
 
   public function loadISEvaluationForm()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
     return view('admin-pages.admin_is_evaluation');
   }
 
   public function loadICEvaluationForm()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
     return view('admin-pages.admin_ic_evaluation');
   }
 
   public function loadSignatureOverview(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
     $employeeID = $request->input('employeeID');
 
     $appraisals = Appraisals::where('employee_id', $employeeID)
@@ -148,6 +168,9 @@ class AdminAppraisalsOverviewController extends Controller
 
   public function loadSignature(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
     $appraisalID = $request->input('appraisalID');
 
     $appraisal = Appraisals::find($appraisalID);
@@ -167,6 +190,10 @@ class AdminAppraisalsOverviewController extends Controller
 
   public function lockUnlockAppraisal(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $appraisalID = $request->input('appraisalID');
     $appraisal = Appraisals::find($appraisalID);
 

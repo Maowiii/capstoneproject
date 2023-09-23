@@ -19,17 +19,29 @@ class EvaluationYearController extends Controller
 {
   public function viewEvaluationYears()
   {
-    return view('admin-pages.evaluation_years');
+    if (session()->has('account_id')) {
+      return view('admin-pages.evaluation_years');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function displayEvaluationYear()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $evalyears = EvalYear::all();
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
 
   public function addEvalYear(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $validator = Validator::make($request->all(), [
       'sy_start' => [
         'required',
@@ -62,7 +74,6 @@ class EvaluationYearController extends Controller
       'eval_end.required' => 'Please choose an ending date for evaluation.',
     ]);
 
-
     if ($validator->fails()) {
       return response()->json([
         'success' => false,
@@ -76,6 +87,10 @@ class EvaluationYearController extends Controller
 
   public function confirmEvalYear(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     EvalYear::where('status', 'active')->update(['status' => 'inactive']);
     $eval_year = EvalYear::create([
       'sy_start' => $request->input('sy_start'),
@@ -224,6 +239,10 @@ class EvaluationYearController extends Controller
 
   public function toggleEvalYearStatus(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $evalID = $request->input('eval_id');
 
     $evaluationYear = EvalYear::find($evalID);

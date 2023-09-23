@@ -16,16 +16,22 @@ class ISDashboardController extends Controller
 {
   public function displayISDashboard()
   {
-    $account_id = session()->get('account_id');
-    $user = Accounts::where('account_id', $account_id)->with('employee')->first();
-
-    $first_login = $user->first_login;
-
-    return view('is-pages.is_dashboard', ['first_login' => $first_login]);
+    if (session()->has('account_id')) {
+      $account_id = session()->get('account_id');
+      $user = Accounts::where('account_id', $account_id)->with('employee')->first();
+      $first_login = $user->first_login;
+      return view('is-pages.is_dashboard', ['first_login' => $first_login]);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function submitISPosition(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $position = $request->position;
     $request->session()->put('title', $position);
     $account_id = session()->get('account_id');
@@ -44,6 +50,10 @@ class ISDashboardController extends Controller
 
   public function getNotifications()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $immediateSuperior = session()->get('account_id');
     $activeYear = EvalYear::where('status', 'active')->first();
     $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;

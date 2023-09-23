@@ -1,3 +1,14 @@
+@if (session('message'))
+    <div class="position-relative">
+        <div class="position-absolute top-0 start-50 translate-middle">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session('message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+@endif
+
 <!DOCTYPE html>
 <html lang="en">
 
