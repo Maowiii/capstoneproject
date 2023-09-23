@@ -868,7 +868,7 @@
                 $('#confirmation-popup-modal').modal('show');
             });
 
-            $('#KRA_table_body').on('blur', '.autosave-field', function() {
+            $('#KRA_table_body').on('input', '.autosave-field', function() {
                 var field = $(this);
                 var kraID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
@@ -887,6 +887,59 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveKRAField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#wpa_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var wppID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveWPPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        wppID: wppID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.wpaData.forEach(function(wpa, index) {
+                            var wpaID = wpa.performance_plan_id;
+                            console.log(wpaID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-wpa-id', wpaID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][continue_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][continue_doing]');
+                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][stop_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]');
+                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][start_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]');
+                            
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][continue_doing]"]').val(wpa.continue_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]"]').val(wpa.stop_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]"]').val(wpa.start_do    ing);
+                        });
+
                         // Handle the success response if needed
                         console.log('Autosave successful.');
                         console.log('FieldName Acquired: ' + fieldName);
@@ -1280,7 +1333,7 @@
                                     type: 'radio',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
                                         '][KRA_performance_level]',
-                                    class: 'form-check-input',
+                                    class: 'form-check-input autosave-field',
                                     value: i
                                 });
 
@@ -1359,6 +1412,8 @@
                             var wpaID = wpa.performance_plan_id;
 
                             var wparow = $('<tr>').addClass('align-middle');
+                            wparow.attr('data-wpa-id', wpaID);
+
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
                                     'WPA[' + wpaID + '][' + {{ $appraisalId }} +
@@ -1698,25 +1753,25 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = highestWpaID + 1;
+            var nextWpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
                     false)
