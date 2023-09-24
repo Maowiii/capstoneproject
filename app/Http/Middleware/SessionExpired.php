@@ -17,7 +17,7 @@ class SessionExpired
 
       $currentTime = time();
 
-      if ($currentTime - $lastActivity > 60) {
+      if ($currentTime - $lastActivity > 300) {
         Log::debug('Session expired; performing logout.');
         $request->session()->destroy();
 
@@ -25,10 +25,10 @@ class SessionExpired
 
         session()->flash('message', 'Your session has expired. Please log in again.');
 
-        return redirect('/login'); // Redirect to a URL
+        return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
       }
     } else {
-      return redirect('/login'); // Redirect to a URL
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     session(['last_activity' => time()]);
@@ -45,6 +45,6 @@ class SessionExpired
   {
     session()->invalidate();
 
-    return redirect('/login'); // Redirect to a URL
+    return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
   }
 }

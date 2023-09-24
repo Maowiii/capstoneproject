@@ -119,18 +119,21 @@
             });
 
             $('textarea').prop('disabled', true);
+            $('.content-container input[type="radio"]').prop('disabled', true);
 
             function loadSignature() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('pe.loadSignatures') }}',
+                    url: '{{ route('ad.loadICSignatures') }}',
                     type: 'GET',
                     data: {
+                        sy: sy,
                         appraisalId: appraisalId,
                     },
                     success: function(response) {
@@ -183,14 +186,17 @@
             function loadTextAreas() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
+
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('getCommentsAndSuggestions') }}',
+                    url: '{{ route('ad.getICCommentsAndSuggestions') }}',
                     type: 'POST',
                     data: {
-                        appraisalId: appraisalId
+                        appraisalId: appraisalId,
+                        sy: sy
                     },
                     success: function(response) {
                         if (response.success) {
@@ -212,12 +218,18 @@
             }
 
             function loadICTable() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var sy = urlParams.get('sy');
+
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('pe.getICQuestions') }}',
+                    url: '{{ route('ad.getICQuestions') }}',
                     type: 'GET',
+                    data: {
+                        sy: sy
+                    },
                     success: function(response) {
                         if (response.success) {
                             var tbody = $('#IC_table tbody');
@@ -274,16 +286,18 @@
             function loadSavedScore(questionId) {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('getSavedICScores') }}',
+                    url: '{{ route('ad.getICScores') }}',
                     type: 'GET',
                     data: {
                         appraisalId: appraisalId,
-                        questionId: questionId
+                        questionId: questionId,
+                        sy: sy,
                     },
                     success: function(savedScoreResponse) {
                         if (savedScoreResponse.success) {

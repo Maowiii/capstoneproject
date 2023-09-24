@@ -9,6 +9,7 @@ use App\Models\EvalYear;
 use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class AdminAppraisalsOverviewController extends Controller
 {
@@ -16,7 +17,7 @@ class AdminAppraisalsOverviewController extends Controller
   {
     if (session()->has('account_id')) {
       $evaluationYears = EvalYear::all();
-      $activeEvalYear = EvalYear::where('status', 'active')->first();
+      $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
 
       return view('admin-pages.admin_appraisals_overview', compact('evaluationYears', 'activeEvalYear'));
     } else {
@@ -33,13 +34,12 @@ class AdminAppraisalsOverviewController extends Controller
     $selectedYear = $request->input('selectedYear');
     $search = $request->input('search');
 
-    Log::debug('Search Query: ' . $search);
-
     $sy_start = null;
     $sy_end = null;
     $selectedYearDates = null;
 
-    if ($selectedYear) { // Selected Year
+    // If There is a selected year:
+    if ($selectedYear) {
       $parts = explode('_', $selectedYear);
 
       if (count($parts) >= 2) {
@@ -53,59 +53,56 @@ class AdminAppraisalsOverviewController extends Controller
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
 
-      $table = 'appraisals_' . $selectedYear;
-      $appraisalsModel = new AdminAppraisals;
-      $appraisalsModel->setTable($table);
+      if (AdminAppraisals::tableExists()) {
 
-      // TEST
-      if ($search) {
-        // Log::debug('Search Query: ' . $search);
+        // If there is a search query based on name or employee number
+        if ($search) {
+          $table = 'appraisals_' . $selectedYear;
+          $appraisalsModel = new AdminAppraisals;
+          $appraisalsModel->setTable($table);
+          $appraisals = $appraisalsModel::with('employee')
+            ->whereHas('employee', function ($query) use ($search) {
+              $query->Where('first_name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%');
+            })
+            ->get();
 
-        $appraisals = $appraisalsModel
-          ->join('employees', 'appraisals.employee_id', '=', 'employees.employee_id')
-          ->where(function ($query) use ($search) {
-            $query->where('employees.employee_number', 'like', '%' . $search . '%')
-              ->orWhere('employees.first_name', 'like', '%' . $search . '%')
-              ->orWhere('employees.last_name', 'like', '%' . $search . '%');
-          })
-          ->get();
-        $appraisalsModel->setTable(null);
-        // Log::debug('Appraisal:' . $appraisals);
+          $appraisalsModel->setTable(null);
 
+          // If there is not search query.
+        } else {
+          $table = 'appraisals_' . $selectedYear;
+          $appraisalsModel = new AdminAppraisals;
+          $appraisalsModel->setTable($table);
+          $appraisals = $appraisalsModel->get();
+          $appraisalsModel->setTable(null);
+        }
       } else {
-        $appraisals = $appraisalsModel->get();
-        $appraisalsModel->setTable(null);
+        return response()->json(['success' => false, 'error' => 'There is no existing evaluation year.']);
       }
-      /*
-
-      $table = 'appraisals_' . $selectedYear;
-      $appraisalsModel = new AdminAppraisals;
-      $appraisalsModel->setTable($table);
-
-      $appraisals = $appraisalsModel->get();
-
-      $appraisalsModel->setTable(null);
-      */
-    } else { // Active Year
+    } else {
+      // Active Year Condition (No Selected Year)
       $selectedYearDates = EvalYear::where('status', 'active')->first();
-      if ($search) {
-        $appraisals = Appraisals::with('employee')
-          ->join('employees', 'employees.employee_id', '=', 'appraisals.employee_id')
-          ->where(function ($query) use ($search) {
-            $query->where('employees.employee_number', 'like', '%' . $search . '%')
-              ->orWhere('employees.first_name', 'like', '%' . $search . '%')
-              ->orWhere('employees.last_name', 'like', '%' . $search . '%');
-          })
-          ->get();
 
+      if (Appraisals::tableExists()) {
+        if ($search) {
+          $appraisals = Appraisals::with('employee')
+            ->whereHas('employee', function ($query) use ($search) {
+              $query->Where('first_name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%');
+            })
+            ->get();
+        } else {
+          $appraisals = Appraisals::with([
+            'employee' => function ($query) {
+              $query->whereHas('account', function ($subQuery) {
+                $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
+              });
+            }
+          ])->get();
+        }
       } else {
-        $appraisals = Appraisals::with([
-          'employee' => function ($query) {
-            $query->whereHas('account', function ($subQuery) {
-              $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
-            });
-          }
-        ])->get();
+        return response()->json(['success' => false, 'error' => 'There is no existing evaluation year.']);
       }
 
       if (!$selectedYearDates) {
@@ -127,6 +124,7 @@ class AdminAppraisalsOverviewController extends Controller
 
     return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
   }
+
 
   public function loadSelfEvaluationForm()
   {
@@ -157,11 +155,23 @@ class AdminAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    $employeeID = $request->input('employeeID');
 
-    $appraisals = Appraisals::where('employee_id', $employeeID)
-      ->with(['employee', 'signatures', 'evaluator'])
-      ->get();
+    $employeeID = $request->input('employeeID');
+    $sy = $request->input('selectedYear');
+
+    if ($sy !== null) {
+      $table = 'appraisals_' . $sy;
+
+      $appraisalsModel = new Appraisals;
+      $appraisalsModel->setTable($table);
+      $appraisals = $appraisalsModel->where('employee_id', $employeeID)
+        ->with(['employee', 'signatures', 'evaluator'])
+        ->get();
+    } else {
+      $appraisals = Appraisals::where('employee_id', $employeeID)
+        ->with(['employee', 'signatures', 'evaluator'])
+        ->get();
+    }
 
     return response()->json(['success' => true, 'appraisals' => $appraisals]);
   }
@@ -171,10 +181,18 @@ class AdminAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    $appraisalID = $request->input('appraisalID');
 
-    $appraisal = Appraisals::find($appraisalID);
-    $signature = Signature::where('appraisal_id', $appraisalID)->first();
+    $appraisalID = $request->input('appraisalID');
+    $sy = $request->input('selectedYear');
+
+    if ($sy !== null) {
+      $signatureTable = 'signature_' . $sy;
+      $signatureModel = new Signature;
+      $signatureModel->setTable($signatureTable);
+      $signature = $signatureModel->where('appraisal_id', $appraisalID)->first();
+    } else {
+      $signature = Signature::where('appraisal_id', $appraisalID)->first();
+    }
 
     $sign_data = null;
 
@@ -193,7 +211,7 @@ class AdminAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $appraisalID = $request->input('appraisalID');
     $appraisal = Appraisals::find($appraisalID);
 
@@ -207,5 +225,4 @@ class AdminAppraisalsOverviewController extends Controller
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
     }
   }
-
 }
