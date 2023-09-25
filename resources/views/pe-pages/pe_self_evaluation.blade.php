@@ -868,7 +868,7 @@
                 $('#confirmation-popup-modal').modal('show');
             });
 
-            $('#KRA_table_body').on('blur', '.autosave-field', function() {
+            $('#KRA_table_body').on('input', '.autosave-field', function() {
                 var field = $(this);
                 var kraID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
@@ -1280,7 +1280,7 @@
                                     type: 'radio',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
                                         '][KRA_performance_level]',
-                                    class: 'form-check-input',
+                                    class: 'form-check-input autosave-field',
                                     value: i
                                 });
 
