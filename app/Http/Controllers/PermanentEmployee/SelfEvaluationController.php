@@ -294,7 +294,7 @@ class SelfEvaluationController extends Controller
         // Retrieve the data sent from the frontend
         $kraID = $request->input('kraID');
         $fieldName = $request->input('fieldName');
-
+        
         $fieldNameParts = explode('_', $fieldName); // Split into parts
         array_shift($fieldNameParts); // Remove the first part "KRA"
         $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
@@ -314,51 +314,6 @@ class SelfEvaluationController extends Controller
             Log::info($kra);
 
             return response()->json(['message' => 'Autosave successful']);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-            // Handle errors if any
-            return response()->json(['error' => 'Autosave failed'], 500);
-        }
-    }
-
-    public function autosaveWPPField(Request $request)
-    {
-        // Retrieve the data sent from the frontend
-        $wppID = $request->input('wppID');
-        $fieldName = $request->input('fieldName');
-        $fieldValue = $request->input('fieldValue');
-        $appraisalId = $request->input('appraisalId');
-
-        try {
-            // Find the existing record based on the criteria
-            $wpp = WPP::where([
-                'performance_plan_id' => $wppID,
-                'appraisal_id' => $appraisalId,
-            ])->first();
-
-            // If the record exists, update the specific field value; otherwise, create a new record
-            if ($wpp) {
-                $wpp->$fieldName = $fieldValue;
-                $wpp->save();
-            } else {
-                // Create a new record with the criteria and the specific field value
-                $wpp = new WPP([
-                    'performance_plan_id' => $wppID,
-                    'appraisal_id' => $appraisalId,
-                    'performance_plan_order' => $wppID,
-                    $fieldName => $fieldValue
-                ]);
-                $wpp->save();
-            }
-
-            // Log the updated or inserted record
-            $wpaData = WPP::where(['appraisal_id' => $appraisalId, 'performance_plan_id' => $wpp->performance_plan_id])->get();
-
-            // Return the ID in the response
-            return response()->json(['message' => 'Autosave successful', 'wpaData' => $wpaData]);
         } catch (\Exception $e) {
             Log::error('Exception Message: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
