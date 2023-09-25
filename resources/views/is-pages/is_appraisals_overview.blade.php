@@ -128,6 +128,10 @@
             loadEmployeeData();
         });
 
+        function refreshPage() {
+            location.reload();
+        }
+
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var container = null; // Declare the container variable
 
@@ -207,12 +211,12 @@
                                                 // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
-                                                    console.log(appraisalId);
+                                                console.log(appraisalId);
 
                                                 // Set the data attribute for the modal
                                                 $('#ISModal2').attr('data-appraisal-id',
                                                     appraisalId);
-                                                                                                        console.log(appraisalId);
+                                                console.log(appraisalId);
 
                                             });
                                     } else {
@@ -301,7 +305,7 @@
                                 var isChecked = checkbox.prop('checked');
                                 var checkedCount = $('input[type="checkbox"]:checked').length;
 
-                                if (isChecked || checkedCount < 2) {
+                                if (isChecked || checkedCount < 1) {
                                     checkbox.prop('checked', !isChecked);
                                     $(this).toggleClass('row-selected', !isChecked);
 
@@ -324,6 +328,7 @@
                 }
             });
         }
+
 
         function updateSelectedRows() {
             selectedRows = [];
@@ -375,6 +380,7 @@
                         console.log('Internal Customer(s) assigned successfully.');
                         // Close the modal
                         $('#ISModal1').modal('hide');
+                        refreshPage();
                     } else {
                         // Handle errors, e.g., display an error message
                         console.log('Error: ' + response.error);
