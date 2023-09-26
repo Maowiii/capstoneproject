@@ -7,35 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Schema;
 
-trait BindsDynamically
-{
-  protected $connection = null;
 
-  public function bind(string $connection, string $table)
-  {
-    $this->setConnection($connection);
-    $this->setTable($table);
-  }
-
-  public function newInstance($attributes = [], $exists = false)
-  {
-    $model = new static((array) $attributes);
-    $model->exists = $exists;
-    $model->setTable(
-      $this->getTable()
-    );
-    $model->setConnection(
-      $this->getConnectionName()
-    );
-
-    return $model;
-  }
-
-}
-class AdminAppraisals extends Model
+class AdminAppraisals extends BaseModel
 {
   use HasFactory;
-  use BindsDynamically;
 
   protected $primaryKey = 'appraisal_id';
   public $timestamps = false;

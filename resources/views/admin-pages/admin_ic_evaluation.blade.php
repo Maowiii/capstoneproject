@@ -53,10 +53,10 @@
         </table>
 
         <p>What did you like best about his/her customer service?</p>
-        <textarea class="form-control" id="service_area"></textarea>
+        <textarea class="form-control" id="service_area" disabled></textarea>
 
         <p class="mt-3">Other comments and suggestions:</p>
-        <textarea class="form-control" id="comments_area"></textarea>
+        <textarea class="form-control" id="comments_area" disabled></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="button" class="btn btn-primary medium-column" id='view-btn'>View</button>
@@ -117,9 +117,6 @@
                 $('#imageModal').modal('hide');
                 $('#signatory_modal').modal('show');
             });
-
-            $('textarea').prop('disabled', true);
-            $('.content-container input[type="radio"]').prop('disabled', true);
 
             function loadSignature() {
                 var urlParams = new URLSearchParams(window.location.search);
@@ -202,7 +199,6 @@
                         if (response.success) {
                             $('#service_area').val(response.customerService);
                             $('#comments_area').val(response.suggestion);
-                            $('input[type="radio"]').prop('disabled', true);
                         } else {
                             console.log('Comments not found or an error occurred.');
                         }
@@ -258,7 +254,7 @@
                                         id: `score_${questionId}_${i}`,
                                         name: `ic_${questionId}`,
                                         value: i
-                                    });
+                                    }).prop('disabled', true);
                                     var label = $('<label>').addClass('form-check-label').attr(
                                         'for', `score_${questionId}_${i}`).text(i);
 
@@ -332,6 +328,7 @@
 
             loadICTable();
             loadTextAreas();
+
         });
     </script>
 @endsection

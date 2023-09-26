@@ -6,35 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\EvalYear;
 
-trait BindsDynamically
-{
-  protected $connection = null;
-
-  public function bind(string $connection, string $table)
-  {
-    $this->setConnection($connection);
-    $this->setTable($table);
-  }
-
-  public function newInstance($attributes = [], $exists = false)
-  {
-    $model = new static((array) $attributes);
-    $model->exists = $exists;
-    $model->setTable(
-      $this->getTable()
-    );
-    $model->setConnection(
-      $this->getConnectionName()
-    );
-
-    return $model;
-  }
-}
-
-class Signature extends Model
+class Signature extends BaseModel
 {
   use HasFactory;
-  use BindsDynamically;
+
   protected $primaryKey = 'signature_id';
 
   protected $fillable = [

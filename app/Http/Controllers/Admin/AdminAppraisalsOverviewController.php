@@ -8,6 +8,7 @@ use App\Models\AdminAppraisals;
 use App\Models\EvalYear;
 use App\Models\Signature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
@@ -53,29 +54,30 @@ class AdminAppraisalsOverviewController extends Controller
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
 
-      if (AdminAppraisals::tableExists()) {
-
-        // If there is a search query based on name or employee number
+      // If there is a search query based on name or employee number
+      if (Appraisals::tableExists()) {
         if ($search) {
           $table = 'appraisals_' . $selectedYear;
-          $appraisalsModel = new AdminAppraisals;
-          $appraisalsModel->setTable($table);
-          $appraisals = $appraisalsModel::with('employee')
-            ->whereHas('employee', function ($query) use ($search) {
-              $query->Where('first_name', 'like', '%' . $search . '%')
-                ->orWhere('last_name', 'like', '%' . $search . '%');
-            })
-            ->get();
+          $appraisalModel = new Appraisals;
+          $appraisalModel->setTable($table);
 
-          $appraisalsModel->setTable(null);
+          $appraisals = $appraisalModel->where(function ($query) use ($search, $table) {
+            $query->whereExists(function ($subQuery) use ($search, $table) {
+              $subQuery->selectRaw(1)
+                ->from('employees')
+                ->whereRaw("$table.employee_id = employees.employee_id")
+                ->where(function ($innerQuery) use ($search) {
+                  $innerQuery->orWhere('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+            });
+          })->get();
 
-          // If there is not search query.
         } else {
           $table = 'appraisals_' . $selectedYear;
-          $appraisalsModel = new AdminAppraisals;
+          $appraisalsModel = new Appraisals;
           $appraisalsModel->setTable($table);
           $appraisals = $appraisalsModel->get();
-          $appraisalsModel->setTable(null);
         }
       } else {
         return response()->json(['success' => false, 'error' => 'There is no existing evaluation year.']);

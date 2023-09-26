@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\EvalYear;
 use Illuminate\Support\Facades\Schema;
 
-class Appraisals extends Model
+
+class Appraisals extends BaseModel
 {
   use HasFactory;
 
