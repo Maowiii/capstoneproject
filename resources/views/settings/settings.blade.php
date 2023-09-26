@@ -35,5 +35,26 @@
                 </div>
         </div>
     </div>
+<<<<<<< Updated upstream
 </div>
 @endsection
+=======
+
+    <script>
+        function togglePasswordVisibility(inputId) {
+            var passwordInput = document.getElementById(inputId);
+            var passwordToggleIcon = document.getElementById(inputId + "-toggle-icon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggleIcon.classList.remove("bx-show");
+                passwordToggleIcon.classList.add("bx-hide");
+            } else {
+                passwordInput.type = "password";
+                passwordToggleIcon.classList.remove("bx-hide");
+                passwordToggleIcon.classList.add("bx-show");
+            }
+        }
+    </script>
+@endsection
+>>>>>>> Stashed changes
