@@ -45,6 +45,8 @@
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
                     <th>Signatures</th>
+                    <th>Action</th>
+
                 </tr>
             </thead>
             <tbody></tbody>
