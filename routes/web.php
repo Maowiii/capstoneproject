@@ -174,4 +174,4 @@ Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::cla
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
 
 // Settings
-Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('changePassword');
+Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');

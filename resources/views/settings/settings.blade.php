@@ -10,92 +10,92 @@
             <div class="col-md-12">
                 <h3>Change Password:</h3>
             </div>
-            <form>
-                <div class='mb-3'>
-                    <label>Current Password:</label>
-                    <input type="password" class="form-control w-25" value="{{ old('current_password') }}"
-                        name="current_password" id="current_password">
-                </div>
-                <div class='mb-3'>
-                    <label>New Password:</label>
-                    <input type="password" class="form-control w-25" value="{{ old('new_password') }}" name="new_password"
-                        id="new_password">
-                </div>
-                <div class='mb-3'>
-                    <label>Confirm Password:</label>
-                    <input type="password" class="form-control w-25" value="{{ old('confirm_password') }}"
-                        name="confirm_password" id="confirm_password">
-                </div>
+            <form method="POST" action=" {{ route('settings.changePassword') }} ">
+                @csrf
                 <div>
-                    <button type="button" class="btn btn-primary" id="change-password-btn">Change Password</button>
+                    <label>Current Password:</label>
+                    <div class="input-group w-25">
+                        <input type="password" class="form-control w-25 @error('current_password') is-invalid @enderror"
+                            value="{{ old('current_password') }}" name="current_password" id="current_password">
+                        <button class="btn btn-outline-secondary" type="button"
+                            onclick="togglePasswordVisibility('current_password')">
+                            <i class='bx bx-show'></i>
+                        </button>
+                    </div>
+                    <span class="text-danger">
+                        @error('current_password')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+
+                <div class='mt-3'>
+                    <label>New Password:</label>
+                    <div class='input-group w-25'>
+                        <input type="password" class="form-control w-25 @error('new_password') is-invalid @enderror"
+                            value="{{ old('new_password') }}" name="new_password" id="new_password">
+                        <button class="btn btn-outline-secondary" type="button"
+                            onclick="togglePasswordVisibility('new_password')">
+                            <i class='bx bx-show'></i>
+                        </button>
+                    </div>
+                    <span class="text-danger">
+                        @error('new_password')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+
+                <div class='mt-3'>
+                    <label>Confirm Password:</label>
+                    <div class='input-group w-25'>
+                        <input type="password" class="form-control w-25 @error('confirm_password') is-invalid @enderror"
+                            value="{{ old('confirm_password') }}" name="confirm_password" id="confirm_password">
+                        <button class="btn btn-outline-secondary" type="button"
+                            onclick="togglePasswordVisibility('confirm_password')">
+                            <i class='bx bx-show'></i>
+                        </button>
+                    </div>
+                    <span class="text-danger">
+                        @error('confirm_password')
+                            {{ $message }}
+                        @enderror
+                    </span>
+                </div>
+
+                @if (session('success'))
+                    <div class="alert alert-success w-25 mt-3">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger w-25 mt-3">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <div class='mt-3'>
+                    <button type="submit" class="btn btn-primary" id="change-password-btn">Change Password</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        $(document).on('click', '#change-password-btn', function() {
-            var current_password = $.trim($('#current_password').val());
-            var new_password = $.trim($('#new_password').val());
-            var confirm_password = $.trim($('#confirm_password').val());
+        function togglePasswordVisibility(inputId) {
+            var passwordInput = document.getElementById(inputId);
+            var passwordToggleIcon = document.getElementById(inputId + "-toggle-icon");
 
-            if (current_password === '') {
-
-                alert('Please fill in all password fields.');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggleIcon.classList.remove("bx-show");
+                passwordToggleIcon.classList.add("bx-hide");
             } else {
-                if (current_password !== 'correct_current_password') {
-                    alert('Incorrect current password.');
-                } else if (new_password !== confirm_password) {
-                    alert('New password and confirmation do not match.');
-                } else {
-                    // Passwords are valid and match, proceed with your logic
-                    // For security, you should consider hashing and securely storing passwords
-                    // and handling password change securely on the server side.
-                }
+                passwordInput.type = "password";
+                passwordToggleIcon.classList.remove("bx-hide");
+                passwordToggleIcon.classList.add("bx-show");
             }
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('changePassword') }}',
-                type: 'POST',
-                data: {
-                    sy: sy,
-                    appraisalId: appraisalId,
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#signtable tbody').empty();
-                        var newRow = $('<tr>').addClass('align-middle');
-                        newRow.append($('<td>').text('Internal Customer'));
-                        newRow.append($('<td>').text(response.full_name));
-
-                        $('#modalImage').attr('src', response.sign_data);
-
-                        if (response.sign_data) {
-                            newRow.append($('<td>').addClass('align-middle').html(
-                                '<button type="button" class="btn btn-outline-primary" id="view-sig-btn">' +
-                                'View Signature' +
-                                '</button>'
-                            ));
-                        }
-
-                        if (response.date_submitted) {
-                            newRow.append($('<td>').text(response.date_submitted));
-                        } else {
-                            newRow.append($('<td>').text('-'));
-                        }
-
-                        $('#signtable tbody').append(newRow);
-                    } else {
-                        console.log('fail');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
+        }
     </script>
 @endsection
