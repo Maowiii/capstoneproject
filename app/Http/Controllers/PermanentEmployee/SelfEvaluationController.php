@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
+use Carbon\Carbon;
 
 class SelfEvaluationController extends Controller
 {
@@ -221,6 +222,16 @@ class SelfEvaluationController extends Controller
 
             $this->createSign($request);
 
+            $appraisalID = $request->input('appraisalID');
+            $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
+                ->first();
+
+            $date = Carbon::now();
+
+            $existingRecord->update([
+                'date_submitted' => $date,
+            ]);
+
             DB::commit();
             return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
         } catch (\Exception $e) {
@@ -283,7 +294,7 @@ class SelfEvaluationController extends Controller
             'feedback.*' => 'required|array',
             'feedback.*.*.question' => 'required|string',
             'feedback.*.*.answer' => 'required|numeric',
-            'feedback.*.*.comment' => 'required|string',
+            'feedback.*.*.comments' => 'required|string',
         ], [
             // Custom error messages
         ]);
@@ -359,6 +370,91 @@ class SelfEvaluationController extends Controller
 
             // Return the ID in the response
             return response()->json(['message' => 'Autosave successful', 'wpaData' => $wpaData]);
+        } catch (\Exception $e) {
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+            // Handle errors if any
+            return response()->json(['error' => 'Autosave failed'], 500);
+        }
+    }
+
+    public function autosaveLDPField(Request $request)
+    {
+        // Retrieve the data sent from the frontend
+        $ldpID = $request->input('ldpID');
+        $fieldName = $request->input('fieldName');
+        $fieldValue = $request->input('fieldValue');
+        $appraisalId = $request->input('appraisalId');
+
+        try {
+            // Find the existing record based on the criteria
+            $ldp = LDP::where([
+                'development_plan_id' => $ldpID,
+                'appraisal_id' => $appraisalId,
+            ])->first();
+
+            // If the record exists, update the specific field value; otherwise, create a new record
+            if ($ldp) {
+                $ldp->$fieldName = $fieldValue;
+                $ldp->save();
+            } else {
+                // Create a new record with the criteria and the specific field value
+                $ldp = new LDP([
+                    'appraisal_id' => $appraisalId,
+                    'development_plan_order' => $ldpID,
+                    $fieldName => $fieldValue
+                ]);
+                $ldp->save();
+            }
+
+            // Log the updated or inserted record
+            $ldpData = LDP::where(['appraisal_id' => $appraisalId, 'development_plan_id' => $ldp->development_plan_id])->get();
+
+            // Return the ID in the response
+            return response()->json(['message' => 'Autosave successful', 'ldpData' => $ldpData]);
+        } catch (\Exception $e) {
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+            // Handle errors if any
+            return response()->json(['error' => 'Autosave failed'], 500);
+        }
+    }
+
+    public function autosaveJICField(Request $request)
+    {
+        // Retrieve the data sent from the frontend
+        $jicID = $request->input('jicID');
+        $fieldName = $request->input('fieldName');
+        $fieldValue = $request->input('fieldValue');
+        $appraisalId = $request->input('appraisalId');
+
+        try {
+            // Find the existing record based on the criteria
+            $jic = JIC::where([
+                'job_incumbent_id' => $jicID,
+                'appraisal_id' => $appraisalId,
+            ])->first();
+
+            // If the record exists, update the specific field value; otherwise, create a new record
+            if ($jic) {
+                $jic->$fieldName = $fieldValue;
+                $jic->save();
+            } else {
+                // Create a new record with the criteria and the specific field value
+                $jic = new JIC([
+                    'appraisal_id' => $appraisalId,
+                    'development_plan_order' => $jicID,
+                    $fieldName => $fieldValue
+                ]);
+                $jic->save();
+            }
+
+            // Return the ID in the response
+            return response()->json(['message' => 'Autosave successful']);
         } catch (\Exception $e) {
             Log::error('Exception Message: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
@@ -527,7 +623,6 @@ class SelfEvaluationController extends Controller
         }
     }
 
-
     protected function createLDP(Request $request)
     {
         foreach ($request->input('LDP') as $ldpID => $ldpData) {
@@ -572,7 +667,7 @@ class SelfEvaluationController extends Controller
                     $existingJIC->update([
                         'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
                         'answer' => $jicData[$request->input('appraisalID')]['answer'],
-                        'comments' => $jicData[$request->input('appraisalID')]['comment'],
+                        'comments' => $jicData[$request->input('appraisalID')]['comments'],
                     ]);
                 }
             } else {
@@ -580,7 +675,7 @@ class SelfEvaluationController extends Controller
                     'appraisal_id' => $request->input('appraisalID'),
                     'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
                     'answer' => $jicData[$request->input('appraisalID')]['answer'],
-                    'comments' => $jicData[$request->input('appraisalID')]['comment'],
+                    'comments' => $jicData[$request->input('appraisalID')]['comments'],
                     'question_order' => $jicID
                 ]);
             }
@@ -605,25 +700,34 @@ class SelfEvaluationController extends Controller
                 $existingSignature->update([
                     'sign_data' => $signatureData,
                     'sign_type' => 'JI',
-                    // Change this according to your needs
                 ]);
             } else {
                 try {
                     $signatureData = file_get_contents($signatureFile->getRealPath());
 
-                    Signature::create([
+                    // Create a new signature and retrieve its ID
+                    $newSignature = Signature::create([
                         'appraisal_id' => $appraisalId,
                         'sign_data' => $signatureData,
                         'sign_type' => 'JI',
-                        // Change this according to your needs
+                        // You should add other necessary fields here
                     ]);
 
+                    // Get the ID of the newly created signature
+                    $newSignatureId = $newSignature->signature_id;
                 } catch (QueryException $e) {
                     // Handle the database connection issue
                     // You can log the error or display a user-friendly message
                     dd('Error: ' . $e->getMessage());
                 }
             }
+        }
+        $existingRecord = Appraisals::where('appraisal_id', $appraisalId)->first();
+
+        if ($existingRecord) {
+            $existingRecord->update([
+                'signature' => $existingSignature ? $existingSignature->signature_id : $newSignatureId,
+            ]);
         }
     }
 }

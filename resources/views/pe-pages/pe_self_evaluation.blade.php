@@ -62,7 +62,7 @@
             <div class="col-auto">
                 <input type="text" class="form-control"
                     value="{{ $appraisee->immediateSuperior->first_name ?? 'N/A' }} {{ $appraisee->immediateSuperior->last_name ?? '' }}"
-                    readonly>
+                  readonly>
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -71,10 +71,10 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->immediateSuperior->position ?? 'N/A' }}"
-                    readonly>
+                  readonly>
             </div>
         </div>
-    </div>
+      </div>
 
     <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
         id="PEappraisalForm">
@@ -116,52 +116,52 @@
             @csrf
             <table class='table table-bordered' id="SID_table">
                 <thead>
-                    <tr>
+                  <tr>
                         <th class='extra-small-column'>#</th>
                         <th>Question</th>
-                        <th>Performance Level</th>
+                     <th>Performance Level</th>
                     </tr>
                 </thead>
                 <tbody id='SID_table_body'>
                 </tbody>
                 <tfoot>
-                    <tr>
+                  <tr>
                         <td></td>
                         <td class='text-right'>Frequency:</td>
-                        <td>
+                     <td>
                             <div class="d-flex justify-content-center gap-2">
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
+                             <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
                                         readonly>
-                                </div>
+                             </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
+                                     readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
+                               <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
                                         readonly>
-                                </div>
+                               </div>
                             </div>
                         </td>
-                    </tr>
+                  </tr>
                     <tr>
                         <td></td>
-                        <td class='text-right'>Total:</td>
+                     <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
+                             <input class="small-column form-control total-frequency text-center" type="text"
                                     readonly>
                             </div>
-                        </td>
+                     </td>
                     </tr>
                 </tfoot>
             </table>
@@ -191,46 +191,46 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td></td>
+                     <td></td>
                         <td class='text-right'>Frequency:</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-3">
+                         <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
+                                     readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
+                             <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
-                                </div>
+                             </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
+                                     readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
                                         readonly>
                                 </div>
-                            </div>
+                         </div>
                         </td>
                     </tr>
-                    <tr>
+                  <tr>
                         <td></td>
                         <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
+                                 readonly>
                             </div>
                         </td>
                     </tr>
                 </tfoot>
             </table>
-
+   
             <h4>Solidarity</h4>
             <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
                 collaborative effort where the gifts of persons are valued. Our learning community is a "family" where
@@ -242,7 +242,7 @@
                 <thead>
                     <tr>
                         <th class='extra-small-column'>#</th>
-                        <th>Question</th>
+                     <th>Question</th>
                         <th class='small-column'>Action</th>
                     </tr>
                 </thead>
@@ -251,43 +251,43 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td></td>
+                     <td></td>
                         <td class='text-right'>Frequency:</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-3">
+                         <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
+                                     readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
+                             <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
-                                </div>
+                             </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
+                                     readonly>
                                 </div>
                                 <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                 <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
                                         readonly>
                                 </div>
-                            </div>
+                         </div>
                         </td>
                     </tr>
-                    <tr>
+                  <tr>
                         <td></td>
                         <td class='text-right'>Total:</td>
-                        <td>
+                     <td>
                             <div class="d-flex justify-content-center gap-3">
                                 <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
+                                 readonly>
                             </div>
                         </td>
-                    </tr>
+                  </tr>
                 </tfoot>
             </table>
         </div>
@@ -299,31 +299,31 @@
                 actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
             <table class='table table-bordered'>
                 <thead>
-                    <tr>
+                  <tr>
                         <th class='large-column'>Accomplishment Level</th>
                         <th colspan="2">Description</th>
-                    </tr>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                  <tr>
                         <td>5</td>
                         <td>Oustanding Performance</td>
-                        <td class='text-justify'>Performance far exceeds the standard expected of a job holder at this
+                     <td class='text-justify'>Performance far exceeds the standard expected of a job holder at this
                             level.
                             The review/assessment indicates that the job holder has achieved greater than fully effective
-                            results against all of the performance criteria and indicators as specified in the Performance
+                         results against all of the performance criteria and indicators as specified in the Performance
                             Agreement and Work plan. Maintained this in all areas of responsibility throughout the
                             performance
-                            cycle.</td>
+                         cycle.</td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                     <td>4</td>
                         <td>Performance significantly above expectations</td>
                         <td class='text-justify'>Performance fully meets the standards expected for the job. The
-                            review/assessment indicates that the job holder has achieved better than fully effective results
+                         review/assessment indicates that the job holder has achieved better than fully effective results
                             against more than half of the performance criteria and indicators as specified in the
                             Performance
-                            Agreement and Work plan.</td>
+                         Agreement and Work plan.</td>
                     </tr>
                     <tr>
                         <td>3</td>
@@ -463,19 +463,19 @@
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control" name="feedback[1][{{ $appraisalId }}][comment]"></textarea>
+                                <textarea class="textarea form-control autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -488,19 +488,19 @@
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control" name="feedback[2][{{ $appraisalId }}][comment]"></textarea>
+                                <textarea class="textarea form-control autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -511,19 +511,19 @@
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control" name="feedback[3][{{ $appraisalId }}][comment]"></textarea>
+                                <textarea class="textarea form-control autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -534,19 +534,19 @@
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input autosave-field" type="radio"
                                     name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control" name="feedback[4][{{ $appraisalId }}][comment]"></textarea>
+                                <textarea class="textarea form-control autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -712,6 +712,7 @@
                     }
                 });
             });
+
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
@@ -746,7 +747,7 @@
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
-
+                console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
                     type: 'POST',
@@ -765,6 +766,8 @@
                         if (rowCount === 1) {
                             $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
+
+                        console.log(rowCount);
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -805,20 +808,23 @@
                     event.preventDefault();
                     event.stopPropagation();
 
-                    var invalidInputs = form.querySelectorAll('.is-invalid');
-                    if (invalidInputs.length > 0) {
-                        invalidInputs[0].focus(); // Focus on the first invalid input
-                    }
+                        var invalidInputs = form.querySelectorAll('.is-invalid');
+                        if (invalidInputs.length > 0) {
+                            invalidInputs[0].focus(); // Focus on the first invalid input
+                        }
 
-                    invalidInputs.forEach(function(invalidInput) {
-                        invalidInput.scrollIntoView({
-                            behavior: 'smooth'
+                        invalidInputs.forEach(function(invalidInput) {
+                            invalidInput.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+
+                            // Log the custom error message for this input
+                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
                         });
-                    });
 
-                    console.error('Form validation failed.');
-                    return;
-                }
+                        console.error('Form validation failed.');
+                        return;
+                    }
 
                 var allRowsCorrected = invalidRows.every(function(invalidRow) {
                     return !invalidRow.hasClass('is-invalid');
@@ -937,7 +943,7 @@
                             // Update the content of the closest row based on the response data
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][continue_doing]"]').val(wpa.continue_doing);
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]"]').val(wpa.stop_doing);
-                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]"]').val(wpa.start_do    ing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]"]').val(wpa.start_doing);
                         });
 
                         // Handle the success response if needed
@@ -945,7 +951,92 @@
                         console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveKRAField') }}');
+                        console.log('{{ route('autosaveWPPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#ldp_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var ldpID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveLDPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        ldpID: ldpID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.ldpData.forEach(function(ldp, index) {
+                            var ldpID = ldp.development_plan_id;
+                            console.log(ldpID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-ldp-id', ldpID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="LDP[0][' + {{ $appraisalId }} + '][learning_need]"]').attr('name', 'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][learning_need]');
+                            closestRow.find('textarea[name="LDP[0][' + {{ $appraisalId }} + '][methodology]"]').attr('name', 'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]');
+                            
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' + {{ $appraisalId }} + '][learning_need]"]').val(ldp.learning_need);
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]"]').val(ldp.methodology);
+                        });
+
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#jic_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var jicID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveJICField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        jicID: jicID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
 
                         // Handle errors if any
                         console.error('Autosave failed:', error);
@@ -1475,22 +1566,26 @@
                             var ldpID = ldp.development_plan_id;
 
                             var ldprow = $('<tr>').addClass('align-middle');
+                            ldprow.attr('data-ldp-id', ldpID);
+
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                                createTextArea(
+                                    'LDP[' +
                                     ldpID +
-                                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
-                                    'readonly',
-                                    false)
-                                .val(ldp.learning_need)
+                                    '][' + {{ $appraisalId }} + '][learning_need]',
+                                    ldp.learning_need,
+                                    false
+                                )
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-textarea').append(
-                                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                                createTextArea(
+                                    'LDP[' +
                                     ldpID +
-                                    '][' + {{ $appraisalId }} + '][methodology]').prop(
-                                    'readonly',
-                                    false)
-                                .val(ldp.methodology)
+                                    '][' + {{ $appraisalId }} + '][methodology]',
+                                    ldp.methodology,
+                                    false
+                                )
                             ).appendTo(ldprow);
 
                             $('<td>').addClass('td-action').append(
@@ -1553,7 +1648,7 @@
                         });
 
                         var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
-                            1) + '][{{ $appraisalId }}][comment]"]');
+                            1) + '][{{ $appraisalId }}][comments]"]');
                         commentTextarea.value = jic.comments;
 
                         // Attach input event handlers for validation
@@ -1581,6 +1676,7 @@
                         if (row) {
                             var signCell = row.querySelector('.sign-cell');
                             var signatureImage = document.createElement('img');
+
                             if (sign.sign_data) {
                                 // Validation for signature data
                                 signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
@@ -1635,8 +1731,6 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
-
-
                 })
             );
         }
@@ -1805,11 +1899,11 @@
             });
 
             // Calculate the next available lpaID
-            var nextLDPID = highestLDPID + 1;
+            var nextLDPID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][learning_need]').prop(
                     'readonly',
@@ -1817,7 +1911,7 @@
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][methodology]').prop(
                     'readonly',

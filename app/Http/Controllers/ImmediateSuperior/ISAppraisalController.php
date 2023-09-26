@@ -456,9 +456,13 @@ class ISAppraisalController extends Controller
 
         // Perform the actual deletion of the WPA record from the database
         try {
-            WPP::where('development_plan_id', $ldpID)->delete();
+            LDP::where('development_plan_id', $ldpID)->delete();
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
             return response()->json(['success' => false, 'message' => 'Error deleting LDP record.']);
         }
     }

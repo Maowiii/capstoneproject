@@ -103,8 +103,6 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 Route::post('/dashboard-immediate-superior/submit-position', [ISDashboardController::class, 'submitISPosition'])->name('is.submitISPosition');
 Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardController::class, 'getNotifications'])->name('is.getNotifications');
 
-
-
 // Appraisals Overview
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
@@ -140,6 +138,8 @@ Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppra
 
 Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
 Route::post('/autosave-wpp-field', [SelfEvaluationController::class, 'autosaveWPPField'])->name('autosaveWPPField');
+Route::post('/autosave-ldp-field', [SelfEvaluationController::class, 'autosaveLDPField'])->name('autosaveLDPField');
+Route::post('/autosave-jic-field', [SelfEvaluationController::class, 'autosaveJICField'])->name('autosaveJICField');
 
 Route::get('/pe-go-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewGOAppraisal'])->name('viewPEGOAppraisal');
 
