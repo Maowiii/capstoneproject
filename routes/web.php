@@ -172,3 +172,6 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
+
+// Settings
+Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('changePassword');

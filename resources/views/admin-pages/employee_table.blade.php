@@ -214,7 +214,7 @@
                             var statusAction = account.status === 'active' ? 'deactivate' :
                                 'activate';
 
-                            var newRow = $('<tr>').attr('id', account.account_id).append(
+                            var newRow = $('<tr>').attr('id', account.account_id).addClass('align-middle').append(
                                 $('<td>').html(account.email + '<br /><p class="fst-italic text-secondary">' +
                                     account
                                     .employee.employee_number + '</p>'),
