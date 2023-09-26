@@ -35,10 +35,6 @@
                 </div>
         </div>
     </div>
-<<<<<<< Updated upstream
-</div>
-@endsection
-=======
 
     <script>
         function togglePasswordVisibility(inputId) {
@@ -57,4 +53,3 @@
         }
     </script>
 @endsection
->>>>>>> Stashed changes
