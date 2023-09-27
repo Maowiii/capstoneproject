@@ -98,13 +98,27 @@ class AdminAppraisalsOverviewController extends Controller
 
   public function loadSignatureOverview(Request $request)
   {
-    $employeeID = $request->input('employeeID');
+    try {
+      $employeeID = $request->input('employeeID');
 
-    $appraisals = Appraisals::where('employee_id', $employeeID)
-      ->with(['employee', 'signatures', 'evaluator'])
-      ->get();
+      $appraisals = Appraisals::where('employee_id', $employeeID)
+        ->with(['employee', 'evaluator'])
+        ->get();
 
-    return response()->json(['success' => true, 'appraisals' => $appraisals]);
+      // Decode the signatures before returning them
+      $decodedAppraisals = $appraisals->map(function ($appraisal) {
+        $appraisal->signature = base64_decode($appraisal->signature);
+        return $appraisal;
+      });
+
+      return response()->json(['success' => true, 'appraisals' => $decodedAppraisals]);
+    } catch (\InvalidArgumentException $e) {
+      // Handle the exception
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      return response()->json(['error' => 'Malformed UTF-8 characters'], 500);
+    }
   }
 
   public function loadSignature(Request $request)

@@ -487,19 +487,22 @@ textarea {
     background-color: #e9ecef !important;
     color: #999 !important;
 }
-#signatory {
+#signatory, #lockphase {
     display: flex;
     justify-content: center;
 }
 #signatory_modal .modal-dialog {
     max-width: 40%;
 }
-#signatory_modal .modal-content {
+#lockModal .modal-dialog{
+    max-width: 50%;
+}
+#signatory_modal .modal-content, #lockModal .modal-content {
     margin-top: 0;
 }
-#signatory_modal .modal-title {
+#signatory_modal .modal-title, #lockModal .modal-title {
     text-align: center;
 }
-#signatory_modal .modal-footer {
+#signatory_modal .modal-footer, #lockModal .modal-footer {
     justify-content: center;
 }

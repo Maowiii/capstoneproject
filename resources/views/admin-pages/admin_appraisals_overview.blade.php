@@ -92,6 +92,33 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="lockModal">
+        <div class="modal-dialog">
+            <div class="modal-content" id="lockphase">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lockModalLabel">Apraisal Form Lock</h5>
+                    <button type="button" class="btn-close" id="lock-close-btn"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <table class='table'>
+                        <thead>
+                            <tr>
+                                <th>Appraisal Form</th>
+                                <th>KRA Encoding Phase</th>
+                                <th>Performance Review Phase</th>
+                                <th>Evaluation Phase</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lockBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
             loadAdminAppraisalsTable();
@@ -111,6 +138,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#admin_appraisals_table tbody').empty();
+
                         var groupedAppraisals = response.groupedAppraisals;
 
                         $.each(groupedAppraisals, function(employeeId, data) {
@@ -121,6 +149,8 @@
                             var row = $("<tr class='align-middle'>").data("employeeID", employeeID);
                             row.append($("<td>").text(employee.first_name + ' ' + employee.last_name));
 
+                            var lockrow = $("<tr class='align-middle'>").data("employeeID", employeeID);
+
                             if (typeof employee.department.department_name === "undefined") {
                                 row.append($("<td>").text("-"));
                             } else {
@@ -128,7 +158,7 @@
                             }
 
                             $.each(appraisals, function(index, appraisal) {
-                              console.log(appraisal);
+                                console.log(appraisal);
                                 var cell = $("<td>");
 
                                 // Self Evaluation
@@ -262,6 +292,10 @@
                                 "<td><button type='button' class='btn btn-outline-primary' id='view-btn'>View</button></td>"
                             ));
 
+                            row.append($(
+                                "<td><button type='button' class='btn btn-outline-primary' id='lock-btn'>View</button></td>"
+                            ));
+
                             $(document).on('click', '#view-btn', function() {
                                 var closestTr = $(this).closest('tr');
 
@@ -272,13 +306,20 @@
                                 loadSignatureOverview(employeeID);
                             });
 
+                            $(document).on('click', '#lock-btn', function() {
+                                var closestTr = $(this).closest('tr');
+
+                                $('#lockModal').modal('show');
+                                loadLockModal(employeeID);
+                            });
+
                             $('#admin_appraisals_table tbody').append(row);
                         });
 
                         if (response.selectedYearDates) {
                             $('#school-year-container').html('<h4>School Year:</h4><p>' + response
-                                    .selectedYearDates.sy_start + ' - ' + response
-                                    .selectedYearDates.sy_end +
+                                .selectedYearDates.sy_start + ' - ' + response
+                                .selectedYearDates.sy_end +
                                 '</p>');
                             $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + formatDate(response
                                     .selectedYearDates.kra_start) + ' - ' + formatDate(response
@@ -389,7 +430,74 @@
                         });
 
                     } else {
-                      console.log('Error: ' + response.error);
+                        console.log('Error: ' + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadLockModal(employeeID) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ route('loadAdminAppraisals') }}",
+                type: 'GET',
+                data: {
+                    employeeID: employeeID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#lockBody').empty();
+
+                        const appraisalTypeMap = {
+                            'self evaluation': 'Appraisee',
+                            'is evaluation': 'Immediate Superior',
+                        };
+
+                        response.appraisals.forEach(function(appraisal) {                            
+                            const appraisalType = appraisal.evaluation_type;
+                            var row = $('<tr>');
+                  
+                            var viewButton =
+                                '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
+                                appraisalId + '">View</button>';
+
+                            var unlockButton =
+                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
+                                '">Unlock</button>';
+
+                            var lockButton =
+                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
+                                '">Lock</button>';
+
+                            if (appraisal.locked == true) {
+                                if (appraisal.date_submitted == null) {
+                                    row.append($('<td>').text('-'));
+                                    row.append($('<td>').text('-'));
+                                } else {
+                                    row.append($('<td>').html(viewButton));
+                                    row.append($('<td>').text(appraisal.date_submitted));
+                                }
+                                row.append($('<td>').html(unlockButton));
+                            } else {
+                                row.append($('<td>').text('-'));
+                                row.append($('<td>').text('-'));
+                                row.append($('<td>').html(lockButton));
+                            }
+
+                            $('#signtable tbody').append(row);
+                        });
+
+                    } else {
+                        console.log('Error: ' + response.error);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -469,6 +577,10 @@
 
         $(document).on('click', '#esig-close-btn', function() {
             $('#imageModal').modal('hide');
+        });
+
+        $(document).on('click', '#lock-close-btn', function() {
+            $('#lockModal').modal('hide');
         });
 
         $('#evaluation-year-select').change(function() {
