@@ -54,6 +54,7 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
+Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 
 /* ----- ADMIN ----- */
 //Appraisals Overview

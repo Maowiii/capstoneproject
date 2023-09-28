@@ -44,9 +44,7 @@ class Employees extends Model
     }
 
     public function immediateSuperior(): BelongsTo
-
     {
         return $this->belongsTo(Employees::class, 'immediate_superior_id', 'employee_id');
-
     }
 }

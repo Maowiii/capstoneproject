@@ -111,10 +111,14 @@ class EvaluationYearController extends Controller
       $table->string('evaluation_type');
       $table->integer('employee_id');
       $table->integer('evaluator_id')->nullable();
+      $table->integer('department_id');
       $table->decimal('bh_score')->nullable();
       $table->decimal('kra_score')->nullable();
       $table->decimal('ic_score')->nullable();
       $table->date('date_submitted')->nullable();
+      $table->boolean('kra_locked')->default(false);
+      $table->boolean('pr_locked')->default(false);
+      $table->boolean('eval_locked')->default(false);
       $table->boolean('locked')->default(false);
     });
 
@@ -229,6 +233,7 @@ class EvaluationYearController extends Controller
         Appraisals::create([
           'evaluation_type' => $evaluationType,
           'employee_id' => $employee->employee_id,
+          'department_id' => $employee->department_id,
           'evaluator_id' => $evaluatorId,
         ]);
       }

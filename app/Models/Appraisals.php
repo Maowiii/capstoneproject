@@ -20,6 +20,7 @@ class Appraisals extends BaseModel
     'evaluation_type',
     'employee_id',
     'evaluator_id',
+    'department_id',
     'bh_score',
     'kra_score',
     'ic_score',
@@ -59,6 +60,11 @@ class Appraisals extends BaseModel
   public function signatures()
   {
     return $this->hasOne(Signature::class, 'appraisal_id');
+  }
+
+  public function department(): BelongsTo
+  {
+    return $this->belongsTo(Departments::class, 'department_id')->withDefault();
   }
 }
 
