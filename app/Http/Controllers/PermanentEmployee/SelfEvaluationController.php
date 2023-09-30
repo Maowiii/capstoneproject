@@ -799,4 +799,19 @@ class SelfEvaluationController extends Controller
             ]);
         }
     }
+
+    public function formChecker(Request $request)
+    {
+        if (!session()->has('account_id')) {
+        return view('auth.login');
+        }
+        
+        $appraisalId = $request->input('appraisalId');
+        $appraisal = Appraisals::find($appraisalId);
+        $locked = $appraisal->locked;
+
+        return response()->json([
+        'form_submitted' => $locked,
+        ]);
+    }
 }
