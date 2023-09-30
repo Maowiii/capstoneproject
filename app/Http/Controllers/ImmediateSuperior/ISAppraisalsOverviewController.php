@@ -43,6 +43,9 @@ class ISAppraisalsOverviewController extends Controller
     $department_id = $user->department_id;
     $appraisee = Employees::where('department_id', $department_id)
       ->whereNotIn('account_id', [$account_id])
+      ->whereHas('account', function ($query) {
+        $query->where('type', 'PE');
+      })
       ->get();
 
     $appraisals = Appraisals::whereHas('employee', function ($query) use ($department_id) {
@@ -66,8 +69,8 @@ class ISAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
-    $accounts = Accounts::whereIn('type', ['PE', 'IS', 'CE'])->get();
+
+    $accounts = Accounts::whereIn('type', ['PE', 'CE'])->get();
 
     $employeeIds = $accounts->pluck('account_id');
 

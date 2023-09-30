@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
 class FormQuestions extends BaseModel
 {
   use HasFactory;
-  use BindsDynamically;
 
   protected $primaryKey = 'question_id';
 

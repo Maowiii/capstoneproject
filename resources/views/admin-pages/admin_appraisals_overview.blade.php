@@ -45,8 +45,6 @@
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
                     <th>Signatures</th>
-                    <th>Action</th>
-
                 </tr>
             </thead>
             <tbody></tbody>
@@ -88,32 +86,6 @@
                 </div>
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" alt="Signature" style="max-width: 100%;">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="lockModal">
-        <div class="modal-dialog">
-            <div class="modal-content" id="lockphase">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="lockModalLabel">Apraisal Form Lock</h5>
-                    <button type="button" class="btn-close" id="lock-close-btn"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <table class='table'>
-                        <thead>
-                            <tr>
-                                <th>Appraisal Form</th>
-                                <th>KRA Encoding Phase</th>
-                                <th>Performance Review Phase</th>
-                                <th>Evaluation Phase</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lockBody">
-
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

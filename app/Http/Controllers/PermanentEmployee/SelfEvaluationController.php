@@ -467,6 +467,7 @@ class SelfEvaluationController extends Controller
         $jicID = $request->input('jicID');
         $fieldName = $request->input('fieldName');
         $fieldValue = $request->input('fieldValue');
+        $fieldQuestion = $request->input('fieldQuestion');
         $appraisalId = $request->input('appraisalId');
 
         try {
@@ -479,12 +480,14 @@ class SelfEvaluationController extends Controller
             // If the record exists, update the specific field value; otherwise, create a new record
             if ($jic) {
                 $jic->$fieldName = $fieldValue;
+                $jic->job_incumbent_question = $fieldQuestion;
                 $jic->save();
             } else {
                 // Create a new record with the criteria and the specific field value
                 $jic = new JIC([
                     'appraisal_id' => $appraisalId,
-                    'development_plan_order' => $jicID,
+                    'question_order' => $jicID,
+                    'job_incumbent_question' => $fieldQuestion,
                     $fieldName => $fieldValue
                 ]);
                 $jic->save();
@@ -808,6 +811,7 @@ class SelfEvaluationController extends Controller
         
         $appraisalId = $request->input('appraisalId');
         $appraisal = Appraisals::find($appraisalId);
+        
         $locked = $appraisal->locked;
 
         return response()->json([
