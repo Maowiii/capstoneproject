@@ -30,7 +30,7 @@
 
     <div class="content-container">
         <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
@@ -95,387 +95,481 @@
     <script>
         $(document).ready(function() {
             loadAdminAppraisalsTable();
-        });
 
-        function loadAdminAppraisalsTable(selectedYear = null) {
-            ('Selected Year: ' + selectedYear);
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{ route('loadAdminAppraisals') }}",
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#admin_appraisals_table tbody').empty();
-                        var groupedAppraisals = response.groupedAppraisals;
+            var globalSelectedYear = null;
 
-                        $.each(groupedAppraisals, function(employeeId, data) {
-                            var employee = data.employee;
-                            var appraisals = data.appraisals;
-                            var employeeID = employee.employee_id;
+            $('#evaluation-year-select').change(function() {
+                var selectedYear = $(this).val();
+                globalSelectedYear = selectedYear;
+                loadAdminAppraisalsTable(selectedYear, null);
+            });
 
-                            var row = $("<tr class='align-middle'>").data("employeeID", employeeID);
-                            row.append($("<td>").text(employee.first_name + ' ' + employee.last_name));
+            $('#search').on('input', function() {
+                var query = $(this).val();
+                loadAdminAppraisalsTable(globalSelectedYear, query)
+            });
 
-                            if (typeof employee.department.department_name === "undefined") {
-                                row.append($("<td>").text("-"));
-                            } else {
-                                row.append($("<td>").text(employee.department.department_name));
-                            }
+            function loadAdminAppraisalsTable(selectedYear = null, search = null) {
+                console.log('Search Query: ' + search);
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ route('loadAdminAppraisals') }}",
+                    type: 'GET',
+                    data: {
+                        selectedYear: selectedYear,
+                        search: search
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            console.log('Success');
+                            $('#admin_appraisals_table tbody').empty();
+                            var groupedAppraisals = response.groupedAppraisals;
 
-                            $.each(appraisals, function(index, appraisal) {
-                              console.log(appraisal);
-                                var cell = $("<td>");
+                            $.each(groupedAppraisals, function(employeeId, data) {
+                                var employee = data.employee;
+                                var appraisals = data.appraisals;
+                                var employeeID = employee.employee_id;
 
-                                // Self Evaluation
-                                if (appraisal.evaluation_type === 'self evaluation') {
-                                    if (appraisal.date_submitted !== null) {
-                                        var url = "{{ route('ad.viewSelfEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                var row = $("<tr class='align-middle'>").data("employeeID",
+                                    employeeID);
+                                row.append($("<td>").text(employee.first_name + ' ' + employee
+                                    .last_name));
 
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-check-circle"></i>')
-                                        );
-                                    } else {
-                                        var url = "{{ route('ad.viewSelfEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
-
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-x-circle"></i>')
-                                        );
-                                    }
+                                if (typeof employee.department.department_name ===
+                                    "undefined") {
+                                    row.append($("<td>").text("-"));
+                                } else {
+                                    row.append($("<td>").text(employee.department
+                                        .department_name));
                                 }
-                                // IS Evaluation
-                                else if (appraisal.evaluation_type === 'is evaluation') {
-                                    if (appraisal.date_submitted !== null) {
-                                        var url = "{{ route('ad.viewISEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
 
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-check-circle"></i>')
-                                        );
-                                    } else {
-                                        var url = "{{ route('ad.viewISEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                $.each(appraisals, function(index, appraisal) {
+                                    var cell = $("<td>");
 
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-x-circle"></i>')
-                                        );
+                                    // Self Evaluation
+                                    if (appraisal.evaluation_type ===
+                                        'self evaluation') {
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
+                                                "{{ route('ad.viewSelfEvaluationForm') }}";
+                                            url += "?appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
+
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-check-circle"></i>'
+                                                    )
+                                            );
+                                        } else {
+                                            var url =
+                                                "{{ route('ad.viewSelfEvaluationForm') }}";
+                                            url += "?appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
+
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-x-circle"></i>'
+                                                    )
+                                            );
+                                        }
                                     }
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 1') {
-                                    if (appraisal.date_submitted !== null) {
-                                        var url = "{{ route('ad.viewICEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                    // IS Evaluation
+                                    else if (appraisal.evaluation_type ===
+                                        'is evaluation') {
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
+                                                "{{ route('ad.viewISEvaluationForm') }}";
+                                            url += "?appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
 
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-check-circle"></i>')
-                                        );
-                                    } else {
-                                        cell.append(
-                                            $("<a>").html('<i class="bx bx-x-circle"></i>')
-                                        );
-                                    }
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 2') {
-                                    if (appraisal.date_submitted !== null) {
-                                        var url = "{{ route('ad.viewICEvaluationForm') }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(employee
-                                            .first_name + ' ' + employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-check-circle"></i>'
+                                                    )
+                                            );
+                                        } else {
+                                            var url =
+                                                "{{ route('ad.viewISEvaluationForm') }}";
+                                            url += "?appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
 
-                                        cell.append(
-                                            $("<a>")
-                                            .attr("href", url)
-                                            .addClass("appraisal-link")
-                                            .html('<i class="bx bx-check-circle"></i>')
-                                        );
-                                    } else {
-                                        cell.append(
-                                            $("<a>").html('<i class="bx bx-x-circle"></i>')
-                                        );
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-x-circle"></i>'
+                                                    )
+                                            );
+                                        }
+                                        // Internal Customer
+                                    } else if (appraisal.evaluation_type ===
+                                        'internal customer 1') {
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
+                                                "{{ route('ad.viewICEvaluationForm') }}";
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
+
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-check-circle"></i>'
+                                                    )
+                                            );
+                                        } else {
+                                            cell.append(
+                                                $("<a>").html(
+                                                    '<i class="bx bx-x-circle"></i>'
+                                                    )
+                                            );
+                                        }
+                                    } else if (appraisal.evaluation_type ===
+                                        'internal customer 2') {
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
+                                                "{{ route('ad.viewICEvaluationForm') }}";
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
+                                                encodeURIComponent(appraisal
+                                                    .appraisal_id);
+                                            url += "&appraisee_account_id=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.account_id);
+                                            url += "&appraisee_name=" +
+                                                encodeURIComponent(employee
+                                                    .first_name + ' ' + employee
+                                                    .last_name);
+                                            url += "&appraisee_department=" +
+                                                encodeURIComponent(
+                                                    appraisal.employee.department
+                                                    .department_name);
+
+                                            cell.append(
+                                                $("<a>")
+                                                .attr("href", url)
+                                                .addClass("appraisal-link")
+                                                .html(
+                                                    '<i class="bx bx-check-circle"></i>'
+                                                    )
+                                            );
+                                        } else {
+                                            cell.append(
+                                                $("<a>").html(
+                                                    '<i class="bx bx-x-circle"></i>'
+                                                    )
+                                            );
+                                        }
                                     }
-                                }
-                                row.append(cell);
+                                    row.append(cell);
+                                });
+
+                                row.append($(
+                                    "<td><button type='button' class='btn btn-outline-primary view-btn'>View</button></td>"
+                                ));
+
+                                $(document).on('click', '.view-btn', function() {
+                                    var closestTr = $(this).closest('tr');
+
+                                    var employeeID = closestTr.data(
+                                        'employeeID');
+
+                                    $('#signatory_modal').modal('show');
+                                    loadSignatureOverview(employeeID, selectedYear);
+                                });
+
+                                $('#admin_appraisals_table tbody').append(row);
                             });
 
-                            row.append($(
-                                "<td><button type='button' class='btn btn-outline-primary' id='view-btn'>View</button></td>"
-                            ));
-
-                            $(document).on('click', '#view-btn', function() {
-                                var closestTr = $(this).closest('tr');
-
-                                var employeeID = closestTr.data(
-                                    'employeeID');
-
-                                $('#signatory_modal').modal('show');
-                                loadSignatureOverview(employeeID);
-                            });
-
-                            $('#admin_appraisals_table tbody').append(row);
-                        });
-
-                        if (response.selectedYearDates) {
-                            $('#school-year-container').html('<h4>School Year:</h4><p>' + response
+                            if (response.selectedYearDates) {
+                                $('#school-year-container').html('<h4>School Year:</h4><p>' + response
                                     .selectedYearDates.sy_start + ' - ' + response
                                     .selectedYearDates.sy_end +
-                                '</p>');
-                            $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + formatDate(response
-                                    .selectedYearDates.kra_start) + ' - ' + formatDate(response
-                                    .selectedYearDates.kra_end) +
-                                '</p>');
-                            $('#performance-review-container').html('<h4>Performance:</h4><p>' + formatDate(
-                                    response
-                                    .selectedYearDates.pr_start) + ' - ' + formatDate(response
-                                    .selectedYearDates.pr_end) +
-                                '</p>');
-                            $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + formatDate(response
-                                    .selectedYearDates.eval_start) + ' - ' + formatDate(response
-                                    .selectedYearDates
-                                    .eval_end) +
-                                '</p>');
-                        }
-
-                    } else {
-                        console.log(response.error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    console.log(errorMessage);
-                }
-            });
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: '2-digit',
-            });
-        }
-
-        function loadSignatureOverview(employeeID) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{ route('ad.loadSignaturesOverview') }}",
-                type: 'GET',
-                data: {
-                    employeeID: employeeID
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#signtable tbody').empty();
-
-                        const appraisalTypeMap = {
-                            'self evaluation': 'Appraisee',
-                            'is evaluation': 'Immediate Superior',
-                            'internal customer 1': 'Internal Customer 1',
-                            'internal customer 2': 'Internal Customer 2'
-                        };
-
-                        response.appraisals.forEach(function(appraisal) {
-                            const employee = appraisal.employee;
-                            const evaluator = appraisal.evaluator;
-                            const evaluatorFullName = evaluator ? evaluator.first_name + ' ' + evaluator
-                                .last_name : '-';
-                            const appraisalType = appraisal.evaluation_type;
-                            var row = $('<tr>');
-                            var appraisalId = appraisal.appraisal_id;
-
-                            const appraisalTypeText = appraisalTypeMap[appraisalType] || appraisalType;
-
-                            row.append($('<td>').text(appraisalTypeText));
-
-                            if (employee) {
-                                row.append($('<td>').text(evaluatorFullName));
-                            } else {
-                                row.append($('<td>').text('-'));
+                                    '</p>');
+                                $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' +
+                                    formatDate(response
+                                        .selectedYearDates.kra_start) + ' - ' + formatDate(response
+                                        .selectedYearDates.kra_end) +
+                                    '</p>');
+                                $('#performance-review-container').html('<h4>Performance:</h4><p>' +
+                                    formatDate(
+                                        response
+                                        .selectedYearDates.pr_start) + ' - ' + formatDate(response
+                                        .selectedYearDates.pr_end) +
+                                    '</p>');
+                                $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + formatDate(
+                                        response
+                                        .selectedYearDates.eval_start) + ' - ' + formatDate(response
+                                        .selectedYearDates
+                                        .eval_end) +
+                                    '</p>');
                             }
-
-                            var viewButton =
-                                '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
-                                appraisalId + '">View</button>';
-
-                            var unlockButton =
-                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
-                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
-                                '">Unlock</button>';
-
-                            var lockButton =
-                                '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
-                                appraisalId + '" id="lock-unlock-btn-' + appraisal.appraisal_id +
-                                '">Lock</button>';
-
-                            if (appraisal.locked == true) {
-                                if (appraisal.date_submitted == null) {
-                                    row.append($('<td>').text('-'));
-                                    row.append($('<td>').text('-'));
-                                } else {
-                                    row.append($('<td>').html(viewButton));
-                                    row.append($('<td>').text(appraisal.date_submitted));
-                                }
-                                row.append($('<td>').html(unlockButton));
-                            } else {
-                                row.append($('<td>').text('-'));
-                                row.append($('<td>').text('-'));
-                                row.append($('<td>').html(lockButton));
-                            }
-
-                            $('#signtable tbody').append(row);
-                        });
-
-                    } else {
-                      console.log('Error: ' + response.error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    console.log(errorMessage);
-                }
-            });
-        }
-
-        $(document).on('click', '.view-esig-btn', function() {
-            var appraisalID = $(this).attr('appraisal-id');
-            console.log('Button clicked with appraisal ID: ' + appraisalID);
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadSignature') }}',
-                type: 'GET',
-                data: {
-                    appraisalID: appraisalID,
-                },
-                success: function(response) {
-                    if (response.success) {
-                        console.log('success');
-                        $('#modalImage').attr('src', response.sign_data);
-                    } else {
-                        console.log('fail');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-
-            $('#signatory_modal').modal('hide');
-            $('#imageModal').modal('show');
-        });
-
-        $(document).on('click', '.lock-unlock-btn', function() {
-            var appraisalID = $(this).attr('appraisal-id');
-            var buttonID = $(this).attr('id');
-            console.log('Button ID: ' + buttonID);
-            console.log('Appraisal Locked: ' + appraisalID);
-
-            var $button = $('#' + buttonID);
-            console.log('Selected Button:', $button);
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.lockUnlockAppraisal') }}',
-                type: 'GET',
-                data: {
-                    appraisalID: appraisalID,
-                },
-                success: function(response) {
-                    if (response.success) {
-                        if (response.locked == true) {
-                            $button.text('Unlock');
-                            console.log('Unlocked');
                         } else {
-                            $button.text('Lock');
-                            console.log('Locked');
+                            $('#school-year-container').html('<h4>School Year:</h4><p>' + '-' + '</p>');
+                            $('#kra-encoding-container').html('<h4>KRA Encoding:</h4><p>' + '-' +
+                                '</p>');
+                            $('#performance-review-container').html('<h4>Performance:</h4><p>' + '-' +
+                                '</p>');
+                            $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + '-' + '</p>');
+                            $('#admin_appraisals_table tbody').empty();
+                            var row = $("<tr class='middle-align'></tr>").append(
+                                "<td colspan='7'><p class='text-secondary fst-italic mt-0'>There is no existing evaluation year.</p></td>"
+                            );
+                            $('#admin_appraisals_table tbody').append(row);
+
+
+                            console.log('Error: ' + response.error);
                         }
-                    } else {
-                        console.log('Error: ' + response.message);
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'An error occurred.';
+                        console.log(errorMessage);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
+                });
+            }
+
+            function formatDate(dateString) {
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: '2-digit',
+                });
+            }
+
+            function loadSignatureOverview(employeeID, selectedYear = null) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ route('ad.loadSignaturesOverview') }}",
+                    type: 'GET',
+                    data: {
+                        employeeID: employeeID,
+                        selectedYear: selectedYear
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#signtable tbody').empty();
+
+                            const appraisalTypeMap = {
+                                'self evaluation': 'Appraisee',
+                                'is evaluation': 'Immediate Superior',
+                                'internal customer 1': 'Internal Customer 1',
+                                'internal customer 2': 'Internal Customer 2'
+                            };
+
+                            response.appraisals.forEach(function(appraisal) {
+                                const employee = appraisal.employee;
+                                const evaluator = appraisal.evaluator;
+                                const evaluatorFullName = evaluator ? evaluator.first_name +
+                                    ' ' + evaluator
+                                    .last_name : '-';
+                                const appraisalType = appraisal.evaluation_type;
+                                var row = $('<tr>');
+                                var appraisalId = appraisal.appraisal_id;
+
+                                const appraisalTypeText = appraisalTypeMap[appraisalType] ||
+                                    appraisalType;
+
+                                row.append($('<td>').text(appraisalTypeText));
+
+                                if (employee) {
+                                    row.append($('<td>').text(evaluatorFullName));
+                                } else {
+                                    row.append($('<td>').text('-'));
+                                }
+
+                                var viewButton =
+                                    '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
+                                    appraisalId + '">View</button>';
+
+                                var unlockButton =
+                                    '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                    appraisalId + '" id="lock-unlock-btn-' + appraisal
+                                    .appraisal_id +
+                                    '">Unlock</button>';
+
+                                var lockButton =
+                                    '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
+                                    appraisalId + '" id="lock-unlock-btn-' + appraisal
+                                    .appraisal_id +
+                                    '">Lock</button>';
+
+                                if (appraisal.locked == true) {
+                                    if (appraisal.date_submitted == null) {
+                                        row.append($('<td>').text('-'));
+                                        row.append($('<td>').text('-'));
+                                    } else {
+                                        row.append($('<td>').html(viewButton));
+                                        row.append($('<td>').text(appraisal.date_submitted));
+                                    }
+                                    row.append($('<td>').html(unlockButton));
+                                } else {
+                                    row.append($('<td>').text('-'));
+                                    row.append($('<td>').text('-'));
+                                    row.append($('<td>').html(lockButton));
+                                }
+
+                                $('#signtable tbody').append(row);
+                            });
+
+                        } else {
+                            console.log('Error: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'An error occurred.';
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
+            $(document).on('click', '.view-esig-btn', function() {
+                var appraisalID = $(this).attr('appraisal-id');
+                console.log('Global Selected Year: ' + globalSelectedYear);
+                loadSignature(appraisalID, globalSelectedYear);
             });
-        });
 
-        $(document).on('click', '#esig-close-btn', function() {
-            $('#imageModal').modal('hide');
-        });
+            function loadSignature(appraisalID, selectedYear = null) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.loadSignature') }}',
+                    type: 'GET',
+                    data: {
+                        appraisalID: appraisalID,
+                        selectedYear: selectedYear
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#modalImage').attr('src', response.sign_data);
+                        } else {
+                            console.log('Fail');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
 
-        $('#evaluation-year-select').change(function() {
-            var selectedYear = $(this).val();
-            console.log(selectedYear);
+                $('#signatory_modal').modal('hide');
+                $('#imageModal').modal('show');
+            }
 
-            loadAdminAppraisalsTable(selectedYear);
+            $(document).on('click', '.lock-unlock-btn', function() {
+                var appraisalID = $(this).attr('appraisal-id');
+                var buttonID = $(this).attr('id');
+                var $button = $('#' + buttonID);
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.lockUnlockAppraisal') }}',
+                    type: 'GET',
+                    data: {
+                        appraisalID: appraisalID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.locked == true) {
+                                $button.text('Unlock');
+                            } else {
+                                $button.text('Lock');
+                            }
+                        } else {
+                            console.log('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            $(document).on('click', '#esig-close-btn', function() {
+                $('#imageModal').modal('hide');
+            });
         });
     </script>
 @endsection

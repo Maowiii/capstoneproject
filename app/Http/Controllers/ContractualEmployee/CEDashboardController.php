@@ -14,20 +14,27 @@ class CEDashboardController extends Controller
 {
   public function displayCEDashboard()
   {
-    $account_id = session()->get('account_id');
-    $user = Accounts::where('account_id', $account_id)->with('employee')->first();
-    $department_id = $user->employee->department_id;
-    $first_login = $user->first_login;
+    if (session()->has('account_id')) {
+      $account_id = session()->get('account_id');
+      $user = Accounts::where('account_id', $account_id)->with('employee')->first();
+      $department_id = $user->employee->department_id;
+      $first_login = $user->first_login;
 
-    $immediate_superiors = Accounts::where('type', 'IS')->with('employee')->whereHas('employee', function ($query) use ($department_id) {
-      $query->where('department_id', $department_id);
-    })->get();
-
-    return view('ce-pages.ce_dashboard')->with('IS', $immediate_superiors)->with('first_login', $first_login);
+      $immediate_superiors = Accounts::where('type', 'IS')->with('employee')->whereHas('employee', function ($query) use ($department_id) {
+        $query->where('department_id', $department_id);
+      })->get();
+      return view('ce-pages.ce_dashboard')->with('IS', $immediate_superiors)->with('first_login', $first_login);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getNotifications()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $activeYear = EvalYear::where('status', 'active')->first();
     $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
     $currentDate = Carbon::now();
@@ -64,6 +71,10 @@ class CEDashboardController extends Controller
 
   public function getRemainingAppraisals()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $accountId = session('account_id');
     $activeYear = EvalYear::where('status', 'active')->first();
 
@@ -92,6 +103,10 @@ class CEDashboardController extends Controller
 
   public function submitFirstLogin(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $job_title = $request->job_title;
     $request->session()->put('title', $job_title);
     $account_id = session()->get('account_id');

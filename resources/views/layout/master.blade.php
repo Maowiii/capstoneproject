@@ -225,7 +225,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to logout?
-                    <p>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-primary" href="{{ route('viewLogin') }}">Logout</a>

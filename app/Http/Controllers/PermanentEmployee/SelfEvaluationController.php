@@ -21,194 +21,227 @@ use Carbon\Carbon;
 
 class SelfEvaluationController extends Controller
 {
-    public function displaySelfEvaluationForm()
-    {
-        return view('pe-pages.pe_self_evaluation');
+  public function displaySelfEvaluationForm()
+  {
+    if (session()->has('account_id')) {
+      return view('pe-pages.pe_self_evaluation');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+  }
+
+  public function getQuestions(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function getQuestions(Request $request)
-    {
-        $appraisalId = $request->input('appraisal_id');
+    $appraisalId = $request->input('appraisal_id');
 
-        $SID = FormQuestions::where('table_initials', 'SID')->get();
-        $SR = FormQuestions::where('table_initials', 'SR')->get();
-        $S = FormQuestions::where('table_initials', 'S')->get();
+    $SID = FormQuestions::where('table_initials', 'SID')->get();
+    $SR = FormQuestions::where('table_initials', 'SR')->get();
+    $S = FormQuestions::where('table_initials', 'S')->get();
 
-        // Retrieve stored scores for each question ID
-        $storedValues = AppraisalAnswers::where('appraisal_id', $appraisalId)
-            ->pluck('score', 'question_id') // Retrieves scores with question IDs as keys
-            ->toArray();
+    // Retrieve stored scores for each question ID
+    $storedValues = AppraisalAnswers::where('appraisal_id', $appraisalId)
+      ->pluck('score', 'question_id') // Retrieves scores with question IDs as keys
+      ->toArray();
 
-        // Merge stored values with question data
-        $SID->each(function ($question) use ($storedValues) {
-            $question->score = $storedValues[$question->question_id] ?? null;
-        });
+    // Merge stored values with question data
+    $SID->each(function ($question) use ($storedValues) {
+      $question->score = $storedValues[$question->question_id] ?? null;
+    });
 
-        $SR->each(function ($question) use ($storedValues) {
-            $question->score = $storedValues[$question->question_id] ?? null;
-        });
+    $SR->each(function ($question) use ($storedValues) {
+      $question->score = $storedValues[$question->question_id] ?? null;
+    });
 
-        $S->each(function ($question) use ($storedValues) {
-            $question->score = $storedValues[$question->question_id] ?? null;
-        });
+    $S->each(function ($question) use ($storedValues) {
+      $question->score = $storedValues[$question->question_id] ?? null;
+    });
 
-        $data = [
-            'success' => true,
-            'SID' => $SID,
-            'SR' => $SR,
-            'S' => $S
-        ];
+    $data = [
+      'success' => true,
+      'SID' => $SID,
+      'SR' => $SR,
+      'S' => $S
+    ];
 
-        return response()->json($data);
+    return response()->json($data);
+  }
+
+  public function showAppraisalForm(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function showAppraisalForm(Request $request)
-    {
-        $appraisalId = $request->input('appraisal_id');
+    $appraisalId = $request->input('appraisal_id');
 
-        $kraData = KRA::where('appraisal_id', $appraisalId)->get();
+    $kraData = KRA::where('appraisal_id', $appraisalId)->get();
 
-        // Return the KRA data as a JSON response
-        return response()->json(['success' => true, 'isAppraisalData' => $kraData]);
+    // Return the KRA data as a JSON response
+    return response()->json(['success' => true, 'isAppraisalData' => $kraData]);
+  }
+
+  public function getData(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function getData(Request $request)
-    {
-        $account_id = session()->get('account_id');
-        $user = Employees::where('account_id', $account_id)->first();
+    $account_id = session()->get('account_id');
+    $user = Employees::where('account_id', $account_id)->first();
 
-        if (!$user) {
-            throw new \Exception('User not found.');
-        }
-
-        $appraisee = Employees::where('account_id', $account_id)
-            ->get();
-
-        $appraisals = Appraisals::where('employee_id', $user->employee_id)
-            ->with('employee', 'evaluator') // Load the related employee and evaluator information
-            ->get();
-
-        $data = [
-            'success' => true,
-            'appraisee' => $appraisee,
-            'appraisals' => $appraisals,
-            'is' => $user
-        ];
-
-        return response()->json($data);
+    if (!$user) {
+      throw new \Exception('User not found.');
     }
 
-    public function viewAppraisal($appraisal_id)
-    {
-        // Retrieve the appraisal records for the given employee_id and evaluator_id
-        $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
+    $appraisee = Employees::where('account_id', $account_id)
+      ->get();
 
-        // Initialize variables for appraisee and evaluator data
-        $appraisee = null;
-        $evaluator = null;
-        $appraisal_Id = null;
+    $appraisals = Appraisals::where('employee_id', $user->employee_id)
+      ->with('employee', 'evaluator') // Load the related employee and evaluator information
+      ->get();
 
-        // Loop through the appraisal records to find the correct appraisal type and evaluator data
-        foreach ($appraisals as $appraisal) {
-            // Fetch the appraisee data based on the $employee_id
-            $appraisee = Employees::find($appraisal->employee_id);
-            // Determine the appraisal type
-            $appraisalType = $appraisal->evaluation_type;
+    $data = [
+      'success' => true,
+      'appraisee' => $appraisee,
+      'appraisals' => $appraisals,
+      'is' => $user
+    ];
 
-            // Handle different appraisal types
-            if ($appraisalType === 'self evaluation') {
-                $evaluator = $appraisee;
-                $appraisal_Id = $appraisal->appraisal_id;
-                return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
-            } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
-                $evaluator = Employees::find($appraisal->evaluator_id);
-                $appraisal_Id = $appraisal->appraisal_id;
-                return view('pe-pages.pe_ic_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
-            } elseif ($appraisalType === 'is evaluation') {
-                $evaluator = Employees::find($appraisal->evaluator_id);
-                $appraisal_Id = $appraisal->appraisal_id;
-                return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
-            }
-            break;
-        }
+    return response()->json($data);
+  }
+
+  public function viewAppraisal($appraisal_id)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function viewGOAppraisal($appraisal_id)
-    {
-        // Retrieve the appraisal records for the given employee_id and evaluator_id
-        $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
+    // Retrieve the appraisal records for the given employee_id and evaluator_id
+    $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
-        // Initialize variables for appraisee and evaluator data
-        $appraisee = null;
-        $evaluator = null;
-        $appraisal_Id = null;
+    // Initialize variables for appraisee and evaluator data
+    $appraisee = null;
+    $evaluator = null;
+    $appraisal_Id = null;
 
-        // Loop through the appraisal records to find the correct appraisal type and evaluator data
-        foreach ($appraisals as $appraisal) {
-            // Fetch the appraisee data based on the $employee_id
-            $appraisee = Employees::find($appraisal->employee_id);
-            // Determine the appraisal type
-            $appraisalType = $appraisal->evaluation_type;
+    // Loop through the appraisal records to find the correct appraisal type and evaluator data
+    foreach ($appraisals as $appraisal) {
+      // Fetch the appraisee data based on the $employee_id
+      $appraisee = Employees::find($appraisal->employee_id);
+      // Determine the appraisal type
+      $appraisalType = $appraisal->evaluation_type;
 
-            // Handle different appraisal types
-            if ($appraisalType === 'self evaluation') {
-                $evaluator = $appraisee;
-                $appraisal_Id = $appraisal->appraisal_id;
-            } elseif (str_starts_with($appraisalType, 'internal customer')) {
-                $evaluator = Employees::find($appraisal->evaluator_id);
-                $appraisal_Id = $appraisal->appraisal_id;
-            } elseif ($appraisalType === 'is evaluation') {
-                $evaluator = Employees::find($appraisal->evaluator_id);
-                $appraisal_Id = $appraisal->appraisal_id;
-            }
-            break;
-        }
+      // Handle different appraisal types
+      if ($appraisalType === 'self evaluation') {
+        $evaluator = $appraisee;
+        $appraisal_Id = $appraisal->appraisal_id;
+        return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+      } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+        return view('pe-pages.pe_ic_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+      } elseif ($appraisalType === 'is evaluation') {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+        return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+      }
+      break;
+    }
+  }
 
-        // Return the view with appraisee, evaluator, and appraisal ID data
-        return view('pe-pages.pe_self_eval_greyedout', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+  public function viewGOAppraisal($appraisal_id)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function getPEKRA(Request $request)
-    {
-        $appraisalId = $request->input('appraisal_id');
-        $kraData = KRA::where('appraisal_id', $appraisalId)->get();
-        $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
-        $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
-        $jicData = JIC::where('appraisal_id', $appraisalId)->get();
-        $signData = Signature::where('appraisal_id', $appraisalId)->get();
+    // Retrieve the appraisal records for the given employee_id and evaluator_id
+    $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
-        foreach ($signData as &$sign) {
-            $sign->sign_data = base64_encode($sign->sign_data);
-        }
+    // Initialize variables for appraisee and evaluator data
+    $appraisee = null;
+    $evaluator = null;
+    $appraisal_Id = null;
 
-        return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
+    // Loop through the appraisal records to find the correct appraisal type and evaluator data
+    foreach ($appraisals as $appraisal) {
+      // Fetch the appraisee data based on the $employee_id
+      $appraisee = Employees::find($appraisal->employee_id);
+      // Determine the appraisal type
+      $appraisalType = $appraisal->evaluation_type;
+
+      // Handle different appraisal types
+      if ($appraisalType === 'self evaluation') {
+        $evaluator = $appraisee;
+        $appraisal_Id = $appraisal->appraisal_id;
+      } elseif (str_starts_with($appraisalType, 'internal customer')) {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+      } elseif ($appraisalType === 'is evaluation') {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+      }
+      break;
     }
-    public function deleteKRA(Request $request)
-    {
-        $kraID = $request->input('kraID');
 
-        // Perform the actual deletion of the KRA record from the database
-        try {
-            KRA::where('kra_id', $kraID)->delete();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
-        }
+    // Return the view with appraisee, evaluator, and appraisal ID data
+    return view('pe-pages.pe_self_eval_greyedout', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+  }
+
+  public function getPEKRA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    public function savePEAppraisal(Request $request)
-    {
-        $validator = $this->validatePEAppraisal($request);
-        if ($validator->fails()) {
-            // Log the validation errors
-            Log::error('Validation Errors: ' . json_encode($validator->errors()));
+    $appraisalId = $request->input('appraisal_id');
+    $kraData = KRA::where('appraisal_id', $appraisalId)->get();
+    $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
+    $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
+    $jicData = JIC::where('appraisal_id', $appraisalId)->get();
+    $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
-            // Display validation errors using dd()
-            dd($validator->errors());
+    foreach ($signData as &$sign) {
+      $sign->sign_data = base64_encode($sign->sign_data);
+    }
 
-            // You can also redirect back with the errors if needed
-            // return redirect()->back()->withErrors($validator)->withInput();
-        }
+    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
+  }
+  public function deleteKRA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $kraID = $request->input('kraID');
+
+    // Perform the actual deletion of the KRA record from the database
+    try {
+      KRA::where('kra_id', $kraID)->delete();
+      return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+      return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
+    }
+  }
+
+  public function savePEAppraisal(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $validator = $this->validatePEAppraisal($request);
+    if ($validator->fails()) {
+      // Display validation errors using dd()
+      dd($validator->errors());
+
+      // You can also redirect back with the errors if needed
+      // return redirect()->back()->withErrors($validator)->withInput();
+    }
 
         DB::beginTransaction();
         try {
@@ -244,40 +277,44 @@ class SelfEvaluationController extends Controller
             // Display exception details using dd()
             dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
 
-            return redirect()->back()->with('error', 'An error occurred while saving data.');
-        }
+      return redirect()->back()->with('error', 'An error occurred while saving data.');
+    }
+  }
+
+
+  protected function validatePEAppraisal(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
+    return Validator::make($request->all(), [
+      'appraisalID' => 'required|numeric',
 
-    protected function validatePEAppraisal(Request $request)
-    {
-        return Validator::make($request->all(), [
-            'appraisalID' => 'required|numeric',
+      'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
 
-            'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
+      'SID' => 'required|array',
+      'SID.*' => 'required|array',
+      'SID.*.*.SIDanswer' => 'required',
 
-            'SID' => 'required|array',
-            'SID.*' => 'required|array',
-            'SID.*.*.SIDanswer' => 'required',
+      'SR' => 'required|array',
+      'SR.*' => 'required|array',
+      'SR.*.*.SRanswer' => 'required',
 
-            'SR' => 'required|array',
-            'SR.*' => 'required|array',
-            'SR.*.*.SRanswer' => 'required',
+      'S' => 'required|array',
+      'S.*' => 'required|array',
+      'S.*.*.Sanswer' => 'required',
 
-            'S' => 'required|array',
-            'S.*' => 'required|array',
-            'S.*.*.Sanswer' => 'required',
-
-            'KRA' => 'required|array',
-            'KRA.*' => 'required|array',
-            'KRA.*.*.kraID' => 'required|numeric',
-            'KRA.*.*.KRA' => 'required|string',
-            'KRA.*.*.KRA_weight' => 'required|numeric',
-            'KRA.*.*.KRA_objective' => 'required|string',
-            'KRA.*.*.KRA_performance_indicator' => 'required|string',
-            'KRA.*.*.KRA_actual_result' => 'required|string',
-            'KRA.*.*.KRA_performance_level' => 'required|numeric',
-            'KRA.*.*.KRA_weighted_total' => 'required|numeric',
+      'KRA' => 'required|array',
+      'KRA.*' => 'required|array',
+      'KRA.*.*.kraID' => 'required|numeric',
+      'KRA.*.*.KRA' => 'required|string',
+      'KRA.*.*.KRA_weight' => 'required|numeric',
+      'KRA.*.*.KRA_objective' => 'required|string',
+      'KRA.*.*.KRA_performance_indicator' => 'required|string',
+      'KRA.*.*.KRA_actual_result' => 'required|string',
+      'KRA.*.*.KRA_performance_level' => 'required|numeric',
+      'KRA.*.*.KRA_weighted_total' => 'required|numeric',
 
             'WPA' => 'required|array',
             'WPA.*' => 'required|array',
@@ -465,14 +502,18 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createSID(Request $request)
-    {
-        foreach ($request->input('SID') as $questionId => $questionData) {
-            $score = $questionData[$request->input('appraisalID')]['SIDanswer'];
+  protected function createSID(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
 
-            $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
-                ->where('question_id', $questionId)
-                ->first();
+    foreach ($request->input('SID') as $questionId => $questionData) {
+      $score = $questionData[$request->input('appraisalID')]['SIDanswer'];
+
+      $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
+        ->where('question_id', $questionId)
+        ->first();
 
             if ($existingRecord) {
                 // Update the record if the score is different
@@ -492,15 +533,51 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createSR(Request $request)
-    {
-        foreach ($request->input('SR') as $questionId => $questionData) {
-            $score = $questionData[$request->input('appraisalID')]['SRanswer'];
+  protected function createSR(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
 
-            // Check if an existing record with the same appraisal_id and question_id exists
-            $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
-                ->where('question_id', $questionId)
-                ->first();
+    foreach ($request->input('SR') as $questionId => $questionData) {
+      $score = $questionData[$request->input('appraisalID')]['SRanswer'];
+
+      // Check if an existing record with the same appraisal_id and question_id exists
+      $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
+        ->where('question_id', $questionId)
+        ->first();
+
+      if ($existingRecord) {
+        // Update the record if the score is different
+        if ($existingRecord->score != $score) {
+          $existingRecord->update([
+            'score' => $score,
+          ]);
+        }
+      } else {
+        // Create a new record if no existing record is found
+        AppraisalAnswers::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'question_id' => $questionId,
+          'score' => $score,
+        ]);
+      }
+    }
+  }
+
+  protected function createS(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    foreach ($request->input('S') as $questionId => $questionData) {
+      $score = $questionData[$request->input('appraisalID')]['Sanswer'];
+
+      // Check if an existing record with the same appraisal_id and question_id exists
+      $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
+        ->where('question_id', $questionId)
+        ->first();
 
             if ($existingRecord) {
                 // Update the record if the score is different
@@ -520,40 +597,16 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createS(Request $request)
-    {
-        foreach ($request->input('S') as $questionId => $questionData) {
-            $score = $questionData[$request->input('appraisalID')]['Sanswer'];
-
-            // Check if an existing record with the same appraisal_id and question_id exists
-            $existingRecord = AppraisalAnswers::where('appraisal_id', $request->input('appraisalID'))
-                ->where('question_id', $questionId)
-                ->first();
-
-            if ($existingRecord) {
-                // Update the record if the score is different
-                if ($existingRecord->score != $score) {
-                    $existingRecord->update([
-                        'score' => $score,
-                    ]);
-                }
-            } else {
-                // Create a new record if no existing record is found
-                AppraisalAnswers::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'question_id' => $questionId,
-                    'score' => $score,
-                ]);
-            }
-        }
+  protected function createKRA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    protected function createKRA(Request $request)
-    {
-        foreach ($request->input('KRA') as $kraID => $kraData) {
-            $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
-                ->where('kra_id', $kraID)
-                ->first();
+    foreach ($request->input('KRA') as $kraID => $kraData) {
+      $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
+        ->where('kra_id', $kraID)
+        ->first();
 
             if ($existingKRA) {
                 if (
@@ -592,12 +645,16 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createWPA(Request $request)
-    {
-        foreach ($request->input('WPA') as $wpaID => $wppData) {
-            $existingWPP = WPP::where('appraisal_id', $request->input('appraisalID'))
-                ->where('performance_plan_id', $wpaID)
-                ->first();
+  protected function createWPA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    foreach ($request->input('WPA') as $wpaID => $wppData) {
+      $existingWPP = WPP::where('appraisal_id', $request->input('appraisalID'))
+        ->where('performance_plan_id', $wpaID)
+        ->first();
 
             if ($existingWPP) {
                 if (
@@ -623,40 +680,48 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createLDP(Request $request)
-    {
-        foreach ($request->input('LDP') as $ldpID => $ldpData) {
-            $existingLDP = LDP::where('appraisal_id', $request->input('appraisalID'))
-                ->where('development_plan_id', $ldpID)
-                ->first();
-
-            if ($existingLDP) {
-                if (
-                    $existingLDP->learning_need !== $ldpData[$request->input('appraisalID')]['learning_need'] ||
-                    $existingLDP->methodology !== $ldpData[$request->input('appraisalID')]['methodology']
-                ) {
-                    $existingLDP->update([
-                        'learning_need' => $ldpData[$request->input('appraisalID')]['learning_need'],
-                        'methodology' => $ldpData[$request->input('appraisalID')]['methodology'],
-                    ]);
-                }
-            } else {
-                LDP::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'learning_need' => $ldpData[$request->input('appraisalID')]['learning_need'],
-                    'methodology' => $ldpData[$request->input('appraisalID')]['methodology'],
-                    'development_plan_order' => $ldpID
-                ]);
-            }
-        }
+  protected function createLDP(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
     }
 
-    protected function createJIC(Request $request)
-    {
-        foreach ($request->input('feedback') as $jicID => $jicData) {
-            $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
-                ->where('job_incumbent_id', $jicID)
-                ->first();
+    foreach ($request->input('LDP') as $ldpID => $ldpData) {
+      $existingLDP = LDP::where('appraisal_id', $request->input('appraisalID'))
+        ->where('development_plan_id', $ldpID)
+        ->first();
+
+      if ($existingLDP) {
+        if (
+          $existingLDP->learning_need !== $ldpData[$request->input('appraisalID')]['learning_need'] ||
+          $existingLDP->methodology !== $ldpData[$request->input('appraisalID')]['methodology']
+        ) {
+          $existingLDP->update([
+            'learning_need' => $ldpData[$request->input('appraisalID')]['learning_need'],
+            'methodology' => $ldpData[$request->input('appraisalID')]['methodology'],
+          ]);
+        }
+      } else {
+        LDP::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'learning_need' => $ldpData[$request->input('appraisalID')]['learning_need'],
+          'methodology' => $ldpData[$request->input('appraisalID')]['methodology'],
+          'development_plan_order' => $ldpID
+        ]);
+      }
+    }
+  }
+
+  protected function createJIC(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    foreach ($request->input('feedback') as $jicID => $jicData) {
+      $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
+        ->where('job_incumbent_id', $jicID)
+        ->first();
 
             if ($existingJIC) {
                 if (
@@ -682,20 +747,24 @@ class SelfEvaluationController extends Controller
         }
     }
 
-    protected function createSign(Request $request)
-    {
-        $appraisalId = $request->input('appraisalID'); // Add a semicolon here
-        $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
+  protected function createSign(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
+    $appraisalId = $request->input('appraisalID'); // Add a semicolon here
+    $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
 
-        // Check if the file exists and is valid
-        if ($signatureFile && $signatureFile->isValid()) {
-            $existingSignature = Signature::where('appraisal_id', $appraisalId)
-                ->where('sign_type', 'JI')
-                ->first();
+    // Check if the file exists and is valid
+    if ($signatureFile && $signatureFile->isValid()) {
+      $existingSignature = Signature::where('appraisal_id', $appraisalId)
+        ->where('sign_type', 'JI')
+        ->first();
 
-            if ($existingSignature) {
-                // Get signature data from uploaded file
-                $signatureData = file_get_contents($signatureFile->getRealPath());
+      if ($existingSignature) {
+        // Get signature data from uploaded file
+        $signatureData = file_get_contents($signatureFile->getRealPath());
 
                 $existingSignature->update([
                     'sign_data' => $signatureData,

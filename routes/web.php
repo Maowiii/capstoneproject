@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\EditableInternalCustomerFormController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EvaluationYearController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminInternalCustomerController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -53,6 +54,7 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
+Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 
 /* ----- ADMIN ----- */
 //Appraisals Overview
@@ -64,6 +66,12 @@ Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOver
 Route::get('/admin-appraisals-overview/get-signatures', [AdminAppraisalsOverviewController::class, 'loadSignatureOverview'])->name('ad.loadSignaturesOverview');
 Route::get('/admin-appraisals-overview/load-signature-image', [AdminAppraisalsOverviewController::class, 'loadSignature'])->name('ad.loadSignature');
 Route::get('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
+
+Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminInternalCustomerController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
+Route::get('/admin-appraisals-overview/get-IC-questions', [AdminInternalCustomerController::class, 'getICQuestions'])->name('ad.getICQuestions');
+Route::get('/admin-appraisals-overview/get-IC-saved-scores', [AdminInternalCustomerController::class, 'getSavedICScores'])->name('ad.getICScores');
+Route::post('/admin-appraisals-overview/get-comments-and-suggestions', [AdminInternalCustomerController::class, 'getCommentsAndSuggestions'])->name('ad.getICCommentsAndSuggestions');
+Route::get('/admin-appraisals-overview/load-ic-signatures', [AdminInternalCustomerController::class, 'loadSignatures'])->name('ad.loadICSignatures');
 
 // Employee User Table
 Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
@@ -169,3 +177,6 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
+
+// Settings
+Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');

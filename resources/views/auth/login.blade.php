@@ -16,6 +16,12 @@
 <body background="white" id="loginPage">
     <div class="container" id="formcard">
         <img src="{{ asset('assets/adulogo.png') }}" id="logo">
+        @if (session('message'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ session('message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <form method="post" action="{{ route('login-user') }}">
             @csrf
             <div>

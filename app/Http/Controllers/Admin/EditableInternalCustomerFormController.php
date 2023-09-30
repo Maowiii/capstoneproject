@@ -13,11 +13,19 @@ class EditableInternalCustomerFormController extends Controller
 {
   public function displayEditableInternalCustomerForm()
   {
-    return view('admin-pages.editable_ic_form');
+    if (session()->has('account_id')) {
+      return view('admin-pages.editable_ic_form');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getICQuestions()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $ICques = FormQuestions::where('table_initials', 'IC')
       ->where('status', 'active')
       ->get();
@@ -27,6 +35,10 @@ class EditableInternalCustomerFormController extends Controller
 
   public function updateICQuestions(Request $request, $questionId)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     try {
       $ICques = FormQuestions::find($questionId);
 
@@ -47,6 +59,10 @@ class EditableInternalCustomerFormController extends Controller
 
   public function deleteICQuestions(Request $request, $questionId)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     try {
       $ICques = FormQuestions::find($questionId);
 
@@ -66,6 +82,10 @@ class EditableInternalCustomerFormController extends Controller
 
   public function addICQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     try {
       $validator = Validator::make($request->all(), [
         'question' => 'required',
@@ -97,6 +117,10 @@ class EditableInternalCustomerFormController extends Controller
 
   public function formChecker()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $active = EvalYear::where('status', 'active')->first();
 
     if ($active) {

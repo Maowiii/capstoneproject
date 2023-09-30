@@ -7,7 +7,7 @@
 @section('content')
     <div class="content-container">
         <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
@@ -15,7 +15,7 @@
         <table class="table" id="employee_table">
             <thead>
                 <tr>
-                    <th scope="col" class="large-column">Employee # | Email</th>
+                    <th scope="col" class="large-column">Email | Employee #</th>
                     <th scope="col" class="medium-column">First Name</th>
                     <th scope="col" class="medium-column">Last Name</th>
                     <th scope="col" class="medium-column">Default Password</th>
@@ -185,10 +185,19 @@
             );
         }
 
-        function loadTableData() {
+        $('#search').on('input', function() {
+            var search = $(this).val();
+            loadTableData(search);
+        });
+
+        function loadTableData(search = null) {
+            console.log('Search Value: ' + search);
             $.ajax({
                 url: '{{ route('ad.getEmployeesData') }}',
                 type: 'GET',
+                data: {
+                  search: search
+                },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -205,8 +214,8 @@
                             var statusAction = account.status === 'active' ? 'deactivate' :
                                 'activate';
 
-                            var newRow = $('<tr>').attr('id', account.account_id).append(
-                                $('<td>').html(account.email + '<br /><p class="fst-italic">' +
+                            var newRow = $('<tr>').attr('id', account.account_id).addClass('align-middle').append(
+                                $('<td>').html(account.email + '<br /><p class="fst-italic text-secondary">' +
                                     account
                                     .employee.employee_number + '</p>'),
                                 $('<td>').text(account.employee.first_name),

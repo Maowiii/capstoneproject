@@ -9,6 +9,7 @@ use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\Employees;
 use App\Models\EvalYear;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,12 +19,20 @@ class EmployeeController extends Controller
 {
   public function displayEmployeeTable()
   {
-    $departments = Departments::all();
-    return view('admin-pages.employee_table')->with('departments', $departments);
+    if (session()->has('account_id')) {
+      $departments = Departments::all();
+      return view('admin-pages.employee_table')->with('departments', $departments);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function updateStatus(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $accountId = $request->input('account_id');
     $action = $request->input('action');
 
@@ -43,7 +52,23 @@ class EmployeeController extends Controller
 
   public function getData(Request $request)
   {
-    $accounts = Accounts::with('employee.department')->get();
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $search = $request->input('search');
+
+    $accounts = Accounts::with([
+      'employee.department'
+    ])->whereHas('employee', function ($query) use ($search) {
+      $query->where(function ($subQuery) use ($search) {
+        $subQuery->where('first_name', 'like', '%' . $search . '%')
+          ->orWhere('last_name', 'like', '%' . $search . '%')
+          ->orWhere('employee_number', 'like', '%' . $search . '%');
+      });
+    })->get();
+
+    Log::debug($accounts);
 
     $data = [
       'success' => true,
@@ -55,6 +80,10 @@ class EmployeeController extends Controller
 
   public function addEmployee(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $validator = Validator::make($request->all(), [
       'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
       'employee_number' => 'required|max:9|unique:employees,employee_number',
@@ -132,6 +161,10 @@ class EmployeeController extends Controller
 
   public function employeeResetPassword(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     try {
       $accountId = $request->input('account_id');
 
@@ -152,6 +185,10 @@ class EmployeeController extends Controller
 
   public function editEmployee(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $employeeId = $request->input('employeeId');
     $employee = Employees::with('account')->find($employeeId);
 
@@ -164,6 +201,10 @@ class EmployeeController extends Controller
 
   public function saveEmployee(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $employeeId = $request->input('employeeId');
     $account = Accounts::where('account_id', $employeeId)->first();
     $employee = Employees::find($employeeId)->first();

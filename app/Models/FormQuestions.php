@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
-class FormQuestions extends Model
+class FormQuestions extends BaseModel
 {
   use HasFactory;
-
+  use BindsDynamically;
 
   protected $primaryKey = 'question_id';
 
@@ -19,6 +20,12 @@ class FormQuestions extends Model
     'question_order'
   ];
 
+  public static function tableExists()
+  {
+    $tableName = (new static)->getTable();
+
+    return Schema::hasTable($tableName);
+  }
   public function __construct(array $attributes = [])
   {
     parent::__construct($attributes);
