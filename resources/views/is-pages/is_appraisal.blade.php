@@ -761,6 +761,174 @@
             updateFrequencyCounter('S_table');
 
             updateWeightedTotal();
+
+            ////// VALIDATION /////////
+
+
+            ////// AUTOSAVE //////////
+             $('#KRA_table_body').on('change', '.autosave-field', function() {
+                console.log('I was a KRA');
+                var field = $(this);
+                var kraID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveKRAField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        kraID: kraID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveKRAField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#wpa_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var wppID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveWPPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        wppID: wppID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.wpaData.forEach(function(wpa, index) {
+                            var wpaID = wpa.performance_plan_id;
+                            console.log(wpaID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-wpa-id', wpaID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][start_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]');
+
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').val(
+                                wpa.continue_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').val(wpa
+                                .stop_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]"]').val(wpa
+                                .start_doing);
+                        });
+
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveWPPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#ldp_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var ldpID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveLDPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        ldpID: ldpID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.ldpData.forEach(function(ldp, index) {
+                            var ldpID = ldp.development_plan_id;
+                            console.log(ldpID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-ldp-id', ldpID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="LDP[0][' +
+                                {{ $appraisalId }} + '][learning_need]"]').attr(
+                                'name', 'LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][learning_need]');
+                            closestRow.find('textarea[name="LDP[0][' +
+                                {{ $appraisalId }} + '][methodology]"]').attr(
+                                'name', 'LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][methodology]');
+
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][learning_need]"]').val(ldp
+                                .learning_need);
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][methodology]"]').val(ldp
+                                .methodology);
+                        });
+
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
         });
 
         function loadTableData() {
@@ -1003,6 +1171,7 @@
                                 var kraID = kra.kra_id;
 
                                 var row = $('<tr>').addClass('align-middle');
+
                                 $('<input>').attr({
                                     type: 'hidden',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
@@ -1012,16 +1181,16 @@
 
                                 $('<td>').addClass('td-textarea').append(
                                     createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra]',
                                         kra.kra,
                                         false
                                     )
                                 ).appendTo(row);
 
-                                var weightSelect = $('<select>').addClass('form-select').attr(
+                                var weightSelect = $('<select>').addClass('form-select autosave-field').attr(
                                         'aria-label',
                                         'Default select example').attr('readonly', false).attr('name',
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_weight]')
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra_weight]')
                                     .appendTo($('<td>'))
                                     .appendTo(row);
                                 $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
@@ -1234,7 +1403,7 @@
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
-                $('<textarea>').addClass('textarea form-control').attr({
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr({
                     name: name,
                     readonly: isReadonly
                 }).prop('required', true).val(value)
@@ -1258,41 +1427,31 @@
         }
 
         function addNewKRARow(tbody) {
-            var highestKRAID = 0;
-            tbody.find('[name^="KRA["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var kraID = parseInt(matches[1]);
-                    if (kraID > highestKRAID) {
-                        highestKRAID = kraID;
-                    }
-                }
-            });
-
-            // Calculate the next available wpaID
-            var nextKRAID = highestKRAID + 1;
+            var kraID = 0;
 
             var row = $('<tr>').addClass('align-middle');
-            $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} + '][KRA]')
-            ).appendTo(row);
 
             $('<input>').attr({
                 type: 'hidden',
                 name: 'KRA[' +
-                    nextKRAID +
+                kraID +
                     '][' + {{ $appraisalId }} + '][kraID]',
-                value: nextKRAID,
+                value: kraID,
             }).appendTo(row);
 
-            var weightSelect = $('<select>').addClass('form-select').attr('aria-label',
+            $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                                        '',
+                                        false
+                                    )
+                                ).appendTo(row);
+
+            var weightSelect = $('<select>').addClass('form-select autosave-field').attr('aria-label',
                     'Default select example').attr('readonly', false).attr('name',
                     'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} + '][KRA_weight]')
+                    kraID +
+                    '][' + {{ $appraisalId }} + '][KRA_kra_weight]')
                 .appendTo($('<td>'))
                 .appendTo(row);
             $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
@@ -1302,18 +1461,22 @@
             }
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} +
-                    '][KRA_objective]')
-            ).appendTo(row);
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_objective]',
+                                        '',
+                                        false
+                                    )
+                                ).appendTo(row);
 
-            $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} +
-                    '][KRA_performance_indicator]')
-            ).appendTo(row);
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_performance_indicator]',
+                                        '',
+                                        false
+                                    )
+                                ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
                 $('<textarea>').addClass('textarea').prop('readonly', true)
@@ -1327,7 +1490,7 @@
                 var input = $('<input>').prop('readonly', true).attr({
                     type: 'radio',
                     name: 'KRA[' +
-                        nextKRAID +
+                    kraID +
                         '][' + {{ $appraisalId }} + '][KRA_answer]',
                     class: 'form-check-input',
                     value: i
@@ -1337,13 +1500,14 @@
                     performanceLevelDiv);
             }
 
-            $('<td>').addClass('td-textarea kra-weighted-total').append(
-                $('<input>').addClass('form-control').attr({
-                    type: 'text',
-                    name: 'kra_total_weight',
-                    readonly: true
-                }).prop('readonly', true)
-            ).appendTo(row);
+            $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]',
+                                        '',
+                                        true
+                                    )
+                                ).appendTo(row);
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger kra-delete-btn align-middle').attr('type', 'button').text(
@@ -1372,32 +1536,32 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = highestWpaID + 1;
+            var nextWpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle WPA')
+                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle')
                 .attr('type', 'button')
                 .text('Delete')
             ).appendTo(wparow);
@@ -1423,12 +1587,12 @@
                 }
             });
 
-            // Calculate the next available ldpID
-            var nextLDPID = highestLDPID + 1;
+            // Calculate the next available lpaID
+            var nextLDPID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][learning_need]').prop(
                     'readonly',
@@ -1436,7 +1600,7 @@
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][methodology]').prop(
                     'readonly',

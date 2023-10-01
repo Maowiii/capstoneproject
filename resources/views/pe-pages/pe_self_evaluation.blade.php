@@ -458,7 +458,7 @@
                 <tbody id='jic_table_body'>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I agree with my performance rating."
+                            <textarea class='textarea border-0' value="I agree with my performance rating."
                                 name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
@@ -475,13 +475,13 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea'
+                            <textarea class='textarea border-0'
                                 value="My future work objectives and learning opportunities have been set for the
                             next review period."
                                 name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
@@ -500,13 +500,13 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review discussion."
+                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
                                 name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
@@ -523,7 +523,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -546,7 +546,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -1391,6 +1391,7 @@
                             var kraID = kra.kra_id;
 
                             var row = $('<tr>').addClass('align-middle');
+                            
                             $('<input>').attr({
                                 type: 'hidden',
                                 name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
@@ -1409,7 +1410,7 @@
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
                                     'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_weight]',
+                                    '][KRA_kra_weight]',
                                     kra.kra_weight,
                                     true
                                 )
@@ -1741,7 +1742,7 @@
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
-                $('<textarea>').addClass('textarea form-control autosave-field').attr({
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr({
                     name: name,
                     readonly: isReadonly
                 }).prop('required', true).val(value)
@@ -1800,7 +1801,7 @@
                 $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                     nextKRAID +
                     '][' +
-                    {{ $appraisalId }} + '][KRA_weight]').prop('readonly', true)
+                    {{ $appraisalId }} + '][KRA_kra_weight]').prop('readonly', true)
             ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
@@ -1880,21 +1881,21 @@
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
                     false)
@@ -2027,7 +2028,7 @@
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
         }
-
+/*
         function formChecker() {
             var urlParams = new URLSearchParams(window.location.search);
             var appraisalId = urlParams.get('appraisal_id');
@@ -2061,5 +2062,6 @@
                 }
             });
         }
+        */
     </script>
 @endsection
