@@ -25,7 +25,9 @@ class Appraisals extends BaseModel
     'kra_score',
     'ic_score',
     'date_submitted',
-    'signature',
+    'kra_locked',
+    'pr_locked',
+    'eval_locked',
     'locked'
   ];
 

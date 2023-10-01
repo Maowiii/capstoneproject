@@ -491,9 +491,7 @@ textarea {
     display: flex;
     justify-content: center;
 }
-#signatory_modal .modal-dialog {
-    max-width: 40%;
-}
+
 #signatory_modal .modal-content {
     margin-top: 0;
 }
