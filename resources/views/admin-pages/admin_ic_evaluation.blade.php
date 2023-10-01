@@ -53,10 +53,10 @@
         </table>
 
         <p>What did you like best about his/her customer service?</p>
-        <textarea class="form-control" id="service_area"></textarea>
+        <textarea class="form-control" id="service_area" disabled></textarea>
 
         <p class="mt-3">Other comments and suggestions:</p>
-        <textarea class="form-control" id="comments_area"></textarea>
+        <textarea class="form-control" id="comments_area" disabled></textarea>
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="button" class="btn btn-primary medium-column" id='view-btn'>View</button>
@@ -118,19 +118,19 @@
                 $('#signatory_modal').modal('show');
             });
 
-            $('textarea').prop('disabled', true);
-
             function loadSignature() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('pe.loadSignatures') }}',
+                    url: '{{ route('ad.loadICSignatures') }}',
                     type: 'GET',
                     data: {
+                        sy: sy,
                         appraisalId: appraisalId,
                     },
                     success: function(response) {
@@ -183,20 +183,22 @@
             function loadTextAreas() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
+
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('getCommentsAndSuggestions') }}',
+                    url: '{{ route('ad.getICCommentsAndSuggestions') }}',
                     type: 'POST',
                     data: {
-                        appraisalId: appraisalId
+                        appraisalId: appraisalId,
+                        sy: sy
                     },
                     success: function(response) {
                         if (response.success) {
                             $('#service_area').val(response.customerService);
                             $('#comments_area').val(response.suggestion);
-                            $('input[type="radio"]').prop('disabled', true);
                         } else {
                             console.log('Comments not found or an error occurred.');
                         }
@@ -212,12 +214,18 @@
             }
 
             function loadICTable() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var sy = urlParams.get('sy');
+
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('pe.getICQuestions') }}',
+                    url: '{{ route('ad.getICQuestions') }}',
                     type: 'GET',
+                    data: {
+                        sy: sy
+                    },
                     success: function(response) {
                         if (response.success) {
                             var tbody = $('#IC_table tbody');
@@ -246,7 +254,7 @@
                                         id: `score_${questionId}_${i}`,
                                         name: `ic_${questionId}`,
                                         value: i
-                                    });
+                                    }).prop('disabled', true);
                                     var label = $('<label>').addClass('form-check-label').attr(
                                         'for', `score_${questionId}_${i}`).text(i);
 
@@ -274,16 +282,18 @@
             function loadSavedScore(questionId) {
                 var urlParams = new URLSearchParams(window.location.search);
                 var appraisalId = urlParams.get('appraisal_id');
+                var sy = urlParams.get('sy');
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route('getSavedICScores') }}',
+                    url: '{{ route('ad.getICScores') }}',
                     type: 'GET',
                     data: {
                         appraisalId: appraisalId,
-                        questionId: questionId
+                        questionId: questionId,
+                        sy: sy,
                     },
                     success: function(savedScoreResponse) {
                         if (savedScoreResponse.success) {
@@ -318,6 +328,7 @@
 
             loadICTable();
             loadTextAreas();
+
         });
     </script>
 @endsection

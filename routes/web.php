@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\EditableInternalCustomerFormController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EvaluationYearController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminInternalCustomerController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -53,6 +54,7 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
+Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 
 /* ----- ADMIN ----- */
 //Appraisals Overview
@@ -64,6 +66,12 @@ Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOver
 Route::get('/admin-appraisals-overview/get-signatures', [AdminAppraisalsOverviewController::class, 'loadSignatureOverview'])->name('ad.loadSignaturesOverview');
 Route::get('/admin-appraisals-overview/load-signature-image', [AdminAppraisalsOverviewController::class, 'loadSignature'])->name('ad.loadSignature');
 Route::get('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
+
+Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminInternalCustomerController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
+Route::get('/admin-appraisals-overview/get-IC-questions', [AdminInternalCustomerController::class, 'getICQuestions'])->name('ad.getICQuestions');
+Route::get('/admin-appraisals-overview/get-IC-saved-scores', [AdminInternalCustomerController::class, 'getSavedICScores'])->name('ad.getICScores');
+Route::post('/admin-appraisals-overview/get-comments-and-suggestions', [AdminInternalCustomerController::class, 'getCommentsAndSuggestions'])->name('ad.getICCommentsAndSuggestions');
+Route::get('/admin-appraisals-overview/load-ic-signatures', [AdminInternalCustomerController::class, 'loadSignatures'])->name('ad.loadICSignatures');
 
 // Employee User Table
 Route::get('/employees', [EmployeeController::class, 'displayEmployeeTable'])->name('viewEmployeeTable');
@@ -103,8 +111,6 @@ Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'disp
 Route::post('/dashboard-immediate-superior/submit-position', [ISDashboardController::class, 'submitISPosition'])->name('is.submitISPosition');
 Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardController::class, 'getNotifications'])->name('is.getNotifications');
 
-
-
 // Appraisals Overview
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
@@ -140,6 +146,8 @@ Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppra
 
 Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
 Route::post('/autosave-wpp-field', [SelfEvaluationController::class, 'autosaveWPPField'])->name('autosaveWPPField');
+Route::post('/autosave-ldp-field', [SelfEvaluationController::class, 'autosaveLDPField'])->name('autosaveLDPField');
+Route::post('/autosave-jic-field', [SelfEvaluationController::class, 'autosaveJICField'])->name('autosaveJICField');
 
 Route::get('/pe-go-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewGOAppraisal'])->name('viewPEGOAppraisal');
 
@@ -169,3 +177,6 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
+
+// Settings
+Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');

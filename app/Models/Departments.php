@@ -9,17 +9,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Departments extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'departments';
+  protected $table = 'departments';
 
-    protected $primaryKey = 'department_id';
+  protected $primaryKey = 'department_id';
 
-    public $timestamps = false;
+  public $timestamps = false;
 
-    protected $fillable = ['department_name'];
+  protected $fillable = ['department_name'];
 
-    public function employee(): hasMany{
-        return $this->hasMany(Employees::class, 'department_id');
-    }
+  public function employee(): hasMany
+  {
+    return $this->hasMany(Employees::class, 'department_id');
+  }
+
+  public function appraisal(): hasMany
+  {
+    return $this->hasMany(Appraisals::class, 'department_id');
+  }
 }

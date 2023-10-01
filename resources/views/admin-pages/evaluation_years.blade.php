@@ -477,7 +477,7 @@
 
         $(document).ready(function() {
             const currentDate = new Date().toISOString().split('T')[0];
-            $('#kra_start').prop('min', currentDate);
+            //$('#kra_start').prop('min', currentDate);
             $('#backbtn').hide();
             loadEvaluationYearTable();
         });
@@ -522,8 +522,8 @@
                 const eval_start = $('#eval_start');
                 const eval_end = $('#eval_end');
 
-                const currentDate = new Date().toISOString().split('T')[0];
-                kra_start.prop('min', currentDate);
+                //const currentDate = new Date().toISOString().split('T')[0];
+                //kra_start.prop('min', currentDate);
 
                 if (kra_start.val()) {
                     const kraStartDate = new Date($('#kra_start').val());

@@ -17,11 +17,19 @@ class PEInternalCustomerController extends Controller
 {
   public function displayICOverview()
   {
-    return view('pe-pages.pe_ic_overview');
+    if (session()->has('account_id')) {
+      return view('pe-pages.pe_ic_overview');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 
   public function getICAssign()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $accountId = session('account_id');
     $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
 
@@ -37,6 +45,10 @@ class PEInternalCustomerController extends Controller
 
   public function getICQuestions()
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $ICques = FormQuestions::where('table_initials', 'IC')
       ->where('status', 'active')
       ->get();
@@ -46,6 +58,10 @@ class PEInternalCustomerController extends Controller
 
   public function showAppraisalForm(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $evaluatorName = $request->input('appraiser_name');
     $evaluatorDepartment = $request->input('appraiser_department');
     $appraiseeName = $request->input('appraisee_name');
@@ -56,6 +72,10 @@ class PEInternalCustomerController extends Controller
 
   public function saveICScores(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $questionId = $request->input('questionId');
     $score = $request->input('score');
     $appraisalId = $request->input('appraisalId');
@@ -75,6 +95,10 @@ class PEInternalCustomerController extends Controller
 
   public function getSavedICScores(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisalId');
     $questionId = $request->input('questionId');
 
@@ -91,6 +115,10 @@ class PEInternalCustomerController extends Controller
 
   public function updateService(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $newService = $request->input('newService');
     $appraisalId = $request->input('appraisalId');
 
@@ -104,6 +132,10 @@ class PEInternalCustomerController extends Controller
 
   public function updateSuggestion(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $newSuggestion = $request->input('newSuggestion');
     $appraisalId = $request->input('appraisalId');
 
@@ -115,6 +147,10 @@ class PEInternalCustomerController extends Controller
 
   public function getCommentsAndSuggestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisalId');
 
     $comments = Comments::where('appraisal_id', $appraisalId)->first();
@@ -138,6 +174,10 @@ class PEInternalCustomerController extends Controller
 
   public function loadSignatures(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisalId');
 
     $appraisal = Appraisals::find($appraisalId);
@@ -163,11 +203,13 @@ class PEInternalCustomerController extends Controller
 
   public function submitICSignature(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     $appraisalId = $request->input('appraisalId');
     $esignature = $request->input('esignature');
     $totalWeightedScore = $request->input('totalWeightedScore');
-
-    Log::debug('IC Score: ' . $totalWeightedScore);
 
     Signature::updateOrCreate(
       ['appraisal_id' => $appraisalId],
@@ -192,7 +234,10 @@ class PEInternalCustomerController extends Controller
 
   public function formChecker(Request $request)
   {
-
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+    
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
     $locked = $appraisal->locked;
