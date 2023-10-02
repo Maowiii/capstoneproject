@@ -62,7 +62,7 @@
             <div class="col-auto">
                 <input type="text" class="form-control"
                     value="{{ $appraisee->immediateSuperior->first_name ?? 'N/A' }} {{ $appraisee->immediateSuperior->last_name ?? '' }}"
-                  readonly>
+                    readonly>
             </div>
         </div>
         <div class="row g-3 align-items-center mb-3">
@@ -71,10 +71,10 @@
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" value="{{ $appraisee->immediateSuperior->position ?? 'N/A' }}"
-                  readonly>
+                    readonly>
             </div>
         </div>
-      </div>
+    </div>
 
     <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
         id="PEappraisalForm">
@@ -116,52 +116,52 @@
             @csrf
             <table class='table table-bordered' id="SID_table">
                 <thead>
-                  <tr>
+                    <tr>
                         <th class='extra-small-column'>#</th>
                         <th>Question</th>
-                     <th>Performance Level</th>
+                        <th>Performance Level</th>
                     </tr>
                 </thead>
                 <tbody id='SID_table_body'>
                 </tbody>
                 <tfoot>
-                  <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                     <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
-                                </div>
-                             <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                             </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                     readonly>
-                                </div>
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                               <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                               </div>
-                            </div>
-                        </td>
-                  </tr>
                     <tr>
                         <td></td>
-                     <td class='text-right'>Total:</td>
+                        <td class='text-right'>Frequency:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                        readonly>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                             <input class="small-column form-control total-frequency text-center" type="text"
+                                <input class="small-column form-control total-frequency text-center" type="text"
                                     readonly>
                             </div>
-                     </td>
+                        </td>
                     </tr>
                 </tfoot>
             </table>
@@ -191,46 +191,46 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                     <td></td>
+                        <td></td>
                         <td class='text-right'>Frequency:</td>
                         <td>
-                         <div class="d-flex justify-content-center gap-3">
+                            <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                     readonly>
-                                </div>
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
                                         readonly>
                                 </div>
-                             <div class="col-auto">
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
-                             </div>
+                                </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                     readonly>
-                                </div>
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
                                         readonly>
                                 </div>
-                         </div>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                        readonly>
+                                </div>
+                            </div>
                         </td>
                     </tr>
-                  <tr>
+                    <tr>
                         <td></td>
                         <td class='text-right'>Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
                                 <input class="small-column form-control total-frequency text-center" type="text"
-                                 readonly>
+                                    readonly>
                             </div>
                         </td>
                     </tr>
                 </tfoot>
             </table>
-   
+
             <h4>Solidarity</h4>
             <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
                 collaborative effort where the gifts of persons are valued. Our learning community is a "family" where
@@ -242,7 +242,7 @@
                 <thead>
                     <tr>
                         <th class='extra-small-column'>#</th>
-                     <th>Question</th>
+                        <th>Question</th>
                         <th class='small-column'>Action</th>
                     </tr>
                 </thead>
@@ -251,43 +251,43 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                     <td></td>
+                        <td></td>
                         <td class='text-right'>Frequency:</td>
                         <td>
-                         <div class="d-flex justify-content-center gap-3">
+                            <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                     readonly>
-                                </div>
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
                                         readonly>
                                 </div>
-                             <div class="col-auto">
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                        readonly>
+                                </div>
+                                <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
                                         readonly>
-                             </div>
+                                </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                     readonly>
-                                </div>
-                                <div class="col-auto">
-                                 <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
                                         readonly>
                                 </div>
-                         </div>
-                        </td>
-                    </tr>
-                  <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                     <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                 readonly>
+                                <div class="col-auto">
+                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                        readonly>
+                                </div>
                             </div>
                         </td>
-                  </tr>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class='text-right'>Total:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input class="small-column form-control total-frequency text-center" type="text"
+                                    readonly>
+                            </div>
+                        </td>
+                    </tr>
                 </tfoot>
             </table>
         </div>
@@ -299,31 +299,31 @@
                 actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
             <table class='table table-bordered'>
                 <thead>
-                  <tr>
+                    <tr>
                         <th class='large-column'>Accomplishment Level</th>
                         <th colspan="2">Description</th>
-                  </tr>
+                    </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                    <tr>
                         <td>5</td>
                         <td>Oustanding Performance</td>
-                     <td class='text-justify'>Performance far exceeds the standard expected of a job holder at this
+                        <td class='text-justify'>Performance far exceeds the standard expected of a job holder at this
                             level.
                             The review/assessment indicates that the job holder has achieved greater than fully effective
-                         results against all of the performance criteria and indicators as specified in the Performance
+                            results against all of the performance criteria and indicators as specified in the Performance
                             Agreement and Work plan. Maintained this in all areas of responsibility throughout the
                             performance
-                         cycle.</td>
+                            cycle.</td>
                     </tr>
                     <tr>
-                     <td>4</td>
+                        <td>4</td>
                         <td>Performance significantly above expectations</td>
                         <td class='text-justify'>Performance fully meets the standards expected for the job. The
-                         review/assessment indicates that the job holder has achieved better than fully effective results
+                            review/assessment indicates that the job holder has achieved better than fully effective results
                             against more than half of the performance criteria and indicators as specified in the
                             Performance
-                         Agreement and Work plan.</td>
+                            Agreement and Work plan.</td>
                     </tr>
                     <tr>
                         <td>3</td>
@@ -458,7 +458,7 @@
                 <tbody id='jic_table_body'>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I agree with my performance rating."
+                            <textarea class='textarea border-0' value="I agree with my performance rating."
                                 name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
@@ -475,13 +475,13 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea'
+                            <textarea class='textarea border-0'
                                 value="My future work objectives and learning opportunities have been set for the
                             next review period."
                                 name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
@@ -500,13 +500,13 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review discussion."
+                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
                                 name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
@@ -523,7 +523,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -546,7 +546,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -808,23 +808,24 @@
                     event.preventDefault();
                     event.stopPropagation();
 
-                        var invalidInputs = form.querySelectorAll('.is-invalid');
-                        if (invalidInputs.length > 0) {
-                            invalidInputs[0].focus(); // Focus on the first invalid input
-                        }
+                    var invalidInputs = form.querySelectorAll('.is-invalid');
+                    if (invalidInputs.length > 0) {
+                        invalidInputs[0].focus(); // Focus on the first invalid input
+                    }
 
-                        invalidInputs.forEach(function(invalidInput) {
-                            invalidInput.scrollIntoView({
-                                behavior: 'smooth'
-                            });
-
-                            // Log the custom error message for this input
-                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                    invalidInputs.forEach(function(invalidInput) {
+                        invalidInput.scrollIntoView({
+                            behavior: 'smooth'
                         });
 
-                        console.error('Form validation failed.');
-                        return;
-                    }
+                        // Log the custom error message for this input
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                            .validationMessage);
+                    });
+
+                    console.error('Form validation failed.');
+                    return;
+                }
 
                 var allRowsCorrected = invalidRows.every(function(invalidRow) {
                     return !invalidRow.hasClass('is-invalid');
@@ -874,7 +875,8 @@
                 $('#confirmation-popup-modal').modal('show');
             });
 
-            $('#KRA_table_body').on('input', '.autosave-field', function() {
+            $('#KRA_table_body').on('change', '.autosave-field', function() {
+                console.log('I was a KRA');
                 var field = $(this);
                 var kraID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
@@ -936,14 +938,29 @@
                             closestRow.attr('data-wpa-id', wpaID);
 
                             // Change the name attribute of the textareas if needed
-                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][continue_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][continue_doing]');
-                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][stop_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]');
-                            closestRow.find('textarea[name="WPA[0][' + {{ $appraisalId }} + '][start_doing]"]').attr('name', 'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]');
-                            
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][start_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]');
+
                             // Update the content of the closest row based on the response data
-                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][continue_doing]"]').val(wpa.continue_doing);
-                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]"]').val(wpa.stop_doing);
-                            closestRow.find('textarea[name="WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]"]').val(wpa.start_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').val(
+                                wpa.continue_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').val(wpa
+                                .stop_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]"]').val(wpa
+                                .start_doing);
                         });
 
                         // Handle the success response if needed
@@ -960,62 +977,89 @@
                 });
             });
 
-            $('#ldp_table_body').on('change', '.autosave-field', function() {
-                var field = $(this);
-                var ldpID = field.attr('name').match(/\d+/)[0];
-                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
-                var fieldValue = field.val();
+            var debounceTimer;
 
-                // Send the updated field value to the server via Ajax
-                $.ajax({
-                    url: '{{ route('autosaveLDPField') }}', // Replace with your route URL
-                    method: 'POST', // Use POST method to send data
-                    data: {
-                        ldpID: ldpID,
-                        fieldName: fieldName,
-                        fieldValue: fieldValue,
-                        appraisalId: {{ $appraisalId }}
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        response.ldpData.forEach(function(ldp, index) {
-                            var ldpID = ldp.development_plan_id;
-                            console.log(ldpID);
-                            var closestRow = field.closest('tr');
-                            console.log(closestRow);
+$('#ldp_table_body').on('input change blur', '.autosave-field', function(event) {
+    var field = $(this);
+    var ldpID = field.attr('name').match(/\d+/)[0];
+    var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+    var fieldValue = field.val();
 
-                            closestRow.attr('data-ldp-id', ldpID);
+    if (event.type === 'input') {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            processBatchChanges(field, ldpID, fieldName, fieldValue);
+        }, 500); // Adjust the debounce delay as needed
+    } else {
+        processBatchChanges(field, ldpID, fieldName, fieldValue);
+    }
+});
 
-                            // Change the name attribute of the textareas if needed
-                            closestRow.find('textarea[name="LDP[0][' + {{ $appraisalId }} + '][learning_need]"]').attr('name', 'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][learning_need]');
-                            closestRow.find('textarea[name="LDP[0][' + {{ $appraisalId }} + '][methodology]"]').attr('name', 'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]');
-                            
-                            // Update the content of the closest row based on the response data
-                            closestRow.find('textarea[name="LDP[' + ldpID + '][' + {{ $appraisalId }} + '][learning_need]"]').val(ldp.learning_need);
-                            closestRow.find('textarea[name="LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]"]').val(ldp.methodology);
-                        });
+function processBatchChanges(field, ldpID, fieldName, fieldValue) {
+    // Send the updated field value to the server via Ajax
+    $.ajax({
+        url: '{{ route('autosaveLDPField') }}', // Replace with your route URL
+        method: 'POST', // Use POST method to send data
+        data: {
+            ldpID: ldpID,
+            fieldName: fieldName,
+            fieldValue: fieldValue,
+            appraisalId: {{ $appraisalId }}
+        },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function(response) {
+            // Handle the success response if needed
 
-                        // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveLDPField') }}');
+            response.ldpData.forEach(function(ldp, index) {
+                var ldpID = ldp.development_plan_id;
+                console.log(ldpID);
+                var closestRow = field.closest('tr');
+                console.log(closestRow);
 
-                        // Handle errors if any
-                        console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
-                    }
-                });
+                closestRow.attr('data-ldp-id', ldpID);
+
+                // Change the name attribute of the textareas if needed
+                closestRow.find('textarea[name="LDP[0][' +
+                    {{ $appraisalId }} + '][learning_need]"]').attr(
+                    'name', 'LDP[' + ldpID + '][' +
+                    {{ $appraisalId }} + '][learning_need]');
+                closestRow.find('textarea[name="LDP[0][' +
+                    {{ $appraisalId }} + '][methodology]"]').attr(
+                    'name', 'LDP[' + ldpID + '][' +
+                    {{ $appraisalId }} + '][methodology]');
+
+                // Update the content of the closest row based on the response data
+                closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                    {{ $appraisalId }} + '][learning_need]"]').val(ldp
+                    .learning_need);
+                closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                    {{ $appraisalId }} + '][methodology]"]').val(ldp
+                    .methodology);
             });
+
+            // Handle the success response if needed
+            console.log('Autosave successful.');
+            console.log('FieldName Acquired: ' + fieldName);
+        },
+        error: function(xhr, status, error) {
+            console.log('{{ route('autosaveLDPField') }}');
+
+            // Handle errors if any
+            console.error('Autosave failed:', error);
+            console.log('FieldName Acquired: ' + fieldName);
+        }
+    });
+}
+
 
             $('#jic_table_body').on('change', '.autosave-field', function() {
                 var field = $(this);
                 var jicID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
                 var fieldValue = field.val();
+                var fieldQuestion = field.closest("tr").find("textarea").html();
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -1025,6 +1069,7 @@
                         jicID: jicID,
                         fieldName: fieldName,
                         fieldValue: fieldValue,
+                        fieldQuestion: fieldQuestion,
                         appraisalId: {{ $appraisalId }}
                     },
                     headers: {
@@ -1362,6 +1407,7 @@
                             var kraID = kra.kra_id;
 
                             var row = $('<tr>').addClass('align-middle');
+                            
                             $('<input>').attr({
                                 type: 'hidden',
                                 name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
@@ -1380,7 +1426,7 @@
                             $('<td>').addClass('td-textarea').append(
                                 createTextArea(
                                     'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_weight]',
+                                    '][KRA_kra_weight]',
                                     kra.kra_weight,
                                     true
                                 )
@@ -1712,7 +1758,7 @@
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
-                $('<textarea>').addClass('textarea form-control autosave-field').attr({
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr({
                     name: name,
                     readonly: isReadonly
                 }).prop('required', true).val(value)
@@ -1771,7 +1817,7 @@
                 $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                     nextKRAID +
                     '][' +
-                    {{ $appraisalId }} + '][KRA_weight]').prop('readonly', true)
+                    {{ $appraisalId }} + '][KRA_kra_weight]').prop('readonly', true)
             ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
@@ -1851,21 +1897,21 @@
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
                     false)
@@ -1998,5 +2044,40 @@
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
         }
+/*
+        function formChecker() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.SEFormChecker') }}',
+                type: 'POST',
+                data: {
+                    appraisalId: appraisalId
+                },
+                success: function(response) {
+                    if (response.form_submitted) {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        $('#confirmation-alert').addClass('d-none');
+                        $('#submit-btn').text('View');
+                    } 
+                },
+                error: function(xhr, status, error) {
+                    error: function(xhr) {
+                        if (xhr.responseText) {
+                            console.log('Error: ' + xhr
+                                .responseText);
+                        } else {
+                            console.log('An error occurred.');
+                        }
+                    }
+                }
+            });
+        }
+        */
     </script>
 @endsection

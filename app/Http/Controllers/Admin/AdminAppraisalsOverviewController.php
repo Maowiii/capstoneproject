@@ -173,7 +173,9 @@ class AdminAppraisalsOverviewController extends Controller
       $appraisals = Appraisals::where('employee_id', $employeeID)
         ->with(['employee', 'signatures', 'evaluator'])
         ->get();
-    } 
+    }
+
+    return response()->json(['success' => true, 'appraisals' => $appraisals]);
   }
 
   public function loadSignature(Request $request)
