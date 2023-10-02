@@ -64,7 +64,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="ISModal-label">Choose the Internal Customer:</h1>
+                    <h1 class="modal-title fs-5" id="ISModal-label">Choose 2 Internal Customers:</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -97,7 +97,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="ISModal-label">Choose the Internal Customer:</h1>
+                    <h1 class="modal-title fs-5" id="ISModal-label">Choose 2 Internal Customers:</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -122,6 +122,7 @@
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function() {
             loadTableData();
@@ -149,13 +150,9 @@
                         var appraisals = response.appraisals;
 
                         appraisees.forEach(function(appraisee) {
-                            // Get the employee's employee ID from the appraisee data
-                            var employeeId = appraisee.employee_id;
-
-                            var newRow = $('<tr>').attr('data-employee-id', appraisee.employee_id)
-                                .append(
-                                    $('<td>').text(appraisee.first_name + ' ' + appraisee.last_name)
-                                );
+                            var newRow = $('<tr>').attr('id', appraisee.employee_id).append(
+                                $('<td>').text(appraisee.first_name + ' ' + appraisee.last_name)
+                            );
 
                             var employeeAppraisals = appraisals.filter(function(appraisal) {
                                 return appraisal.employee_id === appraisee.employee_id;
@@ -183,25 +180,21 @@
                                             .attr('data-bs-target', '#ISModal1')
                                             .attr('data-bs-toggle', 'modal')
                                             .attr('data-appraisal-id', appraisal
-                                                .appraisal_id) // Use appraisee.employee_id
+                                                .appraisal_id)
                                             .attr('data-employee-id', appraisee
-                                                .employee_id) // Use appraisee.employee_id
-                                            .text('Choose IC1')
-                                            .on('click', function() {
-                                                // Get the employee_id from the clicked link
-                                                var employeeId = $(this).data(
-                                                    'employee-id');
+                                                .employee_id)
+                                            .text('Choose IC1').on('click', function() {
+                                                // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
+                                                var employeeId = $(this).data(
+                                                    'employee-id');
                                                 // Set the data attribute for the modal
-                                                $('#ISModal1').attr('data-employee-id',
-                                                    employeeId).attr(
-                                                    'data-appraisal-id',
+                                                $('#ISModal1').attr('data-appraisal-id',
                                                     appraisalId);
 
-                                                // Load eligible employees for IC1, excluding the current appraisee
-                                                loadEmployeeData(employeeId, appraisee
-                                                    .employee_id);
+                                                loadEmployeeData(employeeId);
+
                                             });
                                     } else {
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
@@ -210,11 +203,6 @@
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
-                                        console.log(appraisal.evaluator_id);
-                                        console.log(appraisal.evaluator.employee_id);
-
-                                        loadEmployeeData(appraisee.employee_id, appraisal
-                                            .evaluator_id);
                                     }
                                 } else if (appraisal.evaluation_type ===
                                     'internal customer 2') {
@@ -223,26 +211,27 @@
                                                 'btn ic2 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal2')
                                             .attr('data-bs-toggle', 'modal')
-                                            .attr('data-appraisal-id', appraisal
-                                                .appraisal_id) // Use appraisee.employee_id
+                                            .attr('data-appraisal-id', appraisal.appraisal_id)
                                             .attr('data-employee-id', appraisee
-                                                .employee_id) // Use appraisee.employee_id
-                                            .text('Choose IC2')
-                                            .on('click', function() {
-                                                // Get the employee_id from the clicked link
-                                                var employeeId = $(this).data(
-                                                    'employee-id');
+                                                .employee_id)
+                                            // Include the appraisal ID here
+                                            .text('Choose IC2').on('click', function() {
+                                                console.log('waz clicked');
+                                                // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
-                                                // Set the data attribute for the modal
-                                                $('#ISModal2').attr('data-employee-id',
-                                                    employeeId).attr(
-                                                    'data-appraisal-id',
-                                                    appraisalId);
 
-                                                // Load eligible employees for IC2, excluding the current appraisee
-                                                loadEmployeeData(employeeId, appraisee
-                                                    .employee_id);
+                                                var employeeId = $(this).data(
+                                                    'employee-id');
+                                                console.log(appraisalId);
+
+                                                // Set the data attribute for the modal
+                                                $('#ISModal2').attr('data-appraisal-id',
+                                                    appraisalId);
+                                                console.log(appraisalId);
+
+                                                loadEmployeeData(employeeId);
+
                                             });
                                     } else {
                                         ic2Link = $('<a>').addClass('btn btn-outline-primary')
@@ -251,10 +240,6 @@
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
-                                        console.log(appraisal.evaluator_id);
-
-                                        loadEmployeeData(appraisee.employee_id, appraisal
-                                            .evaluator_id);
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
@@ -288,6 +273,7 @@
             });
         }
 
+
         function toggleRowCheckbox(rowId) {
             $('#' + rowId).toggleClass('selected');
         }
@@ -301,10 +287,13 @@
 
         var selectedRows = [];
 
-        function loadEmployeeData(excludedEmployeeId, currentAppraiseeId) {
+        function loadEmployeeData(excludedEmployeeId) {
             $.ajax({
                 url: '{{ route('getEmployeesData') }}',
                 type: 'GET',
+                data: {
+                    excludedEmployeeId: excludedEmployeeId
+                }, // Use an object
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -313,44 +302,22 @@
                         $('.emp_modal').empty();
 
                         var employees = response.employees;
-                        var selectedIC1Ids = []; // Array to store selected IC1 employee IDs
-                        var selectedIC2Ids = []; // Array to store selected IC2 employee IDs
-
-                        // Find selected IC1 employee IDs
-                        if ($('#ISModal1').length > 0) {
-                            var ic1Rows = $('#ISModal1 .emp_modal tr');
-                            ic1Rows.each(function() {
-                                var ic1EmployeeId = $(this).find('input[type="checkbox"]').val();
-                                selectedIC1Ids.push(ic1EmployeeId);
-                            });
-                        }
-
-                        // Find selected IC2 employee IDs
-                        if ($('#ISModal2').length > 0) {
-                            var ic2Rows = $('#ISModal2 .emp_modal tr');
-                            ic2Rows.each(function() {
-                                var ic2EmployeeId = $(this).find('input[type="checkbox"]').val();
-                                selectedIC2Ids.push(ic2EmployeeId);
-                            });
-                        }
 
                         for (var i = 0; i < employees.length; i++) {
                             var employee = employees[i];
-
                             // Check if the employee_id matches the excludedEmployeeId and is not the current appraisee
-                            if (employee.employee_id !== excludedEmployeeId && employee.employee_id !==
-                                currentAppraiseeId) {
+                            if (employee.employee_id !== excludedEmployeeId && response.evaluatorId !== employee
+                                            .employee_id) {
                                 // Create and append the row if there is no match
+                                
                                 var newRow = $('<tr>').addClass('row-checkbox').append(
                                     $('<div>').attr('id', 'checkboxes').append(
                                         $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr(
-                                            'value',
-                                            employee.employee_id).prop('disabled',
-                                            false), // Initially, set it as enabled
+                                            'value', employee.employee_id).prop('disabled',
+                                            false),
                                         $('<label>').addClass(
                                             'chooseIC text-center d-flex justify-content-center').attr(
-                                            'for', employee
-                                            .employee_id).append(
+                                            'for', employee.employee_id).append(
                                             $('<td>').text(employee.first_name + ' ' + employee.last_name),
                                         ),
                                     ),
@@ -362,32 +329,17 @@
                                     var isChecked = checkbox.prop('checked');
                                     var checkedCount = $('input[type="checkbox"]:checked').length;
 
-                                    if (isChecked || checkedCount < 1) {
+                                    if (isChecked || checkedCount < 2) {
                                         checkbox.prop('checked', !isChecked);
                                         $(this).toggleClass('row-selected', !isChecked);
 
                                         // Set the employee ID in the modal title
                                         $('#ISModal1 .modal-title').data('employee-id', employee
                                             .employee_id);
-                                        // Set the employee ID in the modal title of ISModal2 if needed
-                                        $('#ISModal2 .modal-title').data('employee-id', employee
-                                            .employee_id);
 
                                         updateSelectedRows();
                                     }
                                 });
-
-                                // Disable the checkbox in IC1Modal if already selected in IC2Modal
-                                if ($.inArray(employee.employee_id, selectedIC2Ids) !== -1) {
-                                    newRow.find('input[type="checkbox"]').prop('disabled', true);
-                                    newRow.addClass('disabled-row');
-                                }
-
-                                // Disable the checkbox in IC2Modal if already selected in IC1Modal
-                                if ($.inArray(employee.employee_id, selectedIC1Ids) !== -1) {
-                                    newRow.find('input[type="checkbox"]').prop('disabled', true);
-                                    newRow.addClass('disabled-row');
-                                }
 
                                 $('.emp_modal').append(newRow);
                             }
@@ -409,6 +361,7 @@
                 selectedRows.push(row);
             });
         }
+
         $(document).on('click', '#ISModal1 .btn-primary', function() {
             $('#employee_table_body').empty();
             $('#ISModal1 .search-box').hide();
@@ -425,16 +378,27 @@
             selectedRows = [];
         });
 
-        // Event listener for the "Submit" button in ISModal1
+        // Variables to keep track of selected employees
+        var selectedEmployees = [];
+        var selectedICs = []; // To store selected employee IDs
+
+        // Event listener for the "Submit" button in ISModal1 and ISModal2
         $('#ISModal1 .btn-primary, #ISModal2 .btn-primary').on('click', function() {
-            // Collect selected ICs
-            var selectedICs = [];
+            // Check which modal is active
+            activeModal = $(this).closest('.modal');
+
+            // Reset the selected employees and employee IDs arrays
+            selectedEmployees = [];
+            selectedICs = [];
+
+            // Collect selected ICs and employee names
             $('input[name="ic"]:checked').each(function() {
                 selectedICs.push($(this).val());
+                selectedEmployees.push($(this).data('employee-name')); // Capture selected employee names
             });
 
             // Get the employee ID from the modal title (assuming you have set it)
-            var appraisalIdToUpdate = $(this).closest('.modal').data('appraisal-id');
+            var appraisalIdToUpdate = activeModal.data('appraisal-id');
 
             $.ajax({
                 url: '{{ route('assignInternalCustomer') }}',
@@ -450,8 +414,21 @@
                     if (response.success) {
                         // Assignment successful, you can display a success message if needed
                         console.log('Internal Customer(s) assigned successfully.');
-                        // Close the modal
-                        $('#ISModal1').modal('hide');
+
+                        // Check if the active modal is ISModal1 and two names are selected
+                        if (activeModal.attr('id') === 'ISModal1' && selectedEmployees.length === 2) {
+                            // Update ISModal1 with the first selected employee's name
+                            $('#ISModal1 .modal-body').html('<p>Selected Employee in ISModal1: ' +
+                                selectedEmployees[0] + '</p>');
+                        } else if (activeModal.attr('id') === 'ISModal2' && selectedEmployees.length ===
+                            2) {
+                            // Update ISModal2 with the second selected employee's name
+                            $('#ISModal2 .modal-body').html('<p>Selected Employee in ISModal2: ' +
+                                selectedEmployees[1] + '</p>');
+
+                        }
+                        // Close the active modal
+                        activeModal.modal('hide');
                         refreshPage();
                     } else {
                         // Handle errors, e.g., display an error message
@@ -464,6 +441,5 @@
                 }
             });
         });
-        
     </script>
 @endsection

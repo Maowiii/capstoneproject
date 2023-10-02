@@ -289,49 +289,49 @@ class SelfEvaluationController extends Controller
     }
 
     return Validator::make($request->all(), [
-      'appraisalID' => 'required|numeric',
+          'appraisalID' => 'required|numeric',
 
-      'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
+          'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
 
-      'SID' => 'required|array',
-      'SID.*' => 'required|array',
-      'SID.*.*.SIDanswer' => 'required',
+          'SID' => 'required|array',
+          'SID.*' => 'required|array',
+          'SID.*.*.SIDanswer' => 'required',
 
-      'SR' => 'required|array',
-      'SR.*' => 'required|array',
-      'SR.*.*.SRanswer' => 'required',
+          'SR' => 'required|array',
+          'SR.*' => 'required|array',
+          'SR.*.*.SRanswer' => 'required',
 
-      'S' => 'required|array',
-      'S.*' => 'required|array',
-      'S.*.*.Sanswer' => 'required',
+          'S' => 'required|array',
+          'S.*' => 'required|array',
+          'S.*.*.Sanswer' => 'required',
 
-      'KRA' => 'required|array',
-      'KRA.*' => 'required|array',
-      'KRA.*.*.kraID' => 'required|numeric',
-      'KRA.*.*.KRA_kra' => 'required|string',
-      'KRA.*.*.KRA_weight' => 'required|numeric',
-      'KRA.*.*.KRA_objective' => 'required|string',
-      'KRA.*.*.KRA_performance_indicator' => 'required|string',
-      'KRA.*.*.KRA_actual_result' => 'required|string',
-      'KRA.*.*.KRA_performance_level' => 'required|numeric',
-      'KRA.*.*.KRA_weighted_total' => 'required|numeric',
+          'KRA' => 'required|array',
+          'KRA.*' => 'required|array',
+          'KRA.*.*.kraID' => 'required|numeric',
+          'KRA.*.*.KRA_kra' => 'required|string',
+          'KRA.*.*.KRA_weight' => 'required|numeric',
+          'KRA.*.*.KRA_objective' => 'required|string',
+          'KRA.*.*.KRA_performance_indicator' => 'required|string',
+          'KRA.*.*.KRA_actual_result' => 'required|string',
+          'KRA.*.*.KRA_performance_level' => 'required|numeric',
+          'KRA.*.*.KRA_weighted_total' => 'required|numeric',
 
-            'WPA' => 'required|array',
-            'WPA.*' => 'required|array',
-            'WPA.*.*.continue_doing' => 'required|string',
-            'WPA.*.*.stop_doing' => 'required|string',
-            'WPA.*.*.start_doing' => 'required|string',
+          'WPA' => 'required|array',
+          'WPA.*' => 'required|array',
+          'WPA.*.*.continue_doing' => 'required|string',
+          'WPA.*.*.stop_doing' => 'required|string',
+          'WPA.*.*.start_doing' => 'required|string',
 
-            'LDP' => 'required|array',
-            'LDP.*' => 'required|array',
-            'LDP.*.*.learning_need' => 'required|string',
-            'LDP.*.*.methodology' => 'required|string',
+          'LDP' => 'required|array',
+          'LDP.*' => 'required|array',
+          'LDP.*.*.learning_need' => 'required|string',
+          'LDP.*.*.methodology' => 'required|string',
 
-            'feedback' => 'required|array',
-            'feedback.*' => 'required|array',
-            'feedback.*.*.question' => 'required|string',
-            'feedback.*.*.answer' => 'required|numeric',
-            'feedback.*.*.comments' => 'required|string',
+          'feedback' => 'required|array',
+          'feedback.*' => 'required|array',
+          'feedback.*.*.question' => 'required|string',
+          'feedback.*.*.answer' => 'required|numeric',
+          'feedback.*.*.comments' => 'required|string',
         ], [
             // Custom error messages
         ]);
@@ -389,71 +389,70 @@ class SelfEvaluationController extends Controller
     // }
 
     public function autosaveKRAField(Request $request)
-{
-    // Retrieve the data sent from the frontend
-    $kraID = $request->input('kraID');
-    $fieldName = $request->input('fieldName');
-    $appraisalId = $request->input('appraisalId');
+    {
+        // Retrieve the data sent from the frontend
+        $kraID = $request->input('kraID');
+        $fieldName = $request->input('fieldName');
+        $appraisalId = $request->input('appraisalId');
 
-    $fieldNameParts = explode('_', $fieldName); // Split into parts
-    array_shift($fieldNameParts); // Remove the first part "KRA"
-    $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
+        $fieldNameParts = explode('_', $fieldName); // Split into parts
+        array_shift($fieldNameParts); // Remove the first part "KRA"
+        $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
 
-    $fieldValue = $request->input('fieldValue');
+        $fieldValue = $request->input('fieldValue');
 
-    Log::info($newFieldName);
-    Log::info($fieldValue);
+        Log::info($newFieldName);
+        Log::info($fieldValue);
 
-    try {
-        // Find the KRA by ID
-        $kra = KRA::find($kraID);
+        try {
+            // Find the KRA by ID
+            $kra = KRA::find($kraID);
 
-        if (!$kra) {
-            // Create a new KRA record with the provided ID and field value
-            if($newFieldName === "performance_level"){
-                  $kra = new AppraisalAnswers([
+            if (!$kra) {
+                // Create a new KRA record with the provided ID and field value
+                if($newFieldName === "performance_level"){
+                      $kra = new AppraisalAnswers([
+                        'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
+                        'appraisal_id' => $appraisalId,
+                        'score' => $fieldValue
+                    ]);
+                }else{
+                  $kra = new KRA([
                     'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
                     'appraisal_id' => $appraisalId,
-                    'score' => $fieldValue
+                    'kra_order' => $kraID,
+                    $newFieldName => $fieldValue
                 ]);
-            }else{
-              $kra = new KRA([
-                'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-                'appraisal_id' => $appraisalId,
-                'kra_order' => $kraID,
-                $newFieldName => $fieldValue
-            ]);
+                }
+
+                $kra->save();
+
+                return response()->json(['message' => 'KRA created and autosave successful']);
             }
 
-            $kra->save();
+            // Update the specific field value
+            if ($newFieldName === "performance_level") {
+              $kra = new AppraisalAnswers([
+                'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
+                'appraisal_id' => $appraisalId,
+                'score' => $fieldValue
+            ]);
+            }else{
+              $kra->setAttribute($newFieldName, $fieldValue);
+              $kra->save();
+            }
+            
 
-            return response()->json(['message' => 'KRA created and autosave successful']);
+            return response()->json(['message' => 'Autosave successful']);
+        } catch (\Exception $e) {
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+            // Handle errors if any
+            return response()->json(['error' => 'Autosave failed'], 500);
         }
-
-        // Update the specific field value
-        if ($newFieldName === "performance_level") {
-          $kra = new AppraisalAnswers([
-            'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-            'appraisal_id' => $appraisalId,
-            'score' => $fieldValue
-        ]);
-        }else{
-          $kra->setAttribute($newFieldName, $fieldValue);
-          $kra->save();
-        }
-        
-
-        return response()->json(['message' => 'Autosave successful']);
-    } catch (\Exception $e) {
-        Log::error('Exception Message: ' . $e->getMessage());
-        Log::error('Exception Line: ' . $e->getLine());
-        Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-        // Handle errors if any
-        return response()->json(['error' => 'Autosave failed'], 500);
     }
-}
-
 
     public function autosaveWPPField(Request $request)
     {
@@ -556,7 +555,7 @@ class SelfEvaluationController extends Controller
         try {
             // Find the existing record based on the criteria
             $jic = JIC::where([
-                'job_incumbent_id' => $jicID,
+                'question_order' => $jicID,
                 'appraisal_id' => $appraisalId,
             ])->first();
 

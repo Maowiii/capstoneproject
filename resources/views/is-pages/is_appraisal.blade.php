@@ -455,7 +455,7 @@
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
-            <table class='table table-bordered'>
+            <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
                         <th class='medium-column'>Question</th>
@@ -463,114 +463,112 @@
                         <th class='large-column'>Comments</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id='jic_table_body'>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I agree with my performance rating." name="feedback[1][question]" readonly></textarea>
+                            <textarea class='textarea border-0' value="I agree with my performance rating."
+                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[1][comment]" readonly></textarea>
-
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea'
+                            <textarea class='textarea border-0'
                                 value="My future work objectives and learning opportunities have been set for the
                             next review period."
-                                name="feedback[2][question]" readonly></textarea>
+                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[2][comment]" readonly></textarea>
-
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review discussion."
-                                name="feedback[3][question]" readonly></textarea>
-
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio1" value="1">
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio2" value="0">
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[3][comment]" readonly></textarea>
-
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review process." name="feedback[4][question]"
-                                readonly></textarea>
+                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
+                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[4][comment]" readonly></textarea>
-
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea' value="I am satisfied with the performance review process."
+                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
-            <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
+            </div>
         </div>
     </form>
 
     <script>
         // Get the <textarea> elements by their names
-        const textareaElement1 = document.querySelector('[name="feedback[1][question]"]');
-        const textareaElement2 = document.querySelector('[name="feedback[2][question]"]');
-        const textareaElement3 = document.querySelector('[name="feedback[3][question]"]');
-        const textareaElement4 = document.querySelector('[name="feedback[4][question]"]');
+        const textareaElement1 = document.querySelector('[name="feedback[1][{{ $appraisalId }}][question]"]');
+        const textareaElement2 = document.querySelector('[name="feedback[2][{{ $appraisalId }}][question]"]');
+        const textareaElement3 = document.querySelector('[name="feedback[3][{{ $appraisalId }}][question]"]');
+        const textareaElement4 = document.querySelector('[name="feedback[4][{{ $appraisalId }}][question]"]');
 
         // Set the values you want to display
         const valueToDisplay1 =
@@ -766,7 +764,7 @@
 
 
             ////// AUTOSAVE //////////
-             $('#KRA_table_body').on('change', '.autosave-field', function() {
+            $('#KRA_table_body').on('change', '.autosave-field', function() {
                 console.log('I was a KRA');
                 var field = $(this);
                 var kraID = field.attr('name').match(/\d+/)[0];
@@ -916,6 +914,42 @@
                                 .methodology);
                         });
 
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#jic_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var jicID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+                var fieldQuestion = field.closest("tr").find("textarea").html();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveJICField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        jicID: jicID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        fieldQuestion: fieldQuestion,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
                         // Handle the success response if needed
                         console.log('Autosave successful.');
                         console.log('FieldName Acquired: ' + fieldName);
@@ -1187,10 +1221,12 @@
                                     )
                                 ).appendTo(row);
 
-                                var weightSelect = $('<select>').addClass('form-select autosave-field').attr(
+                                var weightSelect = $('<select>').addClass('form-select autosave-field')
+                                    .attr(
                                         'aria-label',
                                         'Default select example').attr('readonly', false).attr('name',
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra_weight]')
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_kra_weight]')
                                     .appendTo($('<td>'))
                                     .appendTo(row);
                                 $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
@@ -1394,6 +1430,69 @@
                             });
                         }
                     }
+
+                    // Loop through the jicData and populate the table rows with data
+                    data.jicData.forEach(function(jic, index) {
+                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="0"]');
+
+                        if (jic.answer === 1) {
+                            answerRadioYes.checked = true;
+                        } else if (jic.answer === 0) {
+                            answerRadioNo.checked = true;
+                        }
+
+                        $(answerRadioYes).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioNo).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioYes).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        $(answerRadioNo).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
+                            1) + '][{{ $appraisalId }}][comments]"]');
+                        commentTextarea.value = jic.comments;
+
+                        // Attach input event handlers for validation
+                        $(commentTextarea).on('input', function() {
+                            $(this).removeClass('border border-danger');
+                            $(this).removeClass('is-invalid');
+                        }).on('invalid', function() {
+                            $(this).addClass('is-invalid');
+                            $(this).attr('placeholder', 'Please provide a valid input');
+                        }).on('blur', function() {
+                            if ($(this).val().trim() === '') {
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+
+                        answerRadioYes.required = true;
+                        answerRadioNo.required = true;
+                        commentTextarea.required = true;
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -1434,18 +1533,18 @@
             $('<input>').attr({
                 type: 'hidden',
                 name: 'KRA[' +
-                kraID +
+                    kraID +
                     '][' + {{ $appraisalId }} + '][kraID]',
                 value: kraID,
             }).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
-                                        '',
-                                        false
-                                    )
-                                ).appendTo(row);
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                    '',
+                    false
+                )
+            ).appendTo(row);
 
             var weightSelect = $('<select>').addClass('form-select autosave-field').attr('aria-label',
                     'Default select example').attr('readonly', false).attr('name',
@@ -1461,22 +1560,22 @@
             }
 
             $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_objective]',
-                                        '',
-                                        false
-                                    )
-                                ).appendTo(row);
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_objective]',
+                    '',
+                    false
+                )
+            ).appendTo(row);
 
-                                $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_performance_indicator]',
-                                        '',
-                                        false
-                                    )
-                                ).appendTo(row);
+            $('<td>').addClass('td-textarea').append(
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_performance_indicator]',
+                    '',
+                    false
+                )
+            ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
                 $('<textarea>').addClass('textarea').prop('readonly', true)
@@ -1490,7 +1589,7 @@
                 var input = $('<input>').prop('readonly', true).attr({
                     type: 'radio',
                     name: 'KRA[' +
-                    kraID +
+                        kraID +
                         '][' + {{ $appraisalId }} + '][KRA_answer]',
                     class: 'form-check-input',
                     value: i
@@ -1501,13 +1600,13 @@
             }
 
             $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_weighted_total]',
-                                        '',
-                                        true
-                                    )
-                                ).appendTo(row);
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_weighted_total]',
+                    '',
+                    true
+                )
+            ).appendTo(row);
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger kra-delete-btn align-middle').attr('type', 'button').text(
