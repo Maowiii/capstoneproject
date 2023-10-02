@@ -10,7 +10,6 @@ use App\Models\Appraisals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -268,5 +267,4 @@ class EvaluationYearController extends Controller
       return response()->json(['success' => false, 'error' => 'Evaluation year not found.']);
     }
   }
-
 }
