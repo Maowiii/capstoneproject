@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
+use App\Models\EvalYear;
 use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
@@ -147,7 +148,7 @@ class SelfEvaluationController extends Controller
       } elseif ($appraisalType === 'is evaluation') {
         $evaluator = Employees::find($appraisal->evaluator_id);
         $appraisal_Id = $appraisal->appraisal_id;
-        return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+        return view('is-pages.is_appraisal', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
       }
       break;
     }
@@ -211,6 +212,7 @@ class SelfEvaluationController extends Controller
 
     return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
   }
+
   public function deleteKRA(Request $request)
   {
     if (!session()->has('account_id')) {
@@ -243,39 +245,39 @@ class SelfEvaluationController extends Controller
       // return redirect()->back()->withErrors($validator)->withInput();
     }
 
-        DB::beginTransaction();
-        try {
-            $this->createSID($request);
-            $this->createSR($request);
-            $this->createS($request);
-            $this->createKRA($request);
-            $this->createWPA($request);
-            $this->createLDP($request);
-            $this->createJIC($request);
+    DB::beginTransaction();
+    try {
+      $this->createSID($request);
+      $this->createSR($request);
+      $this->createS($request);
+      $this->createKRA($request);
+      $this->createWPA($request);
+      $this->createLDP($request);
+      $this->createJIC($request);
 
-            $this->createSign($request);
+      $this->createSign($request);
 
-            $appraisalID = $request->input('appraisalID');
-            $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
-                ->first();
+      $appraisalID = $request->input('appraisalID');
+      $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
+        ->first();
 
-            $date = Carbon::now();
+      $date = Carbon::now();
 
-            $existingRecord->update([
-                'date_submitted' => $date,
-            ]);
+      $existingRecord->update([
+        'date_submitted' => $date,
+      ]);
 
-            DB::commit();
-            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
-        } catch (\Exception $e) {
-            DB::rollBack();
+      DB::commit();
+      return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
+    } catch (\Exception $e) {
+      DB::rollBack();
 
-            // Log the exception
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      // Log the exception
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-            // Display exception details using dd()
-            dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
+      // Display exception details using dd()
+      dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
 
       return redirect()->back()->with('error', 'An error occurred while saving data.');
     }
@@ -289,303 +291,306 @@ class SelfEvaluationController extends Controller
     }
 
     return Validator::make($request->all(), [
-          'appraisalID' => 'required|numeric',
+      'appraisalID' => 'required|numeric',
 
-          'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
+      'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
 
-          'SID' => 'required|array',
-          'SID.*' => 'required|array',
-          'SID.*.*.SIDanswer' => 'required',
+      'SID' => 'required|array',
+      'SID.*' => 'required|array',
+      'SID.*.*.SIDanswer' => 'required',
 
-          'SR' => 'required|array',
-          'SR.*' => 'required|array',
-          'SR.*.*.SRanswer' => 'required',
+      'SR' => 'required|array',
+      'SR.*' => 'required|array',
+      'SR.*.*.SRanswer' => 'required',
 
-          'S' => 'required|array',
-          'S.*' => 'required|array',
-          'S.*.*.Sanswer' => 'required',
+      'S' => 'required|array',
+      'S.*' => 'required|array',
+      'S.*.*.Sanswer' => 'required',
 
-          'KRA' => 'required|array',
-          'KRA.*' => 'required|array',
-          'KRA.*.*.kraID' => 'required|numeric',
-          'KRA.*.*.KRA_kra' => 'required|string',
-          'KRA.*.*.KRA_weight' => 'required|numeric',
-          'KRA.*.*.KRA_objective' => 'required|string',
-          'KRA.*.*.KRA_performance_indicator' => 'required|string',
-          'KRA.*.*.KRA_actual_result' => 'required|string',
-          'KRA.*.*.KRA_performance_level' => 'required|numeric',
-          'KRA.*.*.KRA_weighted_total' => 'required|numeric',
+      'KRA' => 'required|array',
+      'KRA.*' => 'required|array',
+      'KRA.*.*.kraID' => 'required|numeric',
+      'KRA.*.*.KRA_kra' => 'required|string',
+      'KRA.*.*.KRA_weight' => 'required|numeric',
+      'KRA.*.*.KRA_objective' => 'required|string',
+      'KRA.*.*.KRA_performance_indicator' => 'required|string',
+      'KRA.*.*.KRA_actual_result' => 'required|string',
+      'KRA.*.*.KRA_performance_level' => 'required|numeric',
+      'KRA.*.*.KRA_weighted_total' => 'required|numeric',
 
-          'WPA' => 'required|array',
-          'WPA.*' => 'required|array',
-          'WPA.*.*.continue_doing' => 'required|string',
-          'WPA.*.*.stop_doing' => 'required|string',
-          'WPA.*.*.start_doing' => 'required|string',
+      'WPA' => 'required|array',
+      'WPA.*' => 'required|array',
+      'WPA.*.*.continue_doing' => 'required|string',
+      'WPA.*.*.stop_doing' => 'required|string',
+      'WPA.*.*.start_doing' => 'required|string',
 
-          'LDP' => 'required|array',
-          'LDP.*' => 'required|array',
-          'LDP.*.*.learning_need' => 'required|string',
-          'LDP.*.*.methodology' => 'required|string',
+      'LDP' => 'required|array',
+      'LDP.*' => 'required|array',
+      'LDP.*.*.learning_need' => 'required|string',
+      'LDP.*.*.methodology' => 'required|string',
 
-          'feedback' => 'required|array',
-          'feedback.*' => 'required|array',
-          'feedback.*.*.question' => 'required|string',
-          'feedback.*.*.answer' => 'required|numeric',
-          'feedback.*.*.comments' => 'required|string',
-        ], [
-            // Custom error messages
-        ]);
-    }
+      'feedback' => 'required|array',
+      'feedback.*' => 'required|array',
+      'feedback.*.*.question' => 'required|string',
+      'feedback.*.*.answer' => 'required|numeric',
+      'feedback.*.*.comments' => 'required|string',
+    ], [
+      // Custom error messages
+    ]);
+  }
 
-    // public function autosaveKRAField(Request $request)
-    // {
-    //     // Retrieve the data sent from the frontend
-    //     $kraID = $request->input('kraID');
-    //     $fieldName = $request->input('fieldName');
-    //     $appraisalId = $request->input('appraisalId');
-        
-    //     Log::info('FN'.$fieldName);
+  public function autosaveKRAField(Request $request)
+  {
+      // Retrieve the data sent from the frontend
+      $kraID = $request->input('kraID');
+      $fieldName = $request->input('fieldName');
+      $appraisalId = $request->input('appraisalId');
 
-    //     $fieldNameParts = explode('_', $fieldName); // Split into parts
-    //     array_shift($fieldNameParts); // Remove the first part "KRA"
-    //     $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
+      Log::info('FN'.$fieldName);
 
-    //     $fieldValue = $request->input('fieldValue');
+      $fieldNameParts = explode('_', $fieldName); // Split into parts
+      array_shift($fieldNameParts); // Remove the first part "KRA"
+      $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
 
-    //     Log::info($newFieldName);
-    //     Log::info($fieldValue);
+      $fieldValue = $request->input('fieldValue');
 
-    //     try {
-    //         // Find the KRA by ID
-    //         $kra = KRA::find($kraID);
+      Log::info($newFieldName);
+      Log::info($fieldValue);
 
-    //         if (!$kra) {
-    //           // Create a new KRA record with the provided ID and field value
-    //           $kra = new KRA([
-    //               'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-    //               'appraisal_id' => $appraisalId,
-    //               'kra_order' => $kraID,
-    //               $fieldName => $fieldValue
-    //           ]);
-  
-    //           $kra->save();
-  
-    //           return response()->json(['message' => 'KRA created and autosave successful']);
-    //       }
-  
-    //       // Update the specific field value
-    //       $kra->$newFieldName = $fieldValue;
-    //       $kra->save();
-  
-    //       return response()->json(['message' => 'Autosave successful']);
-    //     } catch (\Exception $e) {
-    //         Log::error('Exception Message: ' . $e->getMessage());
-    //         Log::error('Exception Line: ' . $e->getLine());
-    //         Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      try {
+          // Find the KRA by ID
+          $kra = KRA::find($kraID);
 
-    //         // Handle errors if any
-    //         return response()->json(['error' => 'Autosave failed'], 500);
-    //     }
-    // }
-
-    public function autosaveKRAField(Request $request)
-    {
-        // Retrieve the data sent from the frontend
-        $kraID = $request->input('kraID');
-        $fieldName = $request->input('fieldName');
-        $appraisalId = $request->input('appraisalId');
-
-        $fieldNameParts = explode('_', $fieldName); // Split into parts
-        array_shift($fieldNameParts); // Remove the first part "KRA"
-        $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
-
-        $fieldValue = $request->input('fieldValue');
-
-        Log::info($newFieldName);
-        Log::info($fieldValue);
-
-        try {
-            // Find the KRA by ID
-            $kra = KRA::find($kraID);
-
-            if (!$kra) {
-                // Create a new KRA record with the provided ID and field value
-                if($newFieldName === "performance_level"){
-                      $kra = new AppraisalAnswers([
-                        'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-                        'appraisal_id' => $appraisalId,
-                        'score' => $fieldValue
-                    ]);
-                }else{
-                  $kra = new KRA([
-                    'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-                    'appraisal_id' => $appraisalId,
-                    'kra_order' => $kraID,
-                    $newFieldName => $fieldValue
-                ]);
-                }
-
-                $kra->save();
-
-                return response()->json(['message' => 'KRA created and autosave successful']);
-            }
-
-            // Update the specific field value
-            if ($newFieldName === "performance_level") {
-              $kra = new AppraisalAnswers([
+          if (!$kra) {
+            // Create a new KRA record with the provided ID and field value
+            $kra = new KRA([
                 'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
                 'appraisal_id' => $appraisalId,
-                'score' => $fieldValue
+                'kra_order' => $kraID,
+                $fieldName => $fieldValue
             ]);
-            }else{
-              $kra->setAttribute($newFieldName, $fieldValue);
-              $kra->save();
-            }
-            
 
-            return response()->json(['message' => 'Autosave successful']);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+            $kra->save();
 
-            // Handle errors if any
-            return response()->json(['error' => 'Autosave failed'], 500);
+            return response()->json(['message' => 'KRA created and autosave successful']);
         }
+
+        // Update the specific field value
+        $kra->$newFieldName = $fieldValue;
+        $kra->save();
+
+        return response()->json(['message' => 'Autosave successful']);
+      } catch (\Exception $e) {
+          Log::error('Exception Message: ' . $e->getMessage());
+          Log::error('Exception Line: ' . $e->getLine());
+          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+          // Handle errors if any
+          return response()->json(['error' => 'Autosave failed'], 500);
+      }
+  }
+
+  // public function autosaveKRAField(Request $request)
+  // {
+  //   // Retrieve the data sent from the frontend
+  //   $kraID = $request->input('kraID');
+  //   $fieldName = $request->input('fieldName');
+  //   $appraisalId = $request->input('appraisalId');
+
+  //   $fieldNameParts = explode('_', $fieldName); // Split into parts
+  //   array_shift($fieldNameParts); // Remove the first part "KRA"
+  //   $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
+
+  //   $fieldValue = $request->input('fieldValue');
+
+  //   Log::info($newFieldName);
+  //   Log::info($fieldValue);
+
+  //   try {
+  //     // Find the KRA by ID
+  //     $kra = KRA::find($kraID);
+
+  //     if (!$kra) {
+  //       // Create a new KRA record with the provided ID and field value
+  //       if ($newFieldName === "performance_level") {
+  //         $kra = new AppraisalAnswers([
+  //           'kra_id' => $kraID,
+  //           // Assuming kra_id is set as the ID attribute
+  //           'appraisal_id' => $appraisalId,
+  //           'score' => $fieldValue
+  //         ]);
+  //       } else {
+  //         $kra = new KRA([
+  //           'kra_id' => $kraID,
+  //           // Assuming kra_id is set as the ID attribute
+  //           'appraisal_id' => $appraisalId,
+  //           'kra_order' => $kraID,
+  //           $newFieldName => $fieldValue
+  //         ]);
+  //       }
+
+  //       $kra->save();
+
+  //       return response()->json(['message' => 'KRA created and autosave successful']);
+  //     }
+
+  //     // Update the specific field value
+  //     if ($newFieldName === "performance_level") {
+  //       $kra = new AppraisalAnswers([
+  //         'kra_id' => $kraID,
+  //         // Assuming kra_id is set as the ID attribute
+  //         'appraisal_id' => $appraisalId,
+  //         'score' => $fieldValue
+  //       ]);
+  //     } else {
+  //       $kra->setAttribute($newFieldName, $fieldValue);
+  //       $kra->save();
+  //     }
+
+
+  //     return response()->json(['message' => 'Autosave successful']);
+  //   } catch (\Exception $e) {
+  //     Log::error('Exception Message: ' . $e->getMessage());
+  //     Log::error('Exception Line: ' . $e->getLine());
+  //     Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+  //     // Handle errors if any
+  //     return response()->json(['error' => 'Autosave failed'], 500);
+  //   }
+  // }
+
+  public function autosaveWPPField(Request $request)
+  {
+    // Retrieve the data sent from the frontend
+    $wppID = $request->input('wppID');
+    $fieldName = $request->input('fieldName');
+    $fieldValue = $request->input('fieldValue');
+    $appraisalId = $request->input('appraisalId');
+
+    try {
+      // Find the existing record based on the criteria
+      $wpp = WPP::where([
+        'performance_plan_id' => $wppID,
+        'appraisal_id' => $appraisalId,
+      ])->first();
+
+      // If the record exists, update the specific field value; otherwise, create a new record
+      if ($wpp) {
+        $wpp->$fieldName = $fieldValue;
+        $wpp->save();
+      } else {
+        // Create a new record with the criteria and the specific field value
+        $wpp = new WPP([
+          'performance_plan_id' => $wppID,
+          'appraisal_id' => $appraisalId,
+          'performance_plan_order' => $wppID,
+          $fieldName => $fieldValue
+        ]);
+        $wpp->save();
+      }
+
+      // Log the updated or inserted record
+      $wpaData = WPP::where(['appraisal_id' => $appraisalId, 'performance_plan_id' => $wpp->performance_plan_id])->get();
+
+      // Return the ID in the response
+      return response()->json(['message' => 'Autosave successful', 'wpaData' => $wpaData]);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
     }
+  }
 
-    public function autosaveWPPField(Request $request)
-    {
-        // Retrieve the data sent from the frontend
-        $wppID = $request->input('wppID');
-        $fieldName = $request->input('fieldName');
-        $fieldValue = $request->input('fieldValue');
-        $appraisalId = $request->input('appraisalId');
+  public function autosaveLDPField(Request $request)
+  {
+    // Retrieve the data sent from the frontend
+    $ldpID = $request->input('ldpID');
+    $fieldName = $request->input('fieldName');
+    $fieldValue = $request->input('fieldValue');
+    $appraisalId = $request->input('appraisalId');
 
-        try {
-            // Find the existing record based on the criteria
-            $wpp = WPP::where([
-                'performance_plan_id' => $wppID,
-                'appraisal_id' => $appraisalId,
-            ])->first();
+    try {
+      // Find the existing record based on the criteria
+      $ldp = LDP::where([
+        'development_plan_id' => $ldpID,
+        'appraisal_id' => $appraisalId,
+      ])->first();
 
-            // If the record exists, update the specific field value; otherwise, create a new record
-            if ($wpp) {
-                $wpp->$fieldName = $fieldValue;
-                $wpp->save();
-            } else {
-                // Create a new record with the criteria and the specific field value
-                $wpp = new WPP([
-                    'performance_plan_id' => $wppID,
-                    'appraisal_id' => $appraisalId,
-                    'performance_plan_order' => $wppID,
-                    $fieldName => $fieldValue
-                ]);
-                $wpp->save();
-            }
+      // If the record exists, update the specific field value; otherwise, create a new record
+      if ($ldp) {
+        $ldp->$fieldName = $fieldValue;
+        $ldp->save();
+      } else {
+        // Create a new record with the criteria and the specific field value
+        $ldp = new LDP([
+          'appraisal_id' => $appraisalId,
+          'development_plan_order' => $ldpID,
+          $fieldName => $fieldValue
+        ]);
+        $ldp->save();
+      }
 
-            // Log the updated or inserted record
-            $wpaData = WPP::where(['appraisal_id' => $appraisalId, 'performance_plan_id' => $wpp->performance_plan_id])->get();
+      // Log the updated or inserted record
+      $ldpData = LDP::where(['appraisal_id' => $appraisalId, 'development_plan_id' => $ldp->development_plan_id])->get();
 
-            // Return the ID in the response
-            return response()->json(['message' => 'Autosave successful', 'wpaData' => $wpaData]);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      // Return the ID in the response
+      return response()->json(['message' => 'Autosave successful', 'ldpData' => $ldpData]);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-            // Handle errors if any
-            return response()->json(['error' => 'Autosave failed'], 500);
-        }
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
     }
+  }
 
-    public function autosaveLDPField(Request $request)
-    {
-        // Retrieve the data sent from the frontend
-        $ldpID = $request->input('ldpID');
-        $fieldName = $request->input('fieldName');
-        $fieldValue = $request->input('fieldValue');
-        $appraisalId = $request->input('appraisalId');
+  public function autosaveJICField(Request $request)
+  {
+    // Retrieve the data sent from the frontend
+    $jicID = $request->input('jicID');
+    $fieldName = $request->input('fieldName');
+    $fieldValue = $request->input('fieldValue');
+    $fieldQuestion = $request->input('fieldQuestion');
+    $appraisalId = $request->input('appraisalId');
 
-        try {
-            // Find the existing record based on the criteria
-            $ldp = LDP::where([
-                'development_plan_id' => $ldpID,
-                'appraisal_id' => $appraisalId,
-            ])->first();
+    try {
+      // Find the existing record based on the criteria
+      $jic = JIC::where([
+        'question_order' => $jicID,
+        'appraisal_id' => $appraisalId,
+      ])->first();
 
-            // If the record exists, update the specific field value; otherwise, create a new record
-            if ($ldp) {
-                $ldp->$fieldName = $fieldValue;
-                $ldp->save();
-            } else {
-                // Create a new record with the criteria and the specific field value
-                $ldp = new LDP([
-                    'appraisal_id' => $appraisalId,
-                    'development_plan_order' => $ldpID,
-                    $fieldName => $fieldValue
-                ]);
-                $ldp->save();
-            }
+      // If the record exists, update the specific field value; otherwise, create a new record
+      if ($jic) {
+        $jic->$fieldName = $fieldValue;
+        $jic->job_incumbent_question = $fieldQuestion;
+        $jic->save();
+      } else {
+        // Create a new record with the criteria and the specific field value
+        $jic = new JIC([
+          'appraisal_id' => $appraisalId,
+          'question_order' => $jicID,
+          'job_incumbent_question' => $fieldQuestion,
+          $fieldName => $fieldValue
+        ]);
+        $jic->save();
+      }
 
-            // Log the updated or inserted record
-            $ldpData = LDP::where(['appraisal_id' => $appraisalId, 'development_plan_id' => $ldp->development_plan_id])->get();
+      // Return the ID in the response
+      return response()->json(['message' => 'Autosave successful']);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-            // Return the ID in the response
-            return response()->json(['message' => 'Autosave successful', 'ldpData' => $ldpData]);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-            // Handle errors if any
-            return response()->json(['error' => 'Autosave failed'], 500);
-        }
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
     }
-
-    public function autosaveJICField(Request $request)
-    {
-        // Retrieve the data sent from the frontend
-        $jicID = $request->input('jicID');
-        $fieldName = $request->input('fieldName');
-        $fieldValue = $request->input('fieldValue');
-        $fieldQuestion = $request->input('fieldQuestion');
-        $appraisalId = $request->input('appraisalId');
-
-        try {
-            // Find the existing record based on the criteria
-            $jic = JIC::where([
-                'question_order' => $jicID,
-                'appraisal_id' => $appraisalId,
-            ])->first();
-
-            // If the record exists, update the specific field value; otherwise, create a new record
-            if ($jic) {
-                $jic->$fieldName = $fieldValue;
-                $jic->job_incumbent_question = $fieldQuestion;
-                $jic->save();
-            } else {
-                // Create a new record with the criteria and the specific field value
-                $jic = new JIC([
-                    'appraisal_id' => $appraisalId,
-                    'question_order' => $jicID,
-                    'job_incumbent_question' => $fieldQuestion,
-                    $fieldName => $fieldValue
-                ]);
-                $jic->save();
-            }
-
-            // Return the ID in the response
-            return response()->json(['message' => 'Autosave successful']);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-            // Handle errors if any
-            return response()->json(['error' => 'Autosave failed'], 500);
-        }
-    }
+  }
 
   protected function createSID(Request $request)
   {
@@ -600,23 +605,23 @@ class SelfEvaluationController extends Controller
         ->where('question_id', $questionId)
         ->first();
 
-            if ($existingRecord) {
-                // Update the record if the score is different
-                if ($existingRecord->score != $score) {
-                    $existingRecord->update([
-                        'score' => $score,
-                    ]);
-                }
-            } else {
-                // Create a new record if no existing record is found
-                AppraisalAnswers::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'question_id' => $questionId,
-                    'score' => $score,
-                ]);
-            }
+      if ($existingRecord) {
+        // Update the record if the score is different
+        if ($existingRecord->score != $score) {
+          $existingRecord->update([
+            'score' => $score,
+          ]);
         }
+      } else {
+        // Create a new record if no existing record is found
+        AppraisalAnswers::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'question_id' => $questionId,
+          'score' => $score,
+        ]);
+      }
     }
+  }
 
   protected function createSR(Request $request)
   {
@@ -664,78 +669,95 @@ class SelfEvaluationController extends Controller
         ->where('question_id', $questionId)
         ->first();
 
-            if ($existingRecord) {
-                // Update the record if the score is different
-                if ($existingRecord->score != $score) {
-                    $existingRecord->update([
-                        'score' => $score,
-                    ]);
-                }
-            } else {
-                // Create a new record if no existing record is found
-                AppraisalAnswers::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'question_id' => $questionId,
-                    'score' => $score,
-                ]);
-            }
+      if ($existingRecord) {
+        // Update the record if the score is different
+        if ($existingRecord->score != $score) {
+          $existingRecord->update([
+            'score' => $score,
+          ]);
         }
+      } else {
+        // Create a new record if no existing record is found
+        AppraisalAnswers::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'question_id' => $questionId,
+          'score' => $score,
+        ]);
+      }
     }
+  }
 
   protected function createKRA(Request $request)
   {
-    if (!session()->has('account_id')) {
-      return view('auth.login');
-    }
-
     foreach ($request->input('KRA') as $kraID => $kraData) {
       $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
         ->where('kra_id', $kraID)
         ->first();
 
-            if ($existingKRA) {
-                if (
-                    $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
-                    $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
-                    $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-                    $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator'] ||
-                    $existingKRA->actual_result !== $kraData[$request->input('appraisalID')]['KRA_actual_result'] ||
-                    $existingKRA->performance_level !== $kraData[$request->input('appraisalID')]['KRA_performance_level'] ||
-                    $existingKRA->weighted_total !== $kraData[$request->input('appraisalID')]['KRA_weighted_total']
-                ) {
-                    $existingKRA->update([
-                        'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
-                        'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                        'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                        'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                        'actual_result' => $kraData[$request->input('appraisalID')]['KRA_actual_result'],
-                        'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
-                        'weighted_total' => $kraData[$request->input('appraisalID')]['KRA_weighted_total']
-                    ]);
-
-                    
-                }
-            } else {
-                KRA::create([
-                    'kra_id' => $kraData[$request->input('appraisalID')]['kraID'],
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'kra_order' => $kraID,
-                    'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
-                    'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                    'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                    'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                    'actual_result' => $kraData[$request->input('appraisalID')]['KRA_actual_result'],
-                    'weighted_total' => $kraData[$request->input('appraisalID')]['KRA_weighted_total']
-                ]);
-
-                AppraisalAnswers::create([
-                  'kra_id' => $kraData[$request->input('appraisalID')]['kraID'],
-                  'appraisal_id' => $request->input('appraisalID'),
-                    'score' => $kraData[$request->input('appraisalID')]['KRA_performance_level']
-              ]);
-            }
+      if ($existingKRA) {
+        if (
+          $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+          $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+        ) {
+          $existingKRA->update([
+            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+            'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          ]);
         }
+      } else {
+        KRA::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+          'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'kra_order' => $kraID,
+        ]);
+      }
+
+      $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
+        ->where('kra_id', $kraID + 1)
+        ->first();
+
+      if ($existingSelfEvalKRA) {
+        Log::info($existingSelfEvalKRA);
+        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+
+        if (
+          $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+          $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingSelfEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+          $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+        ) {
+          $existingSelfEvalKRA->update([
+            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+            'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          ]);
+        }
+      } else {
+        Log::info('No matching KRA found.');
+        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+
+        KRA::create([
+          'appraisal_id' => $request->input('appraisalID') - 1,
+          'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+          'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'kra_order' => $kraID,
+        ]);
+      }
+
     }
+  }
 
   protected function createWPA(Request $request)
   {
@@ -748,29 +770,29 @@ class SelfEvaluationController extends Controller
         ->where('performance_plan_id', $wpaID)
         ->first();
 
-            if ($existingWPP) {
-                if (
-                    $existingWPP->continue_doing !== $wppData[$request->input('appraisalID')]['continue_doing'] ||
-                    $existingWPP->stop_doing !== $wppData[$request->input('appraisalID')]['stop_doing'] ||
-                    $existingWPP->start_doing !== $wppData[$request->input('appraisalID')]['start_doing']
-                ) {
-                    $existingWPP->update([
-                        'continue_doing' => $wppData[$request->input('appraisalID')]['continue_doing'],
-                        'stop_doing' => $wppData[$request->input('appraisalID')]['stop_doing'],
-                        'start_doing' => $wppData[$request->input('appraisalID')]['start_doing'],
-                    ]);
-                }
-            } else {
-                WPP::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'continue_doing' => $wppData[$request->input('appraisalID')]['continue_doing'],
-                    'stop_doing' => $wppData[$request->input('appraisalID')]['stop_doing'],
-                    'start_doing' => $wppData[$request->input('appraisalID')]['start_doing'],
-                    'performance_plan_order' => $wpaID
-                ]);
-            }
+      if ($existingWPP) {
+        if (
+          $existingWPP->continue_doing !== $wppData[$request->input('appraisalID')]['continue_doing'] ||
+          $existingWPP->stop_doing !== $wppData[$request->input('appraisalID')]['stop_doing'] ||
+          $existingWPP->start_doing !== $wppData[$request->input('appraisalID')]['start_doing']
+        ) {
+          $existingWPP->update([
+            'continue_doing' => $wppData[$request->input('appraisalID')]['continue_doing'],
+            'stop_doing' => $wppData[$request->input('appraisalID')]['stop_doing'],
+            'start_doing' => $wppData[$request->input('appraisalID')]['start_doing'],
+          ]);
         }
+      } else {
+        WPP::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'continue_doing' => $wppData[$request->input('appraisalID')]['continue_doing'],
+          'stop_doing' => $wppData[$request->input('appraisalID')]['stop_doing'],
+          'start_doing' => $wppData[$request->input('appraisalID')]['start_doing'],
+          'performance_plan_order' => $wpaID
+        ]);
+      }
     }
+  }
 
   protected function createLDP(Request $request)
   {
@@ -815,36 +837,36 @@ class SelfEvaluationController extends Controller
         ->where('job_incumbent_id', $jicID)
         ->first();
 
-            if ($existingJIC) {
-                if (
-                    $existingJIC->job_incumbent_question !== $jicData[$request->input('appraisalID')]['question'] ||
-                    $existingJIC->answer !== $jicData[$request->input('appraisalID')]['answer'] ||
-                    $existingJIC->comments !== $jicData[$request->input('appraisalID')]['comment']
-                ) {
-                    $existingJIC->update([
-                        'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
-                        'answer' => $jicData[$request->input('appraisalID')]['answer'],
-                        'comments' => $jicData[$request->input('appraisalID')]['comments'],
-                    ]);
-                }
-            } else {
-                JIC::create([
-                    'appraisal_id' => $request->input('appraisalID'),
-                    'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
-                    'answer' => $jicData[$request->input('appraisalID')]['answer'],
-                    'comments' => $jicData[$request->input('appraisalID')]['comments'],
-                    'question_order' => $jicID
-                ]);
-            }
+      if ($existingJIC) {
+        if (
+          $existingJIC->job_incumbent_question !== $jicData[$request->input('appraisalID')]['question'] ||
+          $existingJIC->answer !== $jicData[$request->input('appraisalID')]['answer'] ||
+          $existingJIC->comments !== $jicData[$request->input('appraisalID')]['comment']
+        ) {
+          $existingJIC->update([
+            'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
+            'answer' => $jicData[$request->input('appraisalID')]['answer'],
+            'comments' => $jicData[$request->input('appraisalID')]['comments'],
+          ]);
         }
+      } else {
+        JIC::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
+          'answer' => $jicData[$request->input('appraisalID')]['answer'],
+          'comments' => $jicData[$request->input('appraisalID')]['comments'],
+          'question_order' => $jicID
+        ]);
+      }
     }
+  }
 
   protected function createSign(Request $request)
   {
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $appraisalId = $request->input('appraisalID'); // Add a semicolon here
     $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
 
@@ -858,53 +880,103 @@ class SelfEvaluationController extends Controller
         // Get signature data from uploaded file
         $signatureData = file_get_contents($signatureFile->getRealPath());
 
-                $existingSignature->update([
-                    'sign_data' => $signatureData,
-                    'sign_type' => 'JI',
-                ]);
-            } else {
-                try {
-                    $signatureData = file_get_contents($signatureFile->getRealPath());
-
-                    // Create a new signature and retrieve its ID
-                    $newSignature = Signature::create([
-                        'appraisal_id' => $appraisalId,
-                        'sign_data' => $signatureData,
-                        'sign_type' => 'JI',
-                        // You should add other necessary fields here
-                    ]);
-
-                    // Get the ID of the newly created signature
-                    $newSignatureId = $newSignature->signature_id;
-                } catch (QueryException $e) {
-                    // Handle the database connection issue
-                    // You can log the error or display a user-friendly message
-                    dd('Error: ' . $e->getMessage());
-                }
-            }
-        }
-        $existingRecord = Appraisals::where('appraisal_id', $appraisalId)->first();
-
-        if ($existingRecord) {
-            $existingRecord->update([
-                'signature' => $existingSignature ? $existingSignature->signature_id : $newSignatureId,
-            ]);
-        }
-    }
-
-    public function formChecker(Request $request)
-    {
-        if (!session()->has('account_id')) {
-        return view('auth.login');
-        }
-        
-        $appraisalId = $request->input('appraisalId');
-        $appraisal = Appraisals::find($appraisalId);
-        
-        $locked = $appraisal->locked;
-
-        return response()->json([
-        'form_submitted' => $locked,
+        $existingSignature->update([
+          'sign_data' => $signatureData,
+          'sign_type' => 'JI',
         ]);
+      } else {
+        try {
+          $signatureData = file_get_contents($signatureFile->getRealPath());
+
+          // Create a new signature and retrieve its ID
+          $newSignature = Signature::create([
+            'appraisal_id' => $appraisalId,
+            'sign_data' => $signatureData,
+            'sign_type' => 'JI',
+            // You should add other necessary fields here
+          ]);
+
+          // Get the ID of the newly created signature
+          $newSignatureId = $newSignature->signature_id;
+        } catch (QueryException $e) {
+          // Handle the database connection issue
+          // You can log the error or display a user-friendly message
+          dd('Error: ' . $e->getMessage());
+        }
+      }
     }
+    $existingRecord = Appraisals::where('appraisal_id', $appraisalId)->first();
+
+    if ($existingRecord) {
+      $existingRecord->update([
+        'signature' => $existingSignature ? $existingSignature->signature_id : $newSignatureId,
+      ]);
+    }
+  }
+
+  public function formChecker(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalId = $request->input('appraisalId');
+    $appraisal = Appraisals::find($appraisalId);
+
+    if ($appraisal) {
+      $kraLocked = $appraisal->kra_locked;
+      $prLocked = $appraisal->pr_locked;
+      $evalLocked = $appraisal->eval_locked;
+      $fullLocked = $appraisal->locked;
+
+      // $kraLocked = 1;
+      // $prLocked = $appraisal->pr_locked;
+      // $evalLocked = $appraisal->eval_locked;
+      // $fullLocked = $appraisal->locked;
+      // Log::info($kraLocked);
+      // Log::info($prLocked);
+      // Log::info($evalLocked);
+      // Log::info($fullLocked);
+
+      $locked = null;
+
+      if ($kraLocked == true) {
+        $locked = "kra";
+      } elseif ($prLocked == true) {
+        $locked = "pr";
+      } elseif ($evalLocked == true) {
+        $locked = "eval";
+      } elseif ($fullLocked == true) {
+        $locked = "lock";
+      }
+      Log::info($locked);
+
+      // $currentDate = Carbon::now();
+
+      $currentDate = Carbon::parse("2023-10-06");
+
+      $activeYear = EvalYear::where('status', 'active')->first();
+
+      $kraStart = Carbon::parse($activeYear->kra_start);
+      $kraEnd = Carbon::parse($activeYear->kra_end);
+      $prStart = Carbon::parse($activeYear->pr_start);
+      $prEnd = Carbon::parse($activeYear->pr_end);
+      $evalStart = Carbon::parse($activeYear->eval_start);
+      $evalEnd = Carbon::parse($activeYear->eval_end);
+
+      if ($currentDate->between($kraStart, $kraEnd)) {
+        $phaseData = "kra";
+      } elseif ($currentDate->between($prStart, $prEnd)) {
+        $phaseData = "pr";
+      } elseif ($currentDate->between($evalStart, $evalEnd)) {
+        $phaseData = "eval";
+      } else {
+        $phaseData = "lock";
+      }
+
+      return response()->json(['success' => true, 'locked' => $locked, 'phaseData' => $phaseData]);
+    } else {
+      return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
+    }
+  }
 }

@@ -169,7 +169,7 @@
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     viewLink = $('<a>').addClass('btn btn-outline-primary')
                                         .attr('href',
-                                            `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                            `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id))
                                         .text('View');
                                 } else if (appraisal.evaluation_type ===

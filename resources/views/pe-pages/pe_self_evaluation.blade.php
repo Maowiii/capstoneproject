@@ -395,6 +395,7 @@
                 </tfoot>
             </table>
         </div>
+
         <div class="content-container">
             <h2>III. Future Performance Agenda</h2>
             <h3>Work Performance Plans</h3>
@@ -792,12 +793,11 @@
             });
 
             loadTableData();
+            formChecker();
 
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
-
-            updateWeightedTotal();
 
             // Validation code
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
@@ -1073,6 +1073,8 @@
                     }
                 });
             });
+
+            updateWeightedTotal();
         });
 
         function loadTableData() {
@@ -1391,7 +1393,7 @@
                             var kraID = kra.kra_id;
 
                             var row = $('<tr>').addClass('align-middle');
-                            
+
                             $('<input>').attr({
                                 type: 'hidden',
                                 name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
@@ -1994,7 +1996,7 @@
 
             $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weight = parseFloat(row.find('textarea[name^="KRA"][name$="[KRA_weight]"]').val()) /
+                var weight = parseFloat(row.find('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').val()) /
                     100;
                 var performanceLevel = parseInt(row.find(
                         'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
@@ -2007,10 +2009,8 @@
 
                     console.log(weightedValue);
 
-                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]').val(weightedValue
-                        .toFixed(
-                            2));
-
+                row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
+                        .val(weightedValue.toFixed(2));
                 }
             });
 
@@ -2028,11 +2028,8 @@
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
         }
-/*
-        function formChecker() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var appraisalId = urlParams.get('appraisal_id');
 
+        function formChecker() {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2040,28 +2037,28 @@
                 url: '{{ route('pe.SEFormChecker') }}',
                 type: 'POST',
                 data: {
-                    appraisalId: appraisalId
+                    appraisalId: {{ $appraisalId }}
                 },
                 success: function(response) {
-                    if (response.form_submitted) {
+                    if (response.locked === "kra") {
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        $('#confirmation-alert').addClass('d-none');
-                        $('#submit-btn').text('View');
-                    } 
+                    } else if (response.locked === "pr") {
+                        // Handle the "pr" case
+                    } else if (response.locked === "eval") {
+
+                    } else {
+                        console.log('ELSE LOCK');
+                    }
                 },
                 error: function(xhr, status, error) {
-                    error: function(xhr) {
-                        if (xhr.responseText) {
-                            console.log('Error: ' + xhr
-                                .responseText);
-                        } else {
-                            console.log('An error occurred.');
-                        }
+                    if (xhr.responseText) {
+                        console.log('Error: ' + xhr.responseText);
+                    } else {
+                        console.log('An error occurred.');
                     }
                 }
             });
         }
-        */
     </script>
 @endsection

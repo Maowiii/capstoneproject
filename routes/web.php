@@ -126,6 +126,9 @@ Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class,
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
+Route::get('/employee-info', [SettingsController::class, 'displayEmployeeInfo'])->name('employeeInfo');
+
+
 
 /* ----- PERMANENT EMPLOYEE ----- */
 // Dashboard

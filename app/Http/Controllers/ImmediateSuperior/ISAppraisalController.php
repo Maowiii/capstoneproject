@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ImmediateSuperior;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
+use App\Models\EvalYear;
 use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
@@ -14,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Carbon;
 
 class ISAppraisalController extends Controller
 {
@@ -68,13 +69,37 @@ class ISAppraisalController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
+    // $currentDate = Carbon::now();
+
+    $currentDate = Carbon::parse("2023-10-06");
+
+    $activeYear = EvalYear::where('status', 'active')->first();
+
+    $kraStart = Carbon::parse($activeYear->kra_start);
+    $kraEnd = Carbon::parse($activeYear->kra_end);
+    $prStart = Carbon::parse($activeYear->pr_start);
+    $prEnd = Carbon::parse($activeYear->pr_end);
+    $evalStart = Carbon::parse($activeYear->eval_start);
+    $evalEnd = Carbon::parse($activeYear->eval_end);
+
+    if ($currentDate->between($kraStart, $kraEnd)) {
+      $phaseData = "kra";
+    } elseif ($currentDate->between($prStart, $prEnd)) {
+      $phaseData = "pr";
+    } elseif ($currentDate->between($evalStart, $evalEnd)) {
+      $phaseData = "eval";
+    } else {
+      $phaseData = "lock";
+    }
 
     $appraisalId = $request->input('appraisal_id');
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
     $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
+    $jicData = JIC::where('appraisal_id', $appraisalId)->get();
 
-    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData]);
+    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 
+    'jicData' => $jicData, 'phaseData' => $phaseData]);
   }
 
   public function saveISAppraisal(Request $request)
@@ -335,69 +360,69 @@ class ISAppraisalController extends Controller
   protected function createKRA(Request $request)
   {
     foreach ($request->input('KRA') as $kraID => $kraData) {
-        $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
-            ->where('kra_id', $kraID)
-            ->first();
-        if ($existingKRA) {
-            if (
-                $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
-                $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
-                $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-                $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
-            ) {
-                $existingKRA->update([
-                    'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                    'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                    'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                    'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                ]);
-            }
-        } else {
-            KRA::create([
-                'appraisal_id' => $request->input('appraisalID'),
-                'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                'kra_order' => $kraID,
-            ]);
+      $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
+        ->where('kra_id', $kraID)
+        ->first();
+      if ($existingKRA) {
+        if (
+          $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+          $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+        ) {
+          $existingKRA->update([
+            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+            'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          ]);
         }
-        $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
-            ->where('kra_id', $kraID + 1)
-            ->first();
-        if ($existingSelfEvalKRA) {
-            Log::info($existingSelfEvalKRA);
-            Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
-            Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
-            if (
-                $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
-                $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
-                $existingSelfEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-                $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
-            ) {
-                $existingSelfEvalKRA->update([
-                    'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                    'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                    'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                    'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                ]);
-            }
-        } else {
-            Log::info('No matching KRA found.');
-            Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
-            Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
-            KRA::create([
-                'appraisal_id' => $request->input('appraisalID') - 1,
-                'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-                'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
-                'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
-                'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
-                'kra_order' => $kraID,
-            ]);
+      } else {
+        KRA::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+          'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'kra_order' => $kraID,
+        ]);
+      }
+      $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
+        ->where('kra_id', $kraID + 1)
+        ->first();
+      if ($existingSelfEvalKRA) {
+        Log::info($existingSelfEvalKRA);
+        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        if (
+          $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
+          $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingSelfEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
+          $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+        ) {
+          $existingSelfEvalKRA->update([
+            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+            'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          ]);
         }
+      } else {
+        Log::info('No matching KRA found.');
+        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        KRA::create([
+          'appraisal_id' => $request->input('appraisalID') - 1,
+          'kra' => $kraData[$request->input('appraisalID')]['KRA'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
+          'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'kra_order' => $kraID,
+        ]);
+      }
     }
-}
-  
+  }
+
 
   protected function createWPA(Request $request)
   {
@@ -558,26 +583,27 @@ class ISAppraisalController extends Controller
       return response()->json(['success' => false, 'message' => 'Error deleting WPA record.']);
     }
   }
+
   public function deleteLDP(Request $request)
   {
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $ldpID = $request->input('ldpID');
 
-        // Perform the actual deletion of the WPA record from the database
-        try {
-            LDP::where('development_plan_id', $ldpID)->delete();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            Log::error('Exception Message: ' . $e->getMessage());
-            Log::error('Exception Line: ' . $e->getLine());
-            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+    // Perform the actual deletion of the WPA record from the database
+    try {
+      LDP::where('development_plan_id', $ldpID)->delete();
+      return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-            return response()->json(['success' => false, 'message' => 'Error deleting LDP record.']);
-        }
+      return response()->json(['success' => false, 'message' => 'Error deleting LDP record.']);
     }
+  }
 
 }
 ?>

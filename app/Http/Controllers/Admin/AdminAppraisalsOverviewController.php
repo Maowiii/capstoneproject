@@ -174,6 +174,7 @@ class AdminAppraisalsOverviewController extends Controller
         ->with(['employee', 'signatures', 'evaluator'])
         ->get();
     }
+
     return response()->json(['success' => true, 'appraisals' => $appraisals]);
   }
 
@@ -220,6 +221,66 @@ class AdminAppraisalsOverviewController extends Controller
       $locked = $appraisal->locked;
 
       $appraisal->update(['locked' => !$locked]);
+
+      return response()->json(['success' => true, 'locked' => !$locked]);
+    } else {
+      return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
+    }
+  }
+
+  public function toggleKRALock(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalID = $request->input('appraisalID');
+    $appraisal = Appraisals::find($appraisalID);
+
+    if ($appraisal) {
+      $locked = $appraisal->kra_locked;
+
+      $appraisal->update(['kra_locked' => !$locked]);
+
+      return response()->json(['success' => true, 'locked' => !$locked]);
+    } else {
+      return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
+    }
+  }
+
+  public function togglePRLock(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalID = $request->input('appraisalID');
+    $appraisal = Appraisals::find($appraisalID);
+
+    if ($appraisal) {
+      $locked = $appraisal->kra_locked;
+
+      $appraisal->update(['pr_locked' => !$locked]);
+
+      return response()->json(['success' => true, 'locked' => !$locked]);
+    } else {
+      return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
+    }
+  }
+
+  public function toggleEvalLock(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalID = $request->input('appraisalID');
+    $appraisal = Appraisals::find($appraisalID);
+
+    if ($appraisal) {
+      $locked = $appraisal->kra_locked;
+
+      $appraisal->update(['eval_locked' => !$locked]);
 
       return response()->json(['success' => true, 'locked' => !$locked]);
     } else {

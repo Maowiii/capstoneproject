@@ -36,7 +36,7 @@
             </button>
         </div>
         <table class="table table-bordered" id="admin_appraisals_table">
-            <thead>
+            <thead class="align-middle">
                 <tr>
                     <th>Name</th>
                     <th>Department</th>
@@ -44,7 +44,7 @@
                     <th>IS Evaluation</th>
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
-                    <th>Signatures</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -52,21 +52,24 @@
     </div>
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl" style="width:90%">
             <div class="modal-content" id="signatory">
                 <div class="modal-header">
                     <h5 class="modal-title fs-5">Signatories</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table" id="signtable">
+                    <table class="table table-sm" id="signtable">
                         <thead>
                             <tr>
-                                <th scope="col">PARTIES</th>
-                                <th scope="col">FULL NAME</th>
-                                <th scope="col">SIGNATURE</th>
-                                <th scope="col">DATE</th>
-                                <th scope="col">ACTION</th>
+                                <th scope="col">Parties</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Signature</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">KRA</th>
+                                <th scope="col">Performance Review</th>
+                                <th scope="col">Evaluation</th>
+                                <th scope="col">Form</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,6 +94,32 @@
         </div>
     </div>
 
+    <div class="modal" id="lockModal">
+        <div class="modal-dialog">
+            <div class="modal-content" id="lockphase">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lockModalLabel">Apraisal Form Lock</h5>
+                    <button type="button" class="btn-close" id="lock-close-btn"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <table class='table'>
+                        <thead>
+                            <tr>
+                                <th>Appraisal Form</th>
+                                <th>KRA Encoding Phase</th>
+                                <th>Performance Review Phase</th>
+                                <th>Evaluation Phase</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lockBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
             loadAdminAppraisalsTable();
@@ -109,7 +138,6 @@
             });
 
             function loadAdminAppraisalsTable(selectedYear = null, search = null) {
-                console.log('Search Query: ' + search);
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -121,9 +149,7 @@
                         search: search
                     },
                     success: function(response) {
-                        console.log(response);
                         if (response.success) {
-                            console.log('Success');
                             $('#admin_appraisals_table tbody').empty();
                             var groupedAppraisals = response.groupedAppraisals;
 
@@ -175,7 +201,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         } else {
                                             var url =
@@ -201,7 +227,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-x-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         }
                                     }
@@ -232,7 +258,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         } else {
                                             var url =
@@ -258,7 +284,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-x-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         }
                                         // Internal Customer
@@ -290,13 +316,13 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         } else {
                                             cell.append(
                                                 $("<a>").html(
                                                     '<i class="bx bx-x-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         }
                                     } else if (appraisal.evaluation_type ===
@@ -327,13 +353,13 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         } else {
                                             cell.append(
                                                 $("<a>").html(
                                                     '<i class="bx bx-x-circle"></i>'
-                                                    )
+                                                )
                                             );
                                         }
                                     }
@@ -393,7 +419,6 @@
                             );
                             $('#admin_appraisals_table tbody').append(row);
 
-
                             console.log('Error: ' + response.error);
                         }
                     },
@@ -442,7 +467,7 @@
                                     ' ' + evaluator
                                     .last_name : '-';
                                 const appraisalType = appraisal.evaluation_type;
-                                var row = $('<tr>');
+                                var row = $('<tr class="align-middle">');
                                 var appraisalId = appraisal.appraisal_id;
 
                                 const appraisalTypeText = appraisalTypeMap[appraisalType] ||
@@ -456,36 +481,62 @@
                                     row.append($('<td>').text('-'));
                                 }
 
-                                var viewButton =
-                                    '<button type="button" class="btn btn-outline-primary view-esig-btn" appraisal-id="' +
-                                    appraisalId + '">View</button>';
+                                var viewButton = $('<button>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-outline-primary view-esig-btn',
+                                    'appraisal-id': appraisalId,
+                                    'text': 'View'
+                                });
 
-                                var unlockButton =
-                                    '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
-                                    appraisalId + '" id="lock-unlock-btn-' + appraisal
-                                    .appraisal_id +
-                                    '">Unlock</button>';
-
-                                var lockButton =
-                                    '<button type="button" class="btn btn-outline-primary lock-unlock-btn" appraisal-id="' +
-                                    appraisalId + '" id="lock-unlock-btn-' + appraisal
-                                    .appraisal_id +
-                                    '">Lock</button>';
-
-                                if (appraisal.locked == true) {
-                                    if (appraisal.date_submitted == null) {
-                                        row.append($('<td>').text('-'));
-                                        row.append($('<td>').text('-'));
-                                    } else {
-                                        row.append($('<td>').html(viewButton));
-                                        row.append($('<td>').text(appraisal.date_submitted));
-                                    }
-                                    row.append($('<td>').html(unlockButton));
+                                if (appraisal.date_submitted != null) {
+                                    row.append($('<td>').html(viewButton));
+                                    row.append($('<td>').text(appraisal.date_submitted));
                                 } else {
                                     row.append($('<td>').text('-'));
                                     row.append($('<td>').text('-'));
-                                    row.append($('<td>').html(lockButton));
                                 }
+
+                                var kraToggleButton = $('<button>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-outline-primary kra-toggle-btn',
+                                    'appraisal-id': appraisalId,
+                                    'employee-id': appraisal.employee_id,
+                                });
+
+                                var formLockToggleButton = $('<button>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-outline-primary form-toggle-btn',
+                                    'appraisal-id': appraisalId,
+                                    'employee-id': appraisal.employee_id,
+                                });
+
+                                var prToggleButton = $('<button>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-outline-primary pr-toggle-btn',
+                                    'appraisal-id': appraisalId,
+                                    'employee-id': appraisal.employee_id,
+                                });
+
+                                var evalToggleButton = $('<button>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-outline-primary eval-toggle-btn',
+                                    'appraisal-id': appraisalId,
+                                    'employee-id': appraisal.employee_id,
+                                });
+
+                                kraToggleButton.text(appraisal.kra_locked === 1 ? 'Unlock' :
+                                    'Lock');
+                                prToggleButton.text(appraisal.pr_locked === 1 ? 'Unlock' :
+                                    'Lock');
+                                evalToggleButton.text(appraisal.eval_locked === 1 ? 'Unlock' :
+                                    'Lock');
+                                formLockToggleButton.text(appraisal.locked === 1 ? 'Unlock' :
+                                    'Lock');
+
+                                row.append($('<td>').html(kraToggleButton));
+                                row.append($('<td>').html(prToggleButton));
+                                row.append($('<td>').html(evalToggleButton));
+                                row.append($('<td>').html(formLockToggleButton));
 
                                 $('#signtable tbody').append(row);
                             });
@@ -535,17 +586,18 @@
                 $('#imageModal').modal('show');
             }
 
-            $(document).on('click', '.lock-unlock-btn', function() {
+            $(document).on('click', '.form-toggle-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
-                var buttonID = $(this).attr('id');
-                var $button = $('#' + buttonID);
+                var employeeID = $(this).attr('employee-id');
+                var $button = $(this);
+                console.log('Appraisal ID for Form Toggle: ' + appraisalID);
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     url: '{{ route('ad.lockUnlockAppraisal') }}',
-                    type: 'GET',
+                    type: 'POST',
                     data: {
                         appraisalID: appraisalID,
                     },
@@ -555,6 +607,105 @@
                                 $button.text('Unlock');
                             } else {
                                 $button.text('Lock');
+                            }
+                        } else {
+                            console.log('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+
+            });
+
+            $(document).on('click', '.kra-toggle-btn', function() {
+                var appraisalID = $(this).attr('appraisal-id');
+                var employeeID = $(this).attr('employee-id');
+                var $button = $(this); // Store the clicked button element
+                console.log('Appraisal ID KRA: ' + appraisalID);
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.toggleKRALock') }}',
+                    type: 'POST',
+                    data: {
+                        appraisalID: appraisalID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.locked == true) {
+                                $button.text('Unlock');
+                            } else {
+                                $button.text('Lock');
+                            }
+                        } else {
+                            console.log('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.pr-toggle-btn', function() {
+                var appraisalID = $(this).attr('appraisal-id');
+                var employeeID = $(this).attr('employee-id');
+                var $button = $(this); // Store the clicked button element
+                console.log('Appraisal ID PR: ' + appraisalID);
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.togglePRLock') }}',
+                    type: 'POST',
+                    data: {
+                        appraisalID: appraisalID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.locked == true) {
+                                $button.text('Lock');
+                            } else {
+                                $button.text('Unlock');
+                            }
+                        } else {
+                            console.log('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.eval-toggle-btn', function() {
+                var appraisalID = $(this).attr('appraisal-id');
+                var employeeID = $(this).attr('employee-id');
+                var $button = $(this); // Store the clicked button element
+                console.log('Appraisal ID EVAL: ' + appraisalID);
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.toggleEvalLock') }}',
+                    type: 'POST',
+                    data: {
+                        appraisalID: appraisalID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.locked == true) {
+                                console.log('Unlock Button.');
+                                $button.text('Lock');
+                            } else {
+                                $button.text('Lock');
+                                console.log('Unlock Button.');
                             }
                         } else {
                             console.log('Error: ' + response.message);

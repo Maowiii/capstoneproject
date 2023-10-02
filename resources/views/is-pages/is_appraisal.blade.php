@@ -559,7 +559,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </div>
+        </div>
         </div>
     </form>
 
@@ -760,6 +760,7 @@
 
             updateWeightedTotal();
 
+            formChecker();
             ////// VALIDATION /////////
 
 
@@ -1222,21 +1223,21 @@
                                 ).appendTo(row);
 
                                 var weightSelect = $('<select>').addClass('form-select autosave-field')
-                                    .attr(
-                                        'aria-label',
-                                        'Default select example').attr('readonly', false).attr('name',
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                    .attr('aria-label', 'Default select example')
+                                    .attr('readonly', false)
+                                    .attr('name', 'KRA[' + kraID + '][' + {{ $appraisalId }} +
                                         '][KRA_kra_weight]')
-                                    .appendTo($('<td>'))
-                                    .appendTo(row);
-                                $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
+                                    .appendTo($('<td>')).appendTo(row);
+
+                                $('<option>').appendTo(weightSelect); // Add an empty option
 
                                 for (let i = 1; i <= 100; i++) {
-                                    var option = $('<option>').val(i).text(i).appendTo(weightSelect);
+                                    var option = $('<option>').val(i).text(i + '%').appendTo(
+                                        weightSelect); // Corrected text
                                     var kraWeight = parseFloat(kra.kra_weight);
 
                                     if (Math.abs(kraWeight - i) < 0.01) {
-                                        option.attr('selected', true);
+                                        option.prop('selected', true);
                                     }
                                 }
 
@@ -1258,37 +1259,173 @@
                                     )
                                 ).appendTo(row);
 
-                                $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').prop('readonly', true)
-                                ).appendTo(row);
+                                console.log(data.phaseData);
+                                if (data.phaseData === "kra") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        $('<textarea>').addClass('textarea').prop('readonly', true)
+                                    ).appendTo(row);
 
-                                var performanceCell = $('<td>').appendTo(row);
-                                var performanceLevelDiv = $('<div>').addClass(
-                                    'd-flex justify-content-center gap-2').appendTo(performanceCell);
-                                for (var i = 5; i >= 1; i--) {
-                                    var label = $('<label>').addClass('form-check-label');
-                                    var input = $('<input>').prop('readonly', true).attr({
-                                        type: 'radio',
-                                        name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                            '][KRA_answer]',
-                                        class: 'form-check-input',
-                                        value: i
-                                    });
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2').appendTo(
+                                        performanceCell);
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', true).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_answer]',
+                                            class: 'form-check-input',
+                                            value: i
+                                        });
 
-                                    input[0].disabled = true;
+                                        input[0].disabled = true;
 
-                                    label.append(input, i);
-                                    $('<div>').addClass('col-auto').append(label).appendTo(
-                                        performanceLevelDiv);
+                                        label.append(input, i);
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else if (data.phaseData === "pr") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        createTextArea(
+                                            'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_actual_result]',
+                                            kra.actual_result,
+                                            false
+                                        )
+                                    ).appendTo(row);
+
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2'
+                                    ).appendTo(performanceCell);
+
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', false).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_performance_level]',
+                                            class: 'form-check-input autosave-field',
+                                            value: i
+                                        });
+
+                                        input[0].required = true;
+
+                                        var span = $('<span>').addClass('ms-1').text(i);
+                                        label.append(input, span);
+                                        performanceLevelDiv.append($('<div>').addClass('col-auto')
+                                            .append(
+                                                label));
+
+                                        input.on('invalid', function() {
+                                            $(this).addClass('is-invalid text-danger fw-bold');
+                                            $(this).siblings('span').addClass('text-danger');
+                                        });
+
+                                        input.on('input', function() {
+                                            var row = $(this).closest('tr');
+                                            row.find('.is-invalid').removeClass('is-invalid');
+                                            row.find('.text-danger').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).closest('tr').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).removeClass(
+                                                'is-invalid'
+                                            );
+                                        });
+
+                                        label.append(input, span);
+
+                                        var kraPL = parseFloat(kra.performance_level);
+
+                                        if (Math.abs(kraPL - i) < 0.01) {
+                                            input.prop('checked', true);
+                                        }
+
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else if (data.phaseData === "eval") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        createTextArea(
+                                            'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_actual_result]',
+                                            kra.actual_result,
+                                            false
+                                        )
+                                    ).appendTo(row);
+
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2'
+                                    ).appendTo(performanceCell);
+
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', false).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_performance_level]',
+                                            class: 'form-check-input autosave-field',
+                                            value: i
+                                        });
+
+                                        input[0].required = true;
+
+                                        var span = $('<span>').addClass('ms-1').text(i);
+                                        label.append(input, span);
+                                        performanceLevelDiv.append($('<div>').addClass('col-auto')
+                                            .append(
+                                                label));
+
+                                        input.on('invalid', function() {
+                                            $(this).addClass('is-invalid text-danger fw-bold');
+                                            $(this).siblings('span').addClass('text-danger');
+                                        });
+
+                                        input.on('input', function() {
+                                            var row = $(this).closest('tr');
+                                            row.find('.is-invalid').removeClass('is-invalid');
+                                            row.find('.text-danger').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).closest('tr').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).removeClass(
+                                                'is-invalid'
+                                            );
+                                        });
+
+                                        label.append(input, span);
+
+                                        var kraPL = parseFloat(kra.performance_level);
+
+                                        if (Math.abs(kraPL - i) < 0.01) {
+                                            input.prop('checked', true);
+                                        }
+
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else {
+                                    console.log('ELSE LOCK');
                                 }
 
                                 $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_weighted_total]',
-                                        kra.weighted_total,
-                                        true
-                                    )
+                                    $('<textarea>').addClass(
+                                        'textarea border-0 autosave-field').attr(
+                                        'name', 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]').prop(
+                                        'readonly',
+                                        true).val(kra.weighted_total)
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-action').append(
@@ -1307,12 +1444,9 @@
                                     $('#KRA_table_body .kra-delete-btn').prop('disabled', false);
                                 }
 
-                                var kraWeightElements = row.find('select[name^="KRA[' + kraID + '][' +
-                                    {{ $appraisalId }} + '][KRA_weight]"]');
-
-                                kraWeightElements.on('change', function() {
-                                    updateWeightedTotal();
-                                });
+                                row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
+                                        {{ $appraisalId }} + '][KRA_performance_level]"]')
+                                    .trigger('change');
                             });
                             updateWeightedTotal();
                         }
@@ -1745,28 +1879,127 @@
         }
 
         function updateWeightedTotal() {
+            console.log("updateWeightedTotal() called");
+
             var totalWeight = 0;
+            var totalWeighted = 0;
 
             $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weight = parseFloat(row.find('select[name^="KRA"][name$="[KRA_weight]"]').val()) /
-                    100;
+                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"]');
+                var selectedValue = weightOption.find("option:selected").val();
+                var weight = parseFloat(selectedValue) / 100;
 
-                totalWeight += weight;
+                var performanceLevel = parseInt(
+                    row.find('input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
+                    .val()
+                );
+
+                console.log("weight");
+                console.log(weight);
+
+                if (!isNaN(weight) || !isNaN(performanceLevel)) {
+                    var weightedValue = weight * performanceLevel;
+                    totalWeight += weight;
+                    totalWeighted += weightedValue;
+
+                    console.log("weightedValue");
+                    console.log(weightedValue);
+
+                    if (isNaN(weightedValue)) {
+                        weightedValue = 0;
+                    }
+
+                    // Update the weighted total input element
+                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
+                        .val(weightedValue.toFixed(2));
+                }
             });
 
             totalWeight = totalWeight * 100;
+            console.log("totalWeight");
+            console.log(totalWeight);
 
             if (totalWeight > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
-                $('select[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');
             } else {
                 $('#KRA_Weight_Total').removeClass('is-invalid');
-                $('select[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_kra_weight]"]').removeClass('is-invalid');
             }
 
+            if (isNaN(totalWeighted)) {
+                totalWeighted = 0;
+            }
+
+            // Update the total weight input element
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
+
+            // Update the total weighted input element
+            $('#KRA_Total').val(totalWeighted.toFixed(2));
+        }
+
+        function formChecker() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.SEFormChecker') }}',
+                type: 'POST',
+                data: {
+                    appraisalId: {{ $appraisalId }}
+                },
+                success: function(response) {
+                    console.log("PHASE");
+                    console.log(response.phaseData);
+                    if (response.phaseData === "kra") {
+                        console.log("AQ1");
+
+                        $('input[type="radio"]').prop('disabled', true);
+
+                        $('textarea').prop('disabled', true);
+                        $('#KRA_table_body textarea').prop('disabled', false);
+                    } else if (response.phaseData === "pr") {
+                        console.log("AQ2");
+                    } else if (response.phaseData === "eval") {
+                        console.log("AQ3");
+                        $('#KRA_table_body textarea').prop('readonly', true);
+
+                        // Disable select elements and add background color to nearest <td> elements
+                        $('#KRA_table_body select').prop('disabled', true);
+
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                    } else if (response.locked === "lock") {
+                        console.log("AQ4");
+
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                    }
+
+                    console.log("LOCK");
+                    console.log(response.locked);
+                    if (response.locked === "kra") {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        $('#KRA_table_body textarea').prop('disabled', false);
+                    } else if (response.locked === "pr") {
+
+                    } else if (response.locked === "eval") {
+
+                    } else if (response.locked === "lock") {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.responseText) {
+                        console.log('Error: ' + xhr.responseText);
+                    } else {
+                        console.log('An error occurred.');
+                    }
+                }
+            });
         }
     </script>
 @endsection
