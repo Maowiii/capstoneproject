@@ -1443,10 +1443,6 @@
                                 } else {
                                     $('#KRA_table_body .kra-delete-btn').prop('disabled', false);
                                 }
-
-                                row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
-                                        {{ $appraisalId }} + '][KRA_performance_level]"]')
-                                    .trigger('change');
                             });
                             updateWeightedTotal();
                         }

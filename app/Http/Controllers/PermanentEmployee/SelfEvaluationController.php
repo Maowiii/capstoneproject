@@ -263,8 +263,13 @@ class SelfEvaluationController extends Controller
 
       $date = Carbon::now();
 
+      $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
+      $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
+
       $existingRecord->update([
         'date_submitted' => $date,
+        'bh_score' => $getBHave,
+        'kra_score' => $getKRAave,
       ]);
 
       DB::commit();
@@ -274,6 +279,7 @@ class SelfEvaluationController extends Controller
 
       // Log the exception
       Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
       Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
       // Display exception details using dd()
@@ -311,7 +317,7 @@ class SelfEvaluationController extends Controller
       'KRA.*' => 'required|array',
       'KRA.*.*.kraID' => 'required|numeric',
       'KRA.*.*.KRA_kra' => 'required|string',
-      'KRA.*.*.KRA_weight' => 'required|numeric',
+      'KRA.*.*.KRA_kra_weight' => 'required|numeric',
       'KRA.*.*.KRA_objective' => 'required|string',
       'KRA.*.*.KRA_performance_indicator' => 'required|string',
       'KRA.*.*.KRA_actual_result' => 'required|string',
@@ -341,53 +347,54 @@ class SelfEvaluationController extends Controller
 
   public function autosaveKRAField(Request $request)
   {
-      // Retrieve the data sent from the frontend
-      $kraID = $request->input('kraID');
-      $fieldName = $request->input('fieldName');
-      $appraisalId = $request->input('appraisalId');
+    // Retrieve the data sent from the frontend
+    $kraID = $request->input('kraID');
+    $fieldName = $request->input('fieldName');
+    $appraisalId = $request->input('appraisalId');
 
-      Log::info('FN'.$fieldName);
+    Log::info('FN' . $fieldName);
 
-      $fieldNameParts = explode('_', $fieldName); // Split into parts
-      array_shift($fieldNameParts); // Remove the first part "KRA"
-      $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
+    $fieldNameParts = explode('_', $fieldName); // Split into parts
+    array_shift($fieldNameParts); // Remove the first part "KRA"
+    $newFieldName = implode('_', $fieldNameParts); // Join the remaining parts with underscores
 
-      $fieldValue = $request->input('fieldValue');
+    $fieldValue = $request->input('fieldValue');
 
-      Log::info($newFieldName);
-      Log::info($fieldValue);
+    Log::info($newFieldName);
+    Log::info($fieldValue);
 
-      try {
-          // Find the KRA by ID
-          $kra = KRA::find($kraID);
+    try {
+      // Find the KRA by ID
+      $kra = KRA::find($kraID);
 
-          if (!$kra) {
-            // Create a new KRA record with the provided ID and field value
-            $kra = new KRA([
-                'kra_id' => $kraID, // Assuming kra_id is set as the ID attribute
-                'appraisal_id' => $appraisalId,
-                'kra_order' => $kraID,
-                $fieldName => $fieldValue
-            ]);
+      if (!$kra) {
+        // Create a new KRA record with the provided ID and field value
+        $kra = new KRA([
+          'kra_id' => $kraID,
+          // Assuming kra_id is set as the ID attribute
+          'appraisal_id' => $appraisalId,
+          'kra_order' => $kraID,
+          $fieldName => $fieldValue
+        ]);
 
-            $kra->save();
-
-            return response()->json(['message' => 'KRA created and autosave successful']);
-        }
-
-        // Update the specific field value
-        $kra->$newFieldName = $fieldValue;
         $kra->save();
 
-        return response()->json(['message' => 'Autosave successful']);
-      } catch (\Exception $e) {
-          Log::error('Exception Message: ' . $e->getMessage());
-          Log::error('Exception Line: ' . $e->getLine());
-          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-          // Handle errors if any
-          return response()->json(['error' => 'Autosave failed'], 500);
+        return response()->json(['message' => 'KRA created and autosave successful']);
       }
+
+      // Update the specific field value
+      $kra->$newFieldName = $fieldValue;
+      $kra->save();
+
+      return response()->json(['message' => 'Autosave successful']);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
+    }
   }
 
   // public function autosaveKRAField(Request $request)
@@ -689,56 +696,79 @@ class SelfEvaluationController extends Controller
 
   protected function createKRA(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
     foreach ($request->input('KRA') as $kraID => $kraData) {
       $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
         ->where('kra_id', $kraID)
         ->first();
 
+      $kraWeight = $kraData[$request->input('appraisalID')]['KRA_kra_weight'] / 100; // Convert percentage to decimal
+      $performanceLevel = $kraData[$request->input('appraisalID')]['KRA_performance_level'];
+      Log::info('WEIGHT: ' . $kraWeight);
+      Log::info('performanceLevel: ' . $performanceLevel);
+
+      // Calculate the weighted total
+      $weightedTotal = $kraWeight * $performanceLevel;
+      Log::info('weightedTotal: ' . $weightedTotal);
+
+
       if ($existingKRA) {
         if (
-          $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
-          $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
+          $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
           $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator'] ||
+          $existingKRA->performance_level !== $kraData[$request->input('appraisalID')]['KRA_performance_level'] ||
+          $existingKRA->weighted_total !== $weightedTotal
         ) {
           $existingKRA->update([
-            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_kra_weight'],
             'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
             'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+            'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
+            'weighted_total' => $weightedTotal,
           ]);
         }
       } else {
         KRA::create([
           'appraisal_id' => $request->input('appraisalID'),
           'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_kra_weight'],
           'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
           'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
           'kra_order' => $kraID,
         ]);
       }
-
+      ///////////////////////////////////////////SELF EVAL//////////////////////////////////////////////////////////////
       $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
         ->where('kra_id', $kraID + 1)
         ->first();
 
       if ($existingSelfEvalKRA) {
         Log::info($existingSelfEvalKRA);
-        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
-        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        Log::info('KRA ID: ' . ($kraID - 1));
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1));
 
         if (
-          $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA'] ||
-          $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_weight'] ||
+          $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
+          $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
           $existingSelfEvalKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-          $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+          $existingSelfEvalKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator'] ||
+          $existingSelfEvalKRA->performance_level !== $kraData[$request->input('appraisalID')]['KRA_performance_level'] ||
+          $existingKRA->weighted_total !== $weightedTotal
         ) {
           $existingSelfEvalKRA->update([
-            'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+            'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
+            'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_kra_weight'],
             'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
             'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+            'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
+            'weighted_total' => $weightedTotal,
           ]);
         }
       } else {
@@ -748,14 +778,14 @@ class SelfEvaluationController extends Controller
 
         KRA::create([
           'appraisal_id' => $request->input('appraisalID') - 1,
-          'kra' => $kraData[$request->input('appraisalID')]['KRA'],
-          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_weight'],
+          'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
+          'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_kra_weight'],
           'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
           'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+          'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
           'kra_order' => $kraID,
         ]);
       }
-
     }
   }
 

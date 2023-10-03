@@ -97,13 +97,13 @@
                                 </div>
 
                                 @if (session('success'))
-                                    <div class="alert alert-success w-25 mt-3">
+                                    <div class="alert alert-success w-90 mt-3">
                                         {{ session('success') }}
                                     </div>
                                 @endif
 
                                 @if (session('error'))
-                                    <div class="alert alert-danger w-25 mt-3">
+                                    <div class="alert alert-danger w-90 mt-3">
                                         {{ session('error') }}
                                     </div>
                                 @endif

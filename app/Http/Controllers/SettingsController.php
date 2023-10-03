@@ -82,8 +82,8 @@ class SettingsController extends Controller
     }
 
     $account_id = session()->get('account_id');
-    $user = Accounts::find($account_id)->first();
-
+    $user = Accounts::where('account_id', $account_id)->first();
+    
     if ($request->current_password == $user->default_password || Hash::check($request->current_password, $user->password)) {
       $newPassword = $request->new_password;
       $hashedPassword = Hash::make($newPassword);

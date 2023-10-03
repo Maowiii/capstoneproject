@@ -415,7 +415,7 @@ textarea {
 }
 
 .text-right {
-    text-align: right;
+    text-align: right!important;
 }
 
 .position-right {

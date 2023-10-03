@@ -66,6 +66,9 @@ Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOver
 Route::get('/admin-appraisals-overview/get-signatures', [AdminAppraisalsOverviewController::class, 'loadSignatureOverview'])->name('ad.loadSignaturesOverview');
 Route::get('/admin-appraisals-overview/load-signature-image', [AdminAppraisalsOverviewController::class, 'loadSignature'])->name('ad.loadSignature');
 Route::get('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
+Route::post('/admin-appraisals-overview/toggle-kra-lock', [AdminAppraisalsOverviewController::class, 'toggleKRALock'])->name('ad.toggleKRALock');
+Route::post('/admin-appraisals-overview/toggle-pr-lock', [AdminAppraisalsOverviewController::class, 'togglePRLock'])->name('ad.togglePRLock');
+Route::post('/admin-appraisals-overview/toggle-eval-lock', [AdminAppraisalsOverviewController::class, 'toggleEvalLock'])->name('ad.toggleEvalLock');
 
 Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminInternalCustomerController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
 Route::get('/admin-appraisals-overview/get-IC-questions', [AdminInternalCustomerController::class, 'getICQuestions'])->name('ad.getICQuestions');
