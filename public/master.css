@@ -373,6 +373,7 @@ thead {
 
 td {
   vertical-align: middle;
+  text-align: center;
 }
 .table-bordered {
     border: solid #c3d7f1 1px !important;
@@ -483,4 +484,8 @@ textarea {
 .is-grayed {
     background-color: #e9ecef !important;
     color: #999 !important;
+}
+
+.table-fit {
+  width: 1px;
 }

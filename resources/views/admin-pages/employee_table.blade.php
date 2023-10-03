@@ -170,10 +170,10 @@
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         function createResetButton(account) {
-            return $('<div>').addClass('input-group').attr('id', 'passwordContainer-' +
+            return $('<div>').addClass('input-group justify-content-center').attr('id', 'passwordContainer-' +
                 account.account_id).append(
                 $('<button>').addClass('btn btn-outline-primary').html(
-                    'Reset Password').click(function() {
+                    'Reset').click(function() {
                     $('#resetPasswordName').text(account.employee.first_name +
                         ' ' + account.employee.last_name);
                     $('#resetPasswordModal').modal('show');

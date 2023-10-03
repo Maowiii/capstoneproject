@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
 
   protected $middlewareGroups = [
     'web' => [
+      \Illuminate\Session\Middleware\StartSession::class,
       \App\Http\Middleware\SessionExpired::class,
     ],
   ];

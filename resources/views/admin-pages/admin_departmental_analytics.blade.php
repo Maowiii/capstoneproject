@@ -6,11 +6,21 @@
 
 @section('content')
     <div class='d-flex gap-3'>
-        <div class="content-container text-middle" id="total-permanent-employees-container">
+        <div class="content-container text-middle" id="total-pe-container">
             <h4>Total Permanent Employees:</h4>
+            <p>-</p>
         </div>
-        <div class="content-container text-middle" id="avg-total-score-container">
+        <div class="content-container text-middle" id="avg-score-container">
             <h4>Average Total Score:</h4>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Point System:</h2>
+        </div>
+        <div class="content-container">
+            <h2>Graph:</h2>
         </div>
     </div>
 
@@ -21,7 +31,7 @@
             <thead>
                 <th>#</th>
                 <th>Question</th>
-                <th>Average Score</th>
+                <th class="medium-column">Average Score</th>
             </thead>
             <tbody></tbody>
         </table>
@@ -30,7 +40,7 @@
             <thead>
                 <th>#</th>
                 <th>Question</th>
-                <th>Average Score</th>
+                <th class="medium-column">Average Score</th>
             </thead>
             <tbody></tbody>
         </table>
@@ -39,7 +49,7 @@
             <thead>
                 <th>#</th>
                 <th>Question</th>
-                <th>Average Score</th>
+                <th class="medium-column">Average Score</th>
             </thead>
             <tbody></tbody>
         </table>
@@ -51,7 +61,7 @@
             <thead>
                 <th>#</th>
                 <th>Question</th>
-                <th>Average Score</th>
+                <th class="medium-column">Average Score</th>
             </thead>
             <tbody></tbody>
         </table>
@@ -60,18 +70,70 @@
     <script>
         $(document).ready(function() {
             const departmentName = new URLSearchParams(window.location.search).get('department_name');
+            const departmentID = new URLSearchParams(window.location.search).get('department_id');
             const selectedYear = new URLSearchParams(window.location.search).get('sy');
 
             console.log('Selected Year: ' + selectedYear);
+            console.log('Department ID: ' + departmentID);
 
             if (departmentName) {
                 $('#department-heading').text(departmentName);
             }
 
             loadQuestions(selectedYear);
+            loadCards(selectedYear, departmentID);
         });
 
-        function loadQuestions(selectedYear) {
+        function loadCards(selectedYear = null, departmentID = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDepartmentalCards') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                    departmentID: departmentID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#total-pe-container').html('<h4>Total Permanent Employees:</h4><p>' + response
+                            .totalPermanentEmployees + '</p>');
+
+                        $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
+                            '</p>');
+                    } else {}
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function loadPointsSystem(selectedYear = null, departmentID = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadPointSystem') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                    departmentID: departmentID
+                },
+                success: function(response) {
+                    if (response.success) {
+
+                    } else {}
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function loadQuestions(selectedYear = null) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -83,7 +145,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
                         if (response.sid) {
                             var sidTable = $('#sid_table tbody');
                             sidTable.empty();
@@ -94,7 +155,7 @@
                                     .question_order));
                                 row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td class='text-center'>").text('-'));
+                                row.append($("<td>").text('-'));
 
                                 sidTable.append(row);
                             });
@@ -108,9 +169,9 @@
                                 var row = $("<tr>");
                                 row.append($("<td>").text(item
                                     .question_order));
-                                row.append($("<td>").text(item
+                                row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td class='text-center'>").text('-'));
+                                row.append($("<td>").text('-'));
                                 srTable.append(row);
                             });
                         }
@@ -123,9 +184,9 @@
                                 var row = $("<tr>");
                                 row.append($("<td>").text(item
                                     .question_order));
-                                row.append($("<td>").text(item
+                                row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td class='text-center'>").text('-'));
+                                row.append($("<td>").text('-'));
                                 sTable.append(row);
                             });
                         }
@@ -138,9 +199,9 @@
                                 var row = $("<tr>");
                                 row.append($("<td>").text(item
                                     .question_order));
-                                row.append($("<td>").text(item
+                                row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td class='text-center'>").text('-'));
+                                row.append($("<td>").text('-'));
                                 icTable.append(row);
                             });
                         }
