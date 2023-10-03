@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
+use App\Models\FinalScores;
 use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
@@ -41,7 +42,7 @@ class PEInternalCustomerController extends Controller
 
     return response()->json($assignments);
   }
- 
+
 
   public function getICQuestions()
   {
@@ -204,40 +205,90 @@ class PEInternalCustomerController extends Controller
   public function submitICSignature(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
     }
 
     $appraisalId = $request->input('appraisalId');
     $esignature = $request->input('esignature');
     $totalWeightedScore = $request->input('totalWeightedScore');
 
-    Signature::updateOrCreate(
-      ['appraisal_id' => $appraisalId],
-      ['sign_data' => $esignature, 'sign_type' => 'IC']
-    );
+    $employeeId = Appraisals::where('appraisal_id', $appraisalId)->value('employee_id');
 
-    $appraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
-
-    if ($appraisal) {
-      $appraisal->update(
-        [
-          'ic_score' => $totalWeightedScore,
-          'date_submitted' => now(),
-          'locked' => true
-        ]
+    try {
+      Signature::updateOrCreate(
+        ['appraisal_id' => $appraisalId],
+        ['sign_data' => $esignature, 'sign_type' => 'IC']
       );
-      return response()->json(['success' => true]);
-    } else {
-      return response()->json(['success' => false]);
+
+      $appraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
+
+      if (!$appraisal) {
+        return response()->json(['success' => false, 'message' => 'Appraisal not found for the given appraisal ID'], 400);
+      }
+
+      $appraisal->update([
+        'ic_score' => $totalWeightedScore,
+        'date_submitted' => now(),
+        'locked' => true,
+      ]);
+
+      $allFormsSubmitted = Appraisals::where('employee_id', $employeeId)
+        ->whereIn('appraisal_type', ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'])
+        ->whereNotNull('date_submitted')
+        ->count() == 4;
+
+      if ($allFormsSubmitted) {
+        $selfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'self evaluation')
+          ->value('bh_score');
+
+        $ic1Score = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'internal customer 1')
+          ->value('ic_score');
+
+        $ic2Score = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'internal customer 2')
+          ->value('ic_score');
+
+        $isEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'is evaluation')
+          ->value('bh_score');
+
+        $behavioralWeight = 0.4;
+        $kraWeight = 0.6;
+
+        $behavioralTotalScore = ($selfEvalScore + $ic1Score + $ic2Score + $isEvalScore) / 4;
+        $kraSelfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'self evaluation')
+          ->value('kra_score');
+
+        $kraISEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+          ->where('appraisal_type', 'is evaluation')
+          ->value('kra_score');
+
+        $kraTotalScore = (($kraSelfEvalScore * 0.4) + ($kraISEvalScore * 0.6)) / 2;
+
+        $finalScore = ($behavioralTotalScore * $behavioralWeight) + ($kraTotalScore * $kraWeight);
+
+        FinalScores::updateOrCreate(
+          ['employee_id' => $employeeId],
+          ['final_score' => $finalScore]
+        );
+      }
+
+      return response()->json(['success' => true, 'message' => 'IC signature updated and final score computed.']);
+    } catch (\Exception $e) {
+      return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()], 500);
     }
   }
+
 
   public function formChecker(Request $request)
   {
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
     $locked = $appraisal->locked;

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EvaluationYearController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminInternalCustomerController;
+use App\Http\Controllers\Admin\DepartmentalAnalyticsController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -52,11 +53,13 @@ Route::post('/reset-password/verify-code', [AuthController::class, 'step2_Verify
 Route::post('/reset-password/reset', [AuthController::class, 'step3_ResetPassword'])->name('reset-password');
 Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name('resend-code');
 
+/* ----- ADMIN ----- */
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
+Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
+Route::get('/dashboard-admin/department/load-questions', [DepartmentalAnalyticsController::class, 'loadQuestions'])->name('ad.loadQuestions');
 
-/* ----- ADMIN ----- */
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');

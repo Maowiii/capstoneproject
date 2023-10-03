@@ -62,7 +62,7 @@
     </div>
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content" id="signatory">
                 <div class="modal-header">
                     <h5 class="modal-title fs-5">Signatories</h5>

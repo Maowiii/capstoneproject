@@ -31,32 +31,30 @@ class AdminDashboardController extends Controller
       $page = $request->input('page');
 
       if ($selectedYear) {
-        $parts = explode('_', $selectedYear);
+        if ($search) {
+          $table = 'appraisals_' . $selectedYear;
+          $appraisalModel = new Appraisals;
+          $appraisalModel->setTable($table);
 
-        if (count($parts) >= 2) {
-          $sy_start = $parts[0];
-          $sy_end = $parts[1];
+        } else {
+
         }
 
-        if (Appraisals::tableExists()) {
-          if ($search) {
-
-          } else {
-
-          }
-        } 
       } else {
-        if (Appraisals::tableExists()) {
-          if ($search) {
-            
-          } else {
-            $departments = Departments::orderBy('department_name')->paginate(20);
-            Log::debug($departments);
+        if ($search) {
+          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+            ->orderBy('department_name')
+            ->paginate(20);
+
+          return response()->json(['success' => true, 'departments' => $departments]);
+        } else {
+          $departments = Departments::orderBy('department_name')->paginate(20);
+          Log::debug($departments);
 
 
-            return response()->json(['success' => true, 'departments' => $departments]);
-          }
+          return response()->json(['success' => true, 'departments' => $departments]);
         }
+
       }
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');

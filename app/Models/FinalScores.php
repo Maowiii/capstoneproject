@@ -15,6 +15,7 @@ class FinalScores extends Model
   protected $fillable = [
     'employee_id',
     'question_id',
+    'department_id',
     'final_score'
   ];
 

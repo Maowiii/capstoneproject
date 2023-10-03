@@ -5,24 +5,27 @@
 @endsection
 
 @section('content')
-<div class="content-container">
-    <h3>Basic Information</h3>
-    <div class="row g-3 align-items-center mb-3">
-            <div class="col-1">
+    <div class="content-container">
+        <div class="mb-3">
+            <h3>Basic Information:</h3>
+            <div class="row g-3 align-items-center mb-3">
+                <div class="col-1">
                     <label for="fullName"> Full Name</label>
                 </div>
                 <div class="col-4">
-                <input type="text" class="form-control" value="" readonly>
+                    <input type="text" class="form-control" value="" readonly>
+                </div>
             </div>
-        </div>
-        <div class="row g-3 align-items-center mb-3">
-            <div class="col-1">
+            <div class="row g-3 align-items-center mb-3">
+                <div class="col-1">
                     <label for="emailAddress">Adamson Mail</label>
                 </div>
                 <div class="col-4">
-                <input type="text" class="form-control" value="" readonly>
+                    <input type="text" class="form-control" value="" readonly>
+                </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 <h3>Change Password:</h3>
