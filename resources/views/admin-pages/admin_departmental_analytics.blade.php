@@ -218,8 +218,8 @@
                                     y: {
                                         beginAtZero: true,
                                         max: Math.max(...categories.map(category => response[category
-                                            .key] ? response[category.key].length : 0)) +
-                                        1,
+                                                .key] ? response[category.key].length : 0)) +
+                                            1,
                                         ticks: {
                                             stepSize: 1,
                                         },
@@ -234,7 +234,9 @@
                             table.empty();
                             const row = $("<tr class='text-center'>");
 
-                            if (response[category.key]) {
+                            if (response[category.key].length > 0) {
+                                console.log(response[category.key]);
+                                console.log('Category not empty.');
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
@@ -243,6 +245,7 @@
                                     table.append(row.clone());
                                 });
                             } else {
+                                console.log('Category empty.');
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }

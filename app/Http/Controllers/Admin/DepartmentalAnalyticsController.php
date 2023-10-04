@@ -179,7 +179,7 @@ class DepartmentalAnalyticsController extends Controller
 
     return response()->json([
       'success' => true,
-      'oustanding' => $outstanding,
+      'outstanding' => $outstanding,
       'verySatisfactory' => $verySatisfactory,
       'satisfactory' => $satisfactory,
       'fair' => $fair,

@@ -11,7 +11,9 @@
         </div>
         <div class="col">
             <select class="form-select align-middle" id="evaluation-year-select">
-                <option value="">Select an Evaluation Year (no ongoing evaluation)</option> <!-- Default option -->
+                @if (!$activeEvalYear)
+                    <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+                @endif
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
                         @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>

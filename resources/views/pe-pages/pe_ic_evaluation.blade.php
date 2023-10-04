@@ -151,6 +151,8 @@
                                     loadSignature();
                                     console.log('Esignature Updated.');
                                     formChecker();
+                                } else {
+                                    console.log('Esignature Updated bot else');
                                 }
                             },
                             error: function(xhr, status, error) {}
@@ -391,7 +393,6 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log('success');
                             $('#signtable tbody').empty();
                             var newRow = $('<tr>').addClass('align-middle');
                             newRow.append($('<td>').text('Internal Customer'));
@@ -400,6 +401,7 @@
                             $('#modalImage').attr('src', response.sign_data);
 
                             if (response.sign_data) {
+                                console.log('Response Data Received');
                                 $('#cancel-btn').hide();
                                 $('#esig-submit-btn').hide();
                                 newRow.append($('<td>').addClass('align-middle').html(
@@ -408,6 +410,7 @@
                                     '</button>'
                                 ));
                             } else {
+                                console.log('Response data not received');
                                 newRow.append($('<td>').addClass('align-middle').html(
                                     '<div>' +
                                     '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
