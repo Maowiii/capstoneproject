@@ -129,6 +129,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            console.log(response);
                             $('#admin_appraisals_table tbody').empty();
                             var groupedAppraisals = response.groupedAppraisals;
 
