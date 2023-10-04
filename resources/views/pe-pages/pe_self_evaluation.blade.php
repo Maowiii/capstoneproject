@@ -304,7 +304,6 @@
                     </tr>
                 </thead>
             </table>
-            </tfoot>
         </div>
 
         <div class="content-container">
@@ -409,6 +408,21 @@
                     </tr>
                 </tfoot>
             </table>
+            <table class='table table-bordered' id='Overall_table'>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td class='text-right'>Overall Behavioral Competencies Total:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input class="small-column form-control total-frequency text-center" type="text"
+                                    readonly>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            </tfoot>
         </div>
 
         <div class="content-container">
