@@ -36,12 +36,13 @@ class CEDashboardController extends Controller
     }
 
     $activeYear = EvalYear::where('status', 'active')->first();
-    $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
     $currentDate = Carbon::now();
 
     $notifications = [];
 
     if ($activeYear) {
+      $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
+
       $dateStart = Carbon::parse($activeYear->kra_start);
       $dateEnd = Carbon::parse($activeYear->eval_end);
       $fiveDaysAfterStart = $dateStart->copy()->addDays(5);
@@ -65,6 +66,8 @@ class CEDashboardController extends Controller
           $notifications[] = "The evaluation period has ended. You still have $pendingAppraisalsCount appraisals remaining. Please contact the administrator for further assistance.";
         }
       }
+    } else {
+      $notifications[] = "There is no ongoing evaluation.";
     }
     return response()->json(['notifications' => $notifications]);
   }
@@ -106,7 +109,7 @@ class CEDashboardController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $job_title = $request->job_title;
     $request->session()->put('title', $job_title);
     $account_id = session()->get('account_id');

@@ -112,7 +112,7 @@
 
                             notificationsContainer.append(listItem);
                         });
-                    } 
+                    }
                     if (response.data) {
                         console.log(response.data);
 
@@ -123,21 +123,18 @@
                         var totalAppraisalCount = response.data.totalAppraisalCount;
                         var completedAppraisalCount = response.data.completedAppraisalCount;
 
-                        console.log('Encoded KRA Count: ' + encodedKRACount);
-                        console.log('Completed Appraisal Count: ' + completedAppraisalCount);
-                        console.log('Total Appraisal Count: ' + totalAppraisalCount);
-                        console.log('Total IC Count: ' + totalICCount);
-
                         $('#appraisalContainer').html(
                             '<h4 class="text-center">Completed Appraisals:</h4><h5 class="text-center">' +
-                            completedAppraisalCount + '/' + totalAppraisalCount + '</h5>');
+                            (completedAppraisalCount ? completedAppraisalCount + '/' + totalAppraisalCount :
+                                '-') + '</h5>');
                         $('#KRAsContainer').html(
                             '<h4 class="text-center">KRA Encoded:</h4><h5 class="text-center">' +
-                            encodedKRACount + '/' + totalAppraisalCount + '</h5>');
+                            (encodedKRACount ? encodedKRACount + '/' + totalAppraisalCount : '-') + '</h5>');
                         $('#assignedICContainer').html(
                             '<h4 class="text-center">Assigned IC:</h4><h5 class="text-center">' +
-                            assignedICCount + '/' + totalICCount + '</h5>');
+                            (assignedICCount ? assignedICCount + '/' + totalICCount : '-') + '</h5>');
                     }
+
                 },
                 error: function(xhr, status, error) {
                     console.log(error);

@@ -61,12 +61,13 @@ class PEDashboardController extends Controller
     }
     
     $activeYear = EvalYear::where('status', 'active')->first();
-    $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
     $currentDate = Carbon::now();
 
     $notifications = [];
 
     if ($activeYear) {
+      $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
+
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);
       $prStart = Carbon::parse($activeYear->pr_start);
@@ -136,6 +137,8 @@ class PEDashboardController extends Controller
         }
       }
 
+    } else {
+      $notifications[] = "There is no ongoing evaluation.";
     }
     return response()->json(['notifications' => $notifications]);
   }

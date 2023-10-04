@@ -26,6 +26,9 @@ class AdminDashboardController extends Controller
   public function loadDepartmentTable(Request $request)
   {
     if (session()->has('account_id')) {
+
+      $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+
       $search = $request->input('search');
       $selectedYear = $request->input('selectedYear');
       $page = $request->input('page');
@@ -37,10 +40,14 @@ class AdminDashboardController extends Controller
           $appraisalModel->setTable($table);
 
         } else {
+          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+            ->orderBy('department_name')
+            ->paginate(20);
 
+          return response()->json(['success' => true, 'departments' => $departments]);
         }
 
-      } else {
+      } elseif ($activeEvalYear) {
         if ($search) {
           $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
             ->orderBy('department_name')
@@ -54,7 +61,8 @@ class AdminDashboardController extends Controller
 
           return response()->json(['success' => true, 'departments' => $departments]);
         }
-
+      } else {
+        return response()->json(['success' => false]);
       }
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');

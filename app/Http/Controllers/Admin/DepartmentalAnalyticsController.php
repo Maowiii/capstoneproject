@@ -114,27 +114,67 @@ class DepartmentalAnalyticsController extends Controller
     $departmentID = $request->input('departmentID');
 
     if ($selectedYear) {
-
-    } else {
       $outstanding = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_scores', [4.85, 5.00]) // Use whereBetween to filter the range
+        ->whereBetween('final_score', [4.85, 5.00])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
         ->get();
 
       $verySatisfactory = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_scores', [4.25, 4.84])
+        ->whereBetween('final_score', [4.25, 4.84])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
         ->get();
 
       $satisfactory = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_scores', [3.50, 4.24])
+        ->whereBetween('final_score', [3.50, 4.24])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
         ->get();
 
       $fair = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_scores', [2.75, 3.49])
+        ->whereBetween('final_score', [2.75, 3.49])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
         ->get();
 
       $poor = FinalScores::where('department_id', $departmentID)
-        ->where('final_scores', '<', 2.75) // No need for a range for this condition
+        ->where('final_score', '<', 2.75)
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
         ->get();
+
+    } else {
+      $outstanding = FinalScores::where('department_id', $departmentID)
+        ->whereBetween('final_score', [4.85, 5.00])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
+        ->get();
+
+      $verySatisfactory = FinalScores::where('department_id', $departmentID)
+        ->whereBetween('final_score', [4.25, 4.84])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
+        ->get();
+
+      $satisfactory = FinalScores::where('department_id', $departmentID)
+        ->whereBetween('final_score', [3.50, 4.24])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
+        ->get();
+
+      $fair = FinalScores::where('department_id', $departmentID)
+        ->whereBetween('final_score', [2.75, 3.49])
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
+        ->get();
+
+      $poor = FinalScores::where('department_id', $departmentID)
+        ->where('final_score', '<', 2.75)
+        ->with('employee')
+        ->orderBy('final_score') // Add orderBy clause
+        ->get();
+
     }
 
     return response()->json([

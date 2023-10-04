@@ -56,13 +56,14 @@ class ISDashboardController extends Controller
     
     $immediateSuperior = session()->get('account_id');
     $activeYear = EvalYear::where('status', 'active')->first();
-    $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
     $currentDate = Carbon::now();
 
     $notifications = [];
     $data = [];
 
     if ($activeYear) {
+      $schoolYear = $activeYear->sy_start . ' - ' . $activeYear->sy_end;
+
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);
       $prStart = Carbon::parse($activeYear->pr_start);
@@ -192,6 +193,8 @@ class ISDashboardController extends Controller
           $notifications[] = "The evaluation period for school year $schoolYear has ended.";
         }
       }
+    } else {
+      $notifications[] = "There is no ongoing evaluation.";
     }
 
     return response()->json(['notifications' => $notifications, 'data' => $data]);

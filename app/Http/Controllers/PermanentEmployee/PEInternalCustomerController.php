@@ -31,16 +31,20 @@ class PEInternalCustomerController extends Controller
       return view('auth.login');
     }
 
-    $accountId = session('account_id');
-    $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
+    if (Appraisals::tableExists()) {
+      $accountId = session('account_id');
+      $appraiserId = Employees::where('account_id', $accountId)->value('employee_id');
 
-    $assignments = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
-      ->where('evaluator_id', $appraiserId)
-      ->with(['employee.department', 'employee'])
-      ->with(['evaluator.department'])
-      ->get();
+      $assignments = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
+        ->where('evaluator_id', $appraiserId)
+        ->with(['employee.department', 'employee'])
+        ->with(['evaluator.department'])
+        ->get();
 
-    return response()->json($assignments);
+      return response()->json(['success' => true, 'assignemnts' => $assignments]);
+    } else {
+      return response()->json(['success' => false]);
+    }
   }
 
 

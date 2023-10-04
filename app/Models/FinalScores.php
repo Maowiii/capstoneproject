@@ -29,4 +29,9 @@ class FinalScores extends Model
       $this->setTable($activeYear);
     }
   }
+
+  public function employee()
+  {
+    return $this->belongsTo(Employees::class, 'employee_id', 'employee_id');
+  }
 }

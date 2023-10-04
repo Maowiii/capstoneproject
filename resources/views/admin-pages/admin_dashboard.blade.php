@@ -11,22 +11,27 @@
         </div>
         <div class="col">
             <select class="form-select align-middle" id="evaluation-year-select">
+                <option value="">Select an Evaluation Year (no ongoing evaluation)</option> <!-- Default option -->
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
-                        @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                        @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>
                         {{ $year->sy_start }} - {{ $year->sy_end }}
                     </option>
                 @endforeach
             </select>
+
+
         </div>
     </div>
 
     <div class='d-flex gap-3'>
         <div class="content-container text-middle" id="total-permanent-employees-container">
             <h4>Total Permanent Employees:</h4>
+            <p>-</p>
         </div>
         <div class="content-container text-middle" id="avg-total-score-container">
             <h4>Average Total Score:</h4>
+            <p>-</p>
         </div>
     </div>
 
@@ -60,6 +65,7 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 console.log('Selected Year: ' + selectedYear);
+                loadDepartmentTable(selectedYear, null);
             });
 
             $('#search').on('input', function() {
@@ -95,7 +101,8 @@
                             row.append($('<td>').text(i + 1));
 
                             var departmentNameLink = $('<a>')
-                                .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear + "&department_id=" + department
+                                .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
+                                    "&department_id=" + department
                                     .department_id + '&department_name=' + encodeURIComponent(department
                                         .department_name))
                                 .text(department.department_name);
