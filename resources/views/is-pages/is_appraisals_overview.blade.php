@@ -64,7 +64,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="ISModal-label">Choose the Internal Customer:</h1>
+                    <h1 class="modal-title fs-5" id="ISModal-label">Choose 2 Internal Customers:</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -97,7 +97,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="ISModal-label">Choose the Internal Customer:</h1>
+                    <h1 class="modal-title fs-5" id="ISModal-label">Choose 2 Internal Customers:</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -122,10 +122,10 @@
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function() {
             loadTableData();
-            loadEmployeeData();
         });
 
         function refreshPage() {
@@ -169,7 +169,7 @@
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     viewLink = $('<a>').addClass('btn btn-outline-primary')
                                         .attr('href',
-                                            `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                            `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id))
                                         .text('View');
                                 } else if (appraisal.evaluation_type ===
@@ -181,13 +181,20 @@
                                             .attr('data-bs-toggle', 'modal')
                                             .attr('data-appraisal-id', appraisal
                                                 .appraisal_id)
+                                            .attr('data-employee-id', appraisee
+                                                .employee_id)
                                             .text('Choose IC1').on('click', function() {
                                                 // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
+                                                var employeeId = $(this).data(
+                                                    'employee-id');
                                                 // Set the data attribute for the modal
                                                 $('#ISModal1').attr('data-appraisal-id',
                                                     appraisalId);
+
+                                                loadEmployeeData(employeeId);
+
                                             });
                                     } else {
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
@@ -205,18 +212,25 @@
                                             .attr('data-bs-target', '#ISModal2')
                                             .attr('data-bs-toggle', 'modal')
                                             .attr('data-appraisal-id', appraisal.appraisal_id)
+                                            .attr('data-employee-id', appraisee
+                                                .employee_id)
                                             // Include the appraisal ID here
                                             .text('Choose IC2').on('click', function() {
                                                 console.log('waz clicked');
                                                 // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
+
+                                                var employeeId = $(this).data(
+                                                    'employee-id');
                                                 console.log(appraisalId);
 
                                                 // Set the data attribute for the modal
                                                 $('#ISModal2').attr('data-appraisal-id',
                                                     appraisalId);
                                                 console.log(appraisalId);
+
+                                                loadEmployeeData(employeeId);
 
                                             });
                                     } else {
@@ -273,10 +287,13 @@
 
         var selectedRows = [];
 
-        function loadEmployeeData() {
+        function loadEmployeeData(excludedEmployeeId) {
             $.ajax({
                 url: '{{ route('getEmployeesData') }}',
                 type: 'GET',
+                data: {
+                    excludedEmployeeId: excludedEmployeeId
+                }, // Use an object
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -285,39 +302,47 @@
                         $('.emp_modal').empty();
 
                         var employees = response.employees;
+
                         for (var i = 0; i < employees.length; i++) {
                             var employee = employees[i];
-
-                            var newRow = $('<tr>').addClass('row-checkbox').append(
-                                $('<div>').attr('id', 'checkboxes').append(
-                                    $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr('value',
-                                        employee.employee_id),
-                                    $('<label>').addClass('chooseIC text-justify').attr('for', employee
-                                        .employee_id).append(
-                                        $('<td>').text(employee.first_name + ' ' + employee.last_name),
+                            // Check if the employee_id matches the excludedEmployeeId and is not the current appraisee
+                            if (employee.employee_id !== excludedEmployeeId && response.evaluatorId !== employee
+                                            .employee_id) {
+                                // Create and append the row if there is no match
+                                
+                                var newRow = $('<tr>').addClass('row-checkbox').append(
+                                    $('<div>').attr('id', 'checkboxes').append(
+                                        $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr(
+                                            'value', employee.employee_id).prop('disabled',
+                                            false),
+                                        $('<label>').addClass(
+                                            'chooseIC text-center d-flex justify-content-center').attr(
+                                            'for', employee.employee_id).append(
+                                            $('<td>').text(employee.first_name + ' ' + employee.last_name),
+                                        ),
                                     ),
-                                ),
-                                $('<td>').text(employee.department_name)
-                            );
+                                    $('<td>').text(employee.department_name)
+                                );
 
-                            newRow.on('click', function() {
-                                var checkbox = $(this).find('input[type="checkbox"]');
-                                var isChecked = checkbox.prop('checked');
-                                var checkedCount = $('input[type="checkbox"]:checked').length;
+                                newRow.on('click', function() {
+                                    var checkbox = $(this).find('input[type="checkbox"]');
+                                    var isChecked = checkbox.prop('checked');
+                                    var checkedCount = $('input[type="checkbox"]:checked').length;
 
-                                if (isChecked || checkedCount < 1) {
-                                    checkbox.prop('checked', !isChecked);
-                                    $(this).toggleClass('row-selected', !isChecked);
+                                    if (isChecked || checkedCount < 2) {
+                                        checkbox.prop('checked', !isChecked);
+                                        $(this).toggleClass('row-selected', !isChecked);
 
-                                    // Set the employee ID in the modal title
-                                    $('#ISModal1 .modal-title').data('employee-id', employee
-                                        .employee_id);
+                                        // Set the employee ID in the modal title
+                                        $('#ISModal1 .modal-title').data('employee-id', employee
+                                            .employee_id);
 
-                                    updateSelectedRows();
-                                }
-                            });
+                                        updateSelectedRows();
+                                    }
+                                });
 
-                            $('.emp_modal').append(newRow);
+                                $('.emp_modal').append(newRow);
+                            }
                         }
                     } else {
                         console.log(response.error);
@@ -329,7 +354,6 @@
             });
         }
 
-
         function updateSelectedRows() {
             selectedRows = [];
             $('input[type="checkbox"]:checked').each(function() {
@@ -337,6 +361,7 @@
                 selectedRows.push(row);
             });
         }
+
         $(document).on('click', '#ISModal1 .btn-primary', function() {
             $('#employee_table_body').empty();
             $('#ISModal1 .search-box').hide();
@@ -353,16 +378,27 @@
             selectedRows = [];
         });
 
-        // Event listener for the "Submit" button in ISModal1
+        // Variables to keep track of selected employees
+        var selectedEmployees = [];
+        var selectedICs = []; // To store selected employee IDs
+
+        // Event listener for the "Submit" button in ISModal1 and ISModal2
         $('#ISModal1 .btn-primary, #ISModal2 .btn-primary').on('click', function() {
-            // Collect selected ICs
-            var selectedICs = [];
+            // Check which modal is active
+            activeModal = $(this).closest('.modal');
+
+            // Reset the selected employees and employee IDs arrays
+            selectedEmployees = [];
+            selectedICs = [];
+
+            // Collect selected ICs and employee names
             $('input[name="ic"]:checked').each(function() {
                 selectedICs.push($(this).val());
+                selectedEmployees.push($(this).data('employee-name')); // Capture selected employee names
             });
 
             // Get the employee ID from the modal title (assuming you have set it)
-            var appraisalIdToUpdate = $(this).closest('.modal').data('appraisal-id');
+            var appraisalIdToUpdate = activeModal.data('appraisal-id');
 
             $.ajax({
                 url: '{{ route('assignInternalCustomer') }}',
@@ -378,8 +414,21 @@
                     if (response.success) {
                         // Assignment successful, you can display a success message if needed
                         console.log('Internal Customer(s) assigned successfully.');
-                        // Close the modal
-                        $('#ISModal1').modal('hide');
+
+                        // Check if the active modal is ISModal1 and two names are selected
+                        if (activeModal.attr('id') === 'ISModal1' && selectedEmployees.length === 2) {
+                            // Update ISModal1 with the first selected employee's name
+                            $('#ISModal1 .modal-body').html('<p>Selected Employee in ISModal1: ' +
+                                selectedEmployees[0] + '</p>');
+                        } else if (activeModal.attr('id') === 'ISModal2' && selectedEmployees.length ===
+                            2) {
+                            // Update ISModal2 with the second selected employee's name
+                            $('#ISModal2 .modal-body').html('<p>Selected Employee in ISModal2: ' +
+                                selectedEmployees[1] + '</p>');
+
+                        }
+                        // Close the active modal
+                        activeModal.modal('hide');
                         refreshPage();
                     } else {
                         // Handle errors, e.g., display an error message

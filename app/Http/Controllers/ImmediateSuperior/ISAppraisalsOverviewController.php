@@ -43,6 +43,9 @@ class ISAppraisalsOverviewController extends Controller
     $department_id = $user->department_id;
     $appraisee = Employees::where('department_id', $department_id)
       ->whereNotIn('account_id', [$account_id])
+      ->whereHas('account', function ($query) {
+        $query->where('type', 'PE');
+      })
       ->get();
 
     $appraisals = Appraisals::whereHas('employee', function ($query) use ($department_id) {
@@ -66,8 +69,9 @@ class ISAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
-    $accounts = Accounts::whereIn('type', ['PE', 'IS', 'CE'])->get();
+    $excludedEmployeeId = $request->input('excludedEmployeeId');
+
+    $accounts = Accounts::whereIn('type', ['PE', 'CE'])->get();
 
     $employeeIds = $accounts->pluck('account_id');
 
@@ -81,9 +85,16 @@ class ISAppraisalsOverviewController extends Controller
       $employee->department_name = $departments[$employee->department_id] ?? 'Unknown Department';
     }
 
+    $evaluatorId = Appraisals::where('employee_id', $excludedEmployeeId)
+    ->where('evaluation_type', 'like', 'internal customer%')
+    ->whereNotNull('evaluator_id')
+    ->pluck('evaluator_id')
+    ->first();
+
     $data = [
       'success' => true,
-      'employees' => $employees
+      'employees' => $employees,
+      'evaluatorId' => $evaluatorId
     ];
     return response()->json($data);
   }
@@ -103,38 +114,66 @@ class ISAppraisalsOverviewController extends Controller
 
   public function assignInternalCustomer(Request $request)
   {
-    // Validate the request data
-    $validatedData = $request->validate([
-      'employee_id' => 'required',
-      'appraisalId' => 'required',
-    ]);
-
     try {
-      $employeeId = (int) $validatedData['employee_id'][0];
-      $appraisalId = (int) $validatedData['appraisalId'];
+      // Validate the request data
+      $validatedData = $request->validate([
+        'employee_id' => 'required|array|between:1,2',
+        // Ensure exactly 2 internal customers are selected
+        'appraisalId' => 'required|integer',
+      ]);
 
-      $firstAppraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
+      // Extract validated data
+      $employeeIds = $validatedData['employee_id'];
+      $appraisalIdIC1 = (int) $validatedData['appraisalId'];
+      $appraisalIdIC2 = $appraisalIdIC1 + 1; // Calculate ID for the second internal customer
 
-      if ($firstAppraisal !== null) {
-        $firstAppraisal->update(['evaluator_id' => $employeeId]);
+      // Initialize an array to store updated appraisals
+      $updatedAppraisals = [];
+
+      foreach ($employeeIds as $index => $employeeId) {
+        $employee = Employees::where('account_id', $employeeId)->first();
+
+        // Try to find an existing appraisal for this employee and appraisal ID
+        $existingAppraisal = Appraisals::where('appraisal_id', ($index === 0) ? $appraisalIdIC1 : $appraisalIdIC2)
+          ->first();
+
+        if ($existingAppraisal !== null) {
+          // Update the existing appraisal record
+          $existingAppraisal->evaluator_id = $employeeId;
+          $existingAppraisal->save();
+
+          $updatedAppraisals[] = $existingAppraisal;
+        } else {
+          // Create a new appraisal record
+          $appraisal = new Appraisals();
+          $appraisal->employee_id = $employeeId;
+          $appraisal->evaluator_id = $employeeId;
+          $appraisal->department_id = $employee->department_id; // Set the department_id
+          $appraisal->appraisal_id = ($index === 0) ? $appraisalIdIC1 : $appraisalIdIC2; // Set the appraisal_id
+          $appraisal->evaluation_type = ($index === 0) ? 'internal customer 1' : 'internal customer 2';
+          $appraisal->save();
+
+          $updatedAppraisals[] = $appraisal;
+        }
       }
 
-      // Return a success response
+      // Return a success response with updated appraisals
       $data = [
         'success' => true,
+        'updated_appraisals' => $updatedAppraisals,
       ];
       return response()->json($data);
-
     } catch (\Exception $e) {
-
+      // Handle any errors, such as database errors or invalid data
       Log::error('Exception Message: ' . $e->getMessage());
       Log::error('Exception Line: ' . $e->getLine());
       Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-      // Handle any errors, such as database errors or invalid data
+
       $data = [
-        'error' => 'Failed to assign Internal Customer. Please try again.',
+        'error' => 'Failed to assign Internal Customers. ' . $e->getMessage(),
       ];
       return response()->json($data, 400);
     }
   }
+
 }

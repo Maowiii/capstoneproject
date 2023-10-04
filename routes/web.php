@@ -123,7 +123,7 @@ Route::get('/dashboard-immediate-superior/get-notifications', [ISDashboardContro
 Route::get('/is-appraisals-overview', [ISAppraisalsOverviewController::class, 'displayISAppraisalsOverview'])->name('viewISAppraisalsOverview');
 Route::get('/is-appraisals-overview/get-data', [ISAppraisalsOverviewController::class, 'getData'])->name('getISData');
 Route::get('/is-appraisals-overview/get-employees', [ISAppraisalsOverviewController::class, 'getEmployees'])->name('getEmployeesData');
-Route::get('/is-appraisal/{appraisal_id}', [ISAppraisalController::class, 'viewAppraisal'])->name('viewAppraisal');
+Route::get('/is-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewAppraisal');
 Route::get('/get-KRA-data', [ISAppraisalController::class, 'getKRA'])->name('getKRA');
 Route::post('/save-is-appraisal', [ISAppraisalController::class, 'saveISAppraisal'])->name('saveISAppraisal');
 Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('deleteKRA');
@@ -134,6 +134,9 @@ Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class,
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
+Route::get('/employee-info', [SettingsController::class, 'displayEmployeeInfo'])->name('employeeInfo');
+
+
 
 /* ----- PERMANENT EMPLOYEE ----- */
 // Dashboard
@@ -145,6 +148,7 @@ Route::get('/pe-dashboard/get-notifications', [PEDashboardController::class, 'ge
 // Appraisals Overview
 Route::get('/pe-appraisals-overview', [PEAppraisalsController::class, 'displayPEAppraisalsOverview'])->name('viewPEAppraisalsOverview');
 Route::get('/self-evaluation', [SelfEvaluationController::class, 'displaySelfEvaluationForm'])->name('viewSelfEvaluationForm');
+Route::post('/self-evaluation/form-checker', [SelfEvaluationController::class, 'formChecker'])->name('pe.SEFormChecker');
 
 Route::get('/self-evaluation/get-appraisal-questions', [SelfEvaluationController::class, 'getQuestions'])->name('pe.getAppraisalQuestions');
 Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'])->name('getPEData');

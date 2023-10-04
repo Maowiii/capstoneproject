@@ -676,51 +676,6 @@
                 addNewLDPRow($('#ldp_table_body'));
             });
 
-            $(document).on('click', '.delete-btn', function() {
-                var row = $(this).closest('tr');
-                var tbody = row.closest('tbody');
-
-                // Delete the row
-                row.remove();
-
-                // Check the number of rows left
-                var rowCount = tbody.find('tr').length;
-
-                // Disable the delete button if there's only one row left
-                if (rowCount === 1) {
-                    tbody.find('.delete-btn').prop('disabled', true);
-                }
-
-                // Update weighted total or perform any other necessary updates
-                updateWeightedTotal();
-            });
-
-            $(document).on('click', '.delete-btn', function() {
-                var row = $(this).closest('tr');
-                var kraID = row.find('input[name$="[kraID]"]').val();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('deleteKRA') }}',
-                    data: {
-                        kraID: kraID
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        row.remove();
-                        updateWeightedTotal();
-                        var rowCount = $('#kra_table tbody tr').length;
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
-
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
             });
@@ -738,84 +693,14 @@
             });
 
             loadTableData();
+            $('input[type="radio"]').prop('disabled', true);
+            $('textarea').prop('disabled', true);
 
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
 
             updateWeightedTotal();
-
-            // Validation code
-            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
-                var form = document.getElementById('PEappraisalForm');
-                var invalidRows = [];
-
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    var invalidInputs = form.querySelectorAll('.is-invalid');
-                    if (invalidInputs.length > 0) {
-                        invalidInputs[0].focus(); // Focus on the first invalid input
-                    }
-
-                    invalidInputs.forEach(function(invalidInput) {
-                        invalidInput.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    });
-
-                    console.error('Form validation failed.');
-                    return;
-                }
-
-                var allRowsCorrected = invalidRows.every(function(invalidRow) {
-                    return !invalidRow.hasClass('is-invalid');
-                });
-
-                if (allRowsCorrected) {
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.text-danger').removeClass('text-danger fw-bold');
-
-                    var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
-                    signInput.required = true;
-
-                    $('#signatory_modal').modal('show');
-                    console.info('Form validation succeeded. Signature modal will open.');
-                } else {
-                    console.error('Please correct all invalid rows.');
-                }
-            });
-
-            // Add event listener to the submit button in signatory_modal
-            document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
-
-                // Validate the sign input
-                if (!signInput.value) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    signInput.classList.add('is-invalid');
-                    signInput.closest('td').classList.add('border', 'border-danger');
-
-                    signInput.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-
-                    console.error('Signature validation failed.');
-                    return;
-                }
-
-                if (signInput.value) {
-                    console.log('if else');
-                    signInput.classList.remove('is-invalid');
-                    signInput.closest('td').classList.remove('border', 'border-danger');
-                }
-
-                $('#signatory_modal').modal('hide');
-                $('#confirmation-popup-modal').modal('show');
-            });
         });
 
         function loadTableData() {
@@ -1102,7 +987,7 @@
                                     'KRA[' + kraID + '][' + {{ $appraisalId }} +
                                     '][KRA_actual_result]',
                                     kra.actual_result,
-                                    false
+                                    true
                                 )
                             ).appendTo(row);
 
@@ -1113,7 +998,7 @@
 
                             for (var i = 5; i >= 1; i--) {
                                 var label = $('<label>').addClass('form-check-label');
-                                var input = $('<input>').prop('readonly', false).attr({
+                                var input = $('<input>').prop('disabled', true).attr({
                                     type: 'radio',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
                                         '][KRA_performance_level]',
@@ -1395,20 +1280,7 @@
         }
 
         function addNewKRARow(tbody) {
-            var highestKRAID = 0;
-            tbody.find('[name^="KRA["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var kraID = parseInt(matches[1]);
-                    if (kraID > highestKRAID) {
-                        highestKRAID = kraID;
-                    }
-                }
-            });
-
-            // Calculate the next available wpaID
-            var nextKRAID = highestKRAID + 1;
+            var nextKRAID = 0;
 
             var row = $('<tr>').addClass('align-middle');
             $('<input>').attr({
@@ -1452,7 +1324,7 @@
                 $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                     nextKRAID +
                     '][' +
-                    {{ $appraisalId }} + '][KRA_actual_results]').prop('readonly', false)
+                    {{ $appraisalId }} + '][KRA_actual_results]').prop('readonly', true)
             ).appendTo(row);
 
             var performanceCell = $('<td>').appendTo(row);
@@ -1460,13 +1332,16 @@
                 'd-flex justify-content-center gap-2').appendTo(performanceCell);
             for (var i = 5; i >= 1; i--) {
                 var label = $('<label>').addClass('form-check-label');
-                var input = $('<input>').prop('readonly', true).attr({
+                var input = $('<input>').prop('disabled', true).attr({
                     type: 'radio',
                     name: 'KRA[' + nextKRAID + '][' + {{ $appraisalId }} +
                         '][KRA_performance_level]',
                     class: 'form-check-input',
                     value: i
                 });
+
+                input[0].disabled = true;
+
                 label.append(input, i);
                 $('<div>').addClass('col-auto').append(label).appendTo(
                     performanceLevelDiv);
@@ -1625,9 +1500,8 @@
 
                     console.log(weightedValue);
 
-                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]').val(weightedValue
-                        .toFixed(
-                            2));
+                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
+                        .val(weightedValue.toFixed(2));
 
                 }
             });

@@ -455,7 +455,7 @@
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
-            <table class='table table-bordered'>
+            <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
                         <th class='medium-column'>Question</th>
@@ -463,114 +463,112 @@
                         <th class='large-column'>Comments</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id='jic_table_body'>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I agree with my performance rating." name="feedback[1][question]" readonly></textarea>
+                            <textarea class='textarea border-0' value="I agree with my performance rating."
+                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[1][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[1][comment]" readonly></textarea>
-
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea'
+                            <textarea class='textarea border-0'
                                 value="My future work objectives and learning opportunities have been set for the
                             next review period."
-                                name="feedback[2][question]" readonly></textarea>
+                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[2][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[2][comment]" readonly></textarea>
-
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review discussion."
-                                name="feedback[3][question]" readonly></textarea>
-
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio1" value="1">
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[3][answer]"
-                                    id="inlineRadio2" value="0">
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[3][comment]" readonly></textarea>
-
                         </td>
                     </tr>
                     <tr>
                         <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review process." name="feedback[4][question]"
-                                readonly></textarea>
+                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
+                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
                         </td>
                         <td>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio1" value="1">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="feedback[4][answer]"
-                                    id="inlineRadio2" value="0">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="feedback[4][comment]" readonly></textarea>
-
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea' value="I am satisfied with the performance review process."
+                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
-            </table>
         </div>
-
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
-            <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
         </div>
     </form>
 
     <script>
         // Get the <textarea> elements by their names
-        const textareaElement1 = document.querySelector('[name="feedback[1][question]"]');
-        const textareaElement2 = document.querySelector('[name="feedback[2][question]"]');
-        const textareaElement3 = document.querySelector('[name="feedback[3][question]"]');
-        const textareaElement4 = document.querySelector('[name="feedback[4][question]"]');
+        const textareaElement1 = document.querySelector('[name="feedback[1][{{ $appraisalId }}][question]"]');
+        const textareaElement2 = document.querySelector('[name="feedback[2][{{ $appraisalId }}][question]"]');
+        const textareaElement3 = document.querySelector('[name="feedback[3][{{ $appraisalId }}][question]"]');
+        const textareaElement4 = document.querySelector('[name="feedback[4][{{ $appraisalId }}][question]"]');
 
         // Set the values you want to display
         const valueToDisplay1 =
@@ -761,6 +759,211 @@
             updateFrequencyCounter('S_table');
 
             updateWeightedTotal();
+
+            formChecker();
+            ////// VALIDATION /////////
+
+
+            ////// AUTOSAVE //////////
+            $('#KRA_table_body').on('change', '.autosave-field', function() {
+                console.log('I was a KRA');
+                var field = $(this);
+                var kraID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveKRAField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        kraID: kraID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveKRAField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#wpa_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var wppID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveWPPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        wppID: wppID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.wpaData.forEach(function(wpa, index) {
+                            var wpaID = wpa.performance_plan_id;
+                            console.log(wpaID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-wpa-id', wpaID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]');
+                            closestRow.find('textarea[name="WPA[0][' +
+                                {{ $appraisalId }} + '][start_doing]"]').attr(
+                                'name', 'WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]');
+
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][continue_doing]"]').val(
+                                wpa.continue_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][stop_doing]"]').val(wpa
+                                .stop_doing);
+                            closestRow.find('textarea[name="WPA[' + wpaID + '][' +
+                                {{ $appraisalId }} + '][start_doing]"]').val(wpa
+                                .start_doing);
+                        });
+
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveWPPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#ldp_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var ldpID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveLDPField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        ldpID: ldpID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        response.ldpData.forEach(function(ldp, index) {
+                            var ldpID = ldp.development_plan_id;
+                            console.log(ldpID);
+                            var closestRow = field.closest('tr');
+                            console.log(closestRow);
+
+                            closestRow.attr('data-ldp-id', ldpID);
+
+                            // Change the name attribute of the textareas if needed
+                            closestRow.find('textarea[name="LDP[0][' +
+                                {{ $appraisalId }} + '][learning_need]"]').attr(
+                                'name', 'LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][learning_need]');
+                            closestRow.find('textarea[name="LDP[0][' +
+                                {{ $appraisalId }} + '][methodology]"]').attr(
+                                'name', 'LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][methodology]');
+
+                            // Update the content of the closest row based on the response data
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][learning_need]"]').val(ldp
+                                .learning_need);
+                            closestRow.find('textarea[name="LDP[' + ldpID + '][' +
+                                {{ $appraisalId }} + '][methodology]"]').val(ldp
+                                .methodology);
+                        });
+
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
+
+            $('#jic_table_body').on('change', '.autosave-field', function() {
+                var field = $(this);
+                var jicID = field.attr('name').match(/\d+/)[0];
+                var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
+                var fieldValue = field.val();
+                var fieldQuestion = field.closest("tr").find("textarea").html();
+
+                // Send the updated field value to the server via Ajax
+                $.ajax({
+                    url: '{{ route('autosaveJICField') }}', // Replace with your route URL
+                    method: 'POST', // Use POST method to send data
+                    data: {
+                        jicID: jicID,
+                        fieldName: fieldName,
+                        fieldValue: fieldValue,
+                        fieldQuestion: fieldQuestion,
+                        appraisalId: {{ $appraisalId }}
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(response) {
+                        // Handle the success response if needed
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('{{ route('autosaveLDPField') }}');
+
+                        // Handle errors if any
+                        console.error('Autosave failed:', error);
+                        console.log('FieldName Acquired: ' + fieldName);
+                    }
+                });
+            });
         });
 
         function loadTableData() {
@@ -1003,6 +1206,7 @@
                                 var kraID = kra.kra_id;
 
                                 var row = $('<tr>').addClass('align-middle');
+
                                 $('<input>').attr({
                                     type: 'hidden',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
@@ -1012,26 +1216,28 @@
 
                                 $('<td>').addClass('td-textarea').append(
                                     createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra]',
                                         kra.kra,
                                         false
                                     )
                                 ).appendTo(row);
 
-                                var weightSelect = $('<select>').addClass('form-select').attr(
-                                        'aria-label',
-                                        'Default select example').attr('readonly', false).attr('name',
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_weight]')
-                                    .appendTo($('<td>'))
-                                    .appendTo(row);
-                                $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
+                                var weightSelect = $('<select>').addClass('form-select autosave-field')
+                                    .attr('aria-label', 'Default select example')
+                                    .attr('readonly', false)
+                                    .attr('name', 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_kra_weight]')
+                                    .appendTo($('<td>')).appendTo(row);
+
+                                $('<option>').appendTo(weightSelect); // Add an empty option
 
                                 for (let i = 1; i <= 100; i++) {
-                                    var option = $('<option>').val(i).text(i).appendTo(weightSelect);
+                                    var option = $('<option>').val(i).text(i + '%').appendTo(
+                                        weightSelect); // Corrected text
                                     var kraWeight = parseFloat(kra.kra_weight);
 
                                     if (Math.abs(kraWeight - i) < 0.01) {
-                                        option.attr('selected', true);
+                                        option.prop('selected', true);
                                     }
                                 }
 
@@ -1053,37 +1259,173 @@
                                     )
                                 ).appendTo(row);
 
-                                $('<td>').addClass('td-textarea').append(
-                                    $('<textarea>').addClass('textarea').prop('readonly', true)
-                                ).appendTo(row);
+                                console.log(data.phaseData);
+                                if (data.phaseData === "kra") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        $('<textarea>').addClass('textarea').prop('readonly', true)
+                                    ).appendTo(row);
 
-                                var performanceCell = $('<td>').appendTo(row);
-                                var performanceLevelDiv = $('<div>').addClass(
-                                    'd-flex justify-content-center gap-2').appendTo(performanceCell);
-                                for (var i = 5; i >= 1; i--) {
-                                    var label = $('<label>').addClass('form-check-label');
-                                    var input = $('<input>').prop('readonly', true).attr({
-                                        type: 'radio',
-                                        name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                            '][KRA_answer]',
-                                        class: 'form-check-input',
-                                        value: i
-                                    });
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2').appendTo(
+                                        performanceCell);
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', true).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_answer]',
+                                            class: 'form-check-input',
+                                            value: i
+                                        });
 
-                                    input[0].disabled = true;
+                                        input[0].disabled = true;
 
-                                    label.append(input, i);
-                                    $('<div>').addClass('col-auto').append(label).appendTo(
-                                        performanceLevelDiv);
+                                        label.append(input, i);
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else if (data.phaseData === "pr") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        createTextArea(
+                                            'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_actual_result]',
+                                            kra.actual_result,
+                                            false
+                                        )
+                                    ).appendTo(row);
+
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2'
+                                    ).appendTo(performanceCell);
+
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', false).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_performance_level]',
+                                            class: 'form-check-input autosave-field',
+                                            value: i
+                                        });
+
+                                        input[0].required = true;
+
+                                        var span = $('<span>').addClass('ms-1').text(i);
+                                        label.append(input, span);
+                                        performanceLevelDiv.append($('<div>').addClass('col-auto')
+                                            .append(
+                                                label));
+
+                                        input.on('invalid', function() {
+                                            $(this).addClass('is-invalid text-danger fw-bold');
+                                            $(this).siblings('span').addClass('text-danger');
+                                        });
+
+                                        input.on('input', function() {
+                                            var row = $(this).closest('tr');
+                                            row.find('.is-invalid').removeClass('is-invalid');
+                                            row.find('.text-danger').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).closest('tr').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).removeClass(
+                                                'is-invalid'
+                                            );
+                                        });
+
+                                        label.append(input, span);
+
+                                        var kraPL = parseFloat(kra.performance_level);
+
+                                        if (Math.abs(kraPL - i) < 0.01) {
+                                            input.prop('checked', true);
+                                        }
+
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else if (data.phaseData === "eval") {
+                                    $('<td>').addClass('td-textarea').append(
+                                        createTextArea(
+                                            'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_actual_result]',
+                                            kra.actual_result,
+                                            false
+                                        )
+                                    ).appendTo(row);
+
+                                    var performanceCell = $('<td>').appendTo(row);
+                                    var performanceLevelDiv = $('<div>').addClass(
+                                        'd-flex justify-content-center gap-2'
+                                    ).appendTo(performanceCell);
+
+                                    for (var i = 5; i >= 1; i--) {
+                                        var label = $('<label>').addClass('form-check-label');
+                                        var input = $('<input>').prop('readonly', false).attr({
+                                            type: 'radio',
+                                            name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                                '][KRA_performance_level]',
+                                            class: 'form-check-input autosave-field',
+                                            value: i
+                                        });
+
+                                        input[0].required = true;
+
+                                        var span = $('<span>').addClass('ms-1').text(i);
+                                        label.append(input, span);
+                                        performanceLevelDiv.append($('<div>').addClass('col-auto')
+                                            .append(
+                                                label));
+
+                                        input.on('invalid', function() {
+                                            $(this).addClass('is-invalid text-danger fw-bold');
+                                            $(this).siblings('span').addClass('text-danger');
+                                        });
+
+                                        input.on('input', function() {
+                                            var row = $(this).closest('tr');
+                                            row.find('.is-invalid').removeClass('is-invalid');
+                                            row.find('.text-danger').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).closest('tr').removeClass(
+                                                'text-danger fw-bold'
+                                            );
+
+                                            $(this).removeClass(
+                                                'is-invalid'
+                                            );
+                                        });
+
+                                        label.append(input, span);
+
+                                        var kraPL = parseFloat(kra.performance_level);
+
+                                        if (Math.abs(kraPL - i) < 0.01) {
+                                            input.prop('checked', true);
+                                        }
+
+                                        $('<div>').addClass('col-auto').append(label).appendTo(
+                                            performanceLevelDiv);
+                                    }
+                                } else {
+                                    console.log('ELSE LOCK');
                                 }
 
                                 $('<td>').addClass('td-textarea').append(
-                                    createTextArea(
-                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_weighted_total]',
-                                        kra.weighted_total,
-                                        true
-                                    )
+                                    $('<textarea>').addClass(
+                                        'textarea border-0 autosave-field').attr(
+                                        'name', 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]').prop(
+                                        'readonly',
+                                        true).val(kra.weighted_total)
                                 ).appendTo(row);
 
                                 $('<td>').addClass('td-action').append(
@@ -1101,13 +1443,6 @@
                                 } else {
                                     $('#KRA_table_body .kra-delete-btn').prop('disabled', false);
                                 }
-
-                                var kraWeightElements = row.find('select[name^="KRA[' + kraID + '][' +
-                                    {{ $appraisalId }} + '][KRA_weight]"]');
-
-                                kraWeightElements.on('change', function() {
-                                    updateWeightedTotal();
-                                });
                             });
                             updateWeightedTotal();
                         }
@@ -1225,6 +1560,69 @@
                             });
                         }
                     }
+
+                    // Loop through the jicData and populate the table rows with data
+                    data.jicData.forEach(function(jic, index) {
+                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
+                            '][{{ $appraisalId }}][answer]"][value="0"]');
+
+                        if (jic.answer === 1) {
+                            answerRadioYes.checked = true;
+                        } else if (jic.answer === 0) {
+                            answerRadioNo.checked = true;
+                        }
+
+                        $(answerRadioYes).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioNo).on('invalid', function() {
+                            $(this).addClass('is-invalid text-danger fw-bold');
+                            $(this).siblings('span').addClass('text-danger');
+                        });
+
+                        $(answerRadioYes).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        $(answerRadioNo).on('input', function() {
+                            var row = $(this).closest('tr');
+                            row.find('.is-invalid').removeClass('is-invalid');
+                            row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                            $(this).closest('tr').removeClass('text-danger fw-bold');
+                        });
+
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
+                            1) + '][{{ $appraisalId }}][comments]"]');
+                        commentTextarea.value = jic.comments;
+
+                        // Attach input event handlers for validation
+                        $(commentTextarea).on('input', function() {
+                            $(this).removeClass('border border-danger');
+                            $(this).removeClass('is-invalid');
+                        }).on('invalid', function() {
+                            $(this).addClass('is-invalid');
+                            $(this).attr('placeholder', 'Please provide a valid input');
+                        }).on('blur', function() {
+                            if ($(this).val().trim() === '') {
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+
+                        answerRadioYes.required = true;
+                        answerRadioNo.required = true;
+                        commentTextarea.required = true;
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -1234,7 +1632,7 @@
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
-                $('<textarea>').addClass('textarea form-control').attr({
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr({
                     name: name,
                     readonly: isReadonly
                 }).prop('required', true).val(value)
@@ -1258,41 +1656,31 @@
         }
 
         function addNewKRARow(tbody) {
-            var highestKRAID = 0;
-            tbody.find('[name^="KRA["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var kraID = parseInt(matches[1]);
-                    if (kraID > highestKRAID) {
-                        highestKRAID = kraID;
-                    }
-                }
-            });
-
-            // Calculate the next available wpaID
-            var nextKRAID = highestKRAID + 1;
+            var kraID = 0;
 
             var row = $('<tr>').addClass('align-middle');
-            $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} + '][KRA]')
-            ).appendTo(row);
 
             $('<input>').attr({
                 type: 'hidden',
                 name: 'KRA[' +
-                    nextKRAID +
+                    kraID +
                     '][' + {{ $appraisalId }} + '][kraID]',
-                value: nextKRAID,
+                value: kraID,
             }).appendTo(row);
 
-            var weightSelect = $('<select>').addClass('form-select').attr('aria-label',
+            $('<td>').addClass('td-textarea').append(
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                    '',
+                    false
+                )
+            ).appendTo(row);
+
+            var weightSelect = $('<select>').addClass('form-select autosave-field').attr('aria-label',
                     'Default select example').attr('readonly', false).attr('name',
                     'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} + '][KRA_weight]')
+                    kraID +
+                    '][' + {{ $appraisalId }} + '][KRA_kra_weight]')
                 .appendTo($('<td>'))
                 .appendTo(row);
             $('<option>').attr('selected', true).text('%').appendTo(weightSelect);
@@ -1302,17 +1690,21 @@
             }
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} +
-                    '][KRA_objective]')
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_objective]',
+                    '',
+                    false
+                )
             ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
-                    nextKRAID +
-                    '][' + {{ $appraisalId }} +
-                    '][KRA_performance_indicator]')
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_performance_indicator]',
+                    '',
+                    false
+                )
             ).appendTo(row);
 
             $('<td>').addClass('td-textarea').append(
@@ -1327,7 +1719,7 @@
                 var input = $('<input>').prop('readonly', true).attr({
                     type: 'radio',
                     name: 'KRA[' +
-                        nextKRAID +
+                        kraID +
                         '][' + {{ $appraisalId }} + '][KRA_answer]',
                     class: 'form-check-input',
                     value: i
@@ -1337,12 +1729,13 @@
                     performanceLevelDiv);
             }
 
-            $('<td>').addClass('td-textarea kra-weighted-total').append(
-                $('<input>').addClass('form-control').attr({
-                    type: 'text',
-                    name: 'kra_total_weight',
-                    readonly: true
-                }).prop('readonly', true)
+            $('<td>').addClass('td-textarea').append(
+                createTextArea(
+                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                    '][KRA_weighted_total]',
+                    '',
+                    true
+                )
             ).appendTo(row);
 
             $('<td>').addClass('td-action').append(
@@ -1372,32 +1765,32 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = highestWpaID + 1;
+            var nextWpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
                     nextWpaID +
                     '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
                     false)
             ).appendTo(wparow);
 
             $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle WPA')
+                $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle')
                 .attr('type', 'button')
                 .text('Delete')
             ).appendTo(wparow);
@@ -1423,12 +1816,12 @@
                 }
             });
 
-            // Calculate the next available ldpID
-            var nextLDPID = highestLDPID + 1;
+            // Calculate the next available lpaID
+            var nextLDPID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][learning_need]').prop(
                     'readonly',
@@ -1436,7 +1829,7 @@
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
+                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
                     nextLDPID +
                     '][' + {{ $appraisalId }} + '][methodology]').prop(
                     'readonly',
@@ -1482,28 +1875,127 @@
         }
 
         function updateWeightedTotal() {
+            console.log("updateWeightedTotal() called");
+
             var totalWeight = 0;
+            var totalWeighted = 0;
 
             $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weight = parseFloat(row.find('select[name^="KRA"][name$="[KRA_weight]"]').val()) /
-                    100;
+                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"]');
+                var selectedValue = weightOption.find("option:selected").val();
+                var weight = parseFloat(selectedValue) / 100;
 
-                totalWeight += weight;
+                var performanceLevel = parseInt(
+                    row.find('input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
+                    .val()
+                );
+
+                console.log("weight");
+                console.log(weight);
+
+                if (!isNaN(weight) || !isNaN(performanceLevel)) {
+                    var weightedValue = weight * performanceLevel;
+                    totalWeight += weight;
+                    totalWeighted += weightedValue;
+
+                    console.log("weightedValue");
+                    console.log(weightedValue);
+
+                    if (isNaN(weightedValue)) {
+                        weightedValue = 0;
+                    }
+
+                    // Update the weighted total input element
+                    row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
+                        .val(weightedValue.toFixed(2));
+                }
             });
 
             totalWeight = totalWeight * 100;
+            console.log("totalWeight");
+            console.log(totalWeight);
 
             if (totalWeight > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
-                $('select[name^="KRA"][name$="[KRA_weight]"]').addClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');
             } else {
                 $('#KRA_Weight_Total').removeClass('is-invalid');
-                $('select[name^="KRA"][name$="[KRA_weight]"]').removeClass('is-invalid');
+                $('select[name^="KRA"][name$="[KRA_kra_weight]"]').removeClass('is-invalid');
             }
 
+            if (isNaN(totalWeighted)) {
+                totalWeighted = 0;
+            }
+
+            // Update the total weight input element
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
+
+            // Update the total weighted input element
+            $('#KRA_Total').val(totalWeighted.toFixed(2));
+        }
+
+        function formChecker() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.SEFormChecker') }}',
+                type: 'POST',
+                data: {
+                    appraisalId: {{ $appraisalId }}
+                },
+                success: function(response) {
+                    console.log("PHASE");
+                    console.log(response.phaseData);
+                    if (response.phaseData === "kra") {
+                        console.log("AQ1");
+
+                        $('input[type="radio"]').prop('disabled', true);
+
+                        $('textarea').prop('disabled', true);
+                        $('#KRA_table_body textarea').prop('disabled', false);
+                    } else if (response.phaseData === "pr") {
+                        console.log("AQ2");
+                    } else if (response.phaseData === "eval") {
+                        console.log("AQ3");
+                        $('#KRA_table_body textarea').prop('readonly', true);
+
+                        // Disable select elements and add background color to nearest <td> elements
+                        $('#KRA_table_body select').prop('disabled', true);
+
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                    } else if (response.locked === "lock") {
+                        console.log("AQ4");
+
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                    }
+
+                    console.log("LOCK");
+                    console.log(response.locked);
+                    if (response.locked === "kra") {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        $('#KRA_table_body textarea').prop('disabled', false);
+                    } else if (response.locked === "pr") {
+
+                    } else if (response.locked === "eval") {
+
+                    } else if (response.locked === "lock") {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.responseText) {
+                        console.log('Error: ' + xhr.responseText);
+                    } else {
+                        console.log('An error occurred.');
+                    }
+                }
+            });
         }
     </script>
 @endsection
