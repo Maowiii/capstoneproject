@@ -11,13 +11,17 @@
         </div>
         <div class="col">
             <select class="form-select align-middle" id="evaluation-year-select">
+                @if (!$activeEvalYear)
+                    <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+                @endif
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
-                        @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                        @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>
                         {{ $year->sy_start }} - {{ $year->sy_end }}
                     </option>
                 @endforeach
             </select>
+
         </div>
     </div>
 
@@ -104,6 +108,7 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 loadAdminAppraisalsTable(selectedYear, null);
+                console.log('Selected Year: ' + selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -413,7 +418,7 @@
             }
 
             function loadSignatureOverview(employeeID, selectedYear = null) {
-              console.log('Load Signature Overview');
+                console.log('Load Signature Overview');
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

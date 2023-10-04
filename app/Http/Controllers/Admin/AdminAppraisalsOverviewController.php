@@ -32,15 +32,156 @@ class AdminAppraisalsOverviewController extends Controller
       return view('auth.login');
     }
 
+    $selectedYearDates = null;
+    $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
     $selectedYear = $request->input('selectedYear');
     $search = $request->input('search');
 
     $sy_start = null;
     $sy_end = null;
-    $selectedYearDates = null;
 
+    // Check if there's a selected year
+    if ($selectedYear) {
+      $parts = explode('_', $selectedYear);
+
+      if (count($parts) >= 2) {
+        $sy_start = $parts[0];
+        $sy_end = $parts[1];  
+      }
+
+      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
+      $table = 'appraisals_' . $selectedYear;
+      $appraisalModel = new Appraisals;
+
+      if ($appraisalModel->tableExists($table)) {
+        // Set the dynamic table name
+        $appraisalModel->setTable($table);
+
+        $appraisals = $appraisalModel->where(function ($query) use ($search, $table) {
+          $query->whereExists(function ($subQuery) use ($search, $table) {
+            $subQuery->selectRaw(1)
+              ->from('employees')
+              ->whereRaw("$table.employee_id = employees.employee_id")
+              ->where(function ($innerQuery) use ($search) {
+                $innerQuery->orWhere('first_name', 'like', '%' . $search . '%')
+                  ->orWhere('last_name', 'like', '%' . $search . '%');
+              });
+          });
+        })->get();
+      } else {
+        // Handle the case when the selected table doesn't exist
+        $appraisals = [];
+      }
+    } elseif ($activeEvalYear) {
+      // Handle the case when there's an active year
+      $table = 'appraisals_' . $sy_start . '_' . $sy_end;
+      $appraisalModel = new Appraisals;
+      $appraisalModel->setTable($table);
+
+      $appraisals = $appraisalModel->where(function ($query) use ($search, $table) {
+        $query->whereExists(function ($subQuery) use ($search, $table) {
+          $subQuery->selectRaw(1)
+            ->from('employees')
+            ->whereRaw("$table.employee_id = employees.employee_id")
+            ->where(function ($innerQuery) use ($search) {
+              $innerQuery->orWhere('first_name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%');
+            });
+        });
+      })->get();
+    } else {
+      // Handle the case when there's no active year and no selected year
+      $appraisals = [];
+    }
+
+    $groupedAppraisals = [];
+    foreach ($appraisals as $appraisal) {
+      $employeeId = $appraisal->employee->employee_id;
+      if (!isset($groupedAppraisals[$employeeId])) {
+        $groupedAppraisals[$employeeId] = [
+          'employee' => $appraisal->employee,
+          'appraisals' => [],
+        ];
+      }
+      $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
+    }
+
+    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
+
+
+    /*
+    if (Appraisals::tableExists()) {
+      $selectedYearDates = EvalYear::where('status', 'active')->first();
+      
+      if ($search) {
+        $appraisals = Appraisals::with('employee')
+          ->whereHas('employee', function ($query) use ($search) {
+            $query->Where('first_name', 'like', '%' . $search . '%')
+              ->orWhere('last_name', 'like', '%' . $search . '%');
+          })
+          ->get();
+      } else {
+        $appraisals = Appraisals::with([
+          'employee' => function ($query) {
+            $query->whereHas('account', function ($subQuery) {
+              $subQuery->whereIn('type', ['PE', 'IS', 'CE']);
+            });
+          }
+        ])->get();
+      }
+
+      if (!$selectedYearDates) {
+        return response()->json(['success' => false, 'error' => 'Selected year not found.']);
+      }
+    } elseif ($selectedYear) {
+      $parts = explode('_', $selectedYear);
+
+      if (count($parts) >= 2) {
+        $sy_start = $parts[0];
+        $sy_end = $parts[1];
+      }
+
+      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
+
+      if ($search) {
+        $table = 'appraisals_' . $selectedYear;
+        $appraisalModel = new Appraisals;
+        $appraisalModel->setTable($table);
+
+        $appraisals = $appraisalModel->where(function ($query) use ($search, $table) {
+          $query->whereExists(function ($subQuery) use ($search, $table) {
+            $subQuery->selectRaw(1)
+              ->from('employees')
+              ->whereRaw("$table.employee_id = employees.employee_id")
+              ->where(function ($innerQuery) use ($search) {
+                $innerQuery->orWhere('first_name', 'like', '%' . $search . '%')
+                  ->orWhere('last_name', 'like', '%' . $search . '%');
+              });
+          });
+        })->get();
+
+      } else {
+        Log::debug('Selected Year: ' . $selectedYear . '. No search.');
+
+        $table = 'appraisals_' . $selectedYear;
+        $appraisalsModel = new Appraisals;
+        $appraisalsModel->setTable($table);
+        $appraisals = $appraisalsModel->get();
+      }
+    } else {
+      return response()->json(['success' => false, 'error' => 'No active year and selected Year']);
+
+    }
+*/
+
+
+
+
+
+    /*
     // If There is a selected year:
     if ($selectedYear) {
+
       $parts = explode('_', $selectedYear);
 
       if (count($parts) >= 2) {
@@ -74,6 +215,8 @@ class AdminAppraisalsOverviewController extends Controller
           })->get();
 
         } else {
+          Log::debug('Selected Year: ' . $selectedYear . '. No search.');
+
           $table = 'appraisals_' . $selectedYear;
           $appraisalsModel = new Appraisals;
           $appraisalsModel->setTable($table);
@@ -82,7 +225,7 @@ class AdminAppraisalsOverviewController extends Controller
       } else {
         return response()->json(['success' => false, 'error' => 'There is no existing evaluation year.']);
       }
-    } else {
+    } elseif ($activeEvalYear) {
       // Active Year Condition (No Selected Year)
       $selectedYearDates = EvalYear::where('status', 'active')->first();
 
@@ -104,27 +247,17 @@ class AdminAppraisalsOverviewController extends Controller
           ])->get();
         }
       } else {
-        return response()->json(['success' => false, 'error' => 'There is no existing evaluation year.']);
+        return response()->json(['success' => false, 'error' => 'There is no ongoing evaluation year.']);
       }
 
       if (!$selectedYearDates) {
         return response()->json(['success' => false, 'error' => 'Selected year not found.']);
       }
+    } else {
+      return response()->json(['success' => false, 'error' => 'There is no selected year.']);
     }
+    */
 
-    $groupedAppraisals = [];
-    foreach ($appraisals as $appraisal) {
-      $employeeId = $appraisal->employee->employee_id;
-      if (!isset($groupedAppraisals[$employeeId])) {
-        $groupedAppraisals[$employeeId] = [
-          'employee' => $appraisal->employee,
-          'appraisals' => [],
-        ];
-      }
-      $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
-    }
-
-    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
   }
 
 

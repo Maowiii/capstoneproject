@@ -41,7 +41,7 @@ class PEInternalCustomerController extends Controller
         ->with(['evaluator.department'])
         ->get();
 
-      return response()->json(['success' => true, 'assignemnts' => $assignments]);
+      return response()->json(['success' => true, 'assignments' => $assignments]);
     } else {
       return response()->json(['success' => false]);
     }
