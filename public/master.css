@@ -492,3 +492,16 @@ textarea {
 #passchange .modal-footer{
     justify-content: right;
 }
+#consentform .modal-footer{
+    justify-content: center;
+}
+#consentform .modal-content {
+    width: 190%!important;
+    display: flex!important;
+    justify-content: center!important;
+}
+#consentform .modal-body {
+    text-align: justify;
+}
+
+

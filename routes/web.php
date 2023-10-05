@@ -155,6 +155,7 @@ Route::get('/self-evaluation/get-appraisal-questions', [SelfEvaluationController
 Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'])->name('getPEData');
 Route::get('/get-pe-KRA-data', [SelfEvaluationController::class, 'getPEKRA'])->name('getPEKRA');
 Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
+Route::post('/save-data-privacy', [SelfEvaluationController::class, 'saveEULA'])->name('saveEULA');
 Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppraisal'])->name('savePEAppraisal');
 
 Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
