@@ -221,4 +221,11 @@ class AuthController extends Controller
     $accounts->save();
     return back()->with('resend_code_success', 'Verification code has been sent again.');
   }
+
+  public function logout()
+  {
+    session()->flush();
+
+    return redirect()->route('viewLogin');
+  }
 }

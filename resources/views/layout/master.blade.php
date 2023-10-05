@@ -229,7 +229,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a type="button" class="btn btn-primary" href="{{ route('viewLogin') }}">Logout</a>
+                    <a type="button" class="btn btn-primary" href="{{ route('logout-user') }}">Logout</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>

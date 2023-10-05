@@ -52,6 +52,8 @@ Route::post('/reset-password/verify-email', [AuthController::class, 'step1_Verif
 Route::post('/reset-password/verify-code', [AuthController::class, 'step2_VerifyCode'])->name('reset-password-verify-code');
 Route::post('/reset-password/reset', [AuthController::class, 'step3_ResetPassword'])->name('reset-password');
 Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name('resend-code');
+Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user');
+
 
 /* ----- ADMIN ----- */
 // Dashboard 
@@ -155,6 +157,7 @@ Route::get('/self-evaluation/get-appraisal-questions', [SelfEvaluationController
 Route::get('/get-pe-appraisal-data', [SelfEvaluationController::class, 'getData'])->name('getPEData');
 Route::get('/get-pe-KRA-data', [SelfEvaluationController::class, 'getPEKRA'])->name('getPEKRA');
 Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
+Route::post('/save-data-privacy', [SelfEvaluationController::class, 'saveEULA'])->name('saveEULA');
 Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppraisal'])->name('savePEAppraisal');
 
 Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
