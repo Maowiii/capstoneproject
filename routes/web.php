@@ -58,7 +58,8 @@ Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name(
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
-Route::get('/dashboard-admin/department/load-questions', [DepartmentalAnalyticsController::class, 'loadQuestions'])->name('ad.loadQuestions');
+Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
+Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadICQuestions');
 Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
 Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadPointsSystem');
 
