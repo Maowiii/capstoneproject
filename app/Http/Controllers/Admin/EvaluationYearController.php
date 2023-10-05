@@ -147,6 +147,7 @@ class EvaluationYearController extends Controller
       $table->text('objective')->nullable();
       $table->text('performance_indicator')->nullable();
       $table->text('actual_result')->nullable();
+      $table->int('performance_level')->nullable();
       $table->decimal('weighted_total')->nullable();
       $table->integer('kra_order');
     });
@@ -179,8 +180,8 @@ class EvaluationYearController extends Controller
       $table->bigIncrements('job_incumbent_id');
       $table->integer('appraisal_id');
       $table->text('job_incumbent_question');
-      $table->text('answer')->nullable();
-      $table->integer('comments')->nullable();
+      $table->integer('answer')->nullable();
+      $table->text('comments')->nullable();
       $table->integer('question_order');
     });
 

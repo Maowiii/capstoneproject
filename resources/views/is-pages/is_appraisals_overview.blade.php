@@ -52,6 +52,7 @@
                     <th>Internal Customer 2</th>
                     <th>Status</th>
                     <th>Action</th>
+                    <th>Summary</th>
                 </tr>
             </thead>
             <tbody id="IS_appraisals_table_body">
@@ -122,7 +123,62 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="SummaryModal" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Behavioral Competencies</h5>
+                    <table class='table table-bordered'>
+                        <thead>
+                            <tr>
+                                <th>Components</th>
+                                <th>%</th>
+                                <th>Rating</th>
+                                <th>Weighted Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Self-Evaluation</td>
+                            </tr>
+                        <tr>
+                                <td>Internal Customer 1</td>
+                            </tr>
+                        <tr>
+                                <td>Internal Customer 2</td>
+                            </tr>
+                        <tr>
+                                <td>Immediate Superior</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5>Final Rating</h5>
+                    <table class='table table-bordered'>
+                        <thead>
+                            <tr>
+                                <th>Components</th>
+                                <th>%</th>
+                                <th>Rating</th>
+                                <th>Weighted Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Behavioral Competencies</td>
+                            </tr>
+                        <tr>
+                                <td>KRA/KPI</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
             loadTableData();
@@ -162,6 +218,12 @@
                             var ic1Link = null;
                             var ic2Link = null;
                             var AppraiseLink = null;
+
+                            var summaryButton = $('<button>').addClass('btn btn-outline-primary')
+                                .text('Summary').on('click', function() {
+                                    // Open the SummaryModal when the "Summary" button is clicked
+                                    $('#SummaryModal').modal('show');
+                                });
 
                             employeeAppraisals.forEach(function(appraisal) {
                                 var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
@@ -229,9 +291,7 @@
                                                 $('#ISModal2').attr('data-appraisal-id',
                                                     appraisalId);
                                                 console.log(appraisalId);
-
                                                 loadEmployeeData(employeeId);
-
                                             });
                                     } else {
                                         ic2Link = $('<a>').addClass('btn btn-outline-primary')
@@ -255,9 +315,8 @@
                                 $('<td>').append($('<div>').append(ic1Link)),
                                 $('<td>').append($('<div>').append(ic2Link)),
                                 $('<td>').text('Pending'),
-                                $('<td>').append(
-                                    $('<div>').append(AppraiseLink)
-                                )
+                                $('<td>').append($('<div>').append(AppraiseLink)),
+                                $('<td>').append(summaryButton) // Add the "Summary" button to the row
                             );
 
                             $('#IS_appraisals_table_body').append(newRow);
@@ -272,8 +331,6 @@
                 }
             });
         }
-
-
         function toggleRowCheckbox(rowId) {
             $('#' + rowId).toggleClass('selected');
         }
@@ -307,9 +364,9 @@
                             var employee = employees[i];
                             // Check if the employee_id matches the excludedEmployeeId and is not the current appraisee
                             if (employee.employee_id !== excludedEmployeeId && response.evaluatorId !== employee
-                                            .employee_id) {
+                                .employee_id) {
                                 // Create and append the row if there is no match
-                                
+
                                 var newRow = $('<tr>').addClass('row-checkbox').append(
                                     $('<div>').attr('id', 'checkboxes').append(
                                         $('<input>').attr('type', 'checkbox').attr('name', 'ic').attr(

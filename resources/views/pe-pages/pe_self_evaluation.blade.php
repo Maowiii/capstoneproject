@@ -6,20 +6,123 @@
 
 @section('content')
     <!-- Modal -->
-    <div class="modal fade" id="consentForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staicBackdropLabel">Consent Form</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="consentform-label">Privacy Consent</h1>
+                    <button type="button" class="btn-close" onclick="confirmClose()"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <!-- Add this div to display the message -->
+                    <div id="closeModalMessage" class="alert alert-danger" style="display: none;">
+                        <p>You are about to close the modal. If you close it, you won't be able to proceed with
+                            the appraisal.</p>
+                    </div>
+                    <div id="closeModalMessage" class="alert alert-danger" style="display: none;">
+                        <p>You are about to close the modal. If you close it, you won't be able to proceed with the
+                            appraisal.</p>
+                    </div>
+
+                    <p>In compliance to <b>RA 10173 or the Data Protection Act of 2012 (DPA of 2012) </b> its Implementing
+                        Rules and Regulations, we are detailing here the processing of the data you will provide to us.<br>
+
+                        <br>The following are the personal data that the we may need to collect:<br><br>
+                        Full Name, Department, Adamson Email. Personal data collected shall be stored in the
+                        <!-- <<identify where the data will be stored>>  -->
+                        for a period of three years. Upon expiration of such period, all personal data
+                        shall be disposed in a secure manner that will forbids further processing, unauthorized disclosure
+                        and editing.<br><br>
+
+                        The HR Department of Adamson University shall implement reasonable and appropriate
+                        organizational, physical, and technical security measures to protect your personal data.<br>
+                        Only authorized personnel shall have access to the data collected and processed.<br>
+
+                        <br><b>Under RA 10173</b>, the following are some of the rights the data subject may exercise,
+                        (for the full list of rights see: <a
+                            href="//www.privacy.gov.ph/know-your-rights/">www.privacy.gov.ph/know-your-rights/</a>)<br>
+
+                        <br><i>1. Right to be informed on the collection and processing of personal data through this
+                            consent form;
+                            <br>2. Right to object on the processing of personal data or to restrict the processing of
+                            personal data upon request;
+                            <br>3. Right to access the personal data collected and processed upon request;
+                            <br>4. Right to request for rectification of personal data; and
+                            <br>5. Right to withdraw his or her consent.</i><br>
+
+                        <br>By participating, you agreed to the following statements :<br>
+
+                        <br>Understand that there is no risk involved in participating in this endeavor.
+
+                        <br>The results of this data gathering << state the result>>.<br>
+
+
+                            <br>I understand that I will not receive any form of remuneration or compensation for my
+                            participation.<br>
+
+                            <br>I also understand that my participation in this survey is purely voluntary and that I
+                            can withdraw my approval to this consent anytime and that my withdrawal will not affect my class
+                            standing now or in the future.<br>
+
+                            <br>I understand that my involvement in the survey is only once. All my personal data will
+                            be kept strictly confidential and will be revealed only upon my request and consent.<br>
+
+                            <br>To exercise data subjects right and for data privacy concerns or inquiries, please
+                            communicate with the admin through<br>
+
+                            <!-- <<contact details of the person in-charge>> -->
+
+                            <br>Thank you for your participation.<br>
+
+                            <!-- <Sample Google Form Elements regarding data privacy>> -->
+
+                            <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
+
+                                                                                                        <br>I give consent to the retention of my personal data. (Y/N)<br>
+
+                                                                                                        <br>I give consent to the sharing of my data. (Y/N)<br>
+
+                                                                                                        <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                                                                                                    Agreement.<br>
+                                                                                                    
+                                                                                                    <br>By clicking Yes, you consent that you are willing to answer the questions
+                                                                                                    in this survey and you answered YES to the three questions above.
+                                                                                                    (Y/N) -->
+
+                            <div class="mb-3">
+                                <label class="form-check-label" id="consent1-label">
+                                    <input type="checkbox" id="consent1" class="form-check-input"> <span>I give consent
+                                        to use of my personal data for the said purpose.</span>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-check-label" id="consent2-label">
+                                    <input type="checkbox" id="consent2" class="form-check-input"> <span>I give consent
+                                        to the retention of my personal data.</span>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-check-label" id="consent3-label">
+                                    <input type="checkbox" id="consent3" class="form-check-input"> <span>I give consent
+                                        to the sharing of my data.</span>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-check-label" id="consent4-label">
+                                    <input type="checkbox" id="consent4" class="form-check-input"> <span>I confirm that
+                                        I have read, understand, and agree to the above-mentioned Privacy Agreement.<br>
+                                    </span>
+
+                                    <br><i> clicking Yes, you consent that you are willing to answer the questions in this
+                                        survey and you answered YES to the three questions above.</i>
+                                </label>
+                            </div>
+
+                    </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+                    <button type="button" class="btn btn-secondary" onclick="confirmClose()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="understood()">I Understand</button>
                 </div>
             </div>
         </div>
@@ -304,7 +407,6 @@
                     </tr>
                 </thead>
             </table>
-            </tfoot>
         </div>
 
         <div class="content-container">
@@ -409,6 +511,21 @@
                     </tr>
                 </tfoot>
             </table>
+            <table class='table table-bordered' id='Overall_table'>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td class='text-right'>Overall Behavioral Competencies Total:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input class="small-column form-control total-frequency text-center" type="text"
+                                    readonly>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            </tfoot>
         </div>
 
         <div class="content-container">
@@ -670,6 +787,8 @@
     </form>
 
     <script>
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         // Get the <textarea> elements by their names
         const textareaElement1 = document.querySelector('[name="feedback[1][{{ $appraisalId }}][question]"]');
         const textareaElement2 = document.querySelector('[name="feedback[2][{{ $appraisalId }}][question]"]');
@@ -692,8 +811,97 @@
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
 
+        let confirmationMode = false;
+
+        function confirmClose() {
+            if (confirmationMode) {
+                closeModal();
+            } else {
+                // Show the confirmation message
+                $('#closeModalMessage').show();
+                confirmationMode = true;
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function closeModal() {
+            confirmationMode = false;
+            goBack();
+        }
+
+        $('#consent1, #consent2, #consent3, #consent4').on('click', function() {
+            // Remove is-invalid class when a checkbox is clicked
+            $(this).removeClass('is-invalid text-danger');
+            $(this).closest('label').find('span').removeClass('is-invalid text-danger');
+        });
+
+        function understood() {
+            confirmationMode = true;
+            console.log(confirmationMode);
+
+            if (confirmationMode) {
+                // Check if all checkboxes are checked
+                const consent1 = $('#consent1').prop('checked');
+                const consent2 = $('#consent2').prop('checked');
+                const consent3 = $('#consent3').prop('checked');
+                const consent4 = $('#consent4').prop('checked');
+                console.log(consent1 + ' ' + consent2 + ' ' + consent3 + ' ' + consent4);
+
+                if (consent1 && consent2 && consent3 && consent4) {
+                    // Remove is-invalid class if checkboxes are checked
+                    $('#consent1, #consent2, #consent3, #consent4').removeClass('is-invalid text-danger');
+                    $('#consent1-label span, #consent2-label span, #consent3-label span, #consent4-label span').removeClass(
+                        'is-invalid text-danger');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('saveEULA') }}',
+                        data: {
+                            appraisalId: {{ $appraisalId }}
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            console.log('Data Privacy Accepted.');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+
+                    $('#consentform').modal('hide');
+                } else {
+                    // Display an error message or perform any other validation logic
+                    $('#closeModalMessage').empty();
+                    $('#closeModalMessage').text('<p>Please check all checkboxes before proceeding.</p>');
+                    $('#closeModalMessage').addClass('alert alert-danger'); // Add alert styling
+
+                    // Add is-invalid class to checkboxes if they are not checked
+                    if (!consent1) {
+                        $('#consent1-label span').addClass('is-invalid text-danger');
+                    }
+                    if (!consent2) {
+                        $('#consent2-label span').addClass('is-invalid text-danger');
+                    }
+                    if (!consent3) {
+                        $('#consent3-label span').addClass('is-invalid text-danger');
+                    }
+                    if (!consent4) {
+                        $('#consent4-label span').addClass('is-invalid text-danger');
+                    }
+                }
+            }
+        }
+
         $(document).ready(function() {
-            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            $(document).ready(function() {
+                $('#consentform').modal('show'); // Show the modal on page load
+            });
 
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
@@ -732,7 +940,8 @@
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                var wpaID = row.data(
+                    'wpa-id'); // Assuming you have a data attribute for WPA ID on the row
 
                 // Send an AJAX request to delete the WPA record from the database
                 $.ajax({
@@ -762,7 +971,8 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+                var ldpID = row.data(
+                    'ldp-id'); // Assuming you have a data attribute for LDP ID on the row
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -834,7 +1044,8 @@
                         });
 
                         // Log the custom error message for this input
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                        console.error('Validation failed for', invalidInput.name, ':',
+                            invalidInput
                             .validationMessage);
                     });
 
@@ -850,7 +1061,8 @@
                     $('.is-invalid').removeClass('is-invalid');
                     $('.text-danger').removeClass('text-danger fw-bold');
 
-                    var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                    var signInput = document.querySelector(
+                        'input[name="SIGN[JI][{{ $appraisalId }}]"]');
                     signInput.required = true;
 
                     $('#signatory_modal').modal('show');
@@ -961,9 +1173,10 @@
 
                             // Change the name attribute of the textareas if needed
                             closestRow.find('textarea[name="WPA[0][' +
-                                {{ $appraisalId }} + '][continue_doing]"]').attr(
-                                'name', 'WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][continue_doing]');
+                                    {{ $appraisalId }} + '][continue_doing]"]')
+                                .attr(
+                                    'name', 'WPA[' + wpaID + '][' +
+                                    {{ $appraisalId }} + '][continue_doing]');
                             closestRow.find('textarea[name="WPA[0][' +
                                 {{ $appraisalId }} + '][stop_doing]"]').attr(
                                 'name', 'WPA[' + wpaID + '][' +
@@ -975,13 +1188,16 @@
 
                             // Update the content of the closest row based on the response data
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][continue_doing]"]').val(
-                                wpa.continue_doing);
+                                    {{ $appraisalId }} + '][continue_doing]"]')
+                                .val(
+                                    wpa.continue_doing);
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][stop_doing]"]').val(wpa
+                                {{ $appraisalId }} + '][stop_doing]"]').val(
+                                wpa
                                 .stop_doing);
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][start_doing]"]').val(wpa
+                                {{ $appraisalId }} + '][start_doing]"]').val(
+                                wpa
                                 .start_doing);
                         });
 
@@ -1029,9 +1245,10 @@
 
                             // Change the name attribute of the textareas if needed
                             closestRow.find('textarea[name="LDP[0][' +
-                                {{ $appraisalId }} + '][learning_need]"]').attr(
-                                'name', 'LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][learning_need]');
+                                    {{ $appraisalId }} + '][learning_need]"]')
+                                .attr(
+                                    'name', 'LDP[' + ldpID + '][' +
+                                    {{ $appraisalId }} + '][learning_need]');
                             closestRow.find('textarea[name="LDP[0][' +
                                 {{ $appraisalId }} + '][methodology]"]').attr(
                                 'name', 'LDP[' + ldpID + '][' +
@@ -1039,10 +1256,12 @@
 
                             // Update the content of the closest row based on the response data
                             closestRow.find('textarea[name="LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][learning_need]"]').val(ldp
-                                .learning_need);
+                                    {{ $appraisalId }} + '][learning_need]"]')
+                                .val(ldp
+                                    .learning_need);
                             closestRow.find('textarea[name="LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][methodology]"]').val(ldp
+                                {{ $appraisalId }} + '][methodology]"]').val(
+                                ldp
                                 .methodology);
                         });
 
@@ -1121,7 +1340,8 @@
                         var score = question.score;
 
                         var row = $('<tr>');
-                        row.attr('data-question-id', (questionId.toString() + {{ $appraisalId }}));
+                        row.attr('data-question-id', (questionId.toString() +
+                            {{ $appraisalId }}));
 
                         var orderCell = $('<td>').text(questionOrder);
                         var questionCell = $('<td>').text(questionText).addClass('text-justify');
@@ -1148,7 +1368,8 @@
 
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
-                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                label));
 
                             // Attach event listener to input for highlighting the row on invalid
                             input.on('invalid', function() {
@@ -1182,7 +1403,8 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log('Score saved for question ID:',
+                                        console.log(
+                                            'Score saved for question ID:',
                                             questionId);
                                     },
                                     error: function(xhr) {
@@ -1213,7 +1435,8 @@
                         var score = question.score;
 
                         var row = $('<tr>');
-                        row.attr('data-question-id', (questionId.toString() + {{ $appraisalId }}));
+                        row.attr('data-question-id', (questionId.toString() +
+                            {{ $appraisalId }}));
 
                         var orderCell = $('<td>').text(questionOrder);
                         var questionCell = $('<td>').text(questionText).addClass('text-justify');
@@ -1240,7 +1463,8 @@
 
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
-                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                label));
 
                             input.on('invalid', function() {
                                 $(this).addClass('is-invalid');
@@ -1273,7 +1497,8 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log('Score saved for question ID:',
+                                        console.log(
+                                            'Score saved for question ID:',
                                             questionId);
                                     },
                                     error: function(xhr) {
@@ -1297,16 +1522,17 @@
                     $('#S_table_body').empty();
                     var SQuestions = response.S;
 
-                    SQuestions.forEach(function(question) {
+                    SQuestions.forEach(function(question, index) {
                         var questionId = question.question_id;
                         var questionText = question.question;
                         var questionOrder = question.question_order;
                         var score = question.score;
 
                         var row = $('<tr>');
-                        row.attr('data-question-id', (questionId.toString() + {{ $appraisalId }}));
+                        row.attr('data-question-id', (questionId.toString() +
+                            {{ $appraisalId }}));
 
-                        var orderCell = $('<td>').text(questionOrder);
+                        var orderCell = $('<td>').text(index + 1);
                         var questionCell = $('<td>').text(questionText).addClass('text-justify');
                         var performanceCell = $('<td>').addClass('large-column');
                         var performanceLevelDiv = $('<div>').addClass(
@@ -1331,7 +1557,8 @@
 
                             var span = $('<span>').addClass('ms-1').text(i);
                             label.append(input, span);
-                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(label));
+                            performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                label));
 
                             input.on('invalid', function() {
                                 $(this).addClass('is-invalid');
@@ -1364,7 +1591,8 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log('Score saved for question ID:',
+                                        console.log(
+                                            'Score saved for question ID:',
                                             questionId);
                                     },
                                     error: function(xhr) {
@@ -1397,6 +1625,13 @@
             dataType: 'json',
             success: function(data) {
                 if (data.success) {
+                    console.log('data.eulaData: ' + data.eulaData);
+                    if (data.eulaData == 1) {
+                        console.log('HIDE');
+                        $('#consentform').modal('hide');
+                    }
+
+
                     $('#KRA_table_body').empty();
                     var tbody = $('#KRA_table_body');
 
@@ -1483,7 +1718,7 @@
 
                                 input[0].required = true;
 
-                                var span = $('<span>').addClass('ms-1').text(i);
+                                var span = $(content - body).addClass('ms-1').text(i);
                                 label.append(input, span);
                                 performanceLevelDiv.append($('<div>').addClass('col-auto').append(
                                     label));
@@ -1657,9 +1892,11 @@
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
+                                1) +
                             '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
+                                1) +
                             '][{{ $appraisalId }}][answer]"][value="0"]');
 
                         if (jic.answer === 1) {
@@ -1694,7 +1931,8 @@
                             $(this).closest('tr').removeClass('text-danger fw-bold');
                         });
 
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
+                            index +
                             1) + '][{{ $appraisalId }}][comments]"]');
                         commentTextarea.value = jic.comments;
 
@@ -1718,7 +1956,8 @@
 
                     data.signData.forEach(function(sign, index) {
                         var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
+                        var row = document.querySelector('[data-appraisal-id="' + appraisalId +
+                            '"]');
 
                         if (row) {
                             var signCell = row.querySelector('.sign-cell');
@@ -2062,39 +2301,39 @@
                     console.log("PHASE");
                     console.log(response.phaseData);
                     if (response.phaseData === "kra") {
-                        console.log("AQ1");
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
+                        $('#KRA_table_body select').prop('disabled', true);
                     } else if (response.phaseData === "pr") {
-                        console.log("AQ2");
+                        $('textarea').prop('readonly', true);
+                        $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
                     } else if (response.phaseData === "eval") {
-                        console.log("AQ3");
                         $('#KRA_table_body textarea').prop('readonly', true);
-                        // Disable select elements and add background color to nearest <td> elements
                         $('#KRA_table_body select').prop('disabled', true);
 
                         $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-
-                    } else if (response.locked === "lock") {
-                        console.log("AQ4");
-
+                        $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
+                    } else if (response.phaseData === "lock") {
+                        $('#KRA_table_body select').prop('disabled', true);
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
+                        $('.content-body').addClass('modal fade');
                     }
 
                     console.log("LOCK");
                     console.log(response.locked);
-                    if (response.locked === "kra") {
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('#KRA_table_body textarea').prop('disabled', false);
-                    } else if (response.locked === "pr") {
 
-                    } else if (response.locked === "eval") {
-
+                    if (response.locked === "eval") {
+                        $('input[type="radio"]').prop('disabled', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
                     } else if (response.locked === "lock") {
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {

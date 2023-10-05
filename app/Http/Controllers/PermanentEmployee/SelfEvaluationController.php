@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PermanentEmployee;
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\EvalYear;
+use App\Models\FinalScores;
 use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
@@ -39,9 +40,9 @@ class SelfEvaluationController extends Controller
 
     $appraisalId = $request->input('appraisal_id');
 
-    $SID = FormQuestions::where('table_initials', 'SID')->get();
-    $SR = FormQuestions::where('table_initials', 'SR')->get();
-    $S = FormQuestions::where('table_initials', 'S')->get();
+    $SID = FormQuestions::where('table_initials', 'SID')->where('status', 'active')->get();
+    $SR = FormQuestions::where('table_initials', 'SR')->where('status', 'active')->get();
+    $S = FormQuestions::where('table_initials', 'S')->where('status', 'active')->get();
 
     // Retrieve stored scores for each question ID
     $storedValues = AppraisalAnswers::where('appraisal_id', $appraisalId)
@@ -98,22 +99,36 @@ class SelfEvaluationController extends Controller
       throw new \Exception('User not found.');
     }
 
-    $appraisee = Employees::where('account_id', $account_id)
-      ->get();
+    $appraisee = Employees::where('account_id', $account_id)->get();
 
     $appraisals = Appraisals::where('employee_id', $user->employee_id)
       ->with('employee', 'evaluator') // Load the related employee and evaluator information
       ->get();
 
+    $status = $this->calculateStatus($appraisals);
+
+    // Calculate the final score using the PHP function
+    $finalScore = $this->calculateFinalScore($appraisals);
+
+    $finalScoreModel = new FinalScores([
+      'employee_id' => $account_id,
+      'final_score' => $finalScore,
+    ]);
+
+    //$finalScoreModel->save();
+
     $data = [
       'success' => true,
       'appraisee' => $appraisee,
       'appraisals' => $appraisals,
-      'is' => $user
+      'is' => $user,
+      'status' => $status,
+      'final_score' => $finalScore,
     ];
 
     return response()->json($data);
   }
+
 
   public function viewAppraisal($appraisal_id)
   {
@@ -200,17 +215,20 @@ class SelfEvaluationController extends Controller
     }
 
     $appraisalId = $request->input('appraisal_id');
+    $eulaData = Appraisals::where('appraisal_id', $appraisalId)->pluck('eula');
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
     $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
     $jicData = JIC::where('appraisal_id', $appraisalId)->get();
     $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
+    Log::info('EULA: '.$eulaData);
+
     foreach ($signData as &$sign) {
       $sign->sign_data = base64_encode($sign->sign_data);
     }
 
-    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
+    return response()->json(['success' => true, 'eulaData'=> $eulaData, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
   }
 
   public function deleteKRA(Request $request)
@@ -773,8 +791,8 @@ class SelfEvaluationController extends Controller
         }
       } else {
         Log::info('No matching KRA found.');
-        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
-        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        Log::info('KRA ID: ' . ($kraID - 1));
+        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1));
 
         KRA::create([
           'appraisal_id' => $request->input('appraisalID') - 1,
@@ -954,6 +972,7 @@ class SelfEvaluationController extends Controller
     $appraisal = Appraisals::find($appraisalId);
 
     if ($appraisal) {
+      ////////////LOCK/////////////
       $kraLocked = $appraisal->kra_locked;
       $prLocked = $appraisal->pr_locked;
       $evalLocked = $appraisal->eval_locked;
@@ -981,9 +1000,10 @@ class SelfEvaluationController extends Controller
       }
       Log::info($locked);
 
+      ////////////PHASES/////////////
       // $currentDate = Carbon::now();
 
-      $currentDate = Carbon::parse("2023-10-06");
+      $currentDate = Carbon::parse("2023-11-25");
 
       $activeYear = EvalYear::where('status', 'active')->first();
 
@@ -1007,6 +1027,80 @@ class SelfEvaluationController extends Controller
       return response()->json(['success' => true, 'locked' => $locked, 'phaseData' => $phaseData]);
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
+    }
+  }
+
+  function calculateFinalScore($appraisals)
+  {
+    $behavioralCompetenciesGrade = 0;
+    $kraGrade = 0;
+    $finalGrade = null; // Initialize the finalGrade to null
+
+    foreach ($appraisals as $appraisal) {
+      $evaluationType = $appraisal['evaluation_type'];
+      $bhScore = $appraisal['bh_score'];
+      $kraScore = $appraisal['kra_score'];
+      $icScore = $appraisal['ic_score'];
+
+      // Check if date_submitted is not null
+      if ($appraisal['date_submitted'] !== null) {
+        // Calculate the behavioral competencies grade
+        if ($evaluationType === 'self evaluation') {
+          $behavioralCompetenciesGrade += ($bhScore * 0.1);
+        } elseif ($evaluationType === 'is evaluation') {
+          $behavioralCompetenciesGrade += ($bhScore * 0.5);
+        } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
+          $behavioralCompetenciesGrade += ($icScore * 0.2);
+        }
+
+        // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
+        if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+          $kraGrade += $kraScore;
+        }
+        $kraFS = $kraGrade / 2;
+
+        // Calculate the final grade
+        $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
+      } else {
+        // Set the finalGrade to null and break out of the loop
+        $finalGrade = null;
+        break;
+      }
+    }
+
+    return $finalGrade;
+  }
+
+  public function calculateStatus($appraisals)
+  {
+    // Initialize status as "complete"
+    $status = 'Complete';
+
+    foreach ($appraisals as $appraisal) {
+      if ($appraisal->date_submitted === null) {
+        // If any appraisal has a null date_submitted, set status to "pending"
+        $status = 'Pending';
+        break; // No need to continue checking, status is already "pending"
+      }
+    }
+    return $status;
+  }
+
+  public function saveEULA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    // Get the appraisal ID from the request
+    $appraisalId = $request->input('appraisalId');
+
+    // Update the 'eula' column to true for the specified appraisal ID
+    try {
+      Appraisals::where('appraisal_id', $appraisalId)->update(['eula' => 1]);
+      return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+      return response()->json(['success' => false, 'message' => 'Error updating EULA status.']);
     }
   }
 }
