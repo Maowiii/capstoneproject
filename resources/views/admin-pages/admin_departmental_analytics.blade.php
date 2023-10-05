@@ -66,49 +66,77 @@
         </div>
     </div>
 
-    <!-- Behavioral Competencies -->
-    <div class="content-container">
-        <h2>Behavioral Competencies:</h2>
-        <h4>Sustained Integral Development:</h4>
-        <table class="table table-sm mb-3" id="sid_table">
-            <thead>
-                <th>#</th>
-                <th>Question</th>
-                <th class="medium-column">Average Score</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <h4>Social Responsibility:</h4>
-        <table class="table table-sm mb-3" id="sr_table">
-            <thead>
-                <th>#</th>
-                <th>Question</th>
-                <th class="medium-column">Average Score</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <h4>Solidarity</h4>
-        <table class="table table-sm mb-3" id="s_table">
-            <thead>
-                <th>#</th>
-                <th>Question</th>
-                <th class="medium-column">Average Score</th>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <!-- BEHAVIORAL COMPETENCIES -->
+    <!-- Sustained Integral Development -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Behavioral Competencies:</h2>
+            <h4>Sustained Integral Development:</h4>
+            <table class="table table-sm mb-3" id="sid_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <h4>TEST</h4>
+        </div>
+    </div>
+    <!-- Social Responsibility -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h4>Social Responsibility:</h4>
+            <table class="table table-sm mb-3" id="sr_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <h4>TEST</h4>
+        </div>
+    </div>
+    <!-- Solidarity -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h4>Solidarity</h4>
+            <table class="table table-sm mb-3" id="s_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <h4>TEST</h4>
+        </div>
     </div>
 
     <!-- Internal Customers -->
-    <div class="content-container">
-        <h2>Internal Customers:</h2>
-        <table class="table table-sm mb-3" id="ic_table">
-            <thead>
-                <th>#</th>
-                <th>Question</th>
-                <th class="medium-column">Average Score</th>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Internal Customers:</h2>
+            <table class="table table-sm mb-3" id="ic_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <h2>Graph:</h2>
+            <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        </div>
     </div>
 
     <script>
@@ -124,7 +152,8 @@
                 $('#department-heading').text(departmentName);
             }
 
-            loadQuestions(selectedYear);
+            loadBCQuestions(selectedYear, departmentID);
+            loadICQuestions(selectedYear, departmentID);
             loadCards(selectedYear, departmentID);
             loadPointsSystem(selectedYear, departmentID);
         });
@@ -167,7 +196,6 @@
                     departmentID: departmentID
                 },
                 success: function(response) {
-                    console.log(response);
                     if (response.success) {
                         const categories = [{
                                 label: 'Outstanding',
@@ -196,12 +224,9 @@
                             },
                         ];
 
-                        // Get the canvas element
-                        const canvas = document.getElementById('point_system_bar_chart');
+                        const pointSystemCanvas = $('#point_system_bar_chart');
 
-                        // Create the bar chart
-                        const ctx = canvas.getContext('2d');
-                        new Chart(ctx, {
+                        new Chart(pointSystemCanvas, {
                             type: 'bar',
                             data: {
                                 labels: categories.map(category => category.label),
@@ -228,15 +253,12 @@
                             },
                         });
 
-                        // Loop through the performance categories to populate the tables
                         categories.forEach(category => {
                             const table = $(category.tableId);
                             table.empty();
                             const row = $("<tr class='text-center'>");
 
                             if (response[category.key].length > 0) {
-                                console.log(response[category.key]);
-                                console.log('Category not empty.');
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
@@ -245,7 +267,6 @@
                                     table.append(row.clone());
                                 });
                             } else {
-                                console.log('Category empty.');
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }
@@ -259,15 +280,86 @@
             });
         }
 
-        function loadQuestions(selectedYear = null) {
+        function loadICQuestions(selectedYear = null, departmentID = null) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route('ad.loadQuestions') }}',
+                url: '{{ route('ad.loadICQuestions') }}',
                 type: 'GET',
                 data: {
                     selectedYear: selectedYear,
+                    departmentID: departmentID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response);
+                        if (response.ic) {
+                            var icTable = $('#ic_table tbody');
+                            icTable.empty();
+
+                            $.each(response.ic, function(index,
+                                item) {
+                                var row = $("<tr class='text-center'>");
+                                row.append($("<td>").text(item.question_order));
+                                row.append($("<td class='text-start'>").text(item.question));
+                                row.append($("<td>").text(item
+                                    .average_score));
+
+                                icTable.append(row);
+                            });
+
+                            var averageScores = response.ic.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.ic.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var icBarChart = $('#ic_bar_chart');
+
+                            new Chart(icBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+
+                        }
+                    }
+
+                }
+            });
+        }
+
+        function loadBCQuestions(selectedYear = null, departmentID = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadBCQuestions') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                    departmentID: departmentID
                 },
                 success: function(response) {
                     if (response.success) {
@@ -314,21 +406,6 @@
                                     .question));
                                 row.append($("<td>").text('-'));
                                 sTable.append(row);
-                            });
-                        }
-
-                        if (response.ic) {
-                            var icTable = $('#ic_table tbody');
-                            icTable.empty();
-
-                            $.each(response.ic, function(index, item) {
-                                var row = $("<tr>");
-                                row.append($("<td>").text(item
-                                    .question_order));
-                                row.append($("<td class='text-start'>").text(item
-                                    .question));
-                                row.append($("<td>").text('-'));
-                                icTable.append(row);
                             });
                         }
                     }

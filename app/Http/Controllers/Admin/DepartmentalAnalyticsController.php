@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppraisalAnswers;
 use App\Models\Departments;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
@@ -22,9 +23,10 @@ class DepartmentalAnalyticsController extends Controller
     }
   }
 
-  public function loadQuestions(Request $request)
+  public function loadBCQuestions(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
+    $departmentID = $request->input('departmentID');
 
     if ($selectedYear) {
       $sid = FormQuestions::where('table_initials', 'SID')
@@ -38,11 +40,6 @@ class DepartmentalAnalyticsController extends Controller
         ->get();
 
       $s = FormQuestions::where('table_initials', 'S')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-
-      $ic = FormQuestions::where('table_initials', 'IC')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
@@ -62,11 +59,6 @@ class DepartmentalAnalyticsController extends Controller
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
-
-      $ic = FormQuestions::where('table_initials', 'IC')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
     }
 
     return response()->json([
@@ -74,7 +66,57 @@ class DepartmentalAnalyticsController extends Controller
       'sid' => $sid,
       'sr' => $sr,
       's' => $s,
-      'ic' => $ic
+    ]);
+  }
+
+  public function loadICQuestions(Request $request)
+  {
+    $selectedYear = $request->input('selectedYear');
+    $departmentID = $request->input('departmentID');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+    
+    Log::debug('Selected Year from Request: ' . $selectedYear);
+
+    if ($selectedYear) {
+      Log::debug('Selected Year Condition');
+      $icQuestions = FormQuestions::where('table_initials', 'IC')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      foreach ($icQuestions as $icQuestion) {
+        $averageScore = AppraisalAnswers::where('question_id', $icQuestion->question_id)
+          ->whereHas('appraisal', function ($query) use ($departmentID) {
+            $query->where('department_id', $departmentID);
+          })
+          ->avg('score');
+
+        $icQuestion->average_score = number_format($averageScore, 2);
+      }
+    } else {
+      Log::debug('Active Year Condition');
+      $icQuestions = FormQuestions::where('table_initials', 'IC')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      foreach ($icQuestions as $icQuestion) {
+        $averageScore = AppraisalAnswers::where('question_id', $icQuestion->question_id)
+          ->whereHas('appraisal', function ($query) use ($departmentID) {
+            $query->where('department_id', $departmentID);
+          })
+          ->avg('score');
+
+        $icQuestion->average_score = number_format($averageScore, 2);
+      }
+    }
+
+    return response()->json([
+      'success' => true,
+      'ic' => $icQuestions
     ]);
   }
 

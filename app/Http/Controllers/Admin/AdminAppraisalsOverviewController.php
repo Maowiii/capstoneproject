@@ -64,7 +64,6 @@ class AdminAppraisalsOverviewController extends Controller
         })
         ->get();
 
-
     } elseif ($activeEvalYear) {
 
       $sy_start = $activeEvalYear->sy_start;
