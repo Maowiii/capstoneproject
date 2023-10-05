@@ -11,9 +11,12 @@
         </div>
         <div class="col">
             <select class="form-select align-middle" id="evaluation-year-select">
+                @if (!$activeEvalYear)
+                    <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+                @endif
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
-                        @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                        @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>
                         {{ $year->sy_start }} - {{ $year->sy_end }}
                     </option>
                 @endforeach
@@ -94,32 +97,6 @@
         </div>
     </div>
 
-    <div class="modal" id="lockModal">
-        <div class="modal-dialog">
-            <div class="modal-content" id="lockphase">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="lockModalLabel">Apraisal Form Lock</h5>
-                    <button type="button" class="btn-close" id="lock-close-btn"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <table class='table'>
-                        <thead>
-                            <tr>
-                                <th>Appraisal Form</th>
-                                <th>KRA Encoding Phase</th>
-                                <th>Performance Review Phase</th>
-                                <th>Evaluation Phase</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lockBody">
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         $(document).ready(function() {
             loadAdminAppraisalsTable();
@@ -130,6 +107,7 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 loadAdminAppraisalsTable(selectedYear, null);
+                console.log('Selected Year: ' + selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -150,6 +128,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            console.log(response);
                             $('#admin_appraisals_table tbody').empty();
                             var groupedAppraisals = response.groupedAppraisals;
 
@@ -415,7 +394,7 @@
                             $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + '-' + '</p>');
                             $('#admin_appraisals_table tbody').empty();
                             var row = $("<tr class='middle-align'></tr>").append(
-                                "<td colspan='7'><p class='text-secondary fst-italic mt-0'>There is no existing evaluation year.</p></td>"
+                                "<td colspan='7'><p class='text-secondary fst-italic mt-0'>There is no ongoing evaluation.</p></td>"
                             );
                             $('#admin_appraisals_table tbody').append(row);
 
@@ -439,6 +418,7 @@
             }
 
             function loadSignatureOverview(employeeID, selectedYear = null) {
+                console.log('Load Signature Overview');
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

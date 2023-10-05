@@ -26,37 +26,43 @@ class AdminDashboardController extends Controller
   public function loadDepartmentTable(Request $request)
   {
     if (session()->has('account_id')) {
+
+      $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+
       $search = $request->input('search');
       $selectedYear = $request->input('selectedYear');
       $page = $request->input('page');
 
       if ($selectedYear) {
-        $parts = explode('_', $selectedYear);
+        if ($search) {
+          $table = 'appraisals_' . $selectedYear;
+          $appraisalModel = new Appraisals;
+          $appraisalModel->setTable($table);
 
-        if (count($parts) >= 2) {
-          $sy_start = $parts[0];
-          $sy_end = $parts[1];
+        } else {
+          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+            ->orderBy('department_name')
+            ->paginate(20);
+
+          return response()->json(['success' => true, 'departments' => $departments]);
         }
 
-        if (Appraisals::tableExists()) {
-          if ($search) {
+      } elseif ($activeEvalYear) {
+        if ($search) {
+          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+            ->orderBy('department_name')
+            ->paginate(20);
 
-          } else {
+          return response()->json(['success' => true, 'departments' => $departments]);
+        } else {
+          $departments = Departments::orderBy('department_name')->paginate(20);
+          Log::debug($departments);
 
-          }
-        } 
+
+          return response()->json(['success' => true, 'departments' => $departments]);
+        }
       } else {
-        if (Appraisals::tableExists()) {
-          if ($search) {
-            
-          } else {
-            $departments = Departments::orderBy('department_name')->paginate(20);
-            Log::debug($departments);
-
-
-            return response()->json(['success' => true, 'departments' => $departments]);
-          }
-        }
+        return response()->json(['success' => false]);
       }
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');

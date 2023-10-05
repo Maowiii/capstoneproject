@@ -10,7 +10,6 @@ use App\Models\Appraisals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -112,6 +111,7 @@ class EvaluationYearController extends Controller
       $table->integer('employee_id');
       $table->integer('evaluator_id')->nullable();
       $table->integer('department_id');
+      $table->boolean('eula')->default(false);
       $table->decimal('bh_score')->nullable();
       $table->decimal('kra_score')->nullable();
       $table->decimal('ic_score')->nullable();
@@ -135,7 +135,6 @@ class EvaluationYearController extends Controller
     Schema::connection('mysql')->create('appraisal_answers' . $sy, function ($table) {
       $table->bigIncrements('appraisal_answer_id');
       $table->integer('appraisal_id')->nullable();
-      $table->integer('kra_id')->nullable();
       $table->integer('question_id')->nullable();
       $table->integer('score');
     });
@@ -196,6 +195,7 @@ class EvaluationYearController extends Controller
     Schema::connection('mysql')->create('final_scores' . $sy, function ($table) {
       $table->bigIncrements('score_id');
       $table->integer('employee_id');
+      $table->integer('department_id');
       $table->decimal('final_score')->nullable();
     });
 
@@ -247,7 +247,7 @@ class EvaluationYearController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $evalID = $request->input('eval_id');
 
     $evaluationYear = EvalYear::find($evalID);
@@ -268,5 +268,4 @@ class EvaluationYearController extends Controller
       return response()->json(['success' => false, 'error' => 'Evaluation year not found.']);
     }
   }
-
 }

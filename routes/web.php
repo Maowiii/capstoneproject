@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\EvaluationYearController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminInternalCustomerController;
+use App\Http\Controllers\Admin\DepartmentalAnalyticsController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -52,11 +53,16 @@ Route::post('/reset-password/verify-code', [AuthController::class, 'step2_Verify
 Route::post('/reset-password/reset', [AuthController::class, 'step3_ResetPassword'])->name('reset-password');
 Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name('resend-code');
 
+/* ----- ADMIN ----- */
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
+Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
+Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
+Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadICQuestions');
+Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
+Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadPointsSystem');
 
-/* ----- ADMIN ----- */
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');
@@ -65,7 +71,7 @@ Route::get('/admin-appraisals-overview/is-evaluation-form', [AdminAppraisalsOver
 Route::get('/admin-appraisals-overview/ic-evaluation-form', [AdminAppraisalsOverviewController::class, 'loadICEvaluationForm'])->name('ad.viewICEvaluationForm');
 Route::get('/admin-appraisals-overview/get-signatures', [AdminAppraisalsOverviewController::class, 'loadSignatureOverview'])->name('ad.loadSignaturesOverview');
 Route::get('/admin-appraisals-overview/load-signature-image', [AdminAppraisalsOverviewController::class, 'loadSignature'])->name('ad.loadSignature');
-Route::get('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
+Route::post('/admin-appraisals-overview/lock-unlock-appraisal', [AdminAppraisalsOverviewController::class, 'lockUnlockAppraisal'])->name('ad.lockUnlockAppraisal');
 Route::post('/admin-appraisals-overview/toggle-kra-lock', [AdminAppraisalsOverviewController::class, 'toggleKRALock'])->name('ad.toggleKRALock');
 Route::post('/admin-appraisals-overview/toggle-pr-lock', [AdminAppraisalsOverviewController::class, 'togglePRLock'])->name('ad.togglePRLock');
 Route::post('/admin-appraisals-overview/toggle-eval-lock', [AdminAppraisalsOverviewController::class, 'toggleEvalLock'])->name('ad.toggleEvalLock');
