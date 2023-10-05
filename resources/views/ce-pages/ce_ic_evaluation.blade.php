@@ -399,7 +399,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     url: '{{ route('pe.loadSignatures') }}',
-                    type: 'GET',
+                    type: 'POST',
                     data: {
                         appraisalId: appraisalId,
                     },

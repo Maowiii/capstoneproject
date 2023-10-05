@@ -15,6 +15,7 @@ class FinalScores extends Model
   protected $fillable = [
     'employee_id',
     'question_id',
+    'department_id',
     'final_score'
   ];
 
@@ -27,5 +28,10 @@ class FinalScores extends Model
       $activeYear = 'final_scores_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
       $this->setTable($activeYear);
     }
+  }
+
+  public function employee()
+  {
+    return $this->belongsTo(Employees::class, 'employee_id', 'employee_id');
   }
 }

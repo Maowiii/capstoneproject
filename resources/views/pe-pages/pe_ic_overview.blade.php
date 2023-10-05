@@ -34,18 +34,20 @@
                     var tableBody = $('#ic_overview_body');
                     tableBody.empty();
 
-                    $.each(data, function(index, assignment) {
+                    $.each(data.assignments, function(index, assignment) {
                         var row = $('<tr>').addClass('align-middle');
 
                         row.append(
                             $('<td>').text(
                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                ),
-                            $('<td>').text(assignment.employee.department.department_name),
-                            $('<td>').text(assignment.date_submitted !== null ?
-                                'Submitted' : 'Pending'),
-                            (typeof assignment.date_submitted === 'string' && assignment
-                                .date_submitted.trim() !== '') ?
+                            ),
+                            $('<td>').text(assignment.employee.department
+                            .department_name), // Access department property within employee
+                            $('<td>').text(
+                                assignment.date_submitted !== null ? 'Submitted' : 'Pending'
+                            ),
+                            typeof assignment.date_submitted === 'string' &&
+                            assignment.date_submitted.trim() !== '' ?
                             $('<td>').append(
                                 $('<button>')
                                 .text('View')
@@ -56,16 +58,18 @@
                                         "?appraisal_id=" + encodeURIComponent(assignment
                                             .appraisal_id) +
                                         "&appraisee_account_id=" + encodeURIComponent(
-                                            assignment.employee.account_id) +
+                                            assignment.employee.account_id
+                                        ) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
+                                        ) +
                                         "&appraisee_department=" + encodeURIComponent(
                                             assignment.employee.department
-                                            .department_name);
+                                            .department_name
+                                        );
                                 })
                             ) :
-                            (assignment.date_submitted === null) ?
+                            assignment.date_submitted === null ?
                             $('<td>').append(
                                 $('<button>')
                                 .text('Appraise')
@@ -76,13 +80,15 @@
                                         "?appraisal_id=" + encodeURIComponent(assignment
                                             .appraisal_id) +
                                         "&appraisee_account_id=" + encodeURIComponent(
-                                            assignment.employee.account_id) +
+                                            assignment.employee.account_id
+                                        ) +
                                         "&appraisee_name=" + encodeURIComponent(
                                             `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
+                                        ) +
                                         "&appraisee_department=" + encodeURIComponent(
                                             assignment.employee.department
-                                            .department_name);
+                                            .department_name
+                                        );
                                 })
                             ) :
                             $('<td>').text('Unknown')
@@ -90,6 +96,7 @@
 
                         tableBody.append(row);
                     });
+
                 },
                 error: function(xhr, status, error) {
                     console.log(error);

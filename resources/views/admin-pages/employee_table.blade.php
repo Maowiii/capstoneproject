@@ -7,7 +7,7 @@
 @section('content')
     <div class="content-container">
         <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Search" id="search">
+            <input type="text" class="form-control" placeholder="Name" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
@@ -170,10 +170,10 @@
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         function createResetButton(account) {
-            return $('<div>').addClass('input-group').attr('id', 'passwordContainer-' +
+            return $('<div>').addClass('input-group justify-content-center').attr('id', 'passwordContainer-' +
                 account.account_id).append(
                 $('<button>').addClass('btn btn-outline-primary').html(
-                    'Reset Password').click(function() {
+                    'Reset').click(function() {
                     $('#resetPasswordName').text(account.employee.first_name +
                         ' ' + account.employee.last_name);
                     $('#resetPasswordModal').modal('show');
@@ -196,7 +196,7 @@
                 url: '{{ route('ad.getEmployeesData') }}',
                 type: 'GET',
                 data: {
-                  search: search
+                    search: search
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -214,33 +214,35 @@
                             var statusAction = account.status === 'active' ? 'deactivate' :
                                 'activate';
 
-                            var newRow = $('<tr>').attr('id', account.account_id).addClass('align-middle').append(
-                                $('<td>').html(account.email + '<br /><p class="fst-italic text-secondary">' +
-                                    account
-                                    .employee.employee_number + '</p>'),
-                                $('<td>').text(account.employee.first_name),
-                                $('<td>').text(account.employee.last_name),
-                                $('<td>').append(createResetButton(account)),
-                                $('<td>').text(account.type),
-                                $('<td>').text(account.employee.department ? account.employee
-                                    .department
-                                    .department_name : ''),
-                                $('<td>').text(account.status),
-                                $('<td>').append(
-                                    $('<div>').addClass('btn-group').attr('role', 'group')
-                                    .append(
-                                        $('<button>').addClass('btn btn-outline-danger').text(
-                                            statusButton)
-                                        .attr('onclick', 'changeStatus(' + account.account_id +
-                                            ', "' +
-                                            statusAction + '")'),
-                                        $('<button>').addClass(
-                                            'btn btn-outline-primary edit-btn')
-                                        .html('<i class="bx bx-edit"></i>')
-                                        .attr('employee-id', account.employee.employee_id)
+                            var newRow = $('<tr>').attr('id', account.account_id).addClass('text-center')
+                                .append(
+                                    $('<td>').html(account.email +
+                                        '<br /><p class="fst-italic text-secondary">' +
+                                        account
+                                        .employee.employee_number + '</p>'),
+                                    $('<td>').text(account.employee.first_name),
+                                    $('<td>').text(account.employee.last_name),
+                                    $('<td>').append(createResetButton(account)),
+                                    $('<td>').text(account.type),
+                                    $('<td>').text(account.employee.department ? account.employee
+                                        .department
+                                        .department_name : ''),
+                                    $('<td>').text(account.status),
+                                    $('<td>').append(
+                                        $('<div>').addClass('btn-group').attr('role', 'group')
+                                        .append(
+                                            $('<button>').addClass('btn btn-outline-danger').text(
+                                                statusButton)
+                                            .attr('onclick', 'changeStatus(' + account.account_id +
+                                                ', "' +
+                                                statusAction + '")'),
+                                            $('<button>').addClass(
+                                                'btn btn-outline-primary edit-btn')
+                                            .html('<i class="bx bx-edit"></i>')
+                                            .attr('employee-id', account.employee.employee_id)
+                                        )
                                     )
-                                )
-                            );
+                                );
                             $('#employee_table_body').append(newRow);
                             $('#confirmResetPassword').off('click').click(function() {
                                 resetPassword(account.account_id);

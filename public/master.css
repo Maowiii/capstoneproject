@@ -366,17 +366,15 @@ tbody {
 .text-middle {
     text-align: center !important;
 }
-
-.table,
-.table thead th,
-.table tbody td {
-    text-align: center;
+thead {
+  text-align: center;
+  vertical-align: middle;
 }
 
-.table {
-    margin-bottom: 30px !important;
+td {
+  vertical-align: middle;
+  text-align: center;
 }
-
 .table-bordered {
     border: solid #c3d7f1 1px !important;
 }
@@ -487,24 +485,9 @@ textarea {
     background-color: #e9ecef !important;
     color: #999 !important;
 }
-#signatory, #lockphase, #passwordmodal{
-    display: flex;
-    justify-content: center;
-}
-#signatory_modal .modal-dialog {
-    max-width: 40%;
-}
-#lockModal .modal-dialog, #passchange .modal-dialog{
-    max-width: 30%;
-}
-#signatory_modal .modal-content, #lockModal .modal-content, #passchange .modal-content {
-    margin-top: 0;
-}
-#signatory_modal .modal-title, #lockModal .modal-title, #passchange .modal-title {
-    text-align: center;
-}
-#signatory_modal .modal-footer, #lockModal .modal-footer{
-    justify-content: center;
+
+.table-fit {
+  width: 1px;
 }
 #passchange .modal-footer{
     justify-content: right;

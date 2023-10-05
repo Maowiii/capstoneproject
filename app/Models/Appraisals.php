@@ -21,6 +21,7 @@ class Appraisals extends BaseModel
     'employee_id',
     'evaluator_id',
     'department_id',
+    'eula',
     'bh_score',
     'kra_score',
     'ic_score',

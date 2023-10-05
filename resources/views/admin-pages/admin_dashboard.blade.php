@@ -11,9 +11,12 @@
         </div>
         <div class="col">
             <select class="form-select align-middle" id="evaluation-year-select">
+                @if (!$activeEvalYear)
+                    <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+                @endif
                 @foreach ($evaluationYears as $year)
                     <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
-                        @if ($year->eval_id === $activeEvalYear->eval_id) selected @endif>
+                        @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>
                         {{ $year->sy_start }} - {{ $year->sy_end }}
                     </option>
                 @endforeach
@@ -24,12 +27,12 @@
     <div class='d-flex gap-3'>
         <div class="content-container text-middle" id="total-permanent-employees-container">
             <h4>Total Permanent Employees:</h4>
+            <p>-</p>
         </div>
         <div class="content-container text-middle" id="avg-total-score-container">
             <h4>Average Total Score:</h4>
+            <p>-</p>
         </div>
-        <div class="content-container text-middle" id="performance-review-container"></div>
-        <div class="content-container text-middle" id="evaluation-container"></div>
     </div>
 
     <div class="content-container">
@@ -50,11 +53,8 @@
             <tbody></tbody>
         </table>
         <nav id="department_pagination_container">
-            <ul class="pagination pagination-sm justify-content-end" id="department_pagination">
-                <!-- Pagination buttons will be dynamically added here -->
-            </ul>
+            <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
         </nav>
-
     </div>
 
     <script>
@@ -65,14 +65,16 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 console.log('Selected Year: ' + selectedYear);
+                loadDepartmentTable(selectedYear, null);
             });
 
             $('#search').on('input', function() {
                 var query = $(this).val();
-                loadDeparmentTable(globalSelectedYear, query);
+                console.log('Query: ' + query);
+                loadDepartmentTable(globalSelectedYear, query);
             });
 
-            loadDepartmentTable();
+            loadDepartmentTable(globalSelectedYear, null);
         });
 
         function loadDepartmentTable(selectedYear = null, search = null, page = 1) {
@@ -93,22 +95,28 @@
                             .data;
                         $('#departments_table tbody').empty();
 
-                        console.log(response.departments);
-
                         for (var i = 0; i < departments.length; i++) {
                             var department = departments[i];
-                            var row = $('<tr class="align-middle">');
+                            var row = $('<tr class="text-center">');
                             row.append($('<td>').text(i + 1));
-                            row.append($('<td>').text(department.department_name));
-                            row.append($('<td>').text('-')); // Keep the hyphen here
+
+                            var departmentNameLink = $('<a>')
+                                .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
+                                    "&department_id=" + department
+                                    .department_id + '&department_name=' + encodeURIComponent(department
+                                        .department_name))
+                                .text(department.department_name);
+
+                            var td = $('<td>').append(departmentNameLink);
+                            row.append(td);
+
+                            row.append($('<td>').text('-'));
 
                             $('#departments_table tbody').append(row);
                         }
 
                         totalPage = response.departments.last_page;
                         currentPage = response.departments.current_page;
-                        console.log('Total Page: ' + totalPage);
-                        console.log('Current Page: ' + currentPage);
                         $('#department_pagination').empty();
                         for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
                             (function(pageCounter) {
@@ -124,8 +132,6 @@
                                 $('#department_pagination').append(pageItem);
                             })(totalPageCounter);
                         }
-
-
                     } else {
                         console.log(response);
                     }
@@ -136,11 +142,6 @@
                     console.log(errorMessage);
                 }
             });
-        }
-
-        function departmentPagination() {
-            var departmentPagination = $('#department_pagination');
-
         }
     </script>
 @endsection

@@ -32,7 +32,7 @@
                 <button type="button" class="btn btn-primary" id="open-password-modal-btn">Change Password</button>
             </div>
             <div class="modal fade" id="passchange" data-bs-backdrop="static">
-                <div class="modal-dialog modal-xl" style="width:90%">
+                <div class="modal-dialog" style="width:90%">
                     <div class="modal-content" id="passwordmodal">
                         <div class="modal-header">
                             <h5 class="modal-title fs-5">Password Change:</h5>
@@ -122,28 +122,24 @@
             function fetchEmployeeInfo() {
                 console.log('Fetching employee information...');
                 $.ajax({
-                    url: '{{ route('employeeInfo') }}', // Use the 'displayEmployeeInfo' route
+                    url: '{{ route('employeeInfo') }}',
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
                         if (data.success) {
-                            // Update the input fields with the received data
                             $('#fullName').val(data.first_name + ' ' + data.last_name);
                             $('#adamsonMail').val(data.email);
                         } else {
-                            // Handle the case where data retrieval failed
                             console.error('Failed to retrieve employee information.');
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
-                        // Handle AJAX error
                         console.error('An error occurred while processing your request.');
                     }
                 });
             }
 
-            // Fetch employee information when the page loads
             $(document).ready(function() {
                 fetchEmployeeInfo();
             });
@@ -165,9 +161,7 @@
             var modal = document.getElementById("passchange");
             var openBtn = document.getElementById("open-password-modal-btn");
 
-            // Open the modal when the button is clicked
             openBtn.onclick = function() {
-                // Use Bootstrap to show the modal
                 var modalInstance = new bootstrap.Modal(modal);
                 modalInstance.show();
             };
