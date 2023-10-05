@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PermanentEmployee;
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\EvalYear;
+use App\Models\FinalScores;
 use App\Models\KRA;
 use App\Models\WPP;
 use App\Models\LDP;
@@ -98,22 +99,36 @@ class SelfEvaluationController extends Controller
       throw new \Exception('User not found.');
     }
 
-    $appraisee = Employees::where('account_id', $account_id)
-      ->get();
+    $appraisee = Employees::where('account_id', $account_id)->get();
 
     $appraisals = Appraisals::where('employee_id', $user->employee_id)
       ->with('employee', 'evaluator') // Load the related employee and evaluator information
       ->get();
 
+    $status = $this->calculateStatus($appraisals);
+
+    // Calculate the final score using the PHP function
+    $finalScore = $this->calculateFinalScore($appraisals);
+
+    $finalScoreModel = new FinalScores([
+      'employee_id' => $account_id,
+      'final_score' => $finalScore,
+    ]);
+
+    //$finalScoreModel->save();
+
     $data = [
       'success' => true,
       'appraisee' => $appraisee,
       'appraisals' => $appraisals,
-      'is' => $user
+      'is' => $user,
+      'status' => $status, 
+      'final_score' => $finalScore,
     ];
 
     return response()->json($data);
   }
+
 
   public function viewAppraisal($appraisal_id)
   {
@@ -1008,5 +1023,60 @@ class SelfEvaluationController extends Controller
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
     }
+  }
+
+  function calculateFinalScore($appraisals)
+  {
+    $behavioralCompetenciesGrade = 0;
+    $kraGrade = 0;
+
+    foreach ($appraisals as $appraisal) {
+      $evaluationType = $appraisal['evaluation_type'];
+      $bhScore = $appraisal['bh_score'];
+      $kraScore = $appraisal['kra_score'];
+      $icScore = $appraisal['ic_score'];
+
+      // Check if date_submitted is not null
+      if ($appraisal['date_submitted'] !== null) {
+        // Calculate the behavioral competencies grade
+        if ($evaluationType === 'self evaluation') {
+          $behavioralCompetenciesGrade += ($bhScore * 0.1);
+        } elseif ($evaluationType === 'is evaluation') {
+          $behavioralCompetenciesGrade += ($bhScore * 0.5);
+        } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
+          $behavioralCompetenciesGrade += ($icScore * 0.2);
+        }
+        Log::info('BH GRADE: ' . $behavioralCompetenciesGrade);
+
+        // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
+        if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+          $kraGrade += $kraScore;
+        }
+        $kraFS = $kraGrade / 2;
+        Log::info('KRA GRADE: ' . $kraGrade);
+
+      }
+    }
+
+    // Calculate the final grade
+    $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
+    Log::info('FINAL GRADE: ' . $finalGrade);
+    return $finalGrade;
+  }
+
+  public function calculateStatus($appraisals)
+  {
+    // Initialize status as "complete"
+    $status = 'Complete';
+
+    foreach ($appraisals as $appraisal) {
+      if ($appraisal->date_submitted === null) {
+        // If any appraisal has a null date_submitted, set status to "pending"
+        $status = 'Pending';
+        break; // No need to continue checking, status is already "pending"
+      }
+    }
+
+    return $status;
   }
 }

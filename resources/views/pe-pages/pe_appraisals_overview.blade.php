@@ -172,8 +172,14 @@
 
                             });
 
-                            // Append the "Pending" text to the fifth <td>
-                            newRow.append($('<td>').text('Pending'));
+                            if (response.status === 'Complete') {
+                                newRow.append($('<td>').addClass('btn btn-outline-primary').text(response.status));
+                            } else if (status === 'Pending') {
+                                newRow.append($('<td>').addClass('btn btn-outline-secondary').text(response.status));
+                            } else {
+                                // Handle other status values if needed
+                            }                            
+                            
 
                             // Append the row to the table body
                             $('#PE_appraisals_table_body').append(newRow);
