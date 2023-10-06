@@ -1059,8 +1059,11 @@
                 var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
                 var signatureImage = document.querySelector('#signatureImage');
 
+                console.log(signInput.files.length);
+                console.log(!signatureImage.src);
+
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 && !signatureImage.src) {
+                if (signInput.files.length === 0 || signatureImage.src === "") {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1073,19 +1076,20 @@
 
                     console.error('Signature validation failed.');
                     return;
+                }else{
+                    // Clear validation if files are uploaded or a signature image is displayed
+                    signInput.classList.remove('is-invalid');
+                    signInput.closest('td').classList.remove('border', 'border-danger');
+
+                    $('#signatory_modal').modal('hide');
+                    $('#confirmation-popup-modal').modal('show');
                 }
-
-                // Clear validation if files are uploaded or a signature image is displayed
-                signInput.classList.remove('is-invalid');
-                signInput.closest('td').classList.remove('border', 'border-danger');
-
-                $('#signatory_modal').modal('hide');
-                $('#confirmation-popup-modal').modal('show');
             });
 
             // Get references to the file input and the image element
             var fileInput = document.getElementById('uploadsign_1');
             var signatureImage = document.getElementById('signatureImage');
+            var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
 
             // Add an event listener to the file input
             fileInput.addEventListener('change', function() {
@@ -1095,6 +1099,8 @@
                     
                     // Check if the selected file is an image
                     if (file.type.match(/^image\//)) {
+                        signInput.classList.remove('is-invalid');
+                        signInput.closest('td').classList.remove('border', 'border-danger');
                         // Create a FileReader to read the selected file
                         var reader = new FileReader();
 
