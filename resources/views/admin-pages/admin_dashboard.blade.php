@@ -103,7 +103,6 @@
             </table>
         </div>
         <div class="content-container">
-            <h2>Graph:</h2>
             <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
@@ -124,7 +123,7 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
     <!-- Social Responsibility -->
@@ -141,7 +140,7 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
     <!-- Solidarity -->
@@ -158,7 +157,7 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
 
@@ -176,7 +175,6 @@
             </table>
         </div>
         <div class="content-container">
-            <h2>Graph:</h2>
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
@@ -191,6 +189,8 @@
                 console.log('Selected Year: ' + selectedYear);
                 loadDepartmentTable(selectedYear, null);
                 loadICQuestions(selectedYear);
+                loadBCQuestions(selectedYear);
+                loadPointsSystem(selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -202,6 +202,7 @@
             loadDepartmentTable(globalSelectedYear, null);
             loadICQuestions(globalSelectedYear);
             loadBCQuestions(globalSelectedYear);
+            loadPointsSystem(globalSelectedYear);
         });
 
         function loadDepartmentTable(selectedYear = null, search = null, page = 1) {
@@ -261,6 +262,11 @@
                         }
                     } else {
                         console.log(response);
+                        $('#departments_table tbody').empty();
+                        var row = $(
+                            '<tr><td colspan="3"><p class="text-secondary fst-italic mt-0">There is no ongoing evaluation. Please select a past evaluation on top.</p></td></tr>'
+                        );
+                        $('#departments_table tbody').append(row);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -342,8 +348,48 @@
                             });
 
                         }
-                    }
+                    } else {
+                        var row = $(
+                            '<tr><td colspan="3"><p>-</p></td></tr>'
+                        );
+                        var icTable = $('#ic_table tbody');
+                        icTable.empty();
+                        icTable.append(row);
 
+                        const icBarChart = $('#ic_bar_chart');
+                        var canvas = icBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(icBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
                 }
             });
         }
@@ -360,7 +406,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
                         if (response.sid) {
                             var sidTable = $('#sid_table tbody');
                             sidTable.empty();
@@ -374,6 +419,48 @@
                                 row.append($("<td>").text(item.average_score));
 
                                 sidTable.append(row);
+                            });
+
+                            var averageScores = response.sid.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.sid.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var sidBarChart = $('#sid_bar_chart');
+                            var canvas = sidBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(sidBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
                             });
                         }
 
@@ -390,6 +477,48 @@
                                 row.append($("<td>").text(item.average_score));
                                 srTable.append(row);
                             });
+
+                            var averageScores = response.sr.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.sr.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var srBarChart = $('#sr_bar_chart');
+                            var canvas = srBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(srBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
                         }
 
                         if (response.s) {
@@ -405,12 +534,328 @@
                                 row.append($("<td>").text(item.average_score));
                                 sTable.append(row);
                             });
+
+                            var averageScores = response.s.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.s.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var sBarChart = $('#s_bar_chart');
+                            var canvas = sBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(sBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
                         }
                     } else {
-                        console.log('Fail');
+                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
+
+                        var sidTable = $('#sid_table tbody');
+                        var srTable = $('#sr_table tbody');
+                        var sTable = $('#s_table tbody');
+
+                        sidTable.empty();
+                        srTable.empty();
+                        sTable.empty();
+
+                        sidTable.append(placeholderRow.clone());
+                        srTable.append(placeholderRow.clone());
+                        sTable.append(placeholderRow.clone());
+
+                        const sidBarChart = $('#sid_bar_chart');
+                        var canvas = sidBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(sidBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        const srBarChart = $('#sr_bar_chart');
+                        var canvas = srBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(srBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        const sBarChart = $('#s_bar_chart');
+                        var canvas = sBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(sBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
                     }
                 }
             })
+        }
+
+        function loadPointsSystem(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDashboardPointsSystem') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Success');
+                        const categories = [{
+                                label: 'Outstanding',
+                                key: 'outstanding',
+                                tableId: '#outstanding_table tbody'
+                            },
+                            {
+                                label: 'Very Satisfactory',
+                                key: 'verySatisfactory',
+                                tableId: '#verySatisfactory_table tbody'
+                            },
+                            {
+                                label: 'Satisfactory',
+                                key: 'satisfactory',
+                                tableId: '#satisfactory_table tbody'
+                            },
+                            {
+                                label: 'Fair',
+                                key: 'fair',
+                                tableId: '#fair_table tbody'
+                            },
+                            {
+                                label: 'Poor',
+                                key: 'poor',
+                                tableId: '#poor_table tbody'
+                            },
+                        ];
+
+                        const pointSystemBarChart = $('#point_system_bar_chart');
+                        var canvas = pointSystemBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(pointSystemBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: categories.map(category => category.label),
+                                datasets: [{
+                                    label: "Number of employee per category",
+                                    data: categories.map(category => response[category.key] ?
+                                        response[category.key].length : 0),
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: Math.max(...categories.map(category => response[category
+                                                .key] ? response[category.key].length : 0)) +
+                                            1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        categories.forEach(category => {
+                            const table = $(category.tableId);
+                            table.empty();
+                            const row = $("<tr class='text-center'>");
+
+                            if (response[category.key].length > 0) {
+                                $.each(response[category.key], function(index, item) {
+                                    const fullName =
+                                        `${item.employee.first_name} ${item.employee.last_name}`;
+                                    row.append($("<td>").text(fullName));
+                                    row.append($("<td>").text(item.final_score));
+                                    table.append(row.clone());
+                                });
+                            } else {
+                                row.append($("<td colspan='2'>").text("-"));
+                                table.append(row);
+                            }
+                        });
+                    } else {
+                        var outstandingTable = $('#outstanding_table tbody');
+                        var verySatisfactoryTable = $('#verySatisfactory_table tbody');
+                        var satisfactoryTable = $('#satisfactory_table tbody');
+                        var fairTable = $('#fair_table tbody');
+                        var poorTable = $('#poor_table tbody');
+
+                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
+
+                        outstandingTable.empty();
+                        verySatisfactoryTable.empty();
+                        satisfactoryTable.empty();
+                        fairTable.empty();
+                        poorTable.empty();
+
+                        outstandingTable.append(placeholderRow.clone());
+                        verySatisfactoryTable.append(placeholderRow.clone());
+                        satisfactoryTable.append(placeholderRow.clone());
+                        fairTable.append(placeholderRow.clone());
+                        poorTable.append(placeholderRow.clone());
+
+                        const pointSystemBarChart = $('#point_system_bar_chart');
+                        var canvas = pointSystemBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(pointSystemBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Outstanding', 'Very Satisfactory', 'Satisfactory', 'Fair',
+                                    'Poor'
+                                ],
+                                datasets: [{
+                                    label: "Number of employee per category",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
         }
     </script>
 @endsection

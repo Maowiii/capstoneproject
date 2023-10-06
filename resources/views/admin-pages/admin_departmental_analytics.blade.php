@@ -61,7 +61,6 @@
             </table>
         </div>
         <div class="content-container">
-            <h2>Graph:</h2>
             <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
@@ -134,7 +133,6 @@
             </table>
         </div>
         <div class="content-container">
-            <h2>Graph:</h2>
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>

@@ -24,6 +24,7 @@ class FormQuestions extends BaseModel
 
     return Schema::hasTable($tableName);
   }
+  
   public function __construct(array $attributes = [])
   {
     parent::__construct($attributes);
@@ -34,4 +35,6 @@ class FormQuestions extends BaseModel
       $this->setTable($activeYear);
     }
   }
+
+  
 }

@@ -216,7 +216,6 @@ class DepartmentalAnalyticsController extends Controller
         ->with('employee')
         ->orderBy('final_score') // Add orderBy clause
         ->get();
-
     }
 
     return response()->json([

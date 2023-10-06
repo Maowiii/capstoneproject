@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Schema;
 
 class AppraisalAnswers extends BaseModel
 {
@@ -37,6 +38,13 @@ class AppraisalAnswers extends BaseModel
   public function question(): BelongsTo
   {
     return $this->belongsTo(FormQuestions::class, 'question_id');
+  }
+
+  public static function tableExists()
+  {
+    $tableName = (new static)->getTable();
+
+    return Schema::hasTable($tableName);
   }
 }
 

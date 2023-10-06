@@ -63,6 +63,7 @@ Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::clas
 
 Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::class, 'loadICQuestions'])->name('ad.loadDashboardICQuestions');
 Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::class, 'loadBCQuestions'])->name('ad.loadDashboardBCQuestions');
+Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 
 // Departmental Analytics
 Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');

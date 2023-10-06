@@ -7,6 +7,7 @@ use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\EvalYear;
+use App\Models\FinalScores;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -36,31 +37,17 @@ class AdminDashboardController extends Controller
       $page = $request->input('page');
 
       if ($selectedYear) {
-        if ($search) {
-          $table = 'appraisals_' . $selectedYear;
-          $appraisalModel = new Appraisals;
-          $appraisalModel->setTable($table);
+        $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+          ->orderBy('department_name')
+          ->paginate(20);
 
-        } else {
-          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
-            ->orderBy('department_name')
-            ->paginate(20);
-
-          return response()->json(['success' => true, 'departments' => $departments]);
-        }
-
+        return response()->json(['success' => true, 'departments' => $departments]);
       } elseif ($activeEvalYear) {
-        if ($search) {
-          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
-            ->orderBy('department_name')
-            ->paginate(20);
+        $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+          ->orderBy('department_name')
+          ->paginate(20);
 
-          return response()->json(['success' => true, 'departments' => $departments]);
-        } else {
-          $departments = Departments::orderBy('department_name')->paginate(20);
-
-          return response()->json(['success' => true, 'departments' => $departments]);
-        }
+        return response()->json(['success' => true, 'departments' => $departments]);
       } else {
         return response()->json(['success' => false]);
       }
@@ -74,67 +61,99 @@ class AdminDashboardController extends Controller
     $selectedYear = $request->input('selectedYear');
 
     if ($selectedYear) {
-      $sidQuestions = FormQuestions::where('table_initials', 'SID')
+      $sidQuestionsTable = 'form_questions_' . $selectedYear;
+      $sidAnswersTable = 'appraisal_answers_' . $selectedYear;
+
+      $sidQuestions = FormQuestions::from($sidQuestionsTable)
+        ->where('table_initials', 'SID')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
       foreach ($sidQuestions as $sidQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $sidQuestion->question_id)
+        $averageScore = AppraisalAnswers::from($sidAnswersTable)
+          ->where('question_id', $sidQuestion->question_id)
           ->avg('score');
 
         $sidQuestion->average_score = number_format($averageScore, 2);
       }
 
-      $sr = FormQuestions::where('table_initials', 'SR')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
+      $srQuestionsTable = 'form_questions_' . $selectedYear;
+      $srAnswersTable = 'appraisal_answers_' . $selectedYear;
 
-      $s = FormQuestions::where('table_initials', 'S')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-    } else {
-      Log::debug('Active Year Condition');
-
-      $sidQuestions = FormQuestions::where('table_initials', 'SID')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-
-      foreach ($sidQuestions as $sidQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $sidQuestion->question_id)
-          ->avg('score');
-
-        $sidQuestion->average_score = number_format($averageScore, 2);
-      }
-
-      $srQuestions = FormQuestions::where('table_initials', 'SR')
+      $srQuestions = FormQuestions::from($srQuestionsTable)
+        ->where('table_initials', 'SR')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
       foreach ($srQuestions as $srQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $srQuestion->question_id)
+        $averageScore = AppraisalAnswers::from($srAnswersTable)
+          ->where('question_id', $srQuestion->question_id)
           ->avg('score');
 
         $srQuestion->average_score = number_format($averageScore, 2);
       }
 
-      $sQuestions = FormQuestions::where('table_initials', 'S')
+      $sQuestionsTable = 'form_questions_' . $selectedYear;
+      $sAnswersTable = 'appraisal_answers_' . $selectedYear;
+
+      $sQuestions = FormQuestions::from($sQuestionsTable)
+        ->where('table_initials', 'S')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
       foreach ($sQuestions as $sQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $sQuestion->question_id)
+        $averageScore = AppraisalAnswers::from($sAnswersTable)
+          ->where('question_id', $sQuestion->question_id)
           ->avg('score');
 
         $sQuestion->average_score = number_format($averageScore, 2);
       }
-    }
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        Log::debug('Active Year Condition');
 
+        $sidQuestions = FormQuestions::where('table_initials', 'SID')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($sidQuestions as $sidQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $sidQuestion->question_id)
+            ->avg('score');
+
+          $sidQuestion->average_score = number_format($averageScore, 2);
+        }
+
+        $srQuestions = FormQuestions::where('table_initials', 'SR')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($srQuestions as $srQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $srQuestion->question_id)
+            ->avg('score');
+
+          $srQuestion->average_score = number_format($averageScore, 2);
+        }
+
+        $sQuestions = FormQuestions::where('table_initials', 'S')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($sQuestions as $sQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $sQuestion->question_id)
+            ->avg('score');
+
+          $sQuestion->average_score = number_format($averageScore, 2);
+        }
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
     return response()->json([
       'success' => true,
       'sid' => $sidQuestions,
@@ -169,22 +188,103 @@ class AdminDashboardController extends Controller
         $icQuestion->average_score = number_format($averageScore, 2);
       }
     } else {
-      $icQuestions = FormQuestions::where('table_initials', 'IC')
-        ->where('status', 'active')
-        ->orderBy('question_order')
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $icQuestions = FormQuestions::where('table_initials', 'IC')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($icQuestions as $icQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $icQuestion->question_id)
+            ->avg('score');
+
+          $icQuestion->average_score = number_format($averageScore, 2);
+        }
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+    return response()->json([
+      'success' => true,
+      'ic' => $icQuestions
+    ]);
+
+  }
+
+  public function loadPointsSystem(Request $request)
+  {
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear) {
+      $table = 'final_scores_' . $selectedYear;
+
+      $outstanding = FinalScores::from($table)
+        ->whereBetween('final_score', [4.85, 5.00])
+        ->with('employee')
+        ->orderByDesc('final_score')
         ->get();
 
-      foreach ($icQuestions as $icQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $icQuestion->question_id)
-          ->avg('score');
+      $verySatisfactory = FinalScores::from($table)
+        ->whereBetween('final_score', [4.25, 4.84])
+        ->with('employee')
+        ->orderByDesc('final_score')
+        ->get();
 
-        $icQuestion->average_score = number_format($averageScore, 2);
+      $satisfactory = FinalScores::from($table)
+        ->whereBetween('final_score', [3.50, 4.24])
+        ->with('employee')
+        ->orderByDesc('final_score')
+        ->get();
+
+      $fair = FinalScores::from($table)
+        ->whereBetween('final_score', [2.75, 3.49])
+        ->with('employee')
+        ->orderByDesc('final_score')
+        ->get();
+
+      $poor = FinalScores::from($table)
+        ->where('final_score', '<', 2.75)
+        ->with('employee')
+        ->orderByDesc('final_score')
+        ->get();
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $outstanding = FinalScores::whereBetween('final_score', [4.85, 5.00])
+          ->with('employee')
+          ->orderByDesc('final_score')
+          ->get();
+
+        $verySatisfactory = FinalScores::whereBetween('final_score', [4.25, 4.84])
+          ->with('employee')
+          ->orderByDesc('final_score')
+          ->get();
+
+        $satisfactory = FinalScores::whereBetween('final_score', [3.50, 4.24])
+          ->with('employee')
+          ->orderByDesc('final_score')
+          ->get();
+
+        $fair = FinalScores::whereBetween('final_score', [2.75, 3.49])
+          ->with('employee')
+          ->orderByDesc('final_score')
+          ->get();
+
+        $poor = FinalScores::where('final_score', '<', 2.75)
+          ->with('employee')
+          ->orderByDesc('final_score')
+          ->get();
+      } else {
+        return response()->json(['success' => false]);
       }
     }
 
     return response()->json([
       'success' => true,
-      'ic' => $icQuestions
+      'outstanding' => $outstanding,
+      'verySatisfactory' => $verySatisfactory,
+      'satisfactory' => $satisfactory,
+      'fair' => $fair,
+      'poor' => $poor
     ]);
   }
 }
