@@ -1004,7 +1004,7 @@
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
 
-            // Validation code
+            ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
                 var form = document.getElementById('PEappraisalForm');
                 var invalidRows = [];
@@ -1082,6 +1082,7 @@
                 $('#confirmation-popup-modal').modal('show');
             });
 
+            ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
                 console.log('Change event triggered on:', event.target); // Log the target element
                 var field = $(this);
@@ -2209,7 +2210,7 @@
             var BHtotal = 0;
 
             $('#' + tableId + ' input[type="radio"]:checked').each(function() {
-                var value = parseInt($(this).val());
+                var value = parseFloat($(this).val());
                 if (!isNaN(value)) {
                     frequencyCounters[5 - value]++;
                     total += value;
