@@ -452,7 +452,13 @@ textarea {
     outline: none;
     cursor: pointer;
 }
-
+#download-button, #print-button{
+    border-radius: 60%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    align-items: center!important;
+}
 /* MODALS */
 
 .row-checkbox {
@@ -489,19 +495,32 @@ textarea {
 .table-fit {
   width: 1px;
 }
+#signatory_modal .modal-dialog{
+    max-width:40%;
+}
 #passchange .modal-footer{
     justify-content: right;
+}
+#consentform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #consentform .modal-footer{
     justify-content: center;
 }
 #consentform .modal-content {
-    width: 190%!important;
-    display: flex!important;
-    justify-content: center!important;
+    display: flex;
+    flex-direction: column;
+}
+#consentform .modal-dialog{
+    max-width: 60%;
 }
 #consentform .modal-body {
     text-align: justify;
+    padding: 25px!important;
 }
-
+#SummaryModal .modal-dialog{
+    max-width: 30%;
+}
 

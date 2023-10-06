@@ -6,25 +6,6 @@
 
 @section('content')
     <!-- Modal -->
-    <div class="modal fade" id="consentForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Consent Form</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="content-container">
         <h2>Employee Information</h2>
         <div class="row g-3 align-items-center mb-3">
@@ -197,7 +178,7 @@
                             <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
+                                        readonly> 
                                 </div>
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
@@ -653,6 +634,7 @@
                 </div>
             </div>
         </div>
+        
     </form>
 
     <script>

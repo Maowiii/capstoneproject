@@ -86,10 +86,10 @@ class ISAppraisalsOverviewController extends Controller
     }
 
     $evaluatorId = Appraisals::where('employee_id', $excludedEmployeeId)
-    ->where('evaluation_type', 'like', 'internal customer%')
-    ->whereNotNull('evaluator_id')
-    ->pluck('evaluator_id')
-    ->first();
+      ->where('evaluation_type', 'like', 'internal customer%')
+      ->whereNotNull('evaluator_id')
+      ->pluck('evaluator_id')
+      ->first();
 
     $data = [
       'success' => true,
@@ -175,5 +175,6 @@ class ISAppraisalsOverviewController extends Controller
       return response()->json($data, 400);
     }
   }
+
 
 }
