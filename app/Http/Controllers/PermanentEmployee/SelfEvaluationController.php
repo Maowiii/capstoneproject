@@ -953,13 +953,6 @@ class SelfEvaluationController extends Controller
         }
       }
     }
-    $existingRecord = Appraisals::where('appraisal_id', $appraisalId)->first();
-
-    if ($existingRecord) {
-      $existingRecord->update([
-        'signature' => $existingSignature ? $existingSignature->signature_id : $newSignatureId,
-      ]);
-    }
   }
 
   public function formChecker(Request $request)

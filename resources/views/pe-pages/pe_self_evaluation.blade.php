@@ -1013,11 +1013,11 @@
             // Handle form submission and validation
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
                 var form = document.getElementById('PEappraisalForm');
-                var invalidInputs = form.querySelectorAll('.is-invalid');
 
-                if (invalidInputs.length > 0) {
+                if (!form.checkValidity()) {
                     event.preventDefault();
                     event.stopPropagation();
+                    var invalidInputs = form.querySelectorAll('.is-invalid');
 
                     // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
@@ -1060,7 +1060,7 @@
                 var signatureImage = document.querySelector('#signatureImage');
 
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 || !signatureImage.src) {
+                if (signInput.files.length === 0 && !signatureImage.src) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1116,7 +1116,6 @@
                     signatureImage.src = '';
                 }
             });
-
 
             ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
@@ -1645,7 +1644,7 @@
                     console.log('data.eulaData: ' + data.eulaData);
                     if (data.eulaData == 1 || data.eulaData == true) {
                         console.log('HIDE');
-                        $('#consentform').modal('hide');
+                        $('#consentform').remove();
                     }else{
                         $('#consentform').modal('show');
                     }
@@ -2242,12 +2241,17 @@
             var total = 0;
             var questionCount = 0;
 
-            $('#' + tableId + ' input[type="radio"]:checked').each(function() {
-                var value = parseFloat($(this).val());
-                if (!isNaN(value)) {
-                    frequencyCounters[5 - value]++;
-                    total += value;
-                    questionCount++;
+            $('#' + tableId + ' tbody tr').each(function() {
+                // Count the rows
+                questionCount++;
+
+                var selectedRadio = $(this).find('input[type="radio"]:checked');
+                if (selectedRadio.length > 0) {
+                    var value = parseFloat(selectedRadio.val());
+                    if (!isNaN(value)) {
+                        frequencyCounters[5 - value]++;
+                        total += value;
+                    }
                 }
             });
 
@@ -2259,15 +2263,21 @@
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
         }
 
+
         function updateBHTotal() {
             var BHtotal = 0;
             var BHquestionCount = 0;
 
-            $('#SID_table input[type="radio"]:checked, #SR_table input[type="radio"]:checked, #S_table input[type="radio"]:checked').each(function() {
-                var value = parseFloat($(this).val());
-                if (!isNaN(value)) {
-                    BHtotal += value;
-                    BHquestionCount++;
+            $('#SID_table tbody tr, #SR_table tbody tr, #S_table tbody tr').each(function() {
+                // Count the rows
+                BHquestionCount++;
+
+                var selectedRadio = $(this).find('input[type="radio"]:checked');
+                if (selectedRadio.length > 0) {
+                    var value = parseFloat(selectedRadio.val());
+                    if (!isNaN(value)) {
+                        BHtotal += value;
+                    }
                 }
             });
 
