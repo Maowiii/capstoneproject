@@ -672,7 +672,7 @@
                 <div class="modal-content" id="signatory">
                     <div class="modal-header">
                         <h5 class="modal-title fs-5">Signatories</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid" id="instructioncon">
@@ -747,7 +747,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title fs-5">CONFIRMATION MESSAGE</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <h6 class="text-dark fs-5" id="confirmation-popup">Would you like to submit the form?</h6>
@@ -789,15 +789,6 @@
         textareaElement2.innerText = valueToDisplay2;
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
-
-        $(document).on('click', '#view-sig-btn', function() {
-            $('#signatory_modal').modal('hide');
-            $('#imageModal').modal('show');
-        });
-
-        $(document).on('click', '#signatory_modal', function() {
-            $('#signatory_modal').modal('show');
-        });
 
         let confirmationMode = false;
         function confirmClose() {
@@ -1019,59 +1010,57 @@
             updateBHTotal();
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
+            // Handle form submission and validation
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
                 var form = document.getElementById('PEappraisalForm');
-                var invalidRows = [];
+                var invalidInputs = form.querySelectorAll('.is-invalid');
 
-                if (!form.checkValidity()) {
+                if (invalidInputs.length > 0) {
                     event.preventDefault();
                     event.stopPropagation();
 
-                    var invalidInputs = form.querySelectorAll('.is-invalid');
-                    if (invalidInputs.length > 0) {
-                        invalidInputs[0].focus(); // Focus on the first invalid input
-                    }
-
+                    // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
-                        invalidInput.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-
-                        // Log the custom error message for this input
-                        console.error('Validation failed for', invalidInput.name, ':',
-                            invalidInput
-                            .validationMessage);
+                        // Handle validation messages for invalid inputs
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
                     });
 
+                    // Optionally, focus on the first invalid input
+                    invalidInputs[0].focus();
+
                     console.error('Form validation failed.');
-                    return;
-                }
-
-                var allRowsCorrected = invalidRows.every(function(invalidRow) {
-                    return !invalidRow.hasClass('is-invalid');
-                });
-
-                if (allRowsCorrected) {
-                    $('.is-invalid').removeClass('is-invalid');
-                    $('.text-danger').removeClass('text-danger fw-bold');
-
-                    var signInput = document.querySelector(
-                        'input[name="SIGN[JI][{{ $appraisalId }}]"]');
-                    signInput.required = true;
-
-                    $('#signatory_modal').modal('show');
-                    console.info('Form validation succeeded. Signature modal will open.');
                 } else {
-                    console.error('Please correct all invalid rows.');
+                    // Form validation succeeded
+                    console.info('Form validation succeeded.');
+                    // Set a flag or trigger the modal opening here
+                    openModal();
                 }
             });
 
-            // Add event listener to the submit button in signatory_modal
+            // Function to open the modal
+            function openModal() {
+                console.log('submit clicked');
+                $('#signatory_modal').modal('show');
+            }
+
+            $('.common-close-button').on('click', function() {
+                console.log('close clicked');
+                var $modal = $(this).closest('.modal');
+                $modal.addClass('modal fade hide');
+                $modal.modal('hide');
+                $modal.css('display', 'none');
+
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                signInput.classList.remove('is-invalid');
+                signInput.closest('td').classList.remove('border', 'border-danger');
+            });
+
             document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
                 var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signatureImage = document.querySelector('#signatureImage');
 
-                // Validate the sign input
-                if (!signInput.value) {
+                // Check if files are uploaded or if a signature image is displayed
+                if (signInput.files.length === 0 || !signatureImage.src) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1086,15 +1075,48 @@
                     return;
                 }
 
-                if (signInput.value) {
-                    console.log('if else');
-                    signInput.classList.remove('is-invalid');
-                    signInput.closest('td').classList.remove('border', 'border-danger');
-                }
+                // Clear validation if files are uploaded or a signature image is displayed
+                signInput.classList.remove('is-invalid');
+                signInput.closest('td').classList.remove('border', 'border-danger');
 
                 $('#signatory_modal').modal('hide');
                 $('#confirmation-popup-modal').modal('show');
             });
+
+            // Get references to the file input and the image element
+            var fileInput = document.getElementById('uploadsign_1');
+            var signatureImage = document.getElementById('signatureImage');
+
+            // Add an event listener to the file input
+            fileInput.addEventListener('change', function() {
+                // Check if any files are selected
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    
+                    // Check if the selected file is an image
+                    if (file.type.match(/^image\//)) {
+                        // Create a FileReader to read the selected file
+                        var reader = new FileReader();
+
+                        // Set up an event handler to run when the file is loaded
+                        reader.onload = function(event) {
+                            // Set the src attribute of the image element to the loaded image data
+                            signatureImage.src = event.target.result;
+                        };
+
+                        // Read the selected file as a data URL
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Handle the case where a non-image file is selected (optional)
+                        alert('Please select a valid image file.');
+                        fileInput.value = ''; // Clear the file input
+                    }
+                } else {
+                    // Clear the image if no file is selected
+                    signatureImage.src = '';
+                }
+            });
+
 
             ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
