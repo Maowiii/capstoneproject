@@ -315,7 +315,7 @@
                                 $('<td>').text('Pending'),
                                 $('<td>').append($('<div>').append(AppraiseLink)),
                                 $('<td>').append(
-                                summaryButton) // Add the "Summary" button to the row
+                                    summaryButton) // Add the "Summary" button to the row
                             );
 
                             $('#IS_appraisals_table_body').append(newRow);
