@@ -137,7 +137,19 @@
             <h2>Graph:</h2>
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
+        <div class="fixed-bottom p-4">
+            <div class="d-flex justify-content-end">
+                <div class="d-flex flex-column">
+                    <button class="btn btn-primary btn-circle mb-2" id="download-button">
+                        <i class='bx bxs-download'></i>
+                    </button>
+                    <button class="btn btn-secondary btn-circle" id="print-button">
+                        <i class='bx bxs-printer'></i>
+                    </button>
+            </div>
+        </div>
     </div>
+
 
     <script>
         $(document).ready(function() {
