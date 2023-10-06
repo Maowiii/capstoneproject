@@ -156,7 +156,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h5>Final Rating</h5>
+                    <h5>Final Ratings</h5>
                     <table class='table table-bordered'>
                         <thead>
                             <tr>
@@ -171,10 +171,8 @@
                                 <td>Behavioral Competencies</td>
                             </tr>
                             <tr>
-                                <td>KRA/KPI</td>
+                                <td>Key Results Area</td>
                             </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
