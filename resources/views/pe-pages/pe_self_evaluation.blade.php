@@ -22,8 +22,8 @@
                     <p>In compliance to <b>RA 10173 or the Data Protection Act of 2012 (DPA of 2012) </b> its Implementing
                         Rules and Regulations, we are detailing here the processing of the data you will provide to us.<br>
 
-                        <br>The following are the personal data that the we may need to collect:<br><br>
-                        Full Name, Department, Adamson Email. Personal data collected shall be stored in the
+                        <br>The following are the personal data that the we may need to collect:
+                        Full Name, Department, Adamson Email. <br>Personal data collected shall be stored in the
                         <!-- <<identify where the data will be stored>>  -->
                         for a period of three years. Upon expiration of such period, all personal data
                         shall be disposed in a secure manner that will forbids further processing, unauthorized disclosure
@@ -49,7 +49,7 @@
 
                         <br>Understand that there is no risk involved in participating in this endeavor.
 
-                        <br>The results of this data gathering << state the result>>.<br>
+                        <br>The results of this data gathering will help the HRDMO of Adamson University monitor the improvements of employees per department.<br>
 
 
                             <br>I understand that I will not receive any form of remuneration or compensation for my

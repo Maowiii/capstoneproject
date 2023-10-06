@@ -141,17 +141,17 @@
                                 <th>Weighted Total</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="summary_score_body">
                             <tr>
                                 <td>Self-Evaluation</td>
                             </tr>
-                        <tr>
+                            <tr>
                                 <td>Internal Customer 1</td>
                             </tr>
-                        <tr>
+                            <tr>
                                 <td>Internal Customer 2</td>
                             </tr>
-                        <tr>
+                            <tr>
                                 <td>Immediate Superior</td>
                             </tr>
                         </tbody>
@@ -166,11 +166,11 @@
                                 <th>Weighted Total</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="summary_score_body">
                             <tr>
                                 <td>Behavioral Competencies</td>
                             </tr>
-                        <tr>
+                            <tr>
                                 <td>KRA/KPI</td>
                             </tr>
                         </tbody>
@@ -316,7 +316,8 @@
                                 $('<td>').append($('<div>').append(ic2Link)),
                                 $('<td>').text('Pending'),
                                 $('<td>').append($('<div>').append(AppraiseLink)),
-                                $('<td>').append(summaryButton) // Add the "Summary" button to the row
+                                $('<td>').append(
+                                summaryButton) // Add the "Summary" button to the row
                             );
 
                             $('#IS_appraisals_table_body').append(newRow);
@@ -331,6 +332,7 @@
                 }
             });
         }
+
         function toggleRowCheckbox(rowId) {
             $('#' + rowId).toggleClass('selected');
         }
