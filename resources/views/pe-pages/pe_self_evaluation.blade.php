@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-    <!-- Modal -->
-    <div class="modal fade" id="consentform" data-bs-backdrop="static">
+<!-- Modal -->
+<div class="modal fade" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -16,12 +16,7 @@
                 <div class="modal-body">
                     <!-- Add this div to display the message -->
                     <div id="closeModalMessage" class="alert alert-danger" style="display: none;">
-                        <p>You are about to close the modal. If you close it, you won't be able to proceed with
-                            the appraisal.</p>
-                    </div>
-                    <div id="closeModalMessage" class="alert alert-danger" style="display: none;">
-                        <p>You are about to close the modal. If you close it, you won't be able to proceed with the
-                            appraisal.</p>
+                        <p></p>
                     </div>
 
                     <p>In compliance to <b>RA 10173 or the Data Protection Act of 2012 (DPA of 2012) </b> its Implementing
@@ -113,8 +108,8 @@
                                         I have read, understand, and agree to the above-mentioned Privacy Agreement.<br>
                                     </span>
 
-                                    <br><i> clicking Yes, you consent that you are willing to answer the questions in this
-                                        survey and you answered YES to the three questions above.</i>
+                                    <br><i> clicking <b>"I Understand"</b>, you consent that you are willing to answer the questions in this
+                                        survey and you answered <b>"I Understand"</b> to the four questions above.</i>
                                 </label>
                             </div>
 
@@ -400,7 +395,7 @@
                         <td class='text-right'>Overall Behavioral Competencies Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
+                                <input id="BHTotal" class="small-column form-control total-frequency text-center" type="text"
                                     readonly>
                             </div>
                         </td>
@@ -511,21 +506,6 @@
                     </tr>
                 </tfoot>
             </table>
-            <table class='table table-bordered' id='Overall_table'>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Overall Behavioral Competencies Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
-            </tfoot>
         </div>
 
         <div class="content-container">
@@ -780,9 +760,8 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" class="btn btn-outline-primary medium-column" id="save-btn">Save</button>
-            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
+        <div class="d-flex justify-content-center gap-3 p-3">
+            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -812,13 +791,16 @@
         textareaElement4.innerText = valueToDisplay4;
 
         let confirmationMode = false;
-
         function confirmClose() {
             if (confirmationMode) {
                 closeModal();
             } else {
                 // Show the confirmation message
+                $('#closeModalMessage').empty();
                 $('#closeModalMessage').show();
+                $('#closeModalMessage').text("You are about to close the modal. If you close it, you won't be able to proceed with\nthe appraisal.");
+                $('#closeModalMessage').addClass('alert alert-danger'); // Add alert styling
+
                 confirmationMode = true;
             }
         }
@@ -836,11 +818,12 @@
             // Remove is-invalid class when a checkbox is clicked
             $(this).removeClass('is-invalid text-danger');
             $(this).closest('label').find('span').removeClass('is-invalid text-danger');
+            $('#closeModalMessage').hide();
+            confirmationMode = false;
         });
 
         function understood() {
             confirmationMode = true;
-            console.log(confirmationMode);
 
             if (confirmationMode) {
                 // Check if all checkboxes are checked
@@ -877,8 +860,10 @@
                 } else {
                     // Display an error message or perform any other validation logic
                     $('#closeModalMessage').empty();
-                    $('#closeModalMessage').text('<p>Please check all checkboxes before proceeding.</p>');
+                    $('#closeModalMessage').show();
+                    $('#closeModalMessage').text('Please check all checkboxes before proceeding.');
                     $('#closeModalMessage').addClass('alert alert-danger'); // Add alert styling
+                    confirmationMode = false;
 
                     // Add is-invalid class to checkboxes if they are not checked
                     if (!consent1) {
@@ -898,11 +883,6 @@
         }
 
         $(document).ready(function() {
-
-            $(document).ready(function() {
-                $('#consentform').modal('show'); // Show the modal on page load
-            });
-
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
             });
@@ -1626,9 +1606,11 @@
             success: function(data) {
                 if (data.success) {
                     console.log('data.eulaData: ' + data.eulaData);
-                    if (data.eulaData == 1) {
+                    if (data.eulaData == 1 || data.eulaData == true) {
                         console.log('HIDE');
                         $('#consentform').modal('hide');
+                    }else{
+                        $('#consentform').modal('show');
                     }
 
 
@@ -1718,7 +1700,7 @@
 
                                 input[0].required = true;
 
-                                var span = $(content - body).addClass('ms-1').text(i);
+                                var span = $('<span>').addClass('ms-1').text(i);
                                 label.append(input, span);
                                 performanceLevelDiv.append($('<div>').addClass('col-auto').append(
                                     label));
@@ -1897,7 +1879,7 @@
                             '][{{ $appraisalId }}][answer]"][value="1"]');
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
                                 1) +
-                            '][{{ $appraisalId }}][answer]"][value="0"]');
+                            '][{{ $appraisalId }}][answer]"][value="0"]');                  
 
                         if (jic.answer === 1) {
                             answerRadioYes.checked = true;
@@ -2223,15 +2205,16 @@
             var total = 0;
             var questionCount = 0;
 
+            // Initialize BHtotal to 0 before adding values
+            var BHtotal = 0;
+
             $('#' + tableId + ' input[type="radio"]:checked').each(function() {
                 var value = parseInt($(this).val());
-                frequencyCounters[5 - value]++;
-                total += value;
-                questionCount++;
-
-                var questionId = $(this).attr('name');
-                var value = $(this).val();
-                localStorage.setItem(questionId, value);
+                if (!isNaN(value)) {
+                    frequencyCounters[5 - value]++;
+                    total += value;
+                    questionCount++;
+                }
             });
 
             for (var i = 5; i >= 1; i--) {
@@ -2240,6 +2223,17 @@
 
             var weightedTotal = questionCount > 0 ? (total / questionCount).toFixed(2) : 0;
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
+
+            // Calculate BHTotal if at least one question was answered
+            if (questionCount > 0) {
+                BHtotal = total / questionCount;
+            } else {
+                // Handle the case when no questions were answered
+                BHtotal = 0;
+            }
+
+            // Update the BHTotal input field
+            $('#BHTotal').val(BHtotal.toFixed(2));
         }
 
         function updateWeightedTotal() {
@@ -2259,13 +2253,18 @@
                         'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
                     .val());
 
-                if (!isNaN(weight) && !isNaN(performanceLevel)) {
+                if (!isNaN(weight) || !isNaN(performanceLevel)) {
                     var weightedValue = weight * performanceLevel;
                     totalWeight += weight;
                     totalWeighted += weightedValue;
 
                     console.log('weightedValue');
                     console.log(weightedValue);
+
+                    if (isNaN(totalWeighted) || totalWeighted === null) {
+                        totalWeighted = 0;
+                        weightedValue = 0;
+                    }
 
                     row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
                         .val(weightedValue.toFixed(2));
@@ -2281,7 +2280,7 @@
             } else {
                 $('#KRA_Weight_Total').removeClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').removeClass('is-invalid');
-            }
+            }            
 
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
