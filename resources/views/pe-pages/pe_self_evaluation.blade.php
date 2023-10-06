@@ -790,6 +790,15 @@
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
 
+        $(document).on('click', '#view-sig-btn', function() {
+            $('#signatory_modal').modal('hide');
+            $('#imageModal').modal('show');
+        });
+
+        $(document).on('click', '#signatory_modal', function() {
+            $('#signatory_modal').modal('show');
+        });
+
         let confirmationMode = false;
         function confirmClose() {
             if (confirmationMode) {
@@ -983,14 +992,17 @@
 
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#SR_table input[type="radio"]', function() {
                 updateFrequencyCounter('SR_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#S_table input[type="radio"]', function() {
                 updateFrequencyCounter('S_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#KRA_table_body input[type="radio"]', function() {
@@ -1003,6 +1015,8 @@
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
+
+            updateBHTotal();
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
@@ -2206,9 +2220,6 @@
             var total = 0;
             var questionCount = 0;
 
-            // Initialize BHtotal to 0 before adding values
-            var BHtotal = 0;
-
             $('#' + tableId + ' input[type="radio"]:checked').each(function() {
                 var value = parseFloat($(this).val());
                 if (!isNaN(value)) {
@@ -2224,17 +2235,24 @@
 
             var weightedTotal = questionCount > 0 ? (total / questionCount).toFixed(2) : 0;
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
+        }
 
-            // Calculate BHTotal if at least one question was answered
-            if (questionCount > 0) {
-                BHtotal = total / questionCount;
-            } else {
-                // Handle the case when no questions were answered
-                BHtotal = 0;
-            }
+        function updateBHTotal() {
+            var BHtotal = 0;
+            var BHquestionCount = 0;
 
-            // Update the BHTotal input field
-            $('#BHTotal').val(BHtotal.toFixed(2));
+            $('#SID_table input[type="radio"]:checked, #SR_table input[type="radio"]:checked, #S_table input[type="radio"]:checked').each(function() {
+                var value = parseFloat($(this).val());
+                if (!isNaN(value)) {
+                    BHtotal += value;
+                    BHquestionCount++;
+                }
+            });
+
+            // Ensure questionCount is greater than zero to avoid division by zero
+            var BHOveralltotal = BHquestionCount > 0 ? BHtotal / BHquestionCount : 0;
+
+            $('#BHTotal').val(BHOveralltotal.toFixed(2));
         }
 
         function updateWeightedTotal() {
@@ -2309,7 +2327,7 @@
                         $('#KRA_table_body select').prop('disabled', true);
                         $('input[type="radio"]').prop('disabled', true);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', true);
                     } else if (response.phaseData === "eval") {
                         $('#KRA_table_body textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);
@@ -2334,6 +2352,8 @@
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
+                    } else{
+
                     }
                 },
                 error: function(xhr, status, error) {
