@@ -1060,10 +1060,9 @@
                 var signatureImage = document.querySelector('#signatureImage');
 
                 console.log(signInput.files.length);
-                console.log(!signatureImage.src);
 
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 || signatureImage.src === "") {
+                if (signInput.files.length === 0 && !signatureImage.src) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1985,7 +1984,7 @@
 
                         if (row) {
                             var signCell = row.querySelector('.sign-cell');
-                            var signatureImage = document.createElement('img');
+                            var signatureImage = document.querySelector('#signatureImage');
 
                             if (sign.sign_data) {
                                 // Validation for signature data
