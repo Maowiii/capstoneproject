@@ -109,13 +109,7 @@ class SelfEvaluationController extends Controller
 
     // Calculate the final score using the PHP function
     $finalScore = $this->calculateFinalScore($appraisals);
-
-    $finalScoreModel = new FinalScores([
-      'employee_id' => $account_id,
-      'final_score' => $finalScore,
-    ]);
-
-    //$finalScoreModel->save();
+    $finalGrade = $finalScore[0]; // Assuming $finalGrade is the first element
 
     $data = [
       'success' => true,
@@ -123,7 +117,7 @@ class SelfEvaluationController extends Controller
       'appraisals' => $appraisals,
       'is' => $user,
       'status' => $status,
-      'final_score' => $finalScore,
+      'final_score' => $finalGrade,
     ];
 
     return response()->json($data);
@@ -280,7 +274,6 @@ class SelfEvaluationController extends Controller
         ->first();
 
       $date = Carbon::now();
-
       $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
       $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
 
@@ -289,6 +282,12 @@ class SelfEvaluationController extends Controller
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
       ]);
+
+      $employee_id = $existingRecord->employee_id;
+
+      $appraisalData = Appraisals::where('employee_id', $employee_id);
+      $finalScore = $this->calculateFinalScore($appraisalData);
+      $appraisalData = Appraisals::where('appraisalData', $appraisalData);
 
       DB::commit();
       return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
@@ -389,7 +388,6 @@ class SelfEvaluationController extends Controller
         // Create a new KRA record with the provided ID and field value
         $kra = new KRA([
           'kra_id' => $kraID,
-          // Assuming kra_id is set as the ID attribute
           'appraisal_id' => $appraisalId,
           'kra_order' => $kraID,
           $fieldName => $fieldValue
@@ -1025,44 +1023,47 @@ class SelfEvaluationController extends Controller
 
   function calculateFinalScore($appraisals)
   {
-    $behavioralCompetenciesGrade = 0;
-    $kraGrade = 0;
-    $finalGrade = null; // Initialize the finalGrade to null
+      $behavioralCompetenciesGrade = 0;
+      $kraGrade = 0;
+      $finalGrade = null; // Initialize the finalGrade to null
 
-    foreach ($appraisals as $appraisal) {
-      $evaluationType = $appraisal['evaluation_type'];
-      $bhScore = $appraisal['bh_score'];
-      $kraScore = $appraisal['kra_score'];
-      $icScore = $appraisal['ic_score'];
+      foreach ($appraisals as $appraisal) {
+          $evaluationType = $appraisal['evaluation_type'];
+          $bhScore = $appraisal['bh_score'];
+          $kraScore = $appraisal['kra_score'];
+          $icScore = $appraisal['ic_score'];
 
-      // Check if date_submitted is not null
-      if ($appraisal['date_submitted'] !== null) {
-        // Calculate the behavioral competencies grade
-        if ($evaluationType === 'self evaluation') {
-          $behavioralCompetenciesGrade += ($bhScore * 0.1);
-        } elseif ($evaluationType === 'is evaluation') {
-          $behavioralCompetenciesGrade += ($bhScore * 0.5);
-        } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
-          $behavioralCompetenciesGrade += ($icScore * 0.2);
-        }
+          // Check if date_submitted is not null
+          if ($appraisal['date_submitted'] !== null) {
+              // Calculate the behavioral competencies grade
+              if ($evaluationType === 'self evaluation') {
+                  $behavioralCompetenciesGrade += ($bhScore * 0.1);
+              } elseif ($evaluationType === 'is evaluation') {
+                  $behavioralCompetenciesGrade += ($bhScore * 0.5);
+              } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
+                  $behavioralCompetenciesGrade += ($icScore * 0.2);
+              }
 
-        // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
-        if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
-          $kraGrade += $kraScore;
-        }
-        $kraFS = $kraGrade / 2;
+              // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
+              if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+                  $kraGrade += $kraScore;
+              }
 
-        // Calculate the final grade
-        $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
-      } else {
-        // Set the finalGrade to null and break out of the loop
-        $finalGrade = null;
-        break;
+          } else {
+              // Set the finalGrade to null and break out of the loop
+              $finalGrade = null;
+              break;
+          }
       }
-    }
 
-    return $finalGrade;
+      // Check if the loop completed successfully (date_submitted was not null for all appraisals)
+      if ($finalGrade !== null) {
+          $kraFS = $kraGrade / count($appraisals); // Calculate the average KRA grade
+          $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
+      }
+      return [$finalGrade, $behavioralCompetenciesGrade, $kraFS];
   }
+
 
   public function calculateStatus($appraisals)
   {
