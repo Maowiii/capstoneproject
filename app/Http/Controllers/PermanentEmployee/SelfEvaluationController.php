@@ -215,8 +215,6 @@ class SelfEvaluationController extends Controller
     $jicData = JIC::where('appraisal_id', $appraisalId)->get();
     $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
-    Log::info('EULA: ' . $eulaData);
-
     foreach ($signData as &$sign) {
       $sign->sign_data = base64_encode($sign->sign_data);
     }
@@ -395,8 +393,20 @@ class SelfEvaluationController extends Controller
     try {
       // Find the KRA by ID
       $kra = KRA::find($kraID);
+      $typeChecker = Appraisals::where($appraisalId)->pluck('evaluation_type');
 
-      if (!$kra) {
+      if ($kra) {
+        // Update the specific field value
+        $kra->$newFieldName = $fieldValue;
+        $kra->save();
+
+        if ($typeChecker === 'is evaluation') {
+          $kra = KRA::where('appraisal_id',$appraisalId - 1);
+
+          $kra->$newFieldName = $fieldValue;
+          $kra->save();
+        }
+      } else {
         // Create a new KRA record with the provided ID and field value
         $kra = new KRA([
           'kra_id' => $kraID,
@@ -407,13 +417,17 @@ class SelfEvaluationController extends Controller
 
         $kra->save();
 
+        if ($typeChecker === 'is evaluation') {
+          $kra = new KRA([
+            'kra_id' => $kraID,
+            'appraisal_id' => $appraisalId - 1,
+            'kra_order' => $kraID,
+            $fieldName => $fieldValue
+          ]);
+          $kra->save();
+        }
         return response()->json(['message' => 'KRA created and autosave successful']);
       }
-
-      // Update the specific field value
-      $kra->$newFieldName = $fieldValue;
-      $kra->save();
-
       return response()->json(['message' => 'Autosave successful']);
     } catch (\Exception $e) {
       Log::error('Exception Message: ' . $e->getMessage());
@@ -1006,7 +1020,7 @@ class SelfEvaluationController extends Controller
       ////////////PHASES/////////////
       // $currentDate = Carbon::now();
 
-      $currentDate = Carbon::parse("2023-11-25");
+      $currentDate = Carbon::parse("2023-10-31");
 
       $activeYear = EvalYear::where('status', 'active')->first();
 
@@ -1094,9 +1108,9 @@ class SelfEvaluationController extends Controller
       Log::info('Final Grade Calculation:');
       Log::info('Behavioral Competencies Grade: ' . $behavioralCompetenciesGrade);
       Log::info('KRA Grade: ' . $kraGrade);
-      
+
       Log::info('KRA Final Score: ' . $kraFS);
-      Log::info('Final Grade Computation: (' . $behavioralCompetenciesGrade . ' x 40%)  + (' . $kraFS. ' x 60%)');
+      Log::info('Final Grade Computation: (' . $behavioralCompetenciesGrade . ' x 40%)  + (' . $kraFS . ' x 60%)');
       Log::info('Final Grade: ' . $finalGrade);
     } else {
       // Log that the loop did not complete successfully
@@ -1108,7 +1122,6 @@ class SelfEvaluationController extends Controller
 
     return [$finalGrade, $behavioralCompetenciesGrade, $kraFS];
   }
-
 
   public function calculateStatus($appraisals)
   {

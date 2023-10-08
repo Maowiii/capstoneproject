@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\EvalYear;
 use App\Models\KRA;
+use App\Models\Signature;
 use App\Models\WPP;
 use App\Models\LDP;
 use App\Models\JIC;
@@ -69,37 +70,19 @@ class ISAppraisalController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    // $currentDate = Carbon::now();
-
-    $currentDate = Carbon::parse("2023-11-25");
-
-    $activeYear = EvalYear::where('status', 'active')->first();
-
-    $kraStart = Carbon::parse($activeYear->kra_start);
-    $kraEnd = Carbon::parse($activeYear->kra_end);
-    $prStart = Carbon::parse($activeYear->pr_start);
-    $prEnd = Carbon::parse($activeYear->pr_end);
-    $evalStart = Carbon::parse($activeYear->eval_start);
-    $evalEnd = Carbon::parse($activeYear->eval_end);
-
-    if ($currentDate->between($kraStart, $kraEnd)) {
-      $phaseData = "kra";
-    } elseif ($currentDate->between($prStart, $prEnd)) {
-      $phaseData = "pr";
-    } elseif ($currentDate->between($evalStart, $evalEnd)) {
-      $phaseData = "eval";
-    } else {
-      $phaseData = "lock";
-    }
-
     $appraisalId = $request->input('appraisal_id');
     $kraData = KRA::where('appraisal_id', $appraisalId)->get();
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
     $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
     $jicData = JIC::where('appraisal_id', $appraisalId)->get();
+    $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
-    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 
-    'jicData' => $jicData, 'phaseData' => $phaseData]);
+    foreach ($signData as &$sign) {
+      $sign->sign_data = base64_encode($sign->sign_data);
+    }
+
+    return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
+
   }
 
   public function saveISAppraisal(Request $request)
