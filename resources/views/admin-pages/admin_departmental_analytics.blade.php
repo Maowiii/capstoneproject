@@ -5,149 +5,148 @@
 @endsection
 
 @section('content')
-        <div class='d-flex gap-3'>
-            <div class="content-container text-middle" id="total-pe-container">
-                <h4>Total Permanent Employees:</h4>
-                <p>-</p>
-            </div>
-            <div class="content-container text-middle" id="avg-score-container">
-                <h4>Average Total Score:</h4>
-            </div>
+    <div class='d-flex gap-3'>
+        <div class="content-container text-middle" id="total-pe-container">
+            <h4>Total Permanent Employees:</h4>
+            <p>-</p>
         </div>
+        <div class="content-container text-middle" id="avg-score-container">
+            <h4>Average Total Score:</h4>
+        </div>
+    </div>
 
-        <div class="d-flex gap-3">
-            <!-- Point System -->
-            <div class="content-container">
-                <h2>Point System:</h2>
-                <h4>Oustanding Employees:</h4>
-                <table class="table table-sm" id="outstanding_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h4>Very Satisfactory:</h4>
-                <table class="table table-sm" id="verySatisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h4>Satisfactory:</h4>
-                <table class="table table-sm" id="satisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h4>Fair:</h4>
-                <table class="table table-sm" id="fair_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h4>Poor:</h4>
-                <table class="table table-sm" id="poor_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="content-container">
-                <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
-            </div>
+    <div class="d-flex gap-3">
+        <!-- Point System -->
+        <div class="content-container">
+            <h2>Point System:</h2>
+            <h4>Oustanding Employees:</h4>
+            <table class="table table-sm" id="outstanding_table">
+                <thead>
+                    <th>Name</th>
+                    <th>Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h4>Very Satisfactory:</h4>
+            <table class="table table-sm" id="verySatisfactory_table">
+                <thead>
+                    <th>Name</th>
+                    <th>Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h4>Satisfactory:</h4>
+            <table class="table table-sm" id="satisfactory_table">
+                <thead>
+                    <th>Name</th>
+                    <th>Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h4>Fair:</h4>
+            <table class="table table-sm" id="fair_table">
+                <thead>
+                    <th>Name</th>
+                    <th>Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h4>Poor:</h4>
+            <table class="table table-sm" id="poor_table">
+                <thead>
+                    <th>Name</th>
+                    <th>Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
+        <div class="content-container">
+            <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        </div>
+    </div>
 
-        <!-- BEHAVIORAL COMPETENCIES -->
-        <!-- Sustained Integral Development -->
-        <div class="d-flex gap-3">
-            <div class="content-container">
-                <h2>Behavioral Competencies:</h2>
-                <h4>Sustained Integral Development:</h4>
-                <table class="table table-sm mb-3" id="sid_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="content-container">
-                <h4>TEST</h4>
-            </div>
+    <!-- BEHAVIORAL COMPETENCIES -->
+    <!-- Sustained Integral Development -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Behavioral Competencies:</h2>
+            <h4>Sustained Integral Development:</h4>
+            <table class="table table-sm mb-3" id="sid_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-        <!-- Social Responsibility -->
-        <div class="d-flex gap-3">
-            <div class="content-container">
-                <h4>Social Responsibility:</h4>
-                <table class="table table-sm mb-3" id="sr_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="content-container">
-                <h4>TEST</h4>
-            </div>
+        <div class="content-container">
+            <h4>TEST</h4>
         </div>
-        <!-- Solidarity -->
-        <div class="d-flex gap-3">
-            <div class="content-container">
-                <h4>Solidarity</h4>
-                <table class="table table-sm mb-3" id="s_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="content-container">
-                <h4>TEST</h4>
-            </div>
+    </div>
+    <!-- Social Responsibility -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h4>Social Responsibility:</h4>
+            <table class="table table-sm mb-3" id="sr_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
+        <div class="content-container">
+            <h4>TEST</h4>
+        </div>
+    </div>
+    <!-- Solidarity -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h4>Solidarity</h4>
+            <table class="table table-sm mb-3" id="s_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <h4>TEST</h4>
+        </div>
+    </div>
 
-        <!-- Internal Customers -->
-        <div class="d-flex gap-3">
-            <div class="content-container">
-                <h2>Internal Customers:</h2>
-                <table class="table table-sm mb-3" id="ic_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="floating-container">
-                <div class="fixed-bottom p-4">
-                    <div class="d-flex justify-content-end">
-                        <div class="d-flex flex-column">
-                            <button class="btn btn-primary btn-circle mb-2" id="download-button">
-                                <i class='bx bxs-download'></i>
-                            </button>
-                            <button class="btn btn-secondary btn-circle" id="print-button">
-                                <i class='bx bxs-printer'></i>
-                            </button>
-                        </div>
+    <!-- Internal Customers -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Internal Customers:</h2>
+            <table class="table table-sm mb-3" id="ic_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="floating-container">
+            <div class="fixed-bottom p-4">
+                <div class="d-flex justify-content-end">
+                        <button class="btn btn-secondary btn-circle" id="print-button">
+                            <i class='bx bxs-printer'></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <script>
+        function printReport() {
+            window.print(); // Open the browser's print dialog
+        }
         $(document).ready(function() {
             const departmentName = new URLSearchParams(window.location.search).get('department_name');
             const departmentID = new URLSearchParams(window.location.search).get('department_id');

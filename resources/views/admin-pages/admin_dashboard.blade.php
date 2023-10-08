@@ -180,10 +180,6 @@
         <div class="floating-container">
             <div class="fixed-bottom p-4">
                 <div class="d-flex justify-content-end">
-                    <div class="d-flex flex-column">
-                        <button class="btn btn-primary btn-circle mb-2" id="download-button">
-                            <i class='bx bxs-download'></i>
-                        </button>
                         <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
                             <i class='bx bxs-printer'></i>
                         </button>
@@ -195,11 +191,11 @@
 
     <script>
         function printReport() {
-        window.print(); // Open the browser's print dialog
-    }
+            window.print(); // Open the browser's print dialog
+        }
+
         $(document).ready(function() {
             var globalSelectedYear = null;
-
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;

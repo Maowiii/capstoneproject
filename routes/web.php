@@ -203,3 +203,4 @@ Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController
 
 // Settings
 Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');
+

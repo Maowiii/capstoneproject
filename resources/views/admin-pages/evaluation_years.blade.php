@@ -22,6 +22,9 @@
 
             </tbody>
         </table>
+        <nav id="evalyear_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
+        </nav>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#startNewEvalYear">Start
                 New Evaluation Year</button>
@@ -182,9 +185,6 @@
                                     @enderror
                                 </span>
                             </div>
-                            <nav id="evalyear_pagination_container">
-                                <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
-                            </nav>
                         </div>
                         <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
                             <i class='bx bx-info-circle'></i> Please double-check the inputted values before submitting.

@@ -11,6 +11,10 @@ use App\Models\FinalScores;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 
 class AdminDashboardController extends Controller
 {
@@ -210,7 +214,7 @@ class AdminDashboardController extends Controller
     ]);
 
   }
-
+ 
   public function loadPointsSystem(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
