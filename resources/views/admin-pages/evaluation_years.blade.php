@@ -182,6 +182,9 @@
                                     @enderror
                                 </span>
                             </div>
+                            <nav id="evalyear_pagination_container">
+                                <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
+                            </nav>
                         </div>
                         <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
                             <i class='bx bx-info-circle'></i> Please double-check the inputted values before submitting.
@@ -301,16 +304,21 @@
             }
         }
 
-        function loadEvaluationYearTable() {
+        function loadEvaluationYearTable(page = 1) {
             $.ajax({
                 url: '/evaluation-year/displayEvaluationYear',
                 type: 'GET',
+                data: {
+                    page: page // Pass the current page number
+                },
                 success: function(response) {
                     if (response.success) {
                         var tbody = $('#evalyear_table tbody');
                         tbody.empty();
 
-                        $.each(response.evalyears, function(index, evalyear) {
+                        console.log(response.evalyears);
+
+                        $.each(response.evalyears.data, function(index, evalyear) {
                             var row = $('<tr>');
                             row.append($('<td>').addClass('align-middle').text(evalyear.eval_id));
                             row.append($('<td>').addClass('align-middle').text(evalyear.sy_start +
@@ -351,6 +359,27 @@
 
                             tbody.append(row);
                         });
+
+
+                        var totalPage = response.evalyears.last_page;
+                        var currentPage = response.evalyears.current_page;
+                        $('#evalyear_pagination').empty();
+
+                        for (var pageCounter = 1; pageCounter <= totalPage; pageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    loadEvaluationYearTable(pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#evalyear_pagination').append(pageItem);
+                            })(pageCounter);
+                        }
+
 
                     } else {
                         console.log(response.error);

@@ -7,6 +7,7 @@
 @section('content')
     <div class="content-container">
         <div class="input-group mb-2 search-box">
+            <div id="import-status" class="mt-2"></div>
             <input type="text" class="form-control" placeholder="Name" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
@@ -28,14 +29,21 @@
             <tbody id="employee_table_body">
             </tbody>
         </table>
+        <nav id="accounts_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="accounts_pagination"></ul>
+        </nav>
         <div class='d-flex justify-content-end gap-3 mt-2'>
-            <input class="form-control large-column" type="file">
-            <button class="btn btn-primary large-column">Upload Excel</button>
+            <form method="post" action="{{ route('import-new-employee') }}" enctype="multipart/form-data">
+                @csrf
+                <input class="form-control large-column" type="file" name="file">
+                <button class="btn btn-primary large-column" type="submit">Upload Excel</button>
+            </form>
         </div>
         <div class='d-flex justify-content-end'>
             <button class="btn btn-primary large-column mt-2" type="button" data-bs-toggle="modal"
                 data-bs-target="#addUserModal" id="add-user-modal-btn">Add User</button>
         </div>
+
     </div>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
@@ -190,65 +198,85 @@
             loadTableData(search);
         });
 
-        function loadTableData(search = null) {
-            console.log('Search Value: ' + search);
+        function loadTableData(search = null, page = 1) {
             $.ajax({
                 url: '{{ route('ad.getEmployeesData') }}',
                 type: 'GET',
                 data: {
-                    search: search
+                    search: search,
+                    page: page // Pass the current page number
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
                     if (response.success) {
+                        // Parse the sample data
+                        var accounts = response.accounts; // Extract the paginated data
+                        var currentPage = response.current_page;
+                        var data = response.accounts.data; // Array of data for the current page                        
+
+                        // Clear the table body
                         $('#employee_table_body').empty();
 
-                        var accounts = response.accounts;
-                        for (var i = 0; i < accounts.length; i++) {
-
-                            var account = accounts[i];
-                            var statusButton = account.status === 'active' ? 'Deactivate' :
-                                'Activate';
-                            var statusAction = account.status === 'active' ? 'deactivate' :
-                                'activate';
-
+                        // Iterate over the data and update your table
+                        for (var i = 0; i < data.length; i++) {
+                            var account = data[i];
+                            var statusButton = account.status === 'active' ? 'Deactivate' : 'Activate';
+                            var statusAction = account.status === 'active' ? 'deactivate' : 'activate';
                             var newRow = $('<tr>').attr('id', account.account_id).addClass('text-center')
                                 .append(
                                     $('<td>').html(account.email +
                                         '<br /><p class="fst-italic text-secondary">' +
-                                        account
-                                        .employee.employee_number + '</p>'),
+                                        account.employee.employee_number + '</p>'),
                                     $('<td>').text(account.employee.first_name),
                                     $('<td>').text(account.employee.last_name),
                                     $('<td>').append(createResetButton(account)),
                                     $('<td>').text(account.type),
-                                    $('<td>').text(account.employee.department ? account.employee
-                                        .department
+                                    $('<td>').text(account.employee.department ? account.employee.department
                                         .department_name : ''),
                                     $('<td>').text(account.status),
                                     $('<td>').append(
                                         $('<div>').addClass('btn-group').attr('role', 'group')
                                         .append(
-                                            $('<button>').addClass('btn btn-outline-danger').text(
-                                                statusButton)
-                                            .attr('onclick', 'changeStatus(' + account.account_id +
-                                                ', "' +
+                                            $('<button>').addClass('btn btn-outline-danger').text(statusButton)
+                                            .attr('onclick', 'changeStatus(' + account.account_id + ', "' +
                                                 statusAction + '")'),
-                                            $('<button>').addClass(
-                                                'btn btn-outline-primary edit-btn')
+                                            $('<button>').addClass('btn btn-outline-primary edit-btn')
                                             .html('<i class="bx bx-edit"></i>')
                                             .attr('employee-id', account.employee.employee_id)
                                         )
                                     )
                                 );
                             $('#employee_table_body').append(newRow);
-                            $('#confirmResetPassword').off('click').click(function() {
-                                resetPassword(account.account_id);
-                                $('#resetPasswordModal').modal('hide');
-                            });
                         }
+
+                        // Update the pagination links
+                        $('#accounts_pagination').empty();
+
+                        var paginationLinks = response.accounts.links;
+                        totalPage = response.accounts.last_page;
+                        currentPage = response.accounts.current_page;
+                        $('#accounts_pagination').empty();
+                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    loadTableData(search, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#accounts_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
+
+                        $('#confirmResetPassword').off('click').click(function() {
+                            resetPassword(account.account_id);
+                            $('#resetPasswordModal').modal('hide');
+                        });
                     } else {
                         console.log(response.error);
                     }
@@ -369,6 +397,33 @@
                     },
                     error: function(xhr, status, error) {
                         console.log('Error: ' + error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-btn', function() {
+                var importStatusDiv = $('#import-status');
+                $.ajax({
+                    url: '{{ route('import-new-employee') }}',
+                    method: 'POST',
+                    data: new FormData($('#your-upload-form')[
+                        0]), // Replace 'your-upload-form' with the actual form ID
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            importStatusDiv.append('<p>' + response.message + '</p>');
+                        } else {
+                            importStatusDiv.append('<p class="text-danger">' + response
+                                .message + '</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        importStatusDiv.append('<p class="text-danger">Error: ' + error +
+                            '</p>');
+                    },
+                    complete: function() {
+                        // Perform any additional actions when the import is complete
                     }
                 });
             });

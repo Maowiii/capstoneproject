@@ -459,6 +459,12 @@ textarea {
     font-size: 24px;
     align-items: center!important;
 }
+.floating-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px; 
+    z-index: 99; 
+}
 /* MODALS */
 
 .row-checkbox {
@@ -523,4 +529,11 @@ textarea {
 #SummaryModal .modal-dialog{
     max-width: 30%;
 }
-
+/* PRINTING */
+@media print {
+    .navbar, /* Hide the navbar */
+    .floating-container, /* Hide the floating container with buttons */
+    .url { /* Hide the URL or any other specific elements by adding a suitable class or ID */
+        display: none !important;
+    }
+}

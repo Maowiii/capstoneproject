@@ -25,7 +25,7 @@ class PEInternalCustomerController extends Controller
     }
   }
 
-  public function getICAssign()
+  public function getICAssign(Request $request)
   {
     if (!session()->has('account_id')) {
       return view('auth.login');
@@ -39,7 +39,7 @@ class PEInternalCustomerController extends Controller
         ->where('evaluator_id', $appraiserId)
         ->with(['employee.department', 'employee'])
         ->with(['evaluator.department'])
-        ->get();
+        ->paginate(10); // Use pagination to limit the results per page
 
       return response()->json(['success' => true, 'assignments' => $assignments]);
     } else {

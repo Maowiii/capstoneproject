@@ -42,27 +42,71 @@ class ISAppraisalsOverviewController extends Controller
 
     $department_id = $user->department_id;
     $appraisee = Employees::where('department_id', $department_id)
-      ->whereNotIn('account_id', [$account_id])
+      ->where('employee_id', '<>', $user->account_id)
       ->whereHas('account', function ($query) {
         $query->where('type', 'PE');
       })
-      ->get();
+      ->paginate(10);
 
-    $appraisals = Appraisals::whereHas('employee', function ($query) use ($department_id) {
-      $query->where('department_id', $department_id);
-    })
-      ->where('employee_id', '<>', $user->id)
-      ->with('employee', 'evaluator') // Load the related employee and evaluator information
-      ->get();
+    // Handle the rest of your logic here, using $employee
+    $activeYear = EvalYear::where('status', 'active')->first();
+
+    if ($activeYear) {
+      $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+
+      foreach ($appraisee as $appraiseeItem) {
+        Log::info($appraiseeItem);
+        // Check if the employee has existing appraisal records
+        $existingAppraisals = Appraisals::where('employee_id', $appraiseeItem->employee_id)->count();
+        Log::info($existingAppraisals);
+
+        // If no existing appraisal records, create new ones
+        if ($existingAppraisals == 0) {
+          foreach ($evaluationTypes as $evaluationType) {
+            $evaluatorId = null;
+
+            if ($evaluationType === 'self evaluation') {
+              $evaluatorId = $appraiseeItem->employee_id;
+            } elseif ($evaluationType === 'is evaluation') {
+              $departmentId = $appraiseeItem->department_id;
+              $isAccount = Accounts::where('type', 'IS')
+                ->whereHas('employee', function ($query) use ($departmentId) {
+                  $query->where('department_id', $departmentId);
+                })->first();
+
+              if ($isAccount) {
+                $evaluatorId = $isAccount->employee->employee_id;
+              }
+            }
+
+            Appraisals::create([
+              'evaluation_type' => $evaluationType,
+              'employee_id' => $appraiseeItem->employee_id,
+              'evaluator_id' => $evaluatorId,
+              'department_id' => $appraiseeItem->department_id,
+              // Corrected this line
+            ]);
+          }
+        }
+      }
+    }
+
+    $appraisals = Appraisals::where('department_id', $user->department_id)
+      ->where('employee_id', '<>', $user->account_id)
+      ->with('employee', 'evaluator')
+      ->paginate(40); // Specify the number of items per page
 
     $data = [
       'success' => true,
       'appraisee' => $appraisee,
       'appraisals' => $appraisals,
-      'is' => $user
+      // Include paginated appraisals data
+      'is' => $user,
     ];
+
     return response()->json($data);
   }
+
 
   public function getEmployees(Request $request)
   {
@@ -75,7 +119,10 @@ class ISAppraisalsOverviewController extends Controller
 
     $employeeIds = $accounts->pluck('account_id');
 
-    $employees = Employees::whereIn('account_id', $employeeIds)->get();
+    $employees1 = Employees::whereIn('account_id', $employeeIds)->get();
+    Log::info($employees1);
+    $employees = Employees::whereIn('account_id', $employeeIds)->paginate(10);
+    Log::info($employees);
 
     // Retrieve department names
     $departmentIds = $employees->pluck('department_id');
@@ -98,6 +145,7 @@ class ISAppraisalsOverviewController extends Controller
     ];
     return response()->json($data);
   }
+
 
   public function updateInternalCustomer(Request $request)
   {

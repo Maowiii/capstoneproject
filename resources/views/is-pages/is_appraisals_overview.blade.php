@@ -59,6 +59,9 @@
 
             </tbody>
         </table>
+        <nav id="is_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="is_pagination"></ul>
+        </nav>
     </div>
 
     <div class="modal fade" id="ISModal1" data-bs-backdrop="static">
@@ -86,6 +89,9 @@
 
                         </tbody>
                     </table>
+                    <nav id="ismodal1_pagination_container">
+                        <ul class="pagination pagination-sm justify-content-end" id="ismodal1_pagination"></ul>
+                    </nav>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Submit</button>
@@ -116,6 +122,9 @@
 
                         </tbody>
                     </table>
+                    <nav id="ismodal2_pagination_container">
+                        <ul class="pagination pagination-sm justify-content-end" id="ismodal2_pagination"></ul>
+                    </nav>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Submit</button>
@@ -189,28 +198,42 @@
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var container = null; // Declare the container variable
 
-        function loadTableData() {
+        function loadTableData(page = 1) {
             $.ajax({
                 url: '{{ route('getISData') }}',
                 type: 'GET',
+                data: {
+                    page: page
+                },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
                     if (response.success) {
                         $('#IS_appraisals_table_body').empty();
-
-                        var appraisees = response.appraisee;
-                        var appraisals = response.appraisals;
+                        console.log(response);
+                        var appraisees = response.appraisee.data;
+                        var appraisals = response.appraisals.data;
 
                         appraisees.forEach(function(appraisee) {
                             var newRow = $('<tr>').attr('id', appraisee.employee_id).append(
                                 $('<td>').text(appraisee.first_name + ' ' + appraisee.last_name)
                             );
+                            console.log('Before filtering:');
+                            console.log(appraisals);  // Log the original appraisals data
 
                             var employeeAppraisals = appraisals.filter(function(appraisal) {
+                                console.log(appraisee.first_name + ' ' + appraisee.last_name + ': ' + (appraisal.employee_id === appraisee.employee_id));
+                                console.log(`Comparing appraisee ID: ${appraisee.employee_id} with employee_id ID: ${appraisal.employee_id}`);
+                                
+                                console.log(`Appraisal ID: ${appraisal.appraisal_id}`);
+                                
                                 return appraisal.employee_id === appraisee.employee_id;
                             });
+
+                            console.log('After filtering:');
+                            console.log(employeeAppraisals);  // Log the filtered appraisals data
+
 
                             var viewLink = null;
                             var ic1Link = null;
@@ -320,6 +343,28 @@
 
                             $('#IS_appraisals_table_body').append(newRow);
                         });
+
+                            // Handle pagination
+                            var totalPage = response.appraisee.last_page;
+                            var currentPage = response.appraisee.current_page;
+                            var paginationLinks = response.appraisals.links;
+                            $('#is_pagination').empty();
+                            for (var totalPageCounter = 1; totalPageCounter <=
+                                totalPage; totalPageCounter++) {
+                                (function(pageCounter) {
+                                    var pageItem = $('<li>').addClass('page-item');
+                                    if (pageCounter === currentPage) {
+                                        pageItem.addClass('active');
+                                    }
+                                    var pageButton = $('<button>').addClass('page-link').text(
+                                        pageCounter);
+                                    pageButton.click(function() {
+                                        loadTableData(pageCounter);
+                                    });
+                                    pageItem.append(pageButton);
+                                    $('#is_pagination').append(pageItem);
+                                })(totalPageCounter);
+                            }
                     } else {
                         console.log(response.error);
 
@@ -344,12 +389,13 @@
 
         var selectedRows = [];
 
-        function loadEmployeeData(excludedEmployeeId) {
+        function loadEmployeeData(excludedEmployeeId, page = 1) {
             $.ajax({
                 url: '{{ route('getEmployeesData') }}',
                 type: 'GET',
                 data: {
-                    excludedEmployeeId: excludedEmployeeId
+                    excludedEmployeeId: excludedEmployeeId,
+                    page: page
                 }, // Use an object
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -358,8 +404,8 @@
                     if (response.success) {
                         $('.emp_modal').empty();
 
-                        var employees = response.employees;
-
+                        var employees = response.employees.data;
+                        console.log(response);
                         for (var i = 0; i < employees.length; i++) {
                             var employee = employees[i];
                             // Check if the employee_id matches the excludedEmployeeId and is not the current appraisee
@@ -401,6 +447,46 @@
                                 $('.emp_modal').append(newRow);
                             }
                         }
+                             // Handle pagination
+                            var totalPage = response.employees.last_page;
+                            var currentPage = response.employees.current_page;
+
+                            $('#ismodal1_pagination').empty();
+                            for (var totalPageCounter = 1; totalPageCounter <=
+                                totalPage; totalPageCounter++) {
+                                (function(pageCounter) {
+                                    var pageItem = $('<li>').addClass('page-item');
+                                    if (pageCounter === currentPage) {
+                                        pageItem.addClass('active');
+                                    }
+                                    var pageButton = $('<button>').addClass('page-link').text(
+                                        pageCounter);
+                                    pageButton.click(function() {
+                                        loadEmployeeData(excludedEmployeeId,pageCounter);
+                                    });
+                                    pageItem.append(pageButton);
+                                    $('#ismodal1_pagination').append(pageItem);
+                                })(totalPageCounter);
+                            }
+
+                            $('#ismodal2_pagination').empty();
+                            for (var totalPageCounter = 1; totalPageCounter <=
+                                totalPage; totalPageCounter++) {
+                                (function(pageCounter) {
+                                    var pageItem = $('<li>').addClass('page-item');
+                                    if (pageCounter === currentPage) {
+                                        pageItem.addClass('active');
+                                    }
+                                    var pageButton = $('<button>').addClass('page-link').text(
+                                        pageCounter);
+                                    pageButton.click(function() {
+                                        loadEmployeeData(excludedEmployeeId,pageCounter);
+                                    });
+                                    pageItem.append(pageButton);
+                                    $('#ismodal2_pagination').append(pageItem);
+                                })(totalPageCounter);
+                            }
+
                     } else {
                         console.log(response.error);
                     }

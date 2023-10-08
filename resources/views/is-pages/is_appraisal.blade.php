@@ -306,7 +306,7 @@
                 </thead>
             </table>
         </div>
-            
+
 
         <div class="content-container">
             <h2>II. Key Results Areas & Work Objectives</h2>
@@ -658,7 +658,6 @@
                 }
             });
 
-            // For the KRA delete button
             $(document).on('click', '.kra-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var kraID = row.find('input[name$="[kraID]"]').val();
@@ -672,14 +671,11 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        // If the database deletion is successful, remove the row from the table
                         row.remove();
                         updateWeightedTotal();
-
-                        // Check the number of rows left
-                        var rowCount = $('#KRA_table_body tr').length;
+                        var rowCount = $('#kra_table tbody tr').length;
                         if (rowCount === 1) {
-                            $('#KRA_table_body .kra-delete-btn').prop('disabled', true);
+                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
                         }
                     },
                     error: function(xhr, status, error) {
@@ -687,10 +683,12 @@
                     }
                 });
             });
+
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                var wpaID = row.data(
+                    'wpa-id'); // Assuming you have a data attribute for WPA ID on the row
 
                 // Send an AJAX request to delete the WPA record from the database
                 $.ajax({
@@ -720,8 +718,9 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for LDP ID on the row
-
+                var ldpID = row.data(
+                    'ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+                console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
                     type: 'POST',
@@ -736,10 +735,12 @@
                         // If the database deletion is successful, remove the row from the table
                         row.remove();
 
-                        var rowCount = $('#ldp_table tbody tr').length;
+                        var rowCount = $('#ldp_table_body tr').length;
                         if (rowCount === 1) {
                             $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
+
+                        console.log(rowCount);
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -749,43 +750,159 @@
 
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#SR_table input[type="radio"]', function() {
                 updateFrequencyCounter('SR_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#S_table input[type="radio"]', function() {
                 updateFrequencyCounter('S_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#KRA_table_body input[type="radio"]', function() {
                 updateWeightedTotal();
             });
 
-            $(document).on('change', '#KRA_table_body select', function() {
-                updateWeightedTotal();
-            });
-
             loadTableData();
+            formChecker();
 
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
 
-            updateWeightedTotal();
-
-            formChecker();
+            updateBHTotal();
             ////// VALIDATION /////////
+            // Handle form submission and validation
+            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
+                var form = document.getElementById('PEappraisalForm');
 
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var invalidInputs = form.querySelectorAll('.is-invalid');
+
+                    // Handle invalid inputs, display error messages, etc.
+                    invalidInputs.forEach(function(invalidInput) {
+                        // Handle validation messages for invalid inputs
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                            .validationMessage);
+                    });
+
+                    // Optionally, focus on the first invalid input
+                    invalidInputs[0].focus();
+
+                    console.error('Form validation failed.');
+                } else {
+                    // Form validation succeeded
+                    console.info('Form validation succeeded.');
+                    // Set a flag or trigger the modal opening here
+                    openModal();
+                }
+            });
+
+            // Function to open the modal
+            function openModal() {
+                console.log('submit clicked');
+                $('#signatory_modal').modal('show');
+            }
+
+            $('.common-close-button').on('click', function() {
+                console.log('close clicked');
+                var $modal = $(this).closest('.modal');
+                $modal.addClass('modal fade hide');
+                $modal.modal('hide');
+                $modal.css('display', 'none');
+
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                signInput.classList.remove('is-invalid');
+                signInput.closest('td').classList.remove('border', 'border-danger');
+            });
+
+            document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signatureImage = document.querySelector('#signatureImage');
+
+                console.log(signInput.files.length);
+
+                // Check if files are uploaded or if a signature image is displayed
+                if (signInput.files.length === 0 && !signatureImage.src) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    signInput.classList.add('is-invalid');
+                    signInput.closest('td').classList.add('border', 'border-danger');
+
+                    signInput.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    console.error('Signature validation failed.');
+                    return;
+                } else {
+                    // Clear validation if files are uploaded or a signature image is displayed
+                    signInput.classList.remove('is-invalid');
+                    signInput.closest('td').classList.remove('border', 'border-danger');
+
+                    $('#signatory_modal').modal('hide');
+                    $('#confirmation-popup-modal').modal('show');
+                }
+            });
+
+            // Get references to the file input and the image element
+            var fileInput = document.getElementById('uploadsign_1');
+            var signatureImage = document.getElementById('signatureImage');
+            var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+
+            // Add an event listener to the file input
+            fileInput.addEventListener('change', function() {
+                // Check if any files are selected
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+
+                    // Check if the selected file is an image
+                    if (file.type.match(/^image\//)) {
+                        signInput.classList.remove('is-invalid');
+                        signInput.closest('td').classList.remove('border', 'border-danger');
+                        // Create a FileReader to read the selected file
+                        var reader = new FileReader();
+
+                        // Set up an event handler to run when the file is loaded
+                        reader.onload = function(event) {
+                            // Set the src attribute of the image element to the loaded image data
+                            signatureImage.src = event.target.result;
+                        };
+
+                        // Read the selected file as a data URL
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Handle the case where a non-image file is selected (optional)
+                        alert('Please select a valid image file.');
+                        fileInput.value = ''; // Clear the file input
+                    }
+                } else {
+                    // Clear the image if no file is selected
+                    signatureImage.src = '';
+                }
+            });
 
             ////// AUTOSAVE //////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
-                console.log('I was a KRA');
+                console.log('Change event triggered on:', event.target); // Log the target element
                 var field = $(this);
+                console.log('I was a KRA. Field:', field);
+
                 var kraID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
                 var fieldValue = field.val();
+
+                // Log the field name, ID, and value
+                console.log('Field Name:', fieldName);
+                console.log('KRA ID:', kraID);
+                console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -794,8 +911,7 @@
                     data: {
                         kraID: kraID,
                         fieldName: fieldName,
-                        fieldValue: fieldValue,
-                        appraisalId: {{ $appraisalId }}
+                        fieldValue: fieldValue
                     },
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
@@ -845,9 +961,10 @@
 
                             // Change the name attribute of the textareas if needed
                             closestRow.find('textarea[name="WPA[0][' +
-                                {{ $appraisalId }} + '][continue_doing]"]').attr(
-                                'name', 'WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][continue_doing]');
+                                    {{ $appraisalId }} + '][continue_doing]"]')
+                                .attr(
+                                    'name', 'WPA[' + wpaID + '][' +
+                                    {{ $appraisalId }} + '][continue_doing]');
                             closestRow.find('textarea[name="WPA[0][' +
                                 {{ $appraisalId }} + '][stop_doing]"]').attr(
                                 'name', 'WPA[' + wpaID + '][' +
@@ -859,13 +976,16 @@
 
                             // Update the content of the closest row based on the response data
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][continue_doing]"]').val(
-                                wpa.continue_doing);
+                                    {{ $appraisalId }} + '][continue_doing]"]')
+                                .val(
+                                    wpa.continue_doing);
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][stop_doing]"]').val(wpa
+                                {{ $appraisalId }} + '][stop_doing]"]').val(
+                                wpa
                                 .stop_doing);
                             closestRow.find('textarea[name="WPA[' + wpaID + '][' +
-                                {{ $appraisalId }} + '][start_doing]"]').val(wpa
+                                {{ $appraisalId }} + '][start_doing]"]').val(
+                                wpa
                                 .start_doing);
                         });
 
@@ -913,9 +1033,10 @@
 
                             // Change the name attribute of the textareas if needed
                             closestRow.find('textarea[name="LDP[0][' +
-                                {{ $appraisalId }} + '][learning_need]"]').attr(
-                                'name', 'LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][learning_need]');
+                                    {{ $appraisalId }} + '][learning_need]"]')
+                                .attr(
+                                    'name', 'LDP[' + ldpID + '][' +
+                                    {{ $appraisalId }} + '][learning_need]');
                             closestRow.find('textarea[name="LDP[0][' +
                                 {{ $appraisalId }} + '][methodology]"]').attr(
                                 'name', 'LDP[' + ldpID + '][' +
@@ -923,10 +1044,12 @@
 
                             // Update the content of the closest row based on the response data
                             closestRow.find('textarea[name="LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][learning_need]"]').val(ldp
-                                .learning_need);
+                                    {{ $appraisalId }} + '][learning_need]"]')
+                                .val(ldp
+                                    .learning_need);
                             closestRow.find('textarea[name="LDP[' + ldpID + '][' +
-                                {{ $appraisalId }} + '][methodology]"]').val(ldp
+                                {{ $appraisalId }} + '][methodology]"]').val(
+                                ldp
                                 .methodology);
                         });
 

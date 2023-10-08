@@ -62,7 +62,7 @@ class AdminAppraisalsOverviewController extends Controller
                 ->orWhere('last_name', 'like', '%' . $search . '%');
             });
         })
-        ->get();
+        ->paginate(40);
 
     } elseif ($activeEvalYear) {
 
@@ -78,7 +78,7 @@ class AdminAppraisalsOverviewController extends Controller
               ->orWhere('last_name', 'like', '%' . $search . '%');
           }
         })
-        ->get();
+        ->paginate(40);
 
     } else {
       return response()->json(['success' => false, 'error' => 'There is no selected nor ongoing year.']);
@@ -96,7 +96,8 @@ class AdminAppraisalsOverviewController extends Controller
       $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
     }
 
-    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates]);
+    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates,'appraisals' => $appraisals, // Include paginated appraisals
+  ]);
   }
 
 

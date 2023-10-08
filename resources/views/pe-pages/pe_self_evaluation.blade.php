@@ -2355,6 +2355,7 @@
                 success: function(response) {
                     console.log("PHASE");
                     console.log(response.phaseData);
+
                     if (response.phaseData === "kra") {
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);

@@ -19,7 +19,7 @@
             <!-- Point System -->
             <div class="content-container">
                 <h2>Point System:</h2>
-                <h4>Oustanding Students:</h4>
+                <h4>Oustanding Employees:</h4>
                 <table class="table table-sm" id="outstanding_table">
                     <thead>
                         <th>Name</th>
@@ -132,18 +132,17 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div class="content-container">
-                <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
-            </div>
-            <div class="fixed-bottom p-4">
-                <div class="d-flex justify-content-end">
-                    <div class="d-flex flex-column">
-                        <button class="btn btn-primary btn-circle mb-2" id="download-button">
-                            <i class='bx bxs-download'></i>
-                        </button>
-                        <button class="btn btn-secondary btn-circle" id="print-button">
-                            <i class='bx bxs-printer'></i>
-                        </button>
+            <div class="floating-container">
+                <div class="fixed-bottom p-4">
+                    <div class="d-flex justify-content-end">
+                        <div class="d-flex flex-column">
+                            <button class="btn btn-primary btn-circle mb-2" id="download-button">
+                                <i class='bx bxs-download'></i>
+                            </button>
+                            <button class="btn btn-secondary btn-circle" id="print-button">
+                                <i class='bx bxs-printer'></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

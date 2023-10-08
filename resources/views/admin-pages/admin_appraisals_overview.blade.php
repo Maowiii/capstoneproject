@@ -52,6 +52,9 @@
             </thead>
             <tbody></tbody>
         </table>
+        <nav id="appraisal_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="appraisal_pagination"></ul>
+        </nav>
     </div>
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
@@ -115,7 +118,7 @@
                 loadAdminAppraisalsTable(globalSelectedYear, query)
             });
 
-            function loadAdminAppraisalsTable(selectedYear = null, search = null) {
+            function loadAdminAppraisalsTable(selectedYear = null, search = null, page = 1) {
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -124,11 +127,11 @@
                     type: 'GET',
                     data: {
                         selectedYear: selectedYear,
-                        search: search
+                        search: search,
+                        page: page
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log(response);
                             $('#admin_appraisals_table tbody').empty();
                             var groupedAppraisals = response.groupedAppraisals;
 
@@ -399,6 +402,30 @@
                             $('#admin_appraisals_table tbody').append(row);
 
                             console.log('Error: ' + response.error);
+                        }
+
+                        var totalPage = response.appraisals.last_page;
+                        var currentPage = response.appraisals.current_page;
+                        var paginationLinks = response.appraisals.links;
+
+                        $('#appraisal_pagination').empty();
+                        console.log(response.appraisals);
+                        for (var totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function (pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function () {
+                                    // Redirect to the selected page
+                                    loadAdminAppraisalsTable(selectedYear, search, pageCounter);
+                                });
+                                
+                                pageItem.append(pageButton);
+                                $('#appraisal_pagination').append(pageItem);
+                            })(totalPageCounter);
                         }
                     },
                     error: function(xhr, status, error) {

@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ImportEmployeeSample;
 use App\Mail\NewPasswordEmail;
 use App\Models\Accounts;
 use App\Models\Appraisals;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
@@ -66,7 +67,7 @@ class EmployeeController extends Controller
           ->orWhere('last_name', 'like', '%' . $search . '%')
           ->orWhere('employee_number', 'like', '%' . $search . '%');
       });
-    })->get();
+    })->paginate(10);
 
     Log::debug($accounts);
 
@@ -159,6 +160,51 @@ class EmployeeController extends Controller
     }
   }
 
+  public function importEmployee(Request $request)
+  {
+    try {
+      if (!session()->has('account_id')) {
+        return view('auth.login');
+      }
+
+      // Validate the uploaded file
+      $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv',
+      ]);
+
+      // Get the uploaded file
+      $file = $request->file('file');
+
+      // Log information about the uploaded file
+      Log::info('Starting Excel file import...');
+      Log::info('Uploaded File Name: ' . $file->getClientOriginalName());
+      Log::info('Uploaded File Size: ' . $file->getSize() . ' bytes');
+      Log::info('Uploaded File MIME Type: ' . $file->getMimeType());
+
+      // Process the Excel file
+      Excel::import(new ImportEmployeeSample, $request->file('file')->store('files'));
+
+      // Log success message
+      Log::info('Excel file imported successfully');
+
+      // Fetch all departments (you can use this as needed)
+      $departments = Departments::all();
+
+      // Log info message
+      Log::info('All departments fetched.');
+
+      return view('admin-pages.employee_table')->with('departments', $departments);
+    } catch (\Exception $e) {
+      $departments = Departments::all();
+
+      // Log error message
+      Log::error('Error importing Excel file: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      return view('admin-pages.employee_table')->with('departments', $departments);
+    }
+  }
+
   public function employeeResetPassword(Request $request)
   {
     if (!session()->has('account_id')) {
@@ -204,7 +250,7 @@ class EmployeeController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
+
     $employeeId = $request->input('employeeId');
     $account = Accounts::where('account_id', $employeeId)->first();
     $employee = Employees::find($employeeId)->first();

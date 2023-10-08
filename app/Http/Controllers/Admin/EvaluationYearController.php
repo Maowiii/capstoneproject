@@ -31,7 +31,7 @@ class EvaluationYearController extends Controller
       return view('auth.login');
     }
 
-    $evalyears = EvalYear::all();
+    $evalyears = EvalYear::paginate(10); // Use paginate() on the query builder
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
 
