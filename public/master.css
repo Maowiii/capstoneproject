@@ -501,9 +501,7 @@ textarea {
 .table-fit {
   width: 1px;
 }
-#signatory_modal .modal-dialog{
-    max-width:40%;
-}
+
 #passchange .modal-footer{
     justify-content: right;
 }

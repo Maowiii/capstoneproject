@@ -96,8 +96,13 @@ class AdminAppraisalsOverviewController extends Controller
       $groupedAppraisals[$employeeId]['appraisals'][] = $appraisal;
     }
 
-    return response()->json(['success' => true, 'groupedAppraisals' => $groupedAppraisals, 'selectedYearDates' => $selectedYearDates,'appraisals' => $appraisals, // Include paginated appraisals
-  ]);
+    return response()->json([
+      'success' => true,
+      'groupedAppraisals' => $groupedAppraisals,
+      'selectedYearDates' => $selectedYearDates,
+      'appraisals' => $appraisals,
+      // Include paginated appraisals
+    ]);
   }
 
 
@@ -134,12 +139,13 @@ class AdminAppraisalsOverviewController extends Controller
     $employeeID = $request->input('employeeID');
     $sy = $request->input('selectedYear');
 
+    Log::debug('SY: ' . $sy);
+
     if ($sy !== null) {
       $table = 'appraisals_' . $sy;
 
-      $appraisalsModel = new Appraisals;
-      $appraisalsModel->setTable($table);
-      $appraisals = $appraisalsModel->where('employee_id', $employeeID)
+      $appraisals = Appraisals::from($table)
+        ->where('employee_id', $employeeID)
         ->with(['employee', 'signatures', 'evaluator'])
         ->get();
     } else {
@@ -148,8 +154,13 @@ class AdminAppraisalsOverviewController extends Controller
         ->get();
     }
 
+    foreach ($appraisals as &$appraisal) {
+      $appraisal['name'] = mb_convert_encoding($appraisal['name'], 'UTF-8', 'UTF-8');
+    }
+
     return response()->json(['success' => true, 'appraisals' => $appraisals]);
   }
+
 
 
   public function loadSignature(Request $request)
