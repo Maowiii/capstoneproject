@@ -180,13 +180,13 @@
         <div class="floating-container">
             <div class="fixed-bottom p-4">
                 <div class="d-flex justify-content-end">
-                        <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
-                            <i class='bx bxs-printer'></i>
-                        </button>
-                    </div>
+                    <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                        <i class='bx bxs-printer'></i>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script>

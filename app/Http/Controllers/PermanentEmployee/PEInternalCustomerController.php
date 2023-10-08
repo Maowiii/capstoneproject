@@ -7,6 +7,7 @@ use App\Models\FinalScores;
 use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
+use App\Models\Accounts;
 use App\Models\Appraisals;
 use App\Models\Comments;
 use App\Models\FormQuestions;
@@ -66,15 +67,34 @@ class PEInternalCustomerController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
+    $account_id = session()->get('account_id');
+    $employee = Employees::where('account_id', $account_id)->first();
+    $accounts = Accounts::where('account_id', $account_id)->first();
 
-    $evaluatorName = $request->input('appraiser_name');
+    $firstName = null;
+    $lastName = null;
+
+    /*$evaluatorName = $request->input('appraiser_name');
     $evaluatorDepartment = $request->input('appraiser_department');
     $appraiseeName = $request->input('appraisee_name');
     $appraiseeDepartment = $request->input('appraisee_department');
 
-    return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));
-  }
+    return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));*/
 
+    if ($accounts && $accounts->employee) {
+      // Access the Employee model associated with the user's account
+      $employee = $accounts->employee;
+      // Retrieve the first and last name from the Employee model
+      $firstName = $employee->first_name;
+      $lastName = $employee->last_name;
+    }
+    // Return the employee information as JSON
+    return response()->json([
+      'success' => true,
+      'first_name' => $firstName,
+      'last_name' => $lastName,
+    ]);
+  }
   public function saveICScores(Request $request)
   {
     if (!session()->has('account_id')) {
