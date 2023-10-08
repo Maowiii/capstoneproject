@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
+use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
@@ -28,44 +29,115 @@ class DepartmentalAnalyticsController extends Controller
     $selectedYear = $request->input('selectedYear');
     $departmentID = $request->input('departmentID');
 
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
     if ($selectedYear) {
-      $sid = FormQuestions::where('table_initials', 'SID')
+      $formQuestionsTable = 'form_questions_' . $selectedYear;
+      $answersTable = 'appraisal_answers_' . $selectedYear;
+
+      $sidQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SID')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
-      $sr = FormQuestions::where('table_initials', 'SR')
+      foreach ($sidQuestions as $sidQuestion) {
+        $averageScores = AppraisalAnswers::from($answersTable)
+          ->join('appraisals_' . $selectedYear, function ($join) use ($departmentID, $selectedYear) {
+            $join->on('appraisal_answers_' . $selectedYear . '.appraisal_id', '=', 'appraisals_' . $selectedYear . '.appraisal_id')
+              ->where('appraisals_' . $selectedYear . '.department_id', $departmentID);
+          })
+          ->where('question_id', $sidQuestion->question_id)
+          ->avg('score');
+
+        $sidQuestion->average_score = number_format($averageScores, 2);
+      }
+
+      $srQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SR')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
-      $s = FormQuestions::where('table_initials', 'S')
+      foreach ($srQuestions as $srQuestion) {
+        $averageScores = AppraisalAnswers::from($answersTable)
+          ->join('appraisals_' . $selectedYear, function ($join) use ($departmentID, $selectedYear) {
+            $join->on('appraisal_answers_' . $selectedYear . '.appraisal_id', '=', 'appraisals_' . $selectedYear . '.appraisal_id')
+              ->where('appraisals_' . $selectedYear . '.department_id', $departmentID);
+          })
+          ->where('question_id', $srQuestion->question_id)
+          ->avg('score');
+
+        $srQuestion->average_score = number_format($averageScores, 2);
+      }
+
+      $sQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'S')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
+      foreach ($sQuestions as $sQuestion) {
+        $averageScores = AppraisalAnswers::from($answersTable)
+          ->join('appraisals_' . $selectedYear, function ($join) use ($departmentID, $selectedYear) {
+            $join->on('appraisal_answers_' . $selectedYear . '.appraisal_id', '=', 'appraisals_' . $selectedYear . '.appraisal_id')
+              ->where('appraisals_' . $selectedYear . '.department_id', $departmentID);
+          })
+          ->where('question_id', $sQuestion->question_id)
+          ->avg('score');
+
+        $sQuestion->average_score = number_format($averageScores, 2);
+      }
     } else {
-      $sid = FormQuestions::where('table_initials', 'SID')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
 
-      $sr = FormQuestions::where('table_initials', 'SR')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
+        $sidQuestions = FormQuestions::where('table_initials', 'SID')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
 
-      $s = FormQuestions::where('table_initials', 'S')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
+        foreach ($sidQuestions as $sidQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $sidQuestion->question_id)
+            ->avg('score');
+
+          $sidQuestion->average_score = number_format($averageScore, 2);
+        }
+
+        $srQuestions = FormQuestions::where('table_initials', 'SR')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($srQuestions as $srQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $srQuestion->question_id)
+            ->avg('score');
+
+          $srQuestion->average_score = number_format($averageScore, 2);
+        }
+
+        $sQuestions = FormQuestions::where('table_initials', 'S')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        foreach ($sQuestions as $sQuestion) {
+          $averageScore = AppraisalAnswers::where('question_id', $sQuestion->question_id)
+            ->avg('score');
+
+          $sQuestion->average_score = number_format($averageScore, 2);
+        }
+      } else {
+        return response()->json(['success' => false]);
+      }
     }
 
     return response()->json([
       'success' => true,
-      'sid' => $sid,
-      'sr' => $sr,
-      's' => $s,
+      'sid' => $sidQuestions,
+      'sr' => $srQuestions,
+      's' => $sQuestions,
     ]);
   }
 
@@ -77,24 +149,30 @@ class DepartmentalAnalyticsController extends Controller
     if ($selectedYear == 'null') {
       $selectedYear = null;
     }
-    
-    Log::debug('Selected Year from Request: ' . $selectedYear);
+
+    Log::debug('LOAD IC QUESTIONS: Selected Year from Request: ' . $selectedYear);
 
     if ($selectedYear) {
+      $table = 'form_questions_' . $selectedYear;
+      $icAnswersTable = 'appraisal_answers_' . $selectedYear;
+
       Log::debug('Selected Year Condition');
-      $icQuestions = FormQuestions::where('table_initials', 'IC')
+      $icQuestions = FormQuestions::from($table)
+        ->where('table_initials', 'IC')
         ->where('status', 'active')
         ->orderBy('question_order')
         ->get();
 
       foreach ($icQuestions as $icQuestion) {
-        $averageScore = AppraisalAnswers::where('question_id', $icQuestion->question_id)
-          ->whereHas('appraisal', function ($query) use ($departmentID) {
-            $query->where('department_id', $departmentID);
+        $averageScores = AppraisalAnswers::from($icAnswersTable)
+          ->join('appraisals_' . $selectedYear, function ($join) use ($departmentID, $selectedYear) {
+            $join->on('appraisal_answers_' . $selectedYear . '.appraisal_id', '=', 'appraisals_' . $selectedYear . '.appraisal_id')
+              ->where('appraisals_' . $selectedYear . '.department_id', $departmentID);
           })
+          ->where('question_id', $icQuestion->question_id)
           ->avg('score');
 
-        $icQuestion->average_score = number_format($averageScore, 2);
+        $icQuestion->average_score = number_format($averageScores, 2);
       }
     } else {
       Log::debug('Active Year Condition');
@@ -125,26 +203,46 @@ class DepartmentalAnalyticsController extends Controller
     $selectedYear = $request->input('selectedYear');
     $departmentID = $request->input('departmentID');
 
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
     if ($selectedYear) {
-      $totalPermanentEmployees = FinalScores::where('department_id', $departmentID)->count();
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+      $finalTable = 'final_scores_' . $selectedYear;
 
-      $sumTotalScore = FinalScores::where('department_id', $departmentID)->sum('final_score');
+      $totalPermanentEmployees = Appraisals::from($appraisalsTable)
+        ->where('department_id', $departmentID)
+        ->count();
 
-      $avgTotalScore = ($totalPermanentEmployees > 0) ? ($sumTotalScore / $totalPermanentEmployees) : 0;
+      $totalAppraisals = FinalScores::from($finalTable)
+        ->where('department_id', $departmentID)
+        ->count();
+
+      $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+      $avgTotalScore = FinalScores::where('department_id', $departmentID)
+        ->avg('final_score');
       $avgTotalScore = round($avgTotalScore, 2);
-
     } else {
-      $totalPermanentEmployees = FinalScores::where('department_id', $departmentID)->count();
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
 
-      $sumTotalScore = FinalScores::where('department_id', $departmentID)->sum('final_score');
+        $totalPermanentEmployees = Appraisals::where('department_id', $departmentID)->count();
 
-      $avgTotalScore = ($totalPermanentEmployees > 0) ? ($sumTotalScore / $totalPermanentEmployees) : 0;
-      $avgTotalScore = round($avgTotalScore, 2);
+        $totalAppraisals = FinalScores::where('department_id', $departmentID)->count();
 
+        $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+        $avgTotalScore = FinalScores::where('department_id', $departmentID)->avg('final_score');
+        $avgTotalScore = round($avgTotalScore, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
     }
 
     return response()->json([
       'success' => true,
+      'totalAppraisals' => $totalAppraisals,
       'totalPermanentEmployees' => $totalPermanentEmployees,
       'avgTotalScore' => $avgTotalScore
     ]);
@@ -155,69 +253,84 @@ class DepartmentalAnalyticsController extends Controller
     $selectedYear = $request->input('selectedYear');
     $departmentID = $request->input('departmentID');
 
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
     if ($selectedYear) {
-      $outstanding = FinalScores::where('department_id', $departmentID)
+      $table = 'final_scores_' . $selectedYear;
+
+      $outstanding = FinalScores::from($table)
+        ->where('department_id', $departmentID)
         ->whereBetween('final_score', [4.85, 5.00])
         ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
+        ->orderBy('final_score')
         ->get();
 
-      $verySatisfactory = FinalScores::where('department_id', $departmentID)
+      $verySatisfactory = FinalScores::from($table)
+        ->where('department_id', $departmentID)
         ->whereBetween('final_score', [4.25, 4.84])
         ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
+        ->orderBy('final_score')
         ->get();
 
-      $satisfactory = FinalScores::where('department_id', $departmentID)
+      $satisfactory = FinalScores::from($table)
+        ->where('department_id', $departmentID)
         ->whereBetween('final_score', [3.50, 4.24])
         ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
+        ->orderBy('final_score')
         ->get();
 
-      $fair = FinalScores::where('department_id', $departmentID)
+      $fair = FinalScores::from($table)
+        ->where('department_id', $departmentID)
         ->whereBetween('final_score', [2.75, 3.49])
         ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
+        ->orderBy('final_score')
         ->get();
 
-      $poor = FinalScores::where('department_id', $departmentID)
+      $poor = FinalScores::from($table)
+        ->where('department_id', $departmentID)
         ->where('final_score', '<', 2.75)
         ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
+        ->orderBy('final_score')
         ->get();
 
     } else {
-      $outstanding = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_score', [4.85, 5.00])
-        ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
-        ->get();
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
 
-      $verySatisfactory = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_score', [4.25, 4.84])
-        ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
-        ->get();
+        $outstanding = FinalScores::where('department_id', $departmentID)
+          ->whereBetween('final_score', [4.85, 5.00])
+          ->with('employee')
+          ->orderBy('final_score')
+          ->get();
 
-      $satisfactory = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_score', [3.50, 4.24])
-        ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
-        ->get();
+        $verySatisfactory = FinalScores::where('department_id', $departmentID)
+          ->whereBetween('final_score', [4.25, 4.84])
+          ->with('employee')
+          ->orderBy('final_score')
+          ->get();
 
-      $fair = FinalScores::where('department_id', $departmentID)
-        ->whereBetween('final_score', [2.75, 3.49])
-        ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
-        ->get();
+        $satisfactory = FinalScores::where('department_id', $departmentID)
+          ->whereBetween('final_score', [3.50, 4.24])
+          ->with('employee')
+          ->orderBy('final_score')
+          ->get();
 
-      $poor = FinalScores::where('department_id', $departmentID)
-        ->where('final_score', '<', 2.75)
-        ->with('employee')
-        ->orderBy('final_score') // Add orderBy clause
-        ->get();
+        $fair = FinalScores::where('department_id', $departmentID)
+          ->whereBetween('final_score', [2.75, 3.49])
+          ->with('employee')
+          ->orderBy('final_score')
+          ->get();
+
+        $poor = FinalScores::where('department_id', $departmentID)
+          ->where('final_score', '<', 2.75)
+          ->with('employee')
+          ->orderBy('final_score')
+          ->get();
+      } else {
+        return response()->json(['success' => false]);
+      }
     }
-
     return response()->json([
       'success' => true,
       'outstanding' => $outstanding,

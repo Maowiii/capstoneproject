@@ -10,6 +10,7 @@ use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class AdminDashboardController extends Controller
@@ -26,39 +27,162 @@ class AdminDashboardController extends Controller
     }
   }
 
+  public function loadCards(Request $request)
+  {
+    Log::debug('Load Cards Called');
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+      $finalTable = 'final_scores_' . $selectedYear;
+
+      $totalPermanentEmployees = Appraisals::from($appraisalsTable)
+        ->count();
+
+      $totalAppraisals = FinalScores::from($finalTable)
+        ->count();
+
+      $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+      $avgTotalScore = FinalScores::from($finalTable)->avg('final_score');
+      $avgTotalScore = round($avgTotalScore, 2);
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+
+        $totalPermanentEmployees = Appraisals::count();
+
+        $totalAppraisals = FinalScores::count();
+
+        $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+        $avgTotalScore = FinalScores::avg('final_score');
+        $avgTotalScore = round($avgTotalScore, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+
+    return response()->json([
+      'success' => true,
+      'totalAppraisals' => $totalAppraisals,
+      'totalPermanentEmployees' => $totalPermanentEmployees,
+      'avgTotalScore' => $avgTotalScore
+    ]);
+  }
+
   public function loadDepartmentTable(Request $request)
   {
     if (session()->has('account_id')) {
-
       $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
 
       $search = $request->input('search');
       $selectedYear = $request->input('selectedYear');
       $page = $request->input('page');
 
-      if ($selectedYear) {
-        $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
-          ->orderBy('department_name')
-          ->paginate(20);
-
-        return response()->json(['success' => true, 'departments' => $departments]);
-      } elseif ($activeEvalYear) {
-        $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
-          ->orderBy('department_name')
-          ->paginate(20);
-
-        return response()->json(['success' => true, 'departments' => $departments]);
-      } else {
-        return response()->json(['success' => false]);
+      if ($selectedYear == 'null') {
+        $selectedYear = null;
       }
+
+      if ($selectedYear) {
+        $perPage = 20;
+        $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+          ->orderBy('department_name')
+          ->get();
+
+        $averageScoresArray = [];
+        $finalTable = 'final_scores_' . $selectedYear;
+
+        foreach ($departments as $department) {
+          $averageScore = FinalScores::from($finalTable)
+            ->where('department_id', $department->department_id)
+            ->avg('final_score');
+
+          $department->average_score = number_format($averageScore, 2);
+
+          $averageScoresArray[] = ['department' => $department, 'average_score' => $department->average_score];
+        }
+
+        usort($averageScoresArray, function ($a, $b) {
+          return $b['average_score'] <=> $a['average_score'];
+        });
+
+        $rank = ($page - 1) * $perPage + 1;
+        $currentPageItems = array_slice($averageScoresArray, ($page - 1) * $perPage, $perPage);
+        foreach ($currentPageItems as $averageScoreItem) {
+          $department = $averageScoreItem['department'];
+          $department->rank = $rank;
+          $rank++;
+        }
+
+        $departments = new LengthAwarePaginator(
+          $currentPageItems,
+          count($averageScoresArray),
+          $perPage,
+          $page,
+          ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+      } else {
+        if (FinalScores::tableExists()) {
+          $perPage = 20;
+          $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
+            ->orderBy('department_name')
+            ->get();
+
+          $averageScoresArray = [];
+
+          foreach ($departments as $department) {
+            $averageScore = FinalScores::where('department_id', $department->department_id)
+              ->avg('final_score');
+
+            $department->average_score = number_format($averageScore, 2);
+
+            $averageScoresArray[] = ['department' => $department, 'average_score' => $department->average_score];
+          }
+
+          usort($averageScoresArray, function ($a, $b) {
+            return $b['average_score'] <=> $a['average_score'];
+          });
+
+          $rank = ($page - 1) * $perPage + 1;
+          $currentPageItems = array_slice($averageScoresArray, ($page - 1) * $perPage, $perPage);
+          foreach ($currentPageItems as $averageScoreItem) {
+            $department = $averageScoreItem['department'];
+            $department->rank = $rank;
+            $rank++;
+          }
+
+          $departments = new LengthAwarePaginator(
+            $currentPageItems,
+            count($averageScoresArray),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+          );
+
+        } else {
+          return response()->json(['success' => false]);
+        }
+      }
+
+      return response()->json(['success' => true, 'departments' => $departments]);
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
   }
 
+
   public function loadBCQuestions(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
 
     if ($selectedYear) {
       $sidQuestionsTable = 'form_questions_' . $selectedYear;
@@ -113,8 +237,6 @@ class AdminDashboardController extends Controller
       }
     } else {
       if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
-        Log::debug('Active Year Condition');
-
         $sidQuestions = FormQuestions::where('table_initials', 'SID')
           ->where('status', 'active')
           ->orderBy('question_order')
@@ -215,6 +337,10 @@ class AdminDashboardController extends Controller
   {
     $selectedYear = $request->input('selectedYear');
 
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
     if ($selectedYear) {
       $table = 'final_scores_' . $selectedYear;
 
@@ -287,4 +413,6 @@ class AdminDashboardController extends Controller
       'poor' => $poor
     ]);
   }
+
+
 }

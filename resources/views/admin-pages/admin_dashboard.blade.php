@@ -25,11 +25,15 @@
     </div>
 
     <div class='d-flex gap-3'>
-        <div class="content-container text-middle" id="total-permanent-employees-container">
+        <div class="content-container text-middle" id="total-pe-container">
             <h4>Total Permanent Employees:</h4>
             <p>-</p>
         </div>
-        <div class="content-container text-middle" id="avg-total-score-container">
+        <div class="content-container text-middle" id="total-appraisals-container">
+            <h4>Appraisals Completed:</h4>
+            <p>-</p>
+        </div>
+        <div class="content-container text-middle" id="avg-score-container">
             <h4>Average Total Score:</h4>
             <p>-</p>
         </div>
@@ -195,8 +199,8 @@
 
     <script>
         function printReport() {
-        window.print(); // Open the browser's print dialog
-    }
+            window.print(); // Open the browser's print dialog
+        }
         $(document).ready(function() {
             var globalSelectedYear = null;
 
@@ -208,6 +212,7 @@
                 loadICQuestions(selectedYear);
                 loadBCQuestions(selectedYear);
                 loadPointsSystem(selectedYear);
+                loadCards(selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -220,7 +225,38 @@
             loadICQuestions(globalSelectedYear);
             loadBCQuestions(globalSelectedYear);
             loadPointsSystem(globalSelectedYear);
+            loadCards(globalSelectedYear);
         });
+
+        function loadCards(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadCards') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#total-pe-container').html('<h4>Total Permanent Employees:</h4><p>' + response
+                            .totalPermanentEmployees + '</p>');
+
+                        $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
+                            '</p>');
+
+                        $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
+                            .totalAppraisals + '</p>');
+                    } else {
+                        console.log('Load Cards failed.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
 
         function loadDepartmentTable(selectedYear = null, search = null, page = 1) {
             $.ajax({
@@ -236,26 +272,35 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        var departments = response.departments
-                            .data;
+                        console.log(response);
+                        var departments = response.departments.data;
+
+                        departments.sort(function(a, b) {
+                            return a.rank - b.rank;
+                        });
+
                         $('#departments_table tbody').empty();
 
                         for (var i = 0; i < departments.length; i++) {
                             var department = departments[i];
+                            console.log(department);
                             var row = $('<tr class="text-center">');
-                            row.append($('<td>').text(i + 1));
+                            row.append($('<td>').text(department.department.rank));
 
                             var departmentNameLink = $('<a>')
                                 .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
-                                    "&department_id=" + department
-                                    .department_id + '&department_name=' + encodeURIComponent(department
-                                        .department_name))
-                                .text(department.department_name);
+                                    "&department_id=" + department.department.department_id + '&department_name=' +
+                                    encodeURIComponent(department.department.department_name))
+                                .text(department.department.department_name);
 
                             var td = $('<td>').append(departmentNameLink);
                             row.append(td);
 
-                            row.append($('<td>').text('-'));
+                            if (department.average_score) {
+                                row.append($('<td>').text(department.average_score));
+                            } else {
+                                row.append($('<td>').text('-'));
+                            }
 
                             $('#departments_table tbody').append(row);
                         }
@@ -278,7 +323,6 @@
                             })(totalPageCounter);
                         }
                     } else {
-                        console.log(response);
                         $('#departments_table tbody').empty();
                         var row = $(
                             '<tr><td colspan="3"><p class="text-secondary fst-italic mt-0">There is no ongoing evaluation. Please select a past evaluation on top.</p></td></tr>'
@@ -306,7 +350,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
                         if (response.ic) {
                             var icTable = $('#ic_table tbody');
                             icTable.empty();
@@ -727,7 +770,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log('Success');
                         const categories = [{
                                 label: 'Outstanding',
                                 key: 'outstanding',
@@ -867,7 +909,6 @@
                             },
                         });
                     }
-
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", status, error);
