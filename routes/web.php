@@ -176,7 +176,7 @@ Route::post('/autosave-wpp-field', [SelfEvaluationController::class, 'autosaveWP
 Route::post('/autosave-ldp-field', [SelfEvaluationController::class, 'autosaveLDPField'])->name('autosaveLDPField');
 Route::post('/autosave-jic-field', [SelfEvaluationController::class, 'autosaveJICField'])->name('autosaveJICField');
 
-Route::get('/pe-go-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewGOAppraisal'])->name('viewPEGOAppraisal');
+Route::get('/view-greyedout-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewGOAppraisal'])->name('viewPEGOAppraisal');
 
 // Internal Customers
 Route::get('/pe-internal-customers-overview', [PEInternalCustomerController::class, 'displayICOverview'])->name('viewICOverview');
