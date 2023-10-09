@@ -183,7 +183,6 @@ Route::get('/pe-internal-customers-overview', [PEInternalCustomerController::cla
 Route::get('/pe-internal-customers-overview/getICAssign', [PEInternalCustomerController::class, 'getICAssign'])->name('getICAssign');
 Route::get('/pe-internal-customers/getICQuestions', [PEInternalCustomerController::class, 'getICQuestions'])->name('pe.getICQuestions');
 Route::get('/pe-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('appraisalForm');
-Route::get('/pe-internal-customers/appraisalICForm', [PEInternalCustomerController::class, 'showICForm'])->name('showICForm');
 Route::get('/pe-internal-customers/getICScores', [PEInternalCustomerController::class, 'getSavedICScores'])->name('getSavedICScores');
 Route::post('/pe-internal-customer-overview/saveICScores', [PEInternalCustomerController::class, 'saveICScores'])->name('saveICScores');
 Route::post('/pe-internal-customers/updateService', [PEInternalCustomerController::class, 'updateService'])->name('updateService');
@@ -203,6 +202,6 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
-Route::get('/ce-internal-customers/appraisalForm', [CEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
+Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
 
 

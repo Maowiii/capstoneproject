@@ -164,8 +164,7 @@ class PEInternalCustomerController extends Controller
   public function updateSuggestion(Request $request)
   {
     if (!session()->has('account_id')) {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
-    }
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');    }
 
     $newSuggestion = $request->input('newSuggestion');
     $appraisalId = $request->input('appraisalId');
@@ -179,8 +178,7 @@ class PEInternalCustomerController extends Controller
   public function getCommentsAndSuggestions(Request $request)
   {
     if (!session()->has('account_id')) {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
-    }
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');    }
 
     $appraisalId = $request->input('appraisalId');
 
@@ -206,8 +204,7 @@ class PEInternalCustomerController extends Controller
   public function loadSignatures(Request $request)
   {
     if (!session()->has('account_id')) {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
-    }
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');    }
 
     $appraisalId = $request->input('appraisalId');
 
@@ -235,8 +232,7 @@ class PEInternalCustomerController extends Controller
   public function submitICSignature(Request $request)
   {
     if (!session()->has('account_id')) {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
-    }
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');    }
 
     $appraisalId = $request->input('appraisalId');
     $esignature = $request->input('esignature');
@@ -314,7 +310,7 @@ class PEInternalCustomerController extends Controller
   public function formChecker(Request $request)
   {
     if (!session()->has('account_id')) {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+      return view('auth.login');
     }
 
     $appraisalId = $request->input('appraisalId');

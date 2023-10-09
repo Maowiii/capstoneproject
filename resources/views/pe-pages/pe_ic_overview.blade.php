@@ -56,7 +56,7 @@
                                     ),
                                     $('<td>').text(assignment.employee.department
                                         .department_name
-                                    ), 
+                                    ),
                                     $('<td>').text(
                                         assignment.date_submitted !== null ? 'Submitted' :
                                         'Pending'
@@ -69,7 +69,7 @@
                                         .addClass('btn btn-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "{{ route('showICForm') }}" +
+                                                "{{ route('appraisalForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +
@@ -94,7 +94,7 @@
                                         .addClass('btn btn-outline-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "/pe-internal-customers/appraisalForm" +
+                                                "{{ route('appraisalForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +
