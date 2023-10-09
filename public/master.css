@@ -465,6 +465,9 @@ textarea {
     right: 20px; 
     z-index: 95!important; 
 }
+.fixed-bottom{
+    z-index: 95!important;
+}
 /* MODALS */
 
 .row-checkbox {
