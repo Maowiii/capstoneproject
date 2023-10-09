@@ -141,6 +141,9 @@ Route::post('/delete-wpa', [ISAppraisalController::class, 'deleteWPA'])->name('d
 Route::post('/delete-ldp', [ISAppraisalController::class, 'deleteLDP'])->name('deleteLDP');
 Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class, 'assignInternalCustomer'])->name('assignInternalCustomer');
 
+Route::post('/autosave-is-kra-field', [ISAppraisalController::class, 'autosaveKRAField'])->name('autosaveISKRAField');
+Route::post('/autosave-is-wpp-field', [ISAppraisalController::class, 'autosaveWPPField'])->name('autosaveISWPPField');
+Route::post('/autosave-is-ldp-field', [ISAppraisalController::class, 'autosaveLDPField'])->name('autosaveISLDPField');
 
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');

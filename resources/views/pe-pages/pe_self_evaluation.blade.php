@@ -404,7 +404,7 @@
             </table>
         </div>
 
-        <div class="content-container">
+        <div class="content-container" >
             <h2>II. Key Results Areas & Work Objectives</h2>
             <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
                 his/her
@@ -1008,6 +1008,7 @@
             updateFrequencyCounter('S_table');
 
             updateBHTotal();
+            updateWeightedTotal();
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
@@ -1062,7 +1063,7 @@
                 console.log(signInput.files.length);
 
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 && !signatureImage.src) {
+                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null || signatureImage.getAttribute('src') === '')) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1648,12 +1649,10 @@
                 if (data.success) {
                     console.log('data.eulaData: ' + data.eulaData);
                     if (data.eulaData == 1 || data.eulaData == true) {
-                        console.log('HIDE');
                         $('#consentform').remove();
                     }else{
                         $('#consentform').modal('show');
                     }
-
 
                     $('#KRA_table_body').empty();
                     var tbody = $('#KRA_table_body');
@@ -2357,15 +2356,20 @@
                     console.log(response.phaseData);
 
                     if (response.phaseData === "kra") {
-                        $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
                         $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('input[type="radio"]').attr("disabled",true);
+
                     } else if (response.phaseData === "pr") {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('input[type="radio"]').attr("disabled",true);
+                        $('input[type="radio"]').attr("readonly",true);;
                         $('textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
+                        $('#KRA_table_body select').attr('disabled', true);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', true);
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
                     } else if (response.phaseData === "eval") {
                         $('#KRA_table_body textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);
@@ -2386,7 +2390,13 @@
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else if (response.locked === "lock") {
+                    } else if (response.locked === "pr") {
+                        $('input[type="radio"]').prop('readonly', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
+
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                    }else if (response.locked === "lock") {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);

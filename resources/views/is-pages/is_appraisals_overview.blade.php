@@ -323,11 +323,19 @@
                                                 appraisal.evaluator.last_name);
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
-                                    AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
-                                        .attr('href',
-                                            `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                            .replace(':appraisal_id', appraisal_id))
-                                        .text('Appraise');
+                                    if (appraisal.date_submitted !== null) {
+                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('View');
+                                    } else {
+                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('Appraise');
+                                    }
                                 }
                             });
 
