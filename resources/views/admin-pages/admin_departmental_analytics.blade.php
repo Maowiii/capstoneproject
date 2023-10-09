@@ -123,37 +123,40 @@
         </div>
     </div>
 
-        <!-- Internal Customers -->
-        <div class="d-flex gap-3">
-            <div class="content-container">
-                <h2>Internal Customers:</h2>
-                <table class="table table-sm mb-3" id="ic_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="floating-container">
-                <div class="fixed-bottom p-4">
-                    <div class="d-flex justify-content-end">
-                        <div class="d-flex flex-column">
-                            <button class="btn btn-primary btn-circle mb-2" id="download-button">
-                                <i class='bx bxs-download'></i>
-                            </button>
-                            <button class="btn btn-secondary btn-circle" id="print-button">
-                                <i class='bx bxs-printer'></i>
-                            </button>
-                        </div>
+    <!-- Internal Customers -->
+    <div class="d-flex gap-3">
+        <div class="content-container">
+            <h2>Internal Customers:</h2>
+            <table class="table table-sm mb-3" id="ic_table">
+                <thead>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th class="medium-column">Average Score</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="content-container">
+            <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        </div>
+        <div class="floating-container">
+            <div class="fixed-bottom p-4">
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex flex-column">
+                        <button class="btn btn-primary btn-circle mb-2" id="download-button">
+                            <i class='bx bxs-download'></i>
+                        </button>
+                        <button class="btn btn-secondary btn-circle" id="print-button">
+                            <i class='bx bxs-printer'></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <script>
         function printReport() {
-        window.print(); // Open the browser's print dialog
+            window.print(); // Open the browser's print dialog
         }
         $(document).ready(function() {
             const departmentName = new URLSearchParams(window.location.search).get('department_name');
