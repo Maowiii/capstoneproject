@@ -8,6 +8,7 @@ use App\Models\Employees;
 use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\EvalYear;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -94,14 +95,21 @@ class ISAppraisalsOverviewController extends Controller
     $appraisals = Appraisals::where('department_id', $user->department_id)
       ->where('employee_id', '<>', $user->account_id)
       ->with('employee', 'evaluator')
-      ->paginate(40); // Specify the number of items per page
+      ->paginate(40);
+
+    $appraisalsCollection = $appraisals->getCollection();
+
+    $finalScores = $this->calculateFinalScores($appraisalsCollection);
+
+    $statuses = $this->calculateStatus($appraisalsCollection);
 
     $data = [
       'success' => true,
       'appraisee' => $appraisee,
       'appraisals' => $appraisals,
-      // Include paginated appraisals data
       'is' => $user,
+      'status' => $statuses,
+      'final_score' => $finalScores,
     ];
 
     return response()->json($data);
@@ -224,5 +232,92 @@ class ISAppraisalsOverviewController extends Controller
     }
   }
 
+  public function calculateFinalScores(Collection $appraisals)
+  {
+    $finalScores = [];
 
+    // Group appraisals by employee ID
+    $groupedAppraisals = $appraisals->groupBy('employee_id');
+
+    // Iterate through each employee's appraisals
+    foreach ($groupedAppraisals as $employeeId => $employeeAppraisals) {
+      $behavioralCompetenciesGrade = 0;
+      $kraGrade = 0;
+      $kraFormsCount = 0;
+
+      $allSubmitted = true;
+
+      // Iterate through each appraisal for the current employee
+      foreach ($employeeAppraisals as $appraisal) {
+        $evaluationType = $appraisal->evaluation_type;
+        $bhScore = $appraisal->bh_score;
+        $kraScore = $appraisal->kra_score;
+        $icScore = $appraisal->ic_score;
+
+        // Check if date_submitted is not null
+        if ($appraisal->date_submitted !== null) {
+          // Calculate the behavioral competencies grade
+          if ($evaluationType === 'self evaluation') {
+            $behavioralCompetenciesGrade += ($bhScore * 0.1);
+          } elseif ($evaluationType === 'is evaluation') {
+            $behavioralCompetenciesGrade += ($bhScore * 0.5);
+          } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
+            $behavioralCompetenciesGrade += ($icScore * 0.2);
+          }
+
+          // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
+          if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+            $kraGrade += $kraScore;
+            $kraFormsCount++;
+          }
+        } else {
+          // Set allSubmitted to false and break out of the loop
+          $allSubmitted = false;
+          break;
+        }
+      }
+
+      // Check if all appraisals for this employee were submitted
+      if ($allSubmitted) {
+        $kraFS = $kraGrade / $kraFormsCount;
+        $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
+
+        // Store the final grade for this employee
+        $finalScores[$employeeId] = [
+          'finalGrade' => $finalGrade,
+          'behavioralCompetenciesGrade' => $behavioralCompetenciesGrade,
+          'kraFS' => $kraFS,
+        ];
+      }
+    }
+
+    return $finalScores;
+  }
+
+  public function calculateStatus(Collection $appraisals)
+  {
+    // Group appraisals by employee ID
+    $groupedAppraisals = $appraisals->groupBy('employee_id');
+
+    // Initialize an empty array to store statuses for each employee
+    $statuses = [];
+
+    foreach ($groupedAppraisals as $employeeId => $employeeAppraisals) {
+      $status = 'Complete'; // Assume "complete" by default for this employee
+
+      // Check each appraisal for the employee
+      foreach ($employeeAppraisals as $appraisal) {
+        if ($appraisal->date_submitted === null) {
+          // If any appraisal has a null date_submitted, set status to "pending" for this employee
+          $status = 'Pending';
+          break; // No need to continue checking for this employee
+        }
+      }
+
+      // Add the status to the array for this employee
+      $statuses[$employeeId] = $status;
+    }
+
+    return $statuses;
+  }
 }

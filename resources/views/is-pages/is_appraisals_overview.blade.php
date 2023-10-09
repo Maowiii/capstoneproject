@@ -132,7 +132,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="SummaryModal" data-bs-backdrop="static">
+
+    <div class="modal fade modal-md" id="SummaryModal" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -154,16 +155,23 @@
                         <tbody id="summary_score_body">
                             <tr>
                                 <td>Self-Evaluation</td>
+                                <td id="SE_rating"></td>
+                                <td id="SE_wtotal"></td><td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Internal Customer 1</td>
-                            </tr>
+                                <td id="IC1_rating"></td>
+                                <td id="IC1_wtotal"></td>                            </tr>
                             <tr>
                                 <td>Internal Customer 2</td>
-                            </tr>
+                                <td id="IC2_rating"></td>
+                                <td id="IC2_wtotal"></td>                            </tr>
                             <tr>
                                 <td>Immediate Superior</td>
-                            </tr>
+                                <td id="IS_rating"></td>
+                                <td id="IS_wtotal"></td>                            </tr>
                         </tbody>
                     </table>
                     <h5>Final Ratings</h5>
@@ -179,16 +187,33 @@
                         <tbody id="summary_score_body">
                             <tr>
                                 <td>Behavioral Competencies</td>
+                                <td id="BC_rating">40%</td>
+                                <td id="BC_wtotal"></td>                            </tr>
                             </tr>
                             <tr>
                                 <td>Key Results Area</td>
+                                <td id="KRA_rating">60%</td>
+                                <td id="KRA_wtotal"></td>                            </tr>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>Final Score</td>
+                                <td id=""></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Description</td>
+                                <td id=""></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    
     <script>
         $(document).ready(function() {
             loadTableData();
@@ -355,18 +380,25 @@
                                 }
                             });
 
+                            var status = response.status[appraisee.employee_id];
+
                             newRow.append(
                                 $('<td>').append(viewLink),
                                 $('<td>').append($('<div>').append(ic1Link)),
                                 $('<td>').append($('<div>').append(ic2Link)),
-                                $('<td>').text('Pending'),
+                                $('<td>').text(status),
                                 $('<td>').append($('<div>').append(AppraiseLink)),
-                                $('<td>').append(
-                                    summaryButton) // Add the "Summary" button to the row
+                                $('<td>').append(summaryButton) 
                             );
 
                             $('#IS_appraisals_table_body').append(newRow);
+
+                            var finalScore = response.final_score[appraisee.employee_id];
+                            var finalGradeTd = $('#SummaryModal').find('#BC_wtotal');
+                            finalGradeTd.text(finalScore);
+
                         });
+
                         // Handle pagination
                         var totalPage = response.appraisee.last_page;
                         var currentPage = response.appraisee.current_page;

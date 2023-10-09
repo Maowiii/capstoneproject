@@ -23,14 +23,16 @@
                         Rules and Regulations, we are detailing here the processing of the data you will provide to us.<br>
 
                         <br>The following are the personal data that the we may need to collect:
-                        Full Name, Department, Adamson Email. <br>Personal data collected shall be stored in the
-                        <!-- <<identify where the data will be stored>>  -->
-                        for a period of three years. Upon expiration of such period, all personal data
+                        <br><i>Full Name, Adamson Email, Employee ID, Department</i>
+
+                        <br><br>Personal data collected shall be stored in the <i>system's database</i>
+                        for the duration of the employee's tenure with the organization. Upon expiration of such period, all
+                        personal data
                         shall be disposed in a secure manner that will forbids further processing, unauthorized disclosure
                         and editing.<br><br>
 
                         The HR Department of Adamson University shall implement reasonable and appropriate
-                        organizational, physical, and technical security measures to protect your personal data.<br>
+                        organizational, physical, and technical security measures to protect your personal data.<br><br>
                         Only authorized personnel shall have access to the data collected and processed.<br>
 
                         <br><b>Under RA 10173</b>, the following are some of the rights the data subject may exercise,
@@ -47,13 +49,13 @@
 
                         <br>By participating, you agreed to the following statements :<br>
 
-                        <br>a. Understand that there is no risk involved in participating in this endeavor.<br>
+                        <br><i>a. Understand that there is no risk involved in participating in this endeavor.<br>
 
-                        <br>b. The results of this data gathering will help the HRDMO of Adamson University monitor the
-                        improvements of employees per department.<br>
+                            <br>b. The results of this data gathering will help the HRDMO of Adamson University monitor the
+                            improvements of employees per department.<br>
 
 
-                        <br><i>c. I understand that I will not receive any form of remuneration or compensation for my
+                            <br>c. I understand that I will not receive any form of remuneration or compensation for my
                             participation.<br>
 
                             <br>d. I also understand that my participation in this survey is purely voluntary and that I
@@ -63,12 +65,13 @@
                             <br>e. I understand that my involvement in the survey is only once.<br>
 
                             <br>f. All my personal data will
-                            be kept strictly confidential and will be revealed only upon my request and consent.<br>
+                            be kept strictly confidential and will be revealed only upon my request and consent.<br></i>
 
-                            <br>To exercise data subjects right and for data privacy concerns or inquiries, please
-                            communicate with the Human Resources Department and Management Office of Adamson University
-                            through email:<a href="mailto:hrmdo@adamson.edu.ph">hrmdo@adamson.edu.ph</a> or contact no:
-                        </i><br>
+                        <br>To exercise data subjects right and for data privacy concerns or inquiries, please
+                        communicate with the Human Resources Department and Management Office of Adamson University
+                        through <i>HRDMO Adamson Email:<a href="mailto:hrmdo@adamson.edu.ph"> hrmdo@adamson.edu.ph</a> or
+                            Contact no:</i>
+                        <br>
                         <!-- <<contact details of the person in-charge>> -->
 
                         <br>Thank you for your participation.<br>
@@ -77,16 +80,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                                                                                            <br>I give consent to the retention of my personal data. (Y/N)<br>
+                                                                                                                <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                                                                                            <br>I give consent to the sharing of my data. (Y/N)<br>
+                                                                                                                <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                                                                                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                                                                                        Agreement.<br>
-                                                                                                        
-                                                                                                        <br>By clicking Yes, you consent that you are willing to answer the questions
-                                                                                                        in this survey and you answered YES to the three questions above.
-                                                                                                        (Y/N) -->
+                                                                                                                <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                                                                                                            Agreement.<br>
+                                                                                                            
+                                                                                                            <br>By clicking Yes, you consent that you are willing to answer the questions
+                                                                                                            in this survey and you answered YES to the three questions above.
+                                                                                                            (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -807,7 +810,7 @@
                 $('#closeModalMessage').show();
                 $('#closeModalMessage').text(
                     "You are about to close the modal. If you close it, you won't be able to proceed with\nthe appraisal."
-                    );
+                );
                 $('#closeModalMessage').addClass('alert alert-danger'); // Add alert styling
 
                 confirmationMode = true;
