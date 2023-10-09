@@ -10,6 +10,10 @@
             <h4>Total Permanent Employees:</h4>
             <p>-</p>
         </div>
+        <div class="content-container text-middle" id="total-appraisals-container">
+            <h4>Appraisals Completed:</h4>
+            <p>-</p>
+        </div>
         <div class="content-container text-middle" id="avg-score-container">
             <h4>Average Total Score:</h4>
         </div>
@@ -81,7 +85,7 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
     <!-- Social Responsibility -->
@@ -98,7 +102,7 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
     <!-- Solidarity -->
@@ -115,34 +119,38 @@
             </table>
         </div>
         <div class="content-container">
-            <h4>TEST</h4>
+            <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
 
-    <!-- Internal Customers -->
-    <div class="d-flex gap-3">
-        <div class="content-container">
-            <h2>Internal Customers:</h2>
-            <table class="table table-sm mb-3" id="ic_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="floating-container">
-            <div class="fixed-bottom p-4">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-secondary btn-circle" id="print-button">
-                        <i class='bx bxs-printer'></i>
-                    </button>
+        <!-- Internal Customers -->
+        <div class="d-flex gap-3">
+            <div class="content-container">
+                <h2>Internal Customers:</h2>
+                <table class="table table-sm mb-3" id="ic_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="floating-container">
+                <div class="fixed-bottom p-4">
+                    <div class="d-flex justify-content-end">
+                        <div class="d-flex flex-column">
+                            <button class="btn btn-primary btn-circle mb-2" id="download-button">
+                                <i class='bx bxs-download'></i>
+                            </button>
+                            <button class="btn btn-secondary btn-circle" id="print-button">
+                                <i class='bx bxs-printer'></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     <script>
         function printReport() {
         window.print(); // Open the browser's print dialog
@@ -183,7 +191,12 @@
 
                         $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
                             '</p>');
-                    } else {}
+
+                        $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
+                            .totalAppraisals + '</p>');
+                    } else {
+                        console.log('Load Cards failed.');
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", status, error);
@@ -231,9 +244,17 @@
                             },
                         ];
 
-                        const pointSystemCanvas = $('#point_system_bar_chart');
+                        const pointSystemBarChart = $('#point_system_bar_chart');
+                        var canvas = pointSystemBarChart[0];
 
-                        new Chart(pointSystemCanvas, {
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(pointSystemBarChart, {
                             type: 'bar',
                             data: {
                                 labels: categories.map(category => category.label),
@@ -278,8 +299,63 @@
                                 table.append(row);
                             }
                         });
-                    }
+                    } else {
+                        var outstandingTable = $('#outstanding_table tbody');
+                        var verySatisfactoryTable = $('#verySatisfactory_table tbody');
+                        var satisfactoryTable = $('#satisfactory_table tbody');
+                        var fairTable = $('#fair_table tbody');
+                        var poorTable = $('#poor_table tbody');
 
+                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
+
+                        outstandingTable.empty();
+                        verySatisfactoryTable.empty();
+                        satisfactoryTable.empty();
+                        fairTable.empty();
+                        poorTable.empty();
+
+                        outstandingTable.append(placeholderRow.clone());
+                        verySatisfactoryTable.append(placeholderRow.clone());
+                        satisfactoryTable.append(placeholderRow.clone());
+                        fairTable.append(placeholderRow.clone());
+                        poorTable.append(placeholderRow.clone());
+
+                        const pointSystemBarChart = $('#point_system_bar_chart');
+                        var canvas = pointSystemBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(pointSystemBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Outstanding', 'Very Satisfactory', 'Satisfactory', 'Fair',
+                                    'Poor'
+                                ],
+                                datasets: [{
+                                    label: "Number of employee per category",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", status, error);
@@ -325,6 +401,14 @@
                             });
 
                             var icBarChart = $('#ic_bar_chart');
+                            var canvas = icBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
 
                             new Chart(icBarChart, {
                                 type: 'bar',
@@ -351,8 +435,48 @@
                             });
 
                         }
-                    }
+                    } else {
+                        var row = $(
+                            '<tr><td colspan="3"><p>-</p></td></tr>'
+                        );
+                        var icTable = $('#ic_table tbody');
+                        icTable.empty();
+                        icTable.append(row);
 
+                        const icBarChart = $('#ic_bar_chart');
+                        var canvas = icBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(icBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
                 }
             });
         }
@@ -380,9 +504,51 @@
                                     .question_order));
                                 row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td>").text('-'));
+                                row.append($("<td>").text(item.average_score));
 
                                 sidTable.append(row);
+                            });
+
+                            var averageScores = response.sid.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.sid.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var sidBarChart = $('#sid_bar_chart');
+                            var canvas = sidBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(sidBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
                             });
                         }
 
@@ -396,8 +562,50 @@
                                     .question_order));
                                 row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td>").text('-'));
+                                row.append($("<td>").text(item.average_score));
                                 srTable.append(row);
+                            });
+
+                            var averageScores = response.sr.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.sr.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var srBarChart = $('#sr_bar_chart');
+                            var canvas = srBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(srBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
                             });
                         }
 
@@ -411,10 +619,168 @@
                                     .question_order));
                                 row.append($("<td class='text-start'>").text(item
                                     .question));
-                                row.append($("<td>").text('-'));
+                                row.append($("<td>").text(item.average_score));
                                 sTable.append(row);
                             });
+
+                            var averageScores = response.s.map(function(item) {
+                                return item.average_score;
+                            });
+
+                            var questionLabels = response.s.map(function(item) {
+                                return 'Q' + item.question_order;
+                            });
+
+                            var sBarChart = $('#s_bar_chart');
+                            var canvas = sBarChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(sBarChart, {
+                                type: 'bar',
+                                data: {
+                                    labels: questionLabels,
+                                    datasets: [{
+                                        label: 'Average Score',
+                                        data: averageScores,
+                                        backgroundColor: '#c3d7f1',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
                         }
+                    } else {
+                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
+
+                        var sidTable = $('#sid_table tbody');
+                        var srTable = $('#sr_table tbody');
+                        var sTable = $('#s_table tbody');
+
+                        sidTable.empty();
+                        srTable.empty();
+                        sTable.empty();
+
+                        sidTable.append(placeholderRow.clone());
+                        srTable.append(placeholderRow.clone());
+                        sTable.append(placeholderRow.clone());
+
+                        const sidBarChart = $('#sid_bar_chart');
+                        var canvas = sidBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(sidBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        const srBarChart = $('#sr_bar_chart');
+                        var canvas = srBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(srBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        const sBarChart = $('#s_bar_chart');
+                        var canvas = sBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        new Chart(sBarChart, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Questions'],
+                                datasets: [{
+                                    label: "Average score per question",
+                                    data: [0, 0, 0, 0, 0],
+                                    backgroundColor: '#c3d7f1',
+                                    borderWidth: 1,
+                                }],
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 1,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
                     }
                 }
             })
