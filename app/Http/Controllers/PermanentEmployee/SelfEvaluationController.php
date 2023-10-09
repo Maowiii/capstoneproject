@@ -129,7 +129,6 @@ class SelfEvaluationController extends Controller
       return view('auth.login');
     }
 
-    // Retrieve the appraisal records for the given employee_id and evaluator_id
     $appraisals = Appraisals::where('appraisal_id', $appraisal_id)->get();
 
     // Initialize variables for appraisee and evaluator data
@@ -147,7 +146,11 @@ class SelfEvaluationController extends Controller
         $evaluator = $appraisee;
         $appraisal_Id = $appraisal->appraisal_id;
         return view('pe-pages.pe_self_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
-      } elseif ($appraisalType === 'internal customer 1' || $appraisalType === 'internal customer 2') {
+      } elseif ($appraisalType === 'internal customer 1') {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+        return view('pe-pages.pe_ic_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
+      } elseif ($appraisalType === 'internal customer 2') {
         $evaluator = Employees::find($appraisal->evaluator_id);
         $appraisal_Id = $appraisal->appraisal_id;
         return view('pe-pages.pe_ic_evaluation', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);

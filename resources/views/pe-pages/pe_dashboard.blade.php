@@ -18,10 +18,10 @@
             <h4>Notifications:</h4>
             <ul class="list-group" id="notifications"></ul>
         </div>
-        <div class="dashboard-container" id="chart">
+        <!--<div class="dashboard-container" id="chart">
             <h4>Key Results Area:</h4>
             <canvas id="donutChart"></canvas>
-        </div>
+        </div>-->
     </div>
 
     <!-- Modal -->

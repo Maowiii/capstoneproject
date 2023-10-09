@@ -177,7 +177,6 @@
                         <th class='large-column'>Objectives</th>
                         <th class='large-column'>Performance Indicators</th>
                         <th class='large-column'>Actual Results</th>
-
                     </tr>
                 </thead>
             </table>

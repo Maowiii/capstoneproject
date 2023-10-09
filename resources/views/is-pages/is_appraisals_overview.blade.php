@@ -226,21 +226,8 @@
                             console.log(appraisals); // Log the original appraisals data
 
                             var employeeAppraisals = appraisals.filter(function(appraisal) {
-                                console.log(appraisee.first_name + ' ' + appraisee.last_name +
-                                    ': ' + (appraisal.employee_id === appraisee.employee_id)
-                                );
-                                console.log(
-                                    `Comparing appraisee ID: ${appraisee.employee_id} with employee_id ID: ${appraisal.employee_id}`
-                                );
-
-                                console.log(`Appraisal ID: ${appraisal.appraisal_id}`);
-
                                 return appraisal.employee_id === appraisee.employee_id;
                             });
-
-                            console.log('After filtering:');
-                            console.log(employeeAppraisals); // Log the filtered appraisals data
-
 
                             var viewLink = null;
                             var ic1Link = null;
@@ -287,10 +274,20 @@
 
                                             });
                                     } else {
+                                        var url =
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
+                                            .appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(
+                                            appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
+                                            .first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(
+                                            appraisal.employee.department.department_name);
+
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
+                                            .attr('href', url.replace(':appraisal_id', appraisal
+                                                .appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
                                     }
@@ -322,22 +319,34 @@
                                                 loadEmployeeData(employeeId);
                                             });
                                     } else {
+                                        var url =
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
+                                            .appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(
+                                            appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
+                                            .first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(
+                                            appraisal.employee.department.department_name);
+
                                         ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
+                                            .attr('href', url.replace(':appraisal_id', appraisal
+                                                .appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
-                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                        AppraiseLink = $('<a>').addClass(
+                                                'btn btn-outline-primary')
                                             .attr('href',
                                                 `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
                                     } else {
-                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                        AppraiseLink = $('<a>').addClass(
+                                                'btn btn-outline-primary')
                                             .attr('href',
                                                 `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
