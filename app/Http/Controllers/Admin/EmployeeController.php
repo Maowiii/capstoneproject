@@ -119,12 +119,14 @@ class EmployeeController extends Controller
 
       $account_id = $account->account_id;
 
+      $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
+
       $employee = Employees::create([
         'account_id' => $account_id,
         'employee_number' => $request->input('employee_number'),
         'first_name' => $request->input('first_name'),
         'last_name' => $request->input('last_name'),
-        'department_id' => $request->input('department')
+        'department_id' => $department_id
       ]);
 
       $activeYear = EvalYear::where('status', 'active')->first();
@@ -196,12 +198,13 @@ class EmployeeController extends Controller
       return view('admin-pages.employee_table')->with('departments', $departments);
     } catch (\Exception $e) {
       $departments = Departments::all();
-
+      
       // Log error message
       Log::error('Error importing Excel file: ' . $e->getMessage());
       Log::error('Exception Line: ' . $e->getLine());
       Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-      return view('admin-pages.employee_table')->with('departments', $departments);
+
+      return redirect()->back()->withErrors([$e->getMessage()]);
     }
   }
 
@@ -264,7 +267,7 @@ class EmployeeController extends Controller
     $employee->department_id = $request->input('department');
     $employee->save();
 
-    $account = Accounts::where('account_id', $employeeId)->first();
+    $account = Accounts::where('account_id', $employee->account_id)->first();
 
     if (!$account) {
       return response()->json(['success' => false, 'error' => 'Account not found']);

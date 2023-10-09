@@ -159,116 +159,66 @@
                                     // Self Evaluation
                                     if (appraisal.evaluation_type ===
                                         'self evaluation') {
-                                        if (appraisal.date_submitted !== null) {
-                                            var url =
-                                                "{{ route('ad.viewSelfEvaluationForm') }}";
-                                            url += "?appraisal_id=" +
-                                                encodeURIComponent(appraisal
-                                                    .appraisal_id);
-                                            url += "&appraisee_account_id=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.account_id);
-                                            url += "&appraisee_name=" +
-                                                encodeURIComponent(employee
-                                                    .first_name + ' ' + employee
-                                                    .last_name);
-                                            url += "&appraisee_department=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.department
-                                                    .department_name);
+                                            if (appraisal.date_submitted !== null) {
+                                                var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                                url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                                url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                                url += "&appraisee_name=" + encodeURIComponent(employee.first_name + ' ' + employee.last_name);
+                                                url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
 
-                                            cell.append(
-                                                $("<a>")
-                                                .attr("href", url)
-                                                .addClass("appraisal-link")
-                                                .html(
-                                                    '<i class="bx bx-check-circle"></i>'
-                                                )
-                                            );
-                                        } else {
-                                            var url =
-                                                "{{ route('ad.viewSelfEvaluationForm') }}";
-                                            url += "?appraisal_id=" +
-                                                encodeURIComponent(appraisal
-                                                    .appraisal_id);
-                                            url += "&appraisee_account_id=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.account_id);
-                                            url += "&appraisee_name=" +
-                                                encodeURIComponent(employee
-                                                    .first_name + ' ' + employee
-                                                    .last_name);
-                                            url += "&appraisee_department=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.department
-                                                    .department_name);
+                                                var link = $("<a>")
+                                                    .attr("href", url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                    .addClass("appraisal-link")
+                                                    .html('<i class="bx bx-check-circle"></i>');
 
-                                            cell.append(
-                                                $("<a>")
-                                                .attr("href", url)
-                                                .addClass("appraisal-link")
-                                                .html(
-                                                    '<i class="bx bx-x-circle"></i>'
-                                                )
-                                            );
-                                        }
+                                                cell.append(link);
+                                            }
+                                            else {
+                                                var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                                url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                                url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                                url += "&appraisee_name=" + encodeURIComponent(employee.first_name + ' ' + employee.last_name);
+                                                url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
+
+                                                var link = $("<a>")
+                                                    .attr("href", url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                    .addClass("appraisal-link")
+                                                    .html('<i class="bx bx-x-circle"></i>');
+
+                                                cell.append(link);
+                                            }
                                     }
                                     // IS Evaluation
                                     else if (appraisal.evaluation_type ===
                                         'is evaluation') {
-                                        if (appraisal.date_submitted !== null) {
-                                            var url =
-                                                "{{ route('ad.viewSelfEvaluationForm') }}";
-                                            url += "?appraisal_id=" +
-                                                encodeURIComponent(appraisal
-                                                    .appraisal_id);
-                                            url += "&appraisee_account_id=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.account_id);
-                                            url += "&appraisee_name=" +
-                                                encodeURIComponent(employee
-                                                    .first_name + ' ' + employee
-                                                    .last_name);
-                                            url += "&appraisee_department=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.department
-                                                    .department_name);
+                                            if (appraisal.date_submitted !== null) {
+                                                var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                                url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                                url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                                url += "&appraisee_name=" + encodeURIComponent(employee.first_name + ' ' + employee.last_name);
+                                                url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
 
-                                            cell.append(
-                                                $("<a>")
-                                                .attr("href", url)
-                                                .addClass("appraisal-link")
-                                                .html(
-                                                    '<i class="bx bx-check-circle"></i>'
-                                                )
-                                            );
-                                        } else {
-                                            var url =
-                                                "{{ route('ad.viewSelfEvaluationForm') }}";
-                                            url += "?appraisal_id=" +
-                                                encodeURIComponent(appraisal
-                                                    .appraisal_id);
-                                            url += "&appraisee_account_id=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.account_id);
-                                            url += "&appraisee_name=" +
-                                                encodeURIComponent(employee
-                                                    .first_name + ' ' + employee
-                                                    .last_name);
-                                            url += "&appraisee_department=" +
-                                                encodeURIComponent(
-                                                    appraisal.employee.department
-                                                    .department_name);
+                                                var link = $("<a>")
+                                                    .attr("href", url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                    .addClass("appraisal-link")
+                                                    .html('<i class="bx bx-check-circle"></i>');
 
-                                            cell.append(
-                                                $("<a>")
-                                                .attr("href", url)
-                                                .addClass("appraisal-link")
-                                                .html(
-                                                    '<i class="bx bx-x-circle"></i>'
-                                                )
-                                            );
-                                        }
+                                                cell.append(link);
+                                            }
+                                            else {
+                                                var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                                url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                                url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                                url += "&appraisee_name=" + encodeURIComponent(employee.first_name + ' ' + employee.last_name);
+                                                url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
+
+                                                var link = $("<a>")
+                                                    .attr("href", url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                    .addClass("appraisal-link")
+                                                    .html('<i class="bx bx-x-circle"></i>');
+
+                                                cell.append(link);
+                                            }
                                         // Internal Customer
                                     } else if (appraisal.evaluation_type ===
                                         'internal customer 1') {

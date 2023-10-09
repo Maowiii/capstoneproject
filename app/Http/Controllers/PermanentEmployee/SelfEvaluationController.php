@@ -139,9 +139,7 @@ class SelfEvaluationController extends Controller
 
     // Loop through the appraisal records to find the correct appraisal type and evaluator data
     foreach ($appraisals as $appraisal) {
-      // Fetch the appraisee data based on the $employee_id
       $appraisee = Employees::find($appraisal->employee_id);
-      // Determine the appraisal type
       $appraisalType = $appraisal->evaluation_type;
 
       // Handle different appraisal types
@@ -187,7 +185,10 @@ class SelfEvaluationController extends Controller
       if ($appraisalType === 'self evaluation') {
         $evaluator = $appraisee;
         $appraisal_Id = $appraisal->appraisal_id;
-      } elseif (str_starts_with($appraisalType, 'internal customer')) {
+      } elseif ($appraisalType === 'internal customer 1') {
+        $evaluator = Employees::find($appraisal->evaluator_id);
+        $appraisal_Id = $appraisal->appraisal_id;
+      } elseif ($appraisalType === 'internal customer 2') {
         $evaluator = Employees::find($appraisal->evaluator_id);
         $appraisal_Id = $appraisal->appraisal_id;
       } elseif ($appraisalType === 'is evaluation') {

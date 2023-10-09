@@ -278,7 +278,7 @@
                         <td class='text-right'>Overall Behavioral Competencies Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
+                                <input id="BHTotal" class="small-column form-control total-frequency text-center" type="text"
                                     readonly>
                             </div>
                         </td>
@@ -389,6 +389,7 @@
                     </tr>
                 </tfoot>
             </table>
+            
         </div>
         <div class="content-container">
             <h2>III. Future Performance Agenda</h2>
@@ -677,25 +678,30 @@
 
             $(document).on('change', '#SR_table input[type="radio"]', function() {
                 updateFrequencyCounter('SR_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#S_table input[type="radio"]', function() {
                 updateFrequencyCounter('S_table');
+                updateBHTotal();
             });
 
             $(document).on('change', '#KRA_table_body input[type="radio"]', function() {
                 updateWeightedTotal();
+                updateBHTotal();
             });
 
             loadTableData();
-            $('input[type="radio"]').prop('disabled', true);
-            $('textarea').prop('disabled', true);
 
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
 
+            updateBHTotal();
             updateWeightedTotal();
+
+            $('input[type="radio"]').prop('disabled', true);
+            $('textarea').prop('disabled', true);
         });
 
         function loadTableData() {
@@ -1052,9 +1058,6 @@
 
                             tbody.append(row);
 
-                            row.find('input[type="radio"][name^="KRA[' + kraID + '][' +
-                                    {{ $appraisalId }} + '][KRA_performance_level]"]')
-                                .trigger('change');
                         });
                         updateWeightedTotal();
                     }
@@ -1400,11 +1403,6 @@
                     false)
             ).appendTo(wparow);
 
-            $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
-                .text('Delete')
-            ).appendTo(wparow);
-
             wpatbody.append(wparow);
         }
 
@@ -1441,14 +1439,8 @@
                     false)
             ).appendTo(ldprow);
 
-            $('<td>').addClass('td-action').append(
-                $('<button>').addClass('btn btn-danger delete-btn align-middle')
-                .text('Delete')
-            ).appendTo(ldprow);
-
             ldptbody.append(ldprow);
         }
-
 
         function updateFrequencyCounter(tableId) {
             var frequencyCounters = [0, 0, 0, 0, 0];
@@ -1472,6 +1464,29 @@
 
             var weightedTotal = questionCount > 0 ? (total / questionCount).toFixed(2) : 0;
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
+        }
+
+        function updateBHTotal() {
+            var BHtotal = 0;
+            var BHquestionCount = 0;
+
+            $('#SID_table tbody tr, #SR_table tbody tr, #S_table tbody tr').each(function() {
+                // Count the rows
+                BHquestionCount++;
+
+                var selectedRadio = $(this).find('input[type="radio"]:checked');
+                if (selectedRadio.length > 0) {
+                    var value = parseFloat(selectedRadio.val());
+                    if (!isNaN(value)) {
+                        BHtotal += value;
+                    }
+                }
+            });
+
+            // Ensure questionCount is greater than zero to avoid division by zero
+            var BHOveralltotal = BHquestionCount > 0 ? BHtotal / BHquestionCount : 0;
+
+            $('#BHTotal').val(BHOveralltotal.toFixed(2));
         }
 
         function updateWeightedTotal() {

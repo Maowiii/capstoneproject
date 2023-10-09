@@ -15,9 +15,24 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
 {
+    private $requiredColumns = [
+        'employee_number',
+        'first_name',
+        'last_name',
+        'email',
+        'type',
+        'department',
+    ];
+
     public function model(array $row)
     {
         try {
+            $missingColumns = $this->getMissingColumns($row);
+
+            if (!empty($missingColumns)) {
+                throw new \Exception('Uploaded Excel is missing the following required columns: ' . implode(', ', $missingColumns));
+            }
+
             if (
                 empty($row['employee_number']) &&
                 empty($row['first_name']) &&
@@ -110,10 +125,26 @@ class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
             Log::error('Error importing employee: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
             Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+
         }
     }
     public function uniqueBy()
     {
         return 'employee_number';
+    }
+
+    private function getMissingColumns(array $row)
+    {
+        // Find missing required columns in the $row array
+        $missingColumns = [];
+
+        foreach ($this->requiredColumns as $column) {
+            if (!array_key_exists($column, $row)) {
+                $missingColumns[] = $column;
+            }
+        }
+
+        return $missingColumns;
     }
 }

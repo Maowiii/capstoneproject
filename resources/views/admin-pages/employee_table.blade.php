@@ -5,6 +5,16 @@
 @endsection
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            <!-- Display each error message -->
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="content-container">
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
@@ -403,36 +413,15 @@
                 });
             });
 
-            $(document).on('click', '.edit-btn', function() {
-                var importStatusDiv = $('#import-status');
-                $.ajax({
-                    url: '{{ route('import-new-employee') }}',
-                    method: 'POST',
-                    data: new FormData($('#your-upload-form')[
-                        0]), // Replace 'your-upload-form' with the actual form ID
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            importStatusDiv.append('<p>' + response.message + '</p>');
-                        } else {
-                            importStatusDiv.append('<p class="text-danger">' + response
-                                .message + '</p>');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        importStatusDiv.append('<p class="text-danger">Error: ' + error +
-                            '</p>');
-                    },
-                    complete: function() {
-                        // Perform any additional actions when the import is complete
-                    }
-                });
-            });
-
             $(document).on('click', '#add-user-modal-btn', function() {
                 $('#addUserModalTitle').text('Add New User');
                 $('#add-user-btn').removeClass('d-none');
+
+                $('#addUserModal').find('input[type="text"]').val('');
+                $('#addUserModal').find('input[type="email"]').val('');
+                $('#addUserModal').find('input[type="number"]').val('');
+                $('#addUserModal').find('select').val('');
+                $('#addUserModal').find('.text-danger').hide();
             });
 
             $(document).on('click', '#save-user-btn', function() {
@@ -464,9 +453,12 @@
                         if (response.success) {
                             $('#addUserModalTitle').text('Add New User')
                             $('#addUserModal').modal('hide');
+                            $('#addUserModal').hide();
                             loadTableData();
                         } else {
                             console.log('Error: ' + response.error);
+
+                            $('#add-user-btn').removeClass('d-none');
                         }
                     },
                     error: function(xhr, status, error) {

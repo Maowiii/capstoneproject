@@ -919,6 +919,7 @@
                 });
             });
 
+            ///////////////////////////////////// Delete  code///////////////////////////////////////////////////
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
@@ -1632,7 +1633,7 @@
                         }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-
+                        
                         $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
