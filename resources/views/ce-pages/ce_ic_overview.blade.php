@@ -52,7 +52,7 @@
                         var tableBody = $('#ic_overview_body');
                         tableBody.empty();
 
-                        $.each(data, function(index, assignment) {
+                        $.each(data.assignments.data, function(index, assignment) {
                             var row = $('<tr>').addClass('align-middle');
 
                             row.append(
@@ -75,18 +75,16 @@
                                         window.location.href =
                                             "{{ route('ce.viewICAppraisalForm') }}" +
                                             "?appraisal_id=" + encodeURIComponent(
-                                                assignment
-                                                .appraisal_id) +
+                                                assignment.appraisal_id) +
                                             "&appraisee_account_id=" +
-                                            encodeURIComponent(
-                                                assignment.employee.account_id) +
+                                            encodeURIComponent(assignment.employee
+                                                .account_id) +
                                             "&appraisee_name=" + encodeURIComponent(
                                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
+                                                ) +
                                             "&appraisee_department=" +
-                                            encodeURIComponent(
-                                                assignment.employee.department
-                                                .department_name);
+                                            encodeURIComponent(assignment.employee
+                                                .department.department_name);
                                     })
                                 ) :
                                 $('<td>').append(
@@ -97,18 +95,16 @@
                                         window.location.href =
                                             "{{ route('ce.viewICAppraisalForm') }}" +
                                             "?appraisal_id=" + encodeURIComponent(
-                                                assignment
-                                                .appraisal_id) +
+                                                assignment.appraisal_id) +
                                             "&appraisee_account_id=" +
-                                            encodeURIComponent(
-                                                assignment.employee.account_id) +
+                                            encodeURIComponent(assignment.employee
+                                                .account_id) +
                                             "&appraisee_name=" + encodeURIComponent(
                                                 `${assignment.employee.first_name} ${assignment.employee.last_name}`
-                                            ) +
+                                                ) +
                                             "&appraisee_department=" +
-                                            encodeURIComponent(
-                                                assignment.employee.department
-                                                .department_name);
+                                            encodeURIComponent(assignment.employee
+                                                .department.department_name);
                                     })
                                 )
                             );
@@ -122,7 +118,6 @@
                         );
                         tableBody.append(row);
                     }
-
                 },
                 error: function(xhr, status, error) {
                     console.log(error);

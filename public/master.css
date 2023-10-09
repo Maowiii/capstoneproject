@@ -463,7 +463,10 @@ textarea {
     position: fixed;
     bottom: 20px;
     right: 20px; 
-    z-index: 95!important; 
+    z-index: 99!important; 
+}
+.fixed-bottom{
+    z-index: 99!important;
 }
 .fixed-bottom{
     z-index: 95!important;

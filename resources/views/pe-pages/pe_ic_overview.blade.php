@@ -28,7 +28,7 @@
     <script>
         $(document).ready(function() {
             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            var currentPage = 1; // Initialize the current page
+            var currentPage = 1;
 
             function loadICAssignData(page = 1) {
                 $.ajax({
@@ -36,7 +36,7 @@
                     type: "GET",
                     dataType: "json",
                     data: {
-                        page: page // Pass the current page number
+                        page: page
                     },
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
@@ -56,7 +56,7 @@
                                     ),
                                     $('<td>').text(assignment.employee.department
                                         .department_name
-                                    ), // Access department property within employee
+                                    ),
                                     $('<td>').text(
                                         assignment.date_submitted !== null ? 'Submitted' :
                                         'Pending'
@@ -69,7 +69,7 @@
                                         .addClass('btn btn-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "/pe-internal-customers/appraisalForm" +
+                                                "{{ route('pe.appraisalICForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +
@@ -94,7 +94,7 @@
                                         .addClass('btn btn-outline-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "/pe-internal-customers/appraisalForm" +
+                                                "{{ route('pe.appraisalICForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +
