@@ -142,11 +142,7 @@
         <div class="floating-container">
             <div class="fixed-bottom p-4">
                 <div class="d-flex justify-content-end">
-                    <div class="d-flex flex-column">
-                        <button class="btn btn-primary btn-circle mb-2" id="download-button">
-                            <i class='bx bxs-download'></i>
-                        </button>
-                        <button class="btn btn-secondary btn-circle" id="print-button">
+                        <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
                             <i class='bx bxs-printer'></i>
                         </button>
                     </div>

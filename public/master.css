@@ -468,9 +468,6 @@ textarea {
 .fixed-bottom{
     z-index: 99!important;
 }
-.fixed-bottom{
-    z-index: 95!important;
-}
 /* MODALS */
 
 .row-checkbox {
