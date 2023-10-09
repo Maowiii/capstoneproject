@@ -139,6 +139,7 @@
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <h5>Behavioral Competencies</h5>
                     <table class='table table-bordered'>
@@ -182,6 +183,8 @@
                             <tr>
                                 <td>Key Results Area</td>
                             </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -220,19 +223,23 @@
                                 $('<td>').text(appraisee.first_name + ' ' + appraisee.last_name)
                             );
                             console.log('Before filtering:');
-                            console.log(appraisals);  // Log the original appraisals data
+                            console.log(appraisals); // Log the original appraisals data
 
                             var employeeAppraisals = appraisals.filter(function(appraisal) {
-                                console.log(appraisee.first_name + ' ' + appraisee.last_name + ': ' + (appraisal.employee_id === appraisee.employee_id));
-                                console.log(`Comparing appraisee ID: ${appraisee.employee_id} with employee_id ID: ${appraisal.employee_id}`);
-                                
+                                console.log(appraisee.first_name + ' ' + appraisee.last_name +
+                                    ': ' + (appraisal.employee_id === appraisee.employee_id)
+                                );
+                                console.log(
+                                    `Comparing appraisee ID: ${appraisee.employee_id} with employee_id ID: ${appraisal.employee_id}`
+                                );
+
                                 console.log(`Appraisal ID: ${appraisal.appraisal_id}`);
-                                
+
                                 return appraisal.employee_id === appraisee.employee_id;
                             });
 
                             console.log('After filtering:');
-                            console.log(employeeAppraisals);  // Log the filtered appraisals data
+                            console.log(employeeAppraisals); // Log the filtered appraisals data
 
 
                             var viewLink = null;
@@ -351,28 +358,27 @@
 
                             $('#IS_appraisals_table_body').append(newRow);
                         });
-
-                            // Handle pagination
-                            var totalPage = response.appraisee.last_page;
-                            var currentPage = response.appraisee.current_page;
-                            var paginationLinks = response.appraisals.links;
-                            $('#is_pagination').empty();
-                            for (var totalPageCounter = 1; totalPageCounter <=
-                                totalPage; totalPageCounter++) {
-                                (function(pageCounter) {
-                                    var pageItem = $('<li>').addClass('page-item');
-                                    if (pageCounter === currentPage) {
-                                        pageItem.addClass('active');
-                                    }
-                                    var pageButton = $('<button>').addClass('page-link').text(
-                                        pageCounter);
-                                    pageButton.click(function() {
-                                        loadTableData(pageCounter);
-                                    });
-                                    pageItem.append(pageButton);
-                                    $('#is_pagination').append(pageItem);
-                                })(totalPageCounter);
-                            }
+                        // Handle pagination
+                        var totalPage = response.appraisee.last_page;
+                        var currentPage = response.appraisee.current_page;
+                        var paginationLinks = response.appraisals.links;
+                        $('#is_pagination').empty();
+                        for (var totalPageCounter = 1; totalPageCounter <=
+                            totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(
+                                    pageCounter);
+                                pageButton.click(function() {
+                                    loadTableData(pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#is_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
                     } else {
                         console.log(response.error);
 
@@ -455,45 +461,45 @@
                                 $('.emp_modal').append(newRow);
                             }
                         }
-                             // Handle pagination
-                            var totalPage = response.employees.last_page;
-                            var currentPage = response.employees.current_page;
+                        // Handle pagination
+                        var totalPage = response.employees.last_page;
+                        var currentPage = response.employees.current_page;
 
-                            $('#ismodal1_pagination').empty();
-                            for (var totalPageCounter = 1; totalPageCounter <=
-                                totalPage; totalPageCounter++) {
-                                (function(pageCounter) {
-                                    var pageItem = $('<li>').addClass('page-item');
-                                    if (pageCounter === currentPage) {
-                                        pageItem.addClass('active');
-                                    }
-                                    var pageButton = $('<button>').addClass('page-link').text(
-                                        pageCounter);
-                                    pageButton.click(function() {
-                                        loadEmployeeData(excludedEmployeeId,pageCounter);
-                                    });
-                                    pageItem.append(pageButton);
-                                    $('#ismodal1_pagination').append(pageItem);
-                                })(totalPageCounter);
-                            }
+                        $('#ismodal1_pagination').empty();
+                        for (var totalPageCounter = 1; totalPageCounter <=
+                            totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(
+                                    pageCounter);
+                                pageButton.click(function() {
+                                    loadEmployeeData(excludedEmployeeId, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#ismodal1_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
 
-                            $('#ismodal2_pagination').empty();
-                            for (var totalPageCounter = 1; totalPageCounter <=
-                                totalPage; totalPageCounter++) {
-                                (function(pageCounter) {
-                                    var pageItem = $('<li>').addClass('page-item');
-                                    if (pageCounter === currentPage) {
-                                        pageItem.addClass('active');
-                                    }
-                                    var pageButton = $('<button>').addClass('page-link').text(
-                                        pageCounter);
-                                    pageButton.click(function() {
-                                        loadEmployeeData(excludedEmployeeId,pageCounter);
-                                    });
-                                    pageItem.append(pageButton);
-                                    $('#ismodal2_pagination').append(pageItem);
-                                })(totalPageCounter);
-                            }
+                        $('#ismodal2_pagination').empty();
+                        for (var totalPageCounter = 1; totalPageCounter <=
+                            totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(
+                                    pageCounter);
+                                pageButton.click(function() {
+                                    loadEmployeeData(excludedEmployeeId, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#ismodal2_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
 
                     } else {
                         console.log(response.error);

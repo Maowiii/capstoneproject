@@ -15,7 +15,7 @@
     height: 100%;
     width: 260px;
     background: #164783;
-    z-index: 100;
+    z-index: 100!important;
     transition: all 0.5s ease;
 }
 .sidebar.close {
@@ -463,7 +463,7 @@ textarea {
     position: fixed;
     bottom: 20px;
     right: 20px; 
-    z-index: 99!important; 
+    z-index: 95!important; 
 }
 /* MODALS */
 
@@ -500,9 +500,6 @@ textarea {
 
 .table-fit {
   width: 1px;
-}
-#signatory_modal .modal-dialog{
-    max-width:40%;
 }
 #passchange .modal-footer{
     justify-content: right;

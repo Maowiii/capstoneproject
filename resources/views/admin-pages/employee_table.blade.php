@@ -35,7 +35,9 @@
         <div class='d-flex justify-content-end gap-3 mt-2'>
             <form method="post" action="{{ route('import-new-employee') }}" enctype="multipart/form-data">
                 @csrf
+                <div class="mb-2">
                 <input class="form-control large-column" type="file" name="file">
+            </div>
                 <button class="btn btn-primary large-column" type="submit">Upload Excel</button>
             </form>
         </div>

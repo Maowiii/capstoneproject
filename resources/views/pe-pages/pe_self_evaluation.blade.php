@@ -6,11 +6,11 @@
 
 @section('content')
 <!-- Modal -->
-<div class="modal fade" id="consentform" data-bs-backdrop="static">
+<div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="consentform-label">Privacy Consent</h1>
+                    <h1 class="modal-title fs-5" id="consentform-label">Data Privacy Consent</h1>
                     <button type="button" class="btn-close" onclick="confirmClose()"></button>
                 </div>
                 <div class="modal-body">
@@ -35,7 +35,7 @@
 
                         <br><b>Under RA 10173</b>, the following are some of the rights the data subject may exercise,
                         (for the full list of rights see: <a
-                            href="//www.privacy.gov.ph/know-your-rights/">www.privacy.gov.ph/know-your-rights/</a>)<br>
+                            href="//privacy.gov.ph/data-subject-rights/">www.privacy.gov.ph/data-subject-rights/</a>)<br>
 
                         <br><i>1. Right to be informed on the collection and processing of personal data through this
                             consent form;
@@ -47,23 +47,25 @@
 
                         <br>By participating, you agreed to the following statements :<br>
 
-                        <br>Understand that there is no risk involved in participating in this endeavor.
+                        <br>a. Understand that there is no risk involved in participating in this endeavor.<br>
 
-                        <br>The results of this data gathering will help the HRDMO of Adamson University monitor the improvements of employees per department.<br>
+                        <br>b. The results of this data gathering will help the HRDMO of Adamson University monitor the improvements of employees per department.<br>
 
 
-                            <br>I understand that I will not receive any form of remuneration or compensation for my
+                            <br><i>c. I understand that I will not receive any form of remuneration or compensation for my
                             participation.<br>
 
-                            <br>I also understand that my participation in this survey is purely voluntary and that I
+                            <br>d. I also understand that my participation in this survey is purely voluntary and that I
                             can withdraw my approval to this consent anytime and that my withdrawal will not affect my class
                             standing now or in the future.<br>
 
-                            <br>I understand that my involvement in the survey is only once. All my personal data will
+                            <br>e. I understand that my involvement in the survey is only once.<br> 
+                            
+                            <br>f. All my personal data will
                             be kept strictly confidential and will be revealed only upon my request and consent.<br>
 
                             <br>To exercise data subjects right and for data privacy concerns or inquiries, please
-                            communicate with the admin through<br>
+                            communicate with the admin through</i><br>
 
                             <!-- <<contact details of the person in-charge>> -->
 
@@ -667,7 +669,7 @@
             </table>
         </div>
 
-        <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
+        <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content" id="signatory">
                     <div class="modal-header">

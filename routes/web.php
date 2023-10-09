@@ -148,8 +148,7 @@ Route::post('/autosave-is-ldp-field', [ISAppraisalController::class, 'autosaveLD
 // Settings
 Route::get('/settings', [SettingsController::class, 'displaySettings'])->name('viewSettings');
 Route::get('/employee-info', [SettingsController::class, 'displayEmployeeInfo'])->name('employeeInfo');
-
-
+Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');
 
 /* ----- PERMANENT EMPLOYEE ----- */
 // Dashboard
@@ -190,8 +189,7 @@ Route::post('/pe-internal-customers/getCommentsAndSuggestions', [PEInternalCusto
 Route::get('/pe-internal-customers/get-signatures', [PEInternalCustomerController::class, 'loadSignatures'])->name('pe.loadSignatures');
 Route::post('/pe-internal-customers/submit-ic-signature', [PEInternalCustomerController::class, 'submitICSignature'])->name('pe.submitICSignature');
 Route::post('/pe-internal-customer/form-checker', [PEInternalCustomerController::class, 'formChecker'])->name('pe.ICFormChecker');
-
-// Signature of Party Involved
+Route::get('/pe-internal-customers/get-appraisee-name', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('showAppraisalForm');
 
 /* ----- CONTRACTUAL EMPLOYEE ----- */
 // Dashboard
@@ -204,5 +202,4 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showAppraisalForm'])->name('ce.viewICAppraisalForm');
 
-// Settings
-Route::post('/setttings/change-password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');
+
