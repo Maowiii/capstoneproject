@@ -69,7 +69,7 @@
                                         .addClass('btn btn-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "{{ route('appraisalForm') }}" +
+                                                "{{ route('pe.appraisalICForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +
@@ -94,7 +94,7 @@
                                         .addClass('btn btn-outline-primary')
                                         .click(function() {
                                             window.location.href =
-                                                "{{ route('appraisalForm') }}" +
+                                                "{{ route('pe.appraisalICForm') }}" +
                                                 "?appraisal_id=" + encodeURIComponent(
                                                     assignment
                                                     .appraisal_id) +

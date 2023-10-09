@@ -47,8 +47,6 @@ class PEInternalCustomerController extends Controller
       return response()->json(['success' => false]);
     }
   }
-
-
   public function getICQuestions()
   {
     if (!session()->has('account_id')) {
@@ -93,12 +91,7 @@ class PEInternalCustomerController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    $evaluatorName = $request->input('appraiser_name');
-    $evaluatorDepartment = $request->input('appraiser_department');
-    $appraiseeName = $request->input('appraisee_name');
-    $appraiseeDepartment = $request->input('appraisee_department');
-
-    return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));
+    return view('pe-pages.pe_ic_evaluation');
   }
 
   public function saveICScores(Request $request)
