@@ -29,7 +29,7 @@ class PEInternalCustomerController extends Controller
   public function getICAssign(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     if (Appraisals::tableExists()) {
@@ -40,7 +40,7 @@ class PEInternalCustomerController extends Controller
         ->where('evaluator_id', $appraiserId)
         ->with(['employee.department', 'employee'])
         ->with(['evaluator.department'])
-        ->paginate(10); // Use pagination to limit the results per page
+        ->paginate(10);
 
       return response()->json(['success' => true, 'assignments' => $assignments]);
     } else {
@@ -52,7 +52,7 @@ class PEInternalCustomerController extends Controller
   public function getICQuestions()
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $ICques = FormQuestions::where('table_initials', 'IC')
@@ -65,8 +65,9 @@ class PEInternalCustomerController extends Controller
   public function showAppraisalForm(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
+
     $account_id = session()->get('account_id');
     $employee = Employees::where('account_id', $account_id)->first();
     $accounts = Accounts::where('account_id', $account_id)->first();
@@ -74,31 +75,36 @@ class PEInternalCustomerController extends Controller
     $firstName = null;
     $lastName = null;
 
-    /*$evaluatorName = $request->input('appraiser_name');
-    $evaluatorDepartment = $request->input('appraiser_department');
-    $appraiseeName = $request->input('appraisee_name');
-    $appraiseeDepartment = $request->input('appraisee_department');
-
-    return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));*/
-
     if ($accounts && $accounts->employee) {
-      // Access the Employee model associated with the user's account
       $employee = $accounts->employee;
-      // Retrieve the first and last name from the Employee model
       $firstName = $employee->first_name;
       $lastName = $employee->last_name;
     }
-    // Return the employee information as JSON
     return response()->json([
       'success' => true,
       'first_name' => $firstName,
       'last_name' => $lastName,
     ]);
   }
+
+  public function showICForm(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $evaluatorName = $request->input('appraiser_name');
+    $evaluatorDepartment = $request->input('appraiser_department');
+    $appraiseeName = $request->input('appraisee_name');
+    $appraiseeDepartment = $request->input('appraisee_department');
+
+    return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));
+  }
+
   public function saveICScores(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $questionId = $request->input('questionId');
@@ -121,7 +127,7 @@ class PEInternalCustomerController extends Controller
   public function getSavedICScores(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $appraisalId = $request->input('appraisalId');
@@ -141,7 +147,7 @@ class PEInternalCustomerController extends Controller
   public function updateService(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $newService = $request->input('newService');
@@ -158,7 +164,7 @@ class PEInternalCustomerController extends Controller
   public function updateSuggestion(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $newSuggestion = $request->input('newSuggestion');
@@ -173,7 +179,7 @@ class PEInternalCustomerController extends Controller
   public function getCommentsAndSuggestions(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $appraisalId = $request->input('appraisalId');
@@ -200,7 +206,7 @@ class PEInternalCustomerController extends Controller
   public function loadSignatures(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $appraisalId = $request->input('appraisalId');
@@ -229,7 +235,7 @@ class PEInternalCustomerController extends Controller
   public function submitICSignature(Request $request)
   {
     if (!session()->has('account_id')) {
-      return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $appraisalId = $request->input('appraisalId');
@@ -305,11 +311,10 @@ class PEInternalCustomerController extends Controller
 
   }
 
-
   public function formChecker(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $appraisalId = $request->input('appraisalId');

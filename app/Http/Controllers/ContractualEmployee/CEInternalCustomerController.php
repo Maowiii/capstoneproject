@@ -12,10 +12,6 @@ class CEInternalCustomerController extends Controller
 {
   public function displayCEICOverview()
   {
-    if (!session()->has('account_id')) {
-      return view('auth.login');
-    }
-
     if (session()->has('account_id')) {
       $activeEvalYear = EvalYear::where('status', 'active')->first();
       return view('ce-pages.ce_ic_overview', compact('activeEvalYear'));
@@ -27,9 +23,9 @@ class CEInternalCustomerController extends Controller
   public function showAppraisalForm(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
-    
+
     $evaluatorName = $request->input('appraiser_name');
     $evaluatorDepartment = $request->input('appraiser_department');
     $appraiseeName = $request->input('appraisee_name');
@@ -37,5 +33,4 @@ class CEInternalCustomerController extends Controller
 
     return view('pe-pages.pe_ic_evaluation', compact('evaluatorName', 'evaluatorDepartment', 'appraiseeName', 'appraiseeDepartment'));
   }
-
 }

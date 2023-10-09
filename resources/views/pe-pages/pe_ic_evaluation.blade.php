@@ -108,31 +108,6 @@
 
         <script>
             $(document).ready(function() {
-                fetchName();
-            });
-
-            function fetchName() {
-                console.log('fetching employee name');
-                $.ajax({
-                    url: '{{ route('showAppraisalForm') }}',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data.success) {
-                            $('#appraiseeName').val(data.first_name + ' ' + data.last_name);
-                        } else {
-                            console.error('Failed to retrieve employee information.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                        console.error('An error occurred while processing your request.');
-                    }
-                });
-            }
-
-
-            $(document).ready(function() {
                 $('#service_area').on('blur', function() {
                     var newService = $(this).val();
                     updateService(newService);
@@ -188,7 +163,25 @@
                     }
                 });
 
-
+                function fetchName() {
+                    console.log('fetching employee name');
+                    $.ajax({
+                        url: '{{ route('showAppraisalForm') }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                $('#appraiseeName').val(data.first_name + ' ' + data.last_name);
+                            } else {
+                                console.error('Failed to retrieve employee information.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            console.error('An error occurred while processing your request.');
+                        }
+                    });
+                }
 
                 function updateSuggestion(value) {
                     var urlParams = new URLSearchParams(window.location.search);
@@ -468,6 +461,7 @@
                 function formChecker() {
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
+                    console.log('Appraisal ID: ' + appraisalId)
 
                     $.ajax({
                         headers: {
@@ -561,6 +555,7 @@
                     }
                 });
 
+                fetchName();
                 loadICTable();
                 loadTextAreas();
                 formChecker();
