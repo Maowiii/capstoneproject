@@ -17,8 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.0/dist/chart.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     
-
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
@@ -111,7 +109,7 @@
                         <span class="link_name">Appraisals</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{{ route('viewISAppraisalsOverview') }}">Appraisals</a>
+                        <li><a class="link_name" href="{{ route('viewISAppraisalsOverview') }}">Appraisal</a>
                         </li>
                     </ul>
                 </li>
@@ -223,12 +221,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="logout-confirmation-label">Logout Confirmation</h1>
+                    <h1 class="modal-title fs-5" id="logout-confirmation-modal">Logout Confirmation</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to logout?
-                    </p>
+                    <p>Are you sure you want to logout?</p>
                 </div>
                 <div class="modal-footer">
                     <a type="button" class="btn btn-primary" href="{{ route('logout-user') }}">Logout</a>
@@ -264,5 +261,4 @@
         });
     }
 </script>
-
 </html>
