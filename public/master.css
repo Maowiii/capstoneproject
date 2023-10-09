@@ -325,7 +325,7 @@ text,
 }
 
 .xxs-column {
-    width: 35px !important;
+    width: 40px !important;
 }
 .extra-small-column {
     width: 50px !important;
@@ -425,6 +425,9 @@ textarea {
     width: 300px !important;
     text-align: right;
 }
+#pi, #ar, #obj, #krainput{
+    width: 190px !important;
+}
 
 /* BUTTONS */
 .btn-primary {
@@ -490,7 +493,23 @@ textarea {
 #checkboxes input[type="checkbox"]:checked + .chooseIC {
     background-color: #ace1af;
 }
-
+#SID_table input[type="radio"],
+#SR_table input[type="radio"],
+#S_table input[type="radio"]
+{
+    width: 20px; /* Set your desired width */
+    height: 20px; /* Set your desired height */
+    margin-right: 9px; 
+}
+#KRA_table_body input[type="radio"]{
+    width: 20px; /* Set your desired width */
+    height: 20px; /* Set your desired height */
+    margin-right: 1px;
+}
+#IC_table .form-check-input[type="radio"]{
+    width: 20px; /* Set your desired width */
+    height: 20px; /* Set your desired height */
+}
 .row-selected {
     background-color: #ace1af;
     border: #ace1af;

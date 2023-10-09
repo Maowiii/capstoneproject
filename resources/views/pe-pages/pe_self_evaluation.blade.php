@@ -229,7 +229,7 @@
                         <td></td>
                         <td class='text-right'>Frequency:</td>
                         <td>
-                            <div class="d-flex justify-content-center gap-2">
+                            <div class="d-flex justify-content-center gap-3">
                                 <div class="col-auto">
                                     <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
                                         readonly>
