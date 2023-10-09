@@ -248,29 +248,33 @@ class EmployeeController extends Controller
   public function saveEmployee(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $employeeId = $request->input('employeeId');
-    $account = Accounts::where('account_id', $employeeId)->first();
-    $employee = Employees::find($employeeId)->first();
+
+    $employee = Employees::find($employeeId);
 
     if (!$employee) {
-      return response()->json(['success' => false, 'error' => 'User not found']);
-    } else if (!$account) {
-      return response()->json(['success' => false, 'error' => 'User not found']);
+      return response()->json(['success' => false, 'error' => 'Employee not found']);
+    }
+
+    $employee->first_name = $request->input('firstName');
+    $employee->last_name = $request->input('lastName');
+    $employee->department_id = $request->input('department');
+    $employee->save();
+
+    $account = Accounts::where('account_id', $employeeId)->first();
+
+    if (!$account) {
+      return response()->json(['success' => false, 'error' => 'Account not found']);
     }
 
     $account->email = $request->input('email');
     $account->type = $request->input('type');
-    $employee->employee_number = $request->input('employeeNumber');
-    $employee->first_name = $request->input('firstName');
-    $employee->last_name = $request->input('lastName');
-    $employee->department_id = $request->input('department');
-
-    $employee->save();
     $account->save();
 
     return response()->json(['success' => true]);
   }
+
 }
