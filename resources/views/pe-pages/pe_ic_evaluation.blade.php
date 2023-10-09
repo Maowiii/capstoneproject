@@ -118,7 +118,21 @@
 
                     updateSuggestion(newSuggestion);
                 });
+                // Function to retrieve URL parameters by name
+                function getUrlParameter(name) {
+                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    var results = regex.exec(location.search);
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                }
 
+                // Get the employee's name from the URL
+                var appraiseeName = getUrlParameter('appraisee_name');
+
+                // Set the employee's name in the input field
+                if (appraiseeName) {
+                    $('#appraiseeName').val(appraiseeName);
+                }
                 $('#esig-submit-btn').on('click', function() {
                     var fileInput = $('#esig')[0];
                     var urlParams = new URLSearchParams(window.location.search);
@@ -162,26 +176,6 @@
                         reader.readAsDataURL(selectedFile);
                     }
                 });
-
-                function fetchName() {
-                    console.log('fetching employee name');
-                    $.ajax({
-                        url: '{{ route('showAppraisalForm') }}',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.success) {
-                                $('#appraiseeName').val(data.first_name + ' ' + data.last_name);
-                            } else {
-                                console.error('Failed to retrieve employee information.');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText);
-                            console.error('An error occurred while processing your request.');
-                        }
-                    });
-                }
 
                 function updateSuggestion(value) {
                     var urlParams = new URLSearchParams(window.location.search);
@@ -263,7 +257,7 @@
                         url: '{{ route('getCommentsAndSuggestions') }}',
                         type: 'POST',
                         data: {
-                            appraisalId: appraisalId
+                            appraisalId: appraisalId 
                         },
                         success: function(response) {
                             if (response.success) {
@@ -372,6 +366,7 @@
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
 
+                    console.log(appraisalId);
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -387,8 +382,7 @@
                                 var savedScore = savedScoreResponse.score;
                                 if (savedScore !== null) {
                                     $(`input[name="ic_${questionId}"][value="${savedScore}"]`)
-                                        .prop(
-                                            'checked', true);
+                                        .prop('checked', true);
                                 }
                             }
                             totalScore();
@@ -555,7 +549,7 @@
                     }
                 });
 
-                fetchName();
+
                 loadICTable();
                 loadTextAreas();
                 formChecker();

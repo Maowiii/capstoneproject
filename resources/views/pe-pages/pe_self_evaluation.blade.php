@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-<!-- Modal -->
-<div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
+    <!-- Modal -->
+    <div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -49,71 +49,74 @@
 
                         <br>a. Understand that there is no risk involved in participating in this endeavor.<br>
 
-                        <br>b. The results of this data gathering will help the HRDMO of Adamson University monitor the improvements of employees per department.<br>
+                        <br>b. The results of this data gathering will help the HRDMO of Adamson University monitor the
+                        improvements of employees per department.<br>
 
 
-                            <br><i>c. I understand that I will not receive any form of remuneration or compensation for my
+                        <br><i>c. I understand that I will not receive any form of remuneration or compensation for my
                             participation.<br>
 
                             <br>d. I also understand that my participation in this survey is purely voluntary and that I
                             can withdraw my approval to this consent anytime and that my withdrawal will not affect my class
                             standing now or in the future.<br>
 
-                            <br>e. I understand that my involvement in the survey is only once.<br> 
-                            
+                            <br>e. I understand that my involvement in the survey is only once.<br>
+
                             <br>f. All my personal data will
                             be kept strictly confidential and will be revealed only upon my request and consent.<br>
 
                             <br>To exercise data subjects right and for data privacy concerns or inquiries, please
-                            communicate with the admin through</i><br>
+                            communicate with the Human Resources Department and Management Office of Adamson University
+                            through email:<a href="mailto:hrmdo@adamson.edu.ph">hrmdo@adamson.edu.ph</a> or contact no:
+                        </i><br>
+                        <!-- <<contact details of the person in-charge>> -->
 
-                            <!-- <<contact details of the person in-charge>> -->
+                        <br>Thank you for your participation.<br>
 
-                            <br>Thank you for your participation.<br>
+                        <!-- <Sample Google Form Elements regarding data privacy>> -->
 
-                            <!-- <Sample Google Form Elements regarding data privacy>> -->
+                        <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                            <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
+                                                                                                            <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                                                                                        <br>I give consent to the retention of my personal data. (Y/N)<br>
+                                                                                                            <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                                                                                        <br>I give consent to the sharing of my data. (Y/N)<br>
+                                                                                                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                                                                                                        Agreement.<br>
+                                                                                                        
+                                                                                                        <br>By clicking Yes, you consent that you are willing to answer the questions
+                                                                                                        in this survey and you answered YES to the three questions above.
+                                                                                                        (Y/N) -->
 
-                                                                                                        <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                                                                                    Agreement.<br>
-                                                                                                    
-                                                                                                    <br>By clicking Yes, you consent that you are willing to answer the questions
-                                                                                                    in this survey and you answered YES to the three questions above.
-                                                                                                    (Y/N) -->
+                    <div class="mb-3">
+                        <label class="form-check-label" id="consent1-label">
+                            <input type="checkbox" id="consent1" class="form-check-input"> <span>I give consent
+                                to use of my personal data for the said purpose.</span>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" id="consent2-label">
+                            <input type="checkbox" id="consent2" class="form-check-input"> <span>I give consent
+                                to the retention of my personal data.</span>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" id="consent3-label">
+                            <input type="checkbox" id="consent3" class="form-check-input"> <span>I give consent
+                                to the sharing of my data.</span>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" id="consent4-label">
+                            <input type="checkbox" id="consent4" class="form-check-input"> <span>I confirm that
+                                I have read, understand, and agree to the above-mentioned Privacy Agreement.<br>
+                            </span>
 
-                            <div class="mb-3">
-                                <label class="form-check-label" id="consent1-label">
-                                    <input type="checkbox" id="consent1" class="form-check-input"> <span>I give consent
-                                        to use of my personal data for the said purpose.</span>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-check-label" id="consent2-label">
-                                    <input type="checkbox" id="consent2" class="form-check-input"> <span>I give consent
-                                        to the retention of my personal data.</span>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-check-label" id="consent3-label">
-                                    <input type="checkbox" id="consent3" class="form-check-input"> <span>I give consent
-                                        to the sharing of my data.</span>
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-check-label" id="consent4-label">
-                                    <input type="checkbox" id="consent4" class="form-check-input"> <span>I confirm that
-                                        I have read, understand, and agree to the above-mentioned Privacy Agreement.<br>
-                                    </span>
-
-                                    <br><i> clicking <b>"I Understand"</b>, you consent that you are willing to answer the questions in this
-                                        survey and you answered <b>"I Understand"</b> to the four questions above.</i>
-                                </label>
-                            </div>
+                            <br><i> clicking <b>"I Understand"</b>, you consent that you are willing to answer the questions
+                                in this
+                                survey and you answered <b>"I Understand"</b> to the four questions above.</i>
+                        </label>
+                    </div>
 
                     </p>
                 </div>
@@ -397,8 +400,8 @@
                         <td class='text-right'>Overall Behavioral Competencies Total:</td>
                         <td>
                             <div class="d-flex justify-content-center gap-3">
-                                <input id="BHTotal" class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
+                                <input id="BHTotal" class="small-column form-control total-frequency text-center"
+                                    type="text" readonly>
                             </div>
                         </td>
                     </tr>
@@ -406,7 +409,7 @@
             </table>
         </div>
 
-        <div class="content-container" >
+        <div class="content-container">
             <h2>II. Key Results Areas & Work Objectives</h2>
             <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
                 his/her
@@ -674,7 +677,8 @@
                 <div class="modal-content" id="signatory">
                     <div class="modal-header">
                         <h5 class="modal-title fs-5">Signatories</h5>
-                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid" id="instructioncon">
@@ -793,6 +797,7 @@
         textareaElement4.innerText = valueToDisplay4;
 
         let confirmationMode = false;
+
         function confirmClose() {
             if (confirmationMode) {
                 closeModal();
@@ -800,7 +805,9 @@
                 // Show the confirmation message
                 $('#closeModalMessage').empty();
                 $('#closeModalMessage').show();
-                $('#closeModalMessage').text("You are about to close the modal. If you close it, you won't be able to proceed with\nthe appraisal.");
+                $('#closeModalMessage').text(
+                    "You are about to close the modal. If you close it, you won't be able to proceed with\nthe appraisal."
+                    );
                 $('#closeModalMessage').addClass('alert alert-danger'); // Add alert styling
 
                 confirmationMode = true;
@@ -1025,7 +1032,8 @@
                     // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
                         // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                            .validationMessage);
                     });
 
                     // Optionally, focus on the first invalid input
@@ -1065,7 +1073,8 @@
                 console.log(signInput.files.length);
 
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null || signatureImage.getAttribute('src') === '')) {
+                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null ||
+                        signatureImage.getAttribute('src') === '')) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1078,7 +1087,7 @@
 
                     console.error('Signature validation failed.');
                     return;
-                }else{
+                } else {
                     // Clear validation if files are uploaded or a signature image is displayed
                     signInput.classList.remove('is-invalid');
                     signInput.closest('td').classList.remove('border', 'border-danger');
@@ -1098,7 +1107,7 @@
                 // Check if any files are selected
                 if (fileInput.files.length > 0) {
                     var file = fileInput.files[0];
-                    
+
                     // Check if the selected file is an image
                     if (file.type.match(/^image\//)) {
                         signInput.classList.remove('is-invalid');
@@ -1652,7 +1661,7 @@
                     console.log('data.eulaData: ' + data.eulaData);
                     if (data.eulaData == 1 || data.eulaData == true) {
                         $('#consentform').remove();
-                    }else{
+                    } else {
                         $('#consentform').modal('show');
                     }
 
@@ -1921,7 +1930,7 @@
                             '][{{ $appraisalId }}][answer]"][value="1"]');
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
                                 1) +
-                            '][{{ $appraisalId }}][answer]"][value="0"]');                  
+                            '][{{ $appraisalId }}][answer]"][value="0"]');
 
                         if (jic.answer === 1) {
                             answerRadioYes.checked = true;
@@ -2337,7 +2346,7 @@
             } else {
                 $('#KRA_Weight_Total').removeClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').removeClass('is-invalid');
-            }            
+            }
 
             $('#KRA_Weight_Total').val(totalWeight.toFixed(2));
             $('#KRA_Total').val(totalWeighted.toFixed(2));
@@ -2361,12 +2370,12 @@
                         $('textarea').prop('disabled', true);
                         $('#KRA_table_body select').prop('disabled', true);
                         $('input[type="radio"]').prop('disabled', true);
-                        $('input[type="radio"]').attr("disabled",true);
+                        $('input[type="radio"]').attr("disabled", true);
 
                     } else if (response.phaseData === "pr") {
                         $('input[type="radio"]').prop('disabled', true);
-                        $('input[type="radio"]').attr("disabled",true);
-                        $('input[type="radio"]').attr("readonly",true);;
+                        $('input[type="radio"]').attr("disabled", true);
+                        $('input[type="radio"]').attr("readonly", true);;
                         $('textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);
                         $('#KRA_table_body select').attr('disabled', true);
@@ -2398,11 +2407,11 @@
                         $('textarea').prop('disabled', false);
 
                         $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                    }else if (response.locked === "lock") {
+                    } else if (response.locked === "lock") {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else{
+                    } else {
 
                     }
                 },

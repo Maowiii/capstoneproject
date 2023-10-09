@@ -497,18 +497,18 @@ textarea {
 #SR_table input[type="radio"],
 #S_table input[type="radio"]
 {
-    width: 20px; /* Set your desired width */
-    height: 20px; /* Set your desired height */
+    width: 20px;
+    height: 20px;
     margin-right: 9px; 
 }
 #KRA_table_body input[type="radio"]{
-    width: 20px; /* Set your desired width */
-    height: 20px; /* Set your desired height */
+    width: 20px; 
+    height: 20px; 
     margin-right: 1px;
 }
 #IC_table .form-check-input[type="radio"]{
-    width: 20px; /* Set your desired width */
-    height: 20px; /* Set your desired height */
+    width: 20px; 
+    height: 20px;
 }
 .row-selected {
     background-color: #ace1af;
@@ -523,7 +523,6 @@ textarea {
 .table-fit {
   width: 1px;
 }
-
 #passchange .modal-footer{
     justify-content: right;
 }
