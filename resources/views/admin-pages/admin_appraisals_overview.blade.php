@@ -218,7 +218,7 @@
                                         'is evaluation') {
                                         if (appraisal.date_submitted !== null) {
                                             var url =
-                                                "{{ route('ad.viewISEvaluationForm') }}";
+                                                "{{ route('ad.viewSelfEvaluationForm') }}";
                                             url += "?appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);
@@ -244,7 +244,7 @@
                                             );
                                         } else {
                                             var url =
-                                                "{{ route('ad.viewISEvaluationForm') }}";
+                                                "{{ route('ad.viewSelfEvaluationForm') }}";
                                             url += "?appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Appraisals;
 use App\Models\AdminAppraisals;
+use App\Models\Employees;
 use App\Models\EvalYear;
+use App\Models\FinalScores;
 use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -111,7 +113,38 @@ class AdminAppraisalsOverviewController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    return view('admin-pages.admin_self_evaluation');
+
+    $account_id = session()->get('account_id');
+    $user = Employees::where('account_id', $account_id)->first();
+
+    if (!$user) {
+      throw new \Exception('User not found.');
+    }
+
+    $appraisee = Employees::where('account_id', $account_id)->get();
+
+    $appraisals = Appraisals::where('employee_id', $user->employee_id)
+      ->with('employee', 'evaluator') // Load the related employee and evaluator information
+      ->get();
+
+      
+
+    $status = $this->calculateStatus($appraisals);
+
+    // Calculate the final score using the PHP function
+    $FinalScores = FinalScores::where('employee_id', $user->employee_id)->pluck('final_score');
+
+    $data = [
+      'success' => true,
+      'appraisee' => $appraisee,
+      'appraisals' => $appraisals,
+      'is' => $user,
+      'status' => $status,
+      'final_score' => $FinalScores,
+      'appraisalId' => $appraisals->pluck('appraisal_id'),
+    ];
+
+    return view('admin-pages.admin_self_evaluation', $data);
   }
 
   public function loadISEvaluationForm()
@@ -271,5 +304,20 @@ class AdminAppraisalsOverviewController extends Controller
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
     }
+  }
+
+  public function calculateStatus($appraisals)
+  {
+    // Initialize status as "complete"
+    $status = 'Complete';
+
+    foreach ($appraisals as $appraisal) {
+      if ($appraisal->date_submitted === null) {
+        // If any appraisal has a null date_submitted, set status to "pending"
+        $status = 'Pending';
+        break; // No need to continue checking, status is already "pending"
+      }
+    }
+    return $status;
   }
 }
