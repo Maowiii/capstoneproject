@@ -155,21 +155,23 @@
                         <tbody id="summary_score_body">
                             <tr>
                                 <td>Self-Evaluation</td>
+                                <td id="SE_perc" data-val="0.1">10%</td>
                                 <td id="SE_rating"></td>
-                                <td id="SE_wtotal"></td><td></td>
-                                <td></td>
-                                <td></td>
+                                <td id="SE_wtotal"></td>
                             </tr>
                             <tr>
                                 <td>Internal Customer 1</td>
+                                <td id="IC1_perc" data-val="0.2">20%</td>
                                 <td id="IC1_rating"></td>
                                 <td id="IC1_wtotal"></td>                            </tr>
                             <tr>
                                 <td>Internal Customer 2</td>
+                                <td id="IC2_perc" data-val="0.2">20%</td>
                                 <td id="IC2_rating"></td>
                                 <td id="IC2_wtotal"></td>                            </tr>
                             <tr>
                                 <td>Immediate Superior</td>
+                                <td id="IS_perc" data-val="0.5">50%</td>
                                 <td id="IS_rating"></td>
                                 <td id="IS_wtotal"></td>                            </tr>
                         </tbody>
@@ -187,12 +189,13 @@
                         <tbody id="summary_score_body">
                             <tr>
                                 <td>Behavioral Competencies</td>
-                                <td id="BC_rating">40%</td>
+                                <td id="BC_rating" data-val="0.4">40%</td>
+                                
                                 <td id="BC_wtotal"></td>                            </tr>
                             </tr>
                             <tr>
                                 <td>Key Results Area</td>
-                                <td id="KRA_rating">60%</td>
+                                <td id="KRA_rating" data-val="0.6">60%</td>
                                 <td id="KRA_wtotal"></td>                            </tr>
                             </tr>
                         </tbody>
@@ -200,7 +203,7 @@
                             <tr>
                                 <td></td>
                                 <td>Final Score</td>
-                                <td id=""></td>
+                                <td id="FS_wtotal"></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -239,7 +242,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#IS_appraisals_table_body').empty();
-                        console.log(response);
+                        // console.log(response);
                         var appraisees = response.appraisee.data;
                         var appraisals = response.appraisals.data;
 
@@ -274,6 +277,17 @@
                                             `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id))
                                         .text('View');
+
+                                        if (appraisal.date_submitted !== null) {
+                                            var SETotalTd = $('#SummaryModal').find('#SE_rating');
+                                            SETotalTd.text(appraisal.bh_score);
+
+                                            var SEperc = $('#SummaryModal').find('#SE_perc').data('val');
+                                            var SE_wtotal = (SEperc * appraisal.bh_score).toFixed(2);
+
+                                            var SE_wtotalTD = $('#SummaryModal').find('#SE_wtotal');
+                                            SE_wtotalTD.text(SE_wtotal);
+                                        }
                                 } else if (appraisal.evaluation_type ===
                                     'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
@@ -315,6 +329,18 @@
                                                 .appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
+
+
+                                        if (appraisal.date_submitted !== null) {
+                                            var SETotalTd = $('#SummaryModal').find('#IC1_rating');
+                                            SETotalTd.text(appraisal.ic_score);
+
+                                            var SEperc = $('#SummaryModal').find('#IC1_perc').data('val');
+                                            var SE_wtotal = (SEperc * appraisal.ic_score).toFixed(2);
+
+                                            var SE_wtotalTD = $('#SummaryModal').find('#IC1_wtotal');
+                                            SE_wtotalTD.text(SE_wtotal);
+                                        }
                                     }
                                 } else if (appraisal.evaluation_type ===
                                     'internal customer 2') {
@@ -360,6 +386,17 @@
                                                 .appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
+
+                                        if (appraisal.date_submitted !== null) {
+                                            var SETotalTd = $('#SummaryModal').find('#IC2_rating');
+                                            SETotalTd.text(appraisal.ic_score);
+
+                                            var SEperc = $('#SummaryModal').find('#IC2_perc').data('val');
+                                            var SE_wtotal = (SEperc * appraisal.ic_score).toFixed(2);
+
+                                            var SE_wtotalTD = $('#SummaryModal').find('#IC2_wtotal');
+                                            SE_wtotalTD.text(SE_wtotal);
+                                        }
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
@@ -369,6 +406,17 @@
                                                 `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
+
+                                        if (appraisal.date_submitted !== null) {
+                                            var SETotalTd = $('#SummaryModal').find('#IS_rating');
+                                            SETotalTd.text(appraisal.bh_score);
+
+                                            var SEperc = $('#SummaryModal').find('#IS_perc').data('val');
+                                            var SE_wtotal = (SEperc * appraisal.bh_score).toFixed(2);
+
+                                            var SE_wtotalTD = $('#SummaryModal').find('#IS_wtotal');
+                                            SE_wtotalTD.text(SE_wtotal);
+                                        }
                                     } else {
                                         AppraiseLink = $('<a>').addClass(
                                                 'btn btn-outline-primary')
@@ -393,10 +441,22 @@
 
                             $('#IS_appraisals_table_body').append(newRow);
 
-                            var finalScore = response.final_score[appraisee.employee_id];
-                            var finalGradeTd = $('#SummaryModal').find('#BC_wtotal');
-                            finalGradeTd.text(finalScore);
+                            if(response.final_score[appraisee.employee_id]){
+                                var finalScore = response.final_score[appraisee.employee_id];
+                                console.log(finalScore);
 
+                                var BCperc = $('#SummaryModal').find('#BC_rating').data('val');
+                                var KRAperc = $('#SummaryModal').find('#KRA_rating').data('val');
+
+                                var BCTd = $('#SummaryModal').find('#BC_wtotal');
+                                BCTd.text(finalScore.behavioralCompetenciesGrade);
+
+                                var KRATd = $('#SummaryModal').find('#KRA_wtotal');
+                                KRATd.text(finalScore.kraFS);
+
+                                var finalGradeTd = $('#SummaryModal').find('#BC_wtotal');
+                                finalGradeTd.text(finalScore.finalGrade);
+                            } 
                         });
 
                         // Handle pagination

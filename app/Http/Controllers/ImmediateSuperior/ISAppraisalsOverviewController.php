@@ -56,10 +56,10 @@ class ISAppraisalsOverviewController extends Controller
       $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
 
       foreach ($appraisee as $appraiseeItem) {
-        Log::info($appraiseeItem);
+        //Log::info($appraiseeItem);
         // Check if the employee has existing appraisal records
         $existingAppraisals = Appraisals::where('employee_id', $appraiseeItem->employee_id)->count();
-        Log::info($existingAppraisals);
+        //Log::info($existingAppraisals);
 
         // If no existing appraisal records, create new ones
         if ($existingAppraisals == 0) {
