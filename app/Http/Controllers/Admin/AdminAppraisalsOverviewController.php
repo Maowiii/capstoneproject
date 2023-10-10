@@ -175,7 +175,7 @@ class AdminAppraisalsOverviewController extends Controller
     Log::debug('SY: ' . $sy);
 
     if ($sy !== null) {
-      $table = 'appraisals' . $sy;
+      $table = 'appraisals_' . $sy;
 
       $appraisals = Appraisals::from($table)
         ->where('employee_id', $employeeID)
