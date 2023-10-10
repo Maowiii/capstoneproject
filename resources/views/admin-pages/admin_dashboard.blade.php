@@ -26,7 +26,7 @@
 
     <div class='d-flex gap-3'>
         <div class="content-container text-middle" id="total-pe-container">
-            <h4>Total Permanent Employees:</h4>
+            <h4>Total Appraisees:</h4>
             <p>-</p>
         </div>
         <div class="content-container text-middle" id="total-appraisals-container">
@@ -65,7 +65,7 @@
         <!-- Point System -->
         <div class="content-container">
             <h2>Point System:</h2>
-            <h4>Oustanding Employees:</h4>
+            <h4>Oustanding:</h4>
             <table class="table table-sm" id="outstanding_table">
                 <thead>
                     <th>Name</th>
@@ -236,7 +236,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#total-pe-container').html('<h4>Total Permanent Employees:</h4><p>' + response
+                        $('#total-pe-container').html('<h4>Total Appraisees:</h4><p>' + response
                             .totalPermanentEmployees + '</p>');
 
                         $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
