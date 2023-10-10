@@ -548,11 +548,4 @@ textarea {
 #SummaryModal .modal-dialog{
     max-width: 30%!important;
 }
-/* PRINTING */
-@media print {
-    .navbar, /* Hide the navbar */
-    .floating-container, /* Hide the floating container with buttons */
-    .url { /* Hide the URL or any other specific elements by adding a suitable class or ID */
-        display: none !important;
-    }
-}
+
