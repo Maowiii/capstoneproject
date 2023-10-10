@@ -1351,6 +1351,45 @@
                     }
                 });
             });
+
+            $('#submit-btn-confirm').on('click', function() {
+                    var fileInput = $('#uploadsign_1')[0];
+
+                    if (fileInput.files.length === 0) {
+                        $('#uploadsign_1').addClass('is-invalid');
+                        return;
+                    } else {
+                        var selectedFile = fileInput.files[0];
+
+                        var reader = new FileReader();
+                        reader.onload = function(event) {
+                            var fileData = event.target.result;
+                            $.ajax({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                url: '{{ route('pe.submitICSignature') }}',
+                                type: 'POST',
+                                data: {
+                                    appraisalId: appraisalId,
+                                    esignature: fileData,
+                                },
+                                success: function(response) {
+                                    if (response.success) {
+                                        loadSignature();
+                                        console.log('Esignature Updated.');
+                                        formChecker();
+                                    } else {
+                                        console.log('Esignature Updated bot else');
+                                    }
+                                },
+                                error: function(xhr, status, error) {}
+                            });
+                        };
+
+                        reader.readAsDataURL(selectedFile);
+                    }
+                });
         });
 
         function loadTableData() {
