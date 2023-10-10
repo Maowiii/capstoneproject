@@ -168,12 +168,14 @@
                                 <td>Internal Customer 2</td>
                                 <td id="IC2_perc" data-val="0.2">20%</td>
                                 <td id="IC2_rating"></td>
-                                <td id="IC2_wtotal"></td>                            </tr>
+                                <td id="IC2_wtotal"></td>                            
+                            </tr>
                             <tr>
                                 <td>Immediate Superior</td>
                                 <td id="IS_perc" data-val="0.5">50%</td>
                                 <td id="IS_rating"></td>
-                                <td id="IS_wtotal"></td>                            </tr>
+                                <td id="IS_wtotal"></td>                            
+                            </tr>
                         </tbody>
                     </table>
                     <h5>Final Ratings</h5>
@@ -189,26 +191,29 @@
                         <tbody id="summary_score_body">
                             <tr>
                                 <td>Behavioral Competencies</td>
-                                <td id="BC_rating" data-val="0.4">40%</td>
-                                
-                                <td id="BC_wtotal"></td>                            </tr>
+                                <td id="BC_perc" data-val="0.4">40%</td>
+                                <td id="BC_rating"></td>
+                                <td id="BC_wtotal"></td>                            
                             </tr>
                             <tr>
                                 <td>Key Results Area</td>
-                                <td id="KRA_rating" data-val="0.6">60%</td>
-                                <td id="KRA_wtotal"></td>                            </tr>
+                                <td id="KRA_perc" data-val="0.6">60%</td>
+                                <td id="KRA_rating">60%</td>
+                                <td id="KRA_wtotal"></td>                            
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td></td>
                                 <td>Final Score</td>
+                                <td></td>
                                 <td id="FS_wtotal"></td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>Description</td>
-                                <td id=""></td>
+                                <td></td>
+                                <td id="descrip"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -445,17 +450,39 @@
                                 var finalScore = response.final_score[appraisee.employee_id];
                                 console.log(finalScore);
 
-                                var BCperc = $('#SummaryModal').find('#BC_rating').data('val');
-                                var KRAperc = $('#SummaryModal').find('#KRA_rating').data('val');
+                                var BCperc = $('#SummaryModal').find('#BC_perc').data('val');
+                                var KRAperc = $('#SummaryModal').find('#KRA_perc').data('val');
 
-                                var BCTd = $('#SummaryModal').find('#BC_wtotal');
+                                var BCTd = $('#SummaryModal').find('#BC_rating');
                                 BCTd.text(finalScore.behavioralCompetenciesGrade);
 
-                                var KRATd = $('#SummaryModal').find('#KRA_wtotal');
+                                var KRATd = $('#SummaryModal').find('#KRA_rating');
                                 KRATd.text(finalScore.kraFS);
 
-                                var finalGradeTd = $('#SummaryModal').find('#BC_wtotal');
+                                total1 = BCperc * finalScore.behavioralCompetenciesGrade;
+                                total2 = KRAperc * finalScore.kraFS;
+
+                                $('#SummaryModal').find('#BC_wtotal').text(total1.toFixed(2));
+                                $('#SummaryModal').find('#KRA_wtotal').text(total2.toFixed(2));
+
+                                var finalGradeTd = $('#SummaryModal').find('#FS_wtotal');
                                 finalGradeTd.text(finalScore.finalGrade);
+
+                                if (isBetween(finalScore.finalGrade, 4.85, 5.00)) {
+                                    $('#SummaryModal').find('#descrip').text('Outstanding');
+                                } else if (isBetween(finalScore.finalGrade, 4.25, 4.84)) {
+                                    $('#SummaryModal').find('#descrip').text('Very Satisfactory');
+                                } else if (isBetween(finalScore.finalGrade, 3.50, 4.24)) {
+                                    $('#SummaryModal').find('#descrip').text('Satisfactory');
+                                } else if (isBetween(finalScore.finalGrade, 2.75, 3.49)) {
+                                    $('#SummaryModal').find('#descrip').text('Fair');
+                                } else {
+                                    $('#SummaryModal').find('#descrip').text('Poor');
+                                }
+
+                                function isBetween(value, min, max) {
+                                    return value >= min && value <= max;
+                                }   
                             } 
                         });
 
