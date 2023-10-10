@@ -923,10 +923,23 @@
             // Handle form submission and validation
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
                 var form = document.getElementById('PEappraisalForm');
+                var valid = true;
 
-                if (!form.checkValidity()) {
-                    event.preventDefault();
+                var inputElements = form.querySelectorAll('input:not([type="hidden"])');
+
+                inputElements.forEach(function(inputElement) {
+                    if (inputElement.classList.contains('is-invalid')) {
+                        // Handle your validation logic here
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.focus(); // Corrected line
+                    }
+                });
+
+                if (!valid || !form.checkValidity()) {
+                    event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
+
                     var invalidInputs = form.querySelectorAll('.is-invalid');
 
                     // Handle invalid inputs, display error messages, etc.
@@ -938,7 +951,7 @@
                     // Optionally, focus on the first invalid input
                     invalidInputs[0].focus();
 
-                    console.error('Form validation failed.');
+                    console.error('Form validation failed.');                
                 } else {
                     // Form validation succeeded
                     console.info('Form validation succeeded.');
@@ -1062,14 +1075,11 @@
 
                         kraField.closest('tr').data('kra-id', response.kraData.kra_id); 
                         
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
 
                         // Handle errors if any
                         console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1102,13 +1112,10 @@
                     success: function(response) {
                         wpafield.closest('tr').data('wpa-id', response.wpaData.performance_plan_id);
 
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
                         // Handle errors if any
                         console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1155,15 +1162,12 @@
                         field.closest('tr').data('ldp-id', response.ldpData.development_plan_id); // Update 'data-ldp-id'
 
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
                         console.log('{{ route('autosaveLDPField') }}');
 
                         // Handle errors if any
                         console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             }, 500)); // Adjust the delay (in milliseconds) as needed
@@ -1192,15 +1196,12 @@
                     },
                     success: function(response) {
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
                         console.log('{{ route('autosaveLDPField') }}');
 
                         // Handle errors if any
                         console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1515,7 +1516,6 @@
             dataType: 'json',
             success: function(data) {
                 if (data.success) {
-                    console.log('data.eulaData: ' + data.eulaData);
                     if (data.eulaData == 1 || data.eulaData == true) {
                         console.log('HIDE');
                         $('#consentform').remove();
@@ -1599,13 +1599,11 @@
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        
+                        if (row) {
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) + '][{{ $appraisalId }}][answer]"][value="0"]');                  
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                1) +
-                            '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                1) +
-                            '][{{ $appraisalId }}][answer]"][value="0"]');                  
 
                         if (jic.answer === 1) {
                             answerRadioYes.checked = true;
@@ -1660,6 +1658,10 @@
                         answerRadioYes.required = true;
                         answerRadioNo.required = true;
                         commentTextarea.required = true;
+                        } else {
+                            console.log('Row not found for index ' + index);
+                        }
+                                            
                     });
 
                     data.signData.forEach(function(sign, index) {
@@ -1829,7 +1831,6 @@
                     label));
 
                 if (Math.abs((kraData && kraData.performance_level) ? parseInt(kraData.performance_level) - i : 1) < 1) {
-                    console.log(kraData.performance_level);
                     console.log((kraData && kraData.performance_level) ? kraData.performance_level : 0 == 1);
                     input.prop('checked', true);
                 }
@@ -2055,9 +2056,6 @@
                     var weightedValue = weight * performanceLevel;
                     totalWeight += weight;
                     totalWeighted += weightedValue;
-
-                    console.log('weightedValue');
-                    console.log(weightedValue);
 
                     if (isNaN(totalWeighted) || totalWeighted === null) {
                         totalWeighted = 0;

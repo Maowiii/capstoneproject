@@ -1027,23 +1027,35 @@
             // Handle form submission and validation
             document.getElementById('submit-btn-form').addEventListener('click', function(event) {
                 var form = document.getElementById('PEappraisalForm');
+                var valid = true;
 
-                if (!form.checkValidity()) {
-                    event.preventDefault();
+                var inputElements = form.querySelectorAll('input:not([type="hidden"])');
+
+                inputElements.forEach(function(inputElement) {
+                    if (inputElement.classList.contains('is-invalid')) {
+                        // Handle your validation logic here
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.focus(); // Corrected line
+                    }
+                });
+
+                if (!valid || !form.checkValidity()) {
+                    event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
+
                     var invalidInputs = form.querySelectorAll('.is-invalid');
 
                     // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
                         // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
-                            .validationMessage);
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
                     });
 
                     // Optionally, focus on the first invalid input
                     invalidInputs[0].focus();
 
-                    console.error('Form validation failed.');
+                    console.error('Form validation failed.');                
                 } else {
                     // Form validation succeeded
                     console.info('Form validation succeeded.');
@@ -1701,7 +1713,6 @@
             dataType: 'json',
             success: function(data) {
                 if (data.success) {
-                    console.log('data.eulaData: ' + data.eulaData);
                     if (data.eulaData == 1 || data.eulaData == true) {
                         $('#consentform').remove();
                     } else {
@@ -2355,8 +2366,6 @@
                 var row = $(this);
                 var weight = parseFloat(row.find('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').val()) /
                     100;
-                console.log('weight');
-                console.log(weight);
 
                 var performanceLevel = parseInt(row.find(
                         'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
@@ -2367,8 +2376,6 @@
                     totalWeight += weight;
                     totalWeighted += weightedValue;
 
-                    console.log('weightedValue');
-                    console.log(weightedValue);
 
                     if (isNaN(totalWeighted) || totalWeighted === null) {
                         totalWeighted = 0;
