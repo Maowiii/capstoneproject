@@ -140,10 +140,10 @@
                             <select class="form-control" name="type" id="type">
                                 <option value="" selected>
                                     Select Type</option>
-                                <option value="AD">Administrator</option>
+                                <option value="AD">Admin</option>
                                 <option value="IS">Immediate Superior</option>
-                                <option value="PE">Permanent Employee</option>
-                                <option value="CE">Contractual Employee</option>
+                                <option value="PE">Self-Evaluation</option>
+                                <option value="CE">Internal Customer</option>
                             </select>
                         </div>
                         <span class="text-danger">

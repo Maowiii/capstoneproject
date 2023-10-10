@@ -44,7 +44,7 @@
                     <th>Name</th>
                     <th>Department</th>
                     <th>Self-Evaluation</th>
-                    <th>IS Evaluation</th>
+                    <th>Immediate Superior</th>
                     <th>Internal Customer 1</th>
                     <th>Internal Customer 2</th>
                     <th>Action</th>
