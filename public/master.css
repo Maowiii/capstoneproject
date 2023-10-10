@@ -455,7 +455,7 @@ textarea {
     outline: none;
     cursor: pointer;
 }
-#download-button, #print-button{
+#print-button{
     border-radius: 60%;
     width: 60px;
     height: 60px;
@@ -497,18 +497,18 @@ textarea {
 #SR_table input[type="radio"],
 #S_table input[type="radio"]
 {
-    width: 20px;
-    height: 20px;
-    margin-right: 9px; 
+    width: 20px!important;
+    height: 20px!important;
+    margin-right: 9px!important; 
 }
 #KRA_table_body input[type="radio"]{
-    width: 20px; 
-    height: 20px; 
-    margin-right: 1px;
+    width: 20px!important; 
+    height: 20px!important; 
+    margin-right: 1px!important;
 }
 #IC_table .form-check-input[type="radio"]{
-    width: 20px; 
-    height: 20px;
+    width: 20px!important; 
+    height: 20px!important;
 }
 .row-selected {
     background-color: #ace1af;
@@ -546,7 +546,7 @@ textarea {
     padding: 25px!important;
 }
 #SummaryModal .modal-dialog{
-    max-width: 30%;
+    max-width: 30%!important;
 }
 /* PRINTING */
 @media print {
