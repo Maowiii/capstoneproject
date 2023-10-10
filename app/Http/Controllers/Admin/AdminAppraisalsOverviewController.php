@@ -186,6 +186,7 @@ class AdminAppraisalsOverviewController extends Controller
         ->with(['employee', 'signatures', 'evaluator'])
         ->get();
     }
+    Log::info($appraisals);
 
     foreach ($appraisals as &$appraisal) {
       $appraisal['name'] = mb_convert_encoding($appraisal['name'], 'UTF-8', 'UTF-8');
