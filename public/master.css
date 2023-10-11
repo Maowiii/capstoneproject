@@ -518,7 +518,7 @@ textarea {
     width: 20px!important; 
     height: 20px!important;
 }
-#inlineRadio1, #inlineRadio2{
+#jic_table .form-check-input[type="radio"]{
     width: 20px!important;
     height: 20px!important;
     margin-right: 5px!important;
