@@ -38,6 +38,9 @@
             <p>-</p>
         </div>
     </div>
+    <div class="content-container">
+        <canvas id="lineChart" aria-label="chart" height="140" width="580"></canvas>
+    </div>
 
     <div class="content-container">
         <div class="input-group mb-2 search-box">
@@ -283,7 +286,8 @@
 
                             var departmentNameLink = $('<a>')
                                 .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
-                                    "&department_id=" + department.department.department_id + '&department_name=' +
+                                    "&department_id=" + department.department.department_id +
+                                    '&department_name=' +
                                     encodeURIComponent(department.department.department_name))
                                 .text(department.department.department_name);
 
@@ -909,5 +913,57 @@
                 }
             });
         }
+        // Make an AJAX request to fetch final scores per year for all evaluation years
+        $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
+            if (data.success) {
+                var ctx = document.getElementById('lineChart').getContext('2d');
+                var scoresPerYear = data.scoresPerYear;
+
+                // Extract the labels and data for each year
+                var labels = [];
+                var datasets = [];
+
+                for (var yearRange in scoresPerYear) {
+                    if (scoresPerYear.hasOwnProperty(yearRange)) {
+                        labels.push(yearRange);
+                        var data = scoresPerYear[yearRange].map(item => item.total_score);
+
+                        datasets.push({
+                            label: yearRange,
+                            data: data,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        });
+                    }
+                }
+                var lineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: datasets,
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Evaluation Year'
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Total Final Score'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
     </script>
 @endsection

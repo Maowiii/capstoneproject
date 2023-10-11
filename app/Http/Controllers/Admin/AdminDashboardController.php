@@ -12,6 +12,7 @@ use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
@@ -129,7 +130,6 @@ class AdminDashboardController extends Controller
           $page,
           ['path' => $request->url(), 'query' => $request->query()]
         );
-
       } else {
         if (FinalScores::tableExists()) {
           $perPage = 20;
@@ -167,7 +167,6 @@ class AdminDashboardController extends Controller
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
           );
-
         } else {
           return response()->json(['success' => false]);
         }
@@ -334,9 +333,8 @@ class AdminDashboardController extends Controller
       'success' => true,
       'ic' => $icQuestions
     ]);
-
   }
- 
+
   public function loadPointsSystem(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
@@ -417,6 +415,27 @@ class AdminDashboardController extends Controller
       'poor' => $poor
     ]);
   }
+  public function getFinalScoresPerYear()
+  {
+    // Get all evaluation years, whether active or not
+    $evaluationYears = EvalYear::all();
+    $scoresPerYear = [];
+    foreach ($evaluationYears as $year) {
+      $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
 
+      // Fetch the total final scores for each employee for the current year
+      $scores = DB::table($table)
+        ->select('employee_id', DB::raw('SUM(final_score) as total_score'))
+        ->groupBy('employee_id')
+        ->get();
+      $scoresPerYear[$year->sy_start . '-' . $year->sy_end] = $scores;
+    }
 
+    // Log the result (You can use Laravel's Log::info or write to a log file)
+    Log::info('Computed Final Scores Per Year', $scoresPerYear);
+    return response()->json([
+      'success' => true,
+      'scoresPerYear' => $scoresPerYear,
+    ]);
+  }
 }
