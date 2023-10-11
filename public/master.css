@@ -431,6 +431,9 @@ textarea {
 #pi{
     width: 180px!important;
 }
+#wt{
+    width: 90px!important;
+}
 
 /* BUTTONS */
 .btn-primary {
@@ -509,11 +512,16 @@ textarea {
 #KRA_table_body input[type="radio"]{
     width: 20px!important; 
     height: 20px!important; 
-    margin-right: 1px!important;
+    margin-right: 2px!important;
 }
 #IC_table .form-check-input[type="radio"]{
     width: 20px!important; 
     height: 20px!important;
+}
+#inlineRadio1, #inlineRadio2{
+    width: 20px!important;
+    height: 20px!important;
+    margin-right: 5px!important;
 }
 .row-selected {
     background-color: #ace1af;

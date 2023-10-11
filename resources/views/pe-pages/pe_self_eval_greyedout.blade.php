@@ -361,7 +361,7 @@
                         <th class='large-column' id="pi">Performance Indicators</th>
                         <th class='large-column' id="ar">Actual Results</th>
                         <th class='medium-column'>Performance Level</th>
-                        <th class="xxs-column">Weighted Total</th>
+                        <th class="xxs-column" id="wt">Weighted Total</th>
                     </tr>
                 </thead>
                 <tbody id="KRA_table_body">
