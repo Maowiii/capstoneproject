@@ -1,7 +1,8 @@
 @extends('layout.master')
 
 @section('title')
-    <h1>Evaluation Years</h1>
+    <h1>
+        Evaluation Years</h1>
 @endsection
 
 @section('content')
@@ -186,6 +187,120 @@
                                 </span>
                             </div>
                         </div>
+
+                        <!-- SCORE WEIGHTS -->
+                        <div class="mx-3 mb-3">
+                            <h5>Behavioral Competencies</h5>
+                            <table class='table table-bordered'>
+                                <thead>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Self-Evaluation:</td>
+                                        <td class="w-25">
+                                            <select class="form-select bc" name="selfEvalWeight" id="self_eval_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Internal Customer 1:</td>
+                                        <td>
+                                            <select class="form-select bc" name="ic1Weight" id="ic1_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Internal Customer 2:</td>
+                                        <td>
+                                            <select class="form-select bc" name="ic2Weight" id="ic2_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Immediate Superior:</td>
+                                        <td>
+                                            <select class="form-select bc" name="isWeight" id="is_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-end">Total:</td>
+                                        <td>
+                                            <input class="form-control @error('bhTotal') is-invalid @enderror" name="bhTotal" id="bh_total" type="text"
+                                                value="0" readonly>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <span class="text-danger error-message" id="bhTotal_error">
+                                @error('bhTotal')
+                                    {{ $message }}
+                                @enderror
+                            </span>
+                        </div>
+
+                        <div class="mx-3">
+                            <h5>Final Ratings</h5>
+                            <table class='table table-bordered'>
+                                <thead>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Behavioral Competencies:</td>
+                                        <td>
+                                            <select class="form-select final" name="bhWeight" id="bh_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>KRA/KPI:</td>
+                                        <td class="w-25">
+                                            <select class="form-select final" name="kraWeight" id="kra_weight">
+                                                @for ($i = 1; $i <= 100; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-end">Final Score:</td>
+                                        <td>
+                                            <input class="form-control @error('finalTotal') is-invalid @enderror" name="finalTotal" id="final_total"
+                                                type="text" value="0" readonly>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <span class="text-danger error-message" id="finalTotal_error">
+                                @error('finalTotal')
+                                    {{ $message }}
+                                @enderror
+                            </span>
+                        </div>
+
                         <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
                             <i class='bx bx-info-circle'></i> Please double-check the inputted values before submitting.
                             Once submitted, they cannot be changed.
@@ -222,6 +337,48 @@
         const sy_start_value = parseInt(document.getElementById('sy_start').value);
         const sy_end = document.getElementById('sy_end');
         sy_end.value = sy_start_value + 1;
+
+        function updateBehavioralTotal() {
+            var selfEvalWeight = parseInt($('#self_eval_weight').val());
+            var ic1Weight = parseInt($('#ic1_weight').val());
+            var ic2Weight = parseInt($('#ic2_weight').val());
+            var isWeight = parseInt($('#is_weight').val());
+
+            var bhTotal = selfEvalWeight + ic1Weight + ic1Weight + isWeight;
+            $('#bh_total').val(bhTotal);
+
+            if (bhTotal > 100) {
+                $('#bh_total').addClass('is-invalid');
+            } else {
+                $('#bh_total').removeClass('is-invalid');
+            }
+        }
+
+        function updateFinalTotal() {
+            var bhWeight = parseInt($('#bh_weight').val());
+            var kraWeight = parseInt($('#kra_weight').val());
+
+            var finalTotal = bhWeight + kraWeight;
+            $('#final_total').val(finalTotal);
+
+            if (finalTotal > 100) {
+                $('#final_total').addClass('is-invalid');
+            } else {
+                $('#final_total').removeClass('is-invalid');
+            }
+        }
+
+        $(document).on('change', '.bc', function() {
+            updateBehavioralTotal();
+        });
+
+        $(document).on('change', '.final', function() {
+            updateFinalTotal();
+        });
+
+        // Initialize totals
+        updateBehavioralTotal();
+        updateFinalTotal();
 
         function formatDate(dateString) {
             const date = new Date(dateString);

@@ -7,6 +7,7 @@ use App\Models\EvalYear;
 use App\Models\Accounts;
 use App\Models\Employees;
 use App\Models\Appraisals;
+use App\Models\ScoreWeights;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -59,7 +60,9 @@ class EvaluationYearController extends Controller
       'pr_start' => 'required',
       'pr_end' => 'required',
       'eval_start' => 'required',
-      'eval_end' => 'required'
+      'eval_end' => 'required',
+      'bhTotal' => 'required|numeric|size:100',
+      'finalTotal' => 'required|numeric|size:100',
     ], [
       'sy_start.required' => 'Please choose a date for the start of the school year.',
       'sy_end.required' => 'Please choose a date for the end of the school year.',
@@ -71,6 +74,8 @@ class EvaluationYearController extends Controller
       'pr_end.required' => 'Please choose an ending date for performance review.',
       'eval_start.required' => 'Please choose a starting date for evaluation.',
       'eval_end.required' => 'Please choose an ending date for evaluation.',
+      'bhTotal.size' => 'The tota weight of the behavioral competencies must be exactly 100.',
+      'finalTotal.size' => 'The total weight of the final score must be exactly 100.',
     ]);
 
     if ($validator->fails()) {
@@ -101,6 +106,17 @@ class EvaluationYearController extends Controller
       'eval_start' => $request->input('eval_start'),
       'eval_end' => $request->input('eval_end'),
       'status' => 'active'
+    ]);
+
+    $eval_id = $eval_year->eval_id;
+    $score_weight = ScoreWeights::create([
+      'eval_id' => $eval_id,
+      'self_eval_weight' => $request->input('selfEvalWeight'),
+      'ic1_weight' => $request->input('ic1Weight'),
+      'ic2_weight' => $request->input('ic2Weight'),
+      'is_weight' => $request->input('isWeight'),
+      'bh_weight' => $request->input('bhWeight'),
+      'kra_weight' => $request->input('kraWeight'),
     ]);
 
     $sy = '_' . $request->input('sy_start') . '_' . $request->input('sy_end');
@@ -147,7 +163,7 @@ class EvaluationYearController extends Controller
       $table->text('objective')->nullable();
       $table->text('performance_indicator')->nullable();
       $table->text('actual_result')->nullable();
-      $table->int('performance_level')->nullable();
+      $table->integer('performance_level')->nullable();
       $table->decimal('weighted_total')->nullable();
       $table->integer('kra_order');
     });
@@ -188,7 +204,7 @@ class EvaluationYearController extends Controller
     Schema::connection('mysql')->create('signature' . $sy, function ($table) {
       $table->bigIncrements('signature_id');
       $table->integer('appraisal_id');
-      $table->blob('sign_data');
+      $table->binary('sign_data');
       $table->text('sign_type')->nullable();
       $table->nullableTimestamps();
     });

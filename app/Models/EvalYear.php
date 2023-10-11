@@ -29,4 +29,8 @@ class EvalYear extends Model
 
   protected $unique = ['sy_start', 'sy_end'];
 
+  public function scoreWeights()
+  {
+    return $this->hasOne(ScoreWeights::class, 'eval_id', 'eval_id');
+  }
 }
