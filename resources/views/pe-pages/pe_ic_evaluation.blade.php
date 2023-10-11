@@ -333,20 +333,19 @@
                                     var questionId = formquestions.question_id;
 
                                     var row = `<tr>
-                        <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
-                        <td class="align-baseline text-start editable" data-questionid="${questionId}">
-                            ${formquestions.question}
-                        </td>
-                        <td class="align-middle likert-column">
-                            @for ($i = 5; $i >= 1; $i--)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
-                                    <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
-                                </div>
-                            @endfor
-                        </td>
-                    </tr>`;
-
+                                                    <td class="align-middle">${questionCounter}</td> <!-- Display the counter -->
+                                                    <td class="align-baseline text-start editable" data-questionid="${questionId}">
+                                                        ${formquestions.question}
+                                                    </td>
+                                                    <td class="align-middle likert-column">
+                                                        @for ($i = 5; $i >= 1; $i--)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" id="score_${questionId}" name="ic_${questionId}" value="{{ $i }}">
+                                                                <label class="form-check-label" for="score_${questionId}">{{ $i }}</label>
+                                                            </div>
+                                                        @endfor
+                                                    </td>
+                                                </tr>`;
                                     tbody.append(row);
                                     loadSavedScore(questionId);
                                     questionCounter++;
@@ -455,6 +454,8 @@
                 function formChecker() {
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
+                    var appraiseeId = urlParams.get('appraisee_account_id');
+
                     console.log('Appraisal ID: ' + appraisalId)
 
                     $.ajax({
@@ -465,6 +466,7 @@
                         type: 'POST',
                         data: {
                             appraisalId: appraisalId,
+                            appraiseeId: appraiseeId,
                         },
                         success: function(response) {
                             if (response.form_submitted) {
@@ -472,6 +474,10 @@
                                 $('textarea').prop('disabled', true);
                                 $('#confirmation-alert').addClass('d-none');
                                 $('#submit-btn').text('View');
+
+                                if (response.hideSignatory){
+                                    $('#submit-btn').remove();
+                                }
                             } else {
                                 return;
                             }

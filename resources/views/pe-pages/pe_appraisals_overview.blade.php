@@ -90,7 +90,8 @@
                             });
 
                             var viewLink = null;
-                            var icLink = null;
+                            var ic1Link = null;
+                            var ic2Link = null;
                             var AppraiseLink = null;
 
                             var hasSelfEvaluation = false; // Flag to track if self-evaluation is found
@@ -153,23 +154,79 @@
                                                 $('<div>').append(AppraiseLink)
                                             ),
                                         );
-                                    }
-                                } else if (appraisal.evaluation_type.startsWith(
-                                        'internal customer')) {
+                                    }                                
+                            } else if (appraisal.evaluation_type ===
+                                    'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
-                                        // Append "N/A" to the second or third <td>
-                                        icLink = $('<a>').addClass(
+                                        ic1Link = $('<a>').addClass(
                                                 'btn btn-outline-secondary disabled')
                                             .text('View');
+
+                                            newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(ic1Link)
+                                            ),
+                                        );
                                     } else {
-                                        // Append the Internal Customer link to the second or third <td>
-                                        icLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
+                                        var url =
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
+                                            .appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(
+                                            appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
+                                            .first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(
+                                            appraisal.employee.department.department_name);
+
+                                        ic1Link = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href', url.replace(':appraisal_id', appraisal
+                                                .appraisal_id))
                                             .text('View');
+
+                                                newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(ic1Link)
+                                            ),
+                                        );
                                     }
-                                    newRow.append($('<td>').append($('<div>').append(icLink)));
+                                    
+                                } else if (appraisal.evaluation_type ===
+                                    'internal customer 2') {
+                                    if (appraisal.evaluator_id === null) {
+                                        ic2Link = $('<a>').addClass(
+                                                'btn btn-outline-secondary disabled')
+                                            .text('View');
+
+                                            newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(ic2Link)
+                                            ),
+                                        );
+                                    } else {
+                                        var url =
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
+                                            .appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(
+                                            appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
+                                            .first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(
+                                            appraisal.employee.department.department_name);
+
+                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href', url.replace(':appraisal_id', appraisal
+                                                .appraisal_id))
+                                            .text('View');
+
+                                                newRow.append(
+                                            $('<td>').append(
+                                                $('<div>').append(ic2Link)
+                                            ),
+                                        );
+                                    }
+                                    
                                 }
                             });
 
@@ -184,18 +241,21 @@
 
                             }
 
-                            // Check if the user has submitted the self-evaluation
+                           // Check if the user has submitted the self-evaluation
+                           console.log(hasSelfEvaluation);
+                           console.log(response.final_score);
+
                             if (hasSelfEvaluation) {
-                                if (response.final_score !== null) {
+                                if (response.final_score.length !== 0) {
                                     // If the self-evaluation is submitted and final score is available, append the final score
                                     newRow.append($('<td>').text(response.final_score));
-                                } else {
+                                } else{
                                     // If the self-evaluation is submitted but final score is not available, display "Pending"
-                                    newRow.append($('<td>').text("-"));
+                                    newRow.append($('<td>').text('-'));
                                 }
-                            } else {
+                            } else if (!hasSelfEvaluation) {
                                 // If the user has no self-evaluation, display an empty cell
-                                newRow.append($('<td>'));
+                                newRow.append($('<td>').text('-'));
                             }
 
                             // Append the row to the table body

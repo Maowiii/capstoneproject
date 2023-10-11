@@ -212,67 +212,59 @@ class ISAppraisalController extends Controller
   }
 
   public function autosaveKRAField(Request $request)
-  {
+{
     // Retrieve the data sent from the frontend
     $appraisalId = $request->input('appraisalId');
     $kraID = $request->input('kraID');
     $fieldName = $request->input('fieldName');
     $fieldValue = $request->input('fieldValue');
-
+    Log::info($appraisalId);
     Log::info($fieldName);
     Log::info($fieldValue);
 
     try {
-      // Find the KRA by ID
-      $kra = KRA::find($kraID);
-      $typeChecker = Appraisals::where('appraisal_id', $appraisalId)->pluck('evaluation_type');
+        $typeChecker = Appraisals::where('appraisal_id', $appraisalId)->value('evaluation_type');
 
-      if ($kra) {
-        if ($typeChecker === 'is evaluation') {
-          $kra = KRA::where('appraisal_id',$appraisalId - 1);
+        // Check if the field name requires updates with both appraisal IDs
+        $requiresDoubleUpdate = in_array($fieldName, ['kra', 'kra_weight', 'objective', 'performance_indicator']);
 
-          $kra->$fieldName = $fieldValue;
-          $kra->save();
+        // Determine which appraisal IDs to use based on the field name
+        $appraisalIds = $requiresDoubleUpdate ? [$appraisalId, $appraisalId - 1] : [$appraisalId];
+
+        // Iterate through the appraisal IDs and update/create records
+        foreach ($appraisalIds as $id) {
+            // Find the KRA by appraisal ID, kraID, and fieldName
+            $kra = KRA::where('appraisal_id', $id)
+                      ->where('kra_id', $kraID)
+                      ->first();
+
+            if ($kra) {
+                // Update the specific field value
+                $kra->$fieldName = $fieldValue;
+            } else {
+                // Create a new KRA record
+                $kra = new KRA([
+                    'appraisal_id' => $id,
+                    'kra_id' => $kraID,
+                    $fieldName => $fieldValue,
+                ]);
+            }
+
+            // Save the KRA record
+            $kra->save();
         }
-
-        // Update the specific field value
-        $kra->$fieldName = $fieldValue;
-        $kra->save();
-      } elseif (isset($fieldValue) && !empty($fieldValue)) {
-        // Create a new KRA record with the provided ID and field value
-        if ($typeChecker === 'is evaluation') {
-          $kra = new KRA([
-            'appraisal_id' => $appraisalId - 1,
-            'kra_order' => $kraID,
-            $fieldName => $fieldValue
-          ]);
-          // $kra->save();
-        }
-
-        $kra = new KRA([
-          'appraisal_id' => $appraisalId,
-          'kra_order' => $kraID,
-          $fieldName => $fieldValue
-        ]);
-
-        $kra->save();
-
-        Log::info($kra);
 
         return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
-      }else{
-        return response()->json(['message' =>  $fieldName . 'is null so autosave failed']);
-      }
-      return response()->json(['message' => 'KRA updated and autosave successful', 'kraData' => $kra]);
     } catch (\Exception $e) {
-      Log::error('Exception Message: ' . $e->getMessage());
-      Log::error('Exception Line: ' . $e->getLine());
-      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+        Log::error('Exception Message: ' . $e->getMessage());
+        Log::error('Exception Line: ' . $e->getLine());
+        Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
 
-      // Handle errors if any
-      return response()->json(['error' => 'Autosave failed'], 500);
+        // Handle errors if any
+        return response()->json(['error' => 'Autosave failed'], 500);
     }
-  }
+}
+
 
   public function autosaveWPPField(Request $request)
   {
