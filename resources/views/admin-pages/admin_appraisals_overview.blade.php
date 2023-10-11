@@ -43,11 +43,12 @@
                 <tr>
                     <th>Name</th>
                     <th>Department</th>
-                    <th>Self-Evaluation</th>
+                    <th>Self-<br>Evaluation</th>
                     <th>Immediate<br>Superior</th>
-                    <th>Internal Customer 1</th>
-                    <th>Internal Customer 2</th>
+                    <th>Internal<br>Customer 1</th>
+                    <th>Internal<br>Customer 2</th>
                     <th>Action</th>
+                    <th>Summary</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -56,6 +57,96 @@
             <ul class="pagination pagination-sm justify-content-end" id="appraisal_pagination"></ul>
         </nav>
     </div>
+
+    <div class="modal fade modal-md" id="SummaryModal" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <h5>Behavioral Competencies</h5>
+                    <table class='table table-bordered'>
+                        <thead>
+                            <tr>
+                                <th>Components</th>
+                                <th>%</th>
+                                <th>Rating</th>
+                                <th>Weighted Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summary_score_body">
+                            <tr>
+                                <td>Self-Evaluation</td>
+                                <td id="SE_perc" data-val="0.1">10%</td>
+                                <td id="SE_rating"></td>
+                                <td id="SE_wtotal"></td>
+                            </tr>
+                            <tr>
+                                <td>Internal Customer 1</td>
+                                <td id="IC1_perc" data-val="0.2">20%</td>
+                                <td id="IC1_rating"></td>
+                                <td id="IC1_wtotal"></td>                            </tr>
+                            <tr>
+                                <td>Internal Customer 2</td>
+                                <td id="IC2_perc" data-val="0.2">20%</td>
+                                <td id="IC2_rating"></td>
+                                <td id="IC2_wtotal"></td>                            
+                            </tr>
+                            <tr>
+                                <td>Immediate Superior</td>
+                                <td id="IS_perc" data-val="0.5">50%</td>
+                                <td id="IS_rating"></td>
+                                <td id="IS_wtotal"></td>                            
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5>Final Ratings</h5>
+                    <table class='table table-bordered'>
+                        <thead>
+                            <tr>
+                                <th>Components</th>
+                                <th>%</th>
+                                <th>Rating</th>
+                                <th>Weighted Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summary_score_body">
+                            <tr>
+                                <td>Behavioral Competencies</td>
+                                <td id="BC_perc" data-val="0.4">40%</td>
+                                <td id="BC_rating"></td>
+                                <td id="BC_wtotal"></td>                            
+                            </tr>
+                            <tr>
+                                <td>Key Results Area</td>
+                                <td id="KRA_perc" data-val="0.6">60%</td>
+                                <td id="KRA_rating">60%</td>
+                                <td id="KRA_wtotal"></td>                            
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>Final Score</td>
+                                <td></td>
+                                <td id="FS_wtotal"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Description</td>
+                                <td></td>
+                                <td id="descrip"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" style="width:90%">
@@ -300,6 +391,7 @@
 
                                 row.append($(
                                     "<td><button type='button' class='btn btn-outline-primary view-btn'>View</button></td>"
+
                                 ));
 
                                 $(document).on('click', '.view-btn', function() {
