@@ -497,18 +497,18 @@ textarea {
 #SR_table input[type="radio"],
 #S_table input[type="radio"]
 {
-    width: 10px!important;
-    height: 10px!important;
-    margin-right: 5px!important; 
+    width: 20px!important;
+    height: 20px!important;
+    margin-right: 6px!important; 
 }
 #KRA_table_body input[type="radio"]{
-    width: 10px!important; 
-    height: 10px!important; 
+    width: 20px!important; 
+    height: 20px!important; 
     margin-right: 1px!important;
 }
 #IC_table .form-check-input[type="radio"]{
-    width: 10px!important; 
-    height: 10px!important;
+    width: 20px!important; 
+    height: 20px!important;
 }
 .row-selected {
     background-color: #ace1af;
