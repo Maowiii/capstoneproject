@@ -181,7 +181,7 @@
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
         <div class="floating-container">
-            <div class="fixed-bottom p-4">
+            <div class="fixed-right p-4">
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
                         <i class='bx bxs-printer'></i>
