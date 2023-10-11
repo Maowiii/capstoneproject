@@ -172,8 +172,6 @@ class AdminAppraisalsOverviewController extends Controller
     $employeeID = $request->input('employeeID');
     $sy = $request->input('selectedYear');
 
-    Log::debug('SY: ' . $sy);
-
     if ($sy !== null) {
       $table = 'appraisals_' . $sy;
 
@@ -186,16 +184,9 @@ class AdminAppraisalsOverviewController extends Controller
         ->with(['employee', 'signatures', 'evaluator'])
         ->get();
     }
-    Log::info($appraisals);
-
-    foreach ($appraisals as &$appraisal) {
-      $appraisal['name'] = mb_convert_encoding($appraisal['name'], 'UTF-8', 'UTF-8');
-    }
 
     return response()->json(['success' => true, 'appraisals' => $appraisals]);
   }
-
-
 
   public function loadSignature(Request $request)
   {
