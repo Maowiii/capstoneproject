@@ -49,7 +49,6 @@
         <table class='table table-bordered table-sm align-middle' id="departments_table">
             <thead>
                 <tr>
-                    <th>Rank</th>
                     <th>Department</th>
                     <th>Average Score</th>
                 </tr>
@@ -281,7 +280,6 @@
                             var department = departments[i];
                             console.log(department);
                             var row = $('<tr class="text-center">');
-                            row.append($('<td>').text(department.department.rank));
 
                             var departmentNameLink = $('<a>')
                                 .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +

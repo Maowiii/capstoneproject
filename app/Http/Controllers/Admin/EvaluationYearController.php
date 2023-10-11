@@ -188,7 +188,7 @@ class EvaluationYearController extends Controller
     Schema::connection('mysql')->create('signature' . $sy, function ($table) {
       $table->bigIncrements('signature_id');
       $table->integer('appraisal_id');
-      $table->binary('sign_data');
+      $table->blob('sign_data');
       $table->text('sign_type')->nullable();
       $table->nullableTimestamps();
     });
