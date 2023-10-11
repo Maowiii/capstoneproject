@@ -358,7 +358,7 @@
                         <th class='large-column' id="krainput">KRA</th>
                         <th class='xxs-column'>Weight</th>
                         <th class='large-column' id="obj">Objectives</th>
-                        <th class='large-column' >Performance Indicators</th>
+                        <th class='large-column' id="pi">Performance Indicators</th>
                         <th class='large-column' id="ar">Actual Results</th>
                         <th class='medium-column'>Performance Level</th>
                         <th class="xxs-column">Weighted Total</th>

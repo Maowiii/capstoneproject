@@ -425,8 +425,11 @@ textarea {
     width: 300px !important;
     text-align: right;
 }
-#pi, #ar, #obj, #krainput{
+#ar, #obj, #krainput{
     width: 170px !important;
+}
+#pi{
+    width: 180px!important;
 }
 
 /* BUTTONS */
