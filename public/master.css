@@ -471,6 +471,11 @@ textarea {
 .fixed-bottom{
     z-index: 99!important;
 }
+@media (max-width: 768px) {
+    .floating-container {
+        bottom: 70px;
+    }
+}
 /* MODALS */
 
 .row-checkbox {
