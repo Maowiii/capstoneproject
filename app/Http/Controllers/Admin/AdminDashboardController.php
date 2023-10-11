@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -437,5 +438,22 @@ class AdminDashboardController extends Controller
       'success' => true,
       'scoresPerYear' => $scoresPerYear,
     ]);
+  }
+  
+  public function loadEmployeeTable(Request $request)
+  {
+    if (session()->has('account_id')) {
+      $search = $request->input('search');
+
+      $employees = Employees::where('first_name', 'LIKE', '%' . $search . '%')
+        ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+        ->orderBy('last_name')
+        ->orderBy('first_name')
+        ->get();
+
+      return response()->json(['success' => true, 'employees' => $employees]);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
   }
 }

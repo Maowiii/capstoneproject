@@ -62,6 +62,26 @@
             <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
         </nav>
     </div>
+    <div class="content-container">
+        <div class="input-group mb-2 search-box">
+            <input type="text" class="form-control" placeholder="Employees" id="search">
+            <button class="btn btn-outline-secondary" type="button">
+                <i class='bx bx-search'></i>
+            </button>
+        </div>
+        <table class='table table-bordered table-sm align-middle' id="employees_table">
+            <thead>
+                <tr>
+                    <th>Employees</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <nav id="employees_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="employees_pagination"></ul>
+        </nav>
+    </div>
 
     <div class="d-flex gap-3">
         <!-- Point System -->
@@ -913,6 +933,12 @@
                 }
             });
         }
+
+        // Define a global variable to store historical data
+        var historicalData = {
+            labels: [],
+            datasets: []
+        };
         // Make an AJAX request to fetch final scores per year for all evaluation years
         $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
             if (data.success) {
@@ -937,12 +963,14 @@
                         });
                     }
                 }
+
+                // Append the new data to historical data
+                historicalData.labels = historicalData.labels.concat(labels);
+                historicalData.datasets = historicalData.datasets.concat(datasets);
+
                 var lineChart = new Chart(ctx, {
                     type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: datasets,
-                    },
+                    data: historicalData, // Use historical data for the chart
                     options: {
                         scales: {
                             x: {
@@ -964,6 +992,42 @@
                 });
             }
         });
-        
+
+        function loadEmployeeTable(search = '') {
+            $.ajax({
+                url: '{{ route('ad.loadEmployeeTable') }}',
+                method: 'GET',
+                data: {
+                    search
+                },
+                success: function(data) {
+                    if (data.success) {
+                        var employeesTable = $('#employees_table');
+                        employeesTable.find('tbody').empty();
+
+                        // Sort the employees array alphabetically by first_name
+                        data.employees.sort(function(a, b) {
+                            return a.first_name.localeCompare(b.first_name);
+                        });
+
+                        data.employees.forEach(function(employee) {
+                            var viewButton =
+                                '<button class="btn btn-primary btn-sm" onclick="viewEmployee(' +
+                                employee.employee_id + ')">View</button>';
+                            employeesTable.find('tbody').append('<tr><td>' + employee.first_name + ' ' +
+                                employee.last_name + '</td><td>' + viewButton + '</td></tr>');
+                        });
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while loading employee data.');
+                }
+            });
+        }
+
+        // Initial load
+        $(document).ready(function() {
+            loadEmployeeTable();
+        });
     </script>
 @endsection
