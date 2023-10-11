@@ -254,7 +254,7 @@ class ISAppraisalController extends Controller
             $kra->save();
         }
 
-        return response()->json(['message' => 'KRA updated/created and autosave successful']);
+        return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
     } catch (\Exception $e) {
         Log::error('Exception Message: ' . $e->getMessage());
         Log::error('Exception Line: ' . $e->getLine());
