@@ -205,14 +205,14 @@
                         <tfoot>
                             <tr>
                                 <td></td>
-                                <td>Final Score</td>
                                 <td></td>
+                                <td class="text-end">Final Score</td>
                                 <td id="FS_wtotal"></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Description</td>
                                 <td></td>
+                                <td class="text-end">Description</td>
                                 <td id="descrip"></td>
                             </tr>
                         </tfoot>
