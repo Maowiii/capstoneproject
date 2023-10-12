@@ -567,7 +567,7 @@ textarea {
     }
 
     #formcard {
-        max-width: 400px;
+        max-width: 350px;
         margin: 0 auto;
     }
 }
@@ -575,7 +575,7 @@ textarea {
 /* Media query for screens larger than 992px */
 @media (min-width: 992px) {
     #formcard {
-        max-width: 600px;
+        max-width: 450px;
     }
 }
 
