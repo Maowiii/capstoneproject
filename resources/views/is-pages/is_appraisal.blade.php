@@ -593,9 +593,13 @@
                                             <td id="partiescell">Job Incumbent</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell' class="sign-cell">
-                                                <input type='file' id="uploadsign_1"
-                                                    name="SIGN[JI][{{ $appraisalId }}]" class="form-control"
-                                                    accept='image/jpeg, image/png, image/jpg'>
+                                                <input type='file' id="uploadsign"
+                                                        name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
+                                                        accept='image/jpeg, image/png, image/jpg'>
+
+                                                <input type='hidden' id="uploadsign_1"
+                                                name="SIGN[JI][{{ $appraisalId }}]">
+
                                                 <img src width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
@@ -658,6 +662,26 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Confirm</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this item?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
                 </div>
             </div>
         </div>
@@ -802,35 +826,43 @@
 
             $(document).on('click', '.kra-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var kraID = row.find('input[name$="[kraID]"]').val();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('deleteKRA') }}',
-                    data: {
-                        kraID: kraID
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        row.remove();
-                        updateWeightedTotal();
-                        var rowCount = $('#kra_table tbody tr').length;
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
+                var kraID = row.attr('data-field-id');
+
+                // Show the confirmation modal
+                $('#confirmationModal').modal('show');
+
+                // When the confirmation modal's delete button is clicked
+                $('#confirmDeleteBtn').on('click', function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('deleteKRA') }}',
+                        data: {
+                            kraID: kraID
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            row.remove();
+                            updateWeightedTotal();
+                            var rowCount = $('#kra_table tbody tr').length;
+                            if (rowCount === 1) {
+                                $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+                            }
+                            $('#confirmationModal').modal('hide'); // Close the modal
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#confirmationModal').modal('hide'); // Close the modal
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+                    });
                 });
             });
 
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var wpaID = row.data(
-                    'wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                var wpaID = row.attr('data-field-id'); // Assuming you have a data attribute for WPA ID on the row
 
                 // Send an AJAX request to delete the WPA record from the database
                 $.ajax({
@@ -860,8 +892,7 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var ldpID = row.data(
-                    'ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+                var ldpID = row.attr('data-ldp-id'); // Assuming you have a data attribute for LDP ID on the row
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -881,8 +912,6 @@
                         if (rowCount === 1) {
                             $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
-
-                        console.log(rowCount);
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -908,16 +937,6 @@
             $(document).on('change', '#KRA_table_body input[type="radio"], #KRA_table_body select', function() {
                 updateWeightedTotal();
             });
-
-            loadTableData();
-            formChecker();
-
-            updateFrequencyCounter('SID_table');
-            updateFrequencyCounter('SR_table');
-            updateFrequencyCounter('S_table');
-
-            updateBHTotal();
-            updateWeightedTotal();
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
@@ -973,13 +992,13 @@
                 $modal.modal('hide');
                 $modal.css('display', 'none');
 
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 signInput.classList.remove('is-invalid');
                 signInput.closest('td').classList.remove('border', 'border-danger');
             });
 
             document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 var signatureImage = document.querySelector('#signatureImage');
 
                 // Check if files are uploaded or if a signature image is displayed
@@ -1006,21 +1025,22 @@
                 }
             });
 
-            // Get references to the file input and the image element
-            var fileInput = document.getElementById('uploadsign_1');
+            // Get references to the file input, the image element, and the hidden input
+            var fileInput = document.getElementById('uploadsign');
             var signatureImage = document.getElementById('signatureImage');
-            var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+            var hiddenInput = document.getElementById("uploadsign_1");
 
             // Add an event listener to the file input
             fileInput.addEventListener('change', function() {
                 // Check if any files are selected
                 if (fileInput.files.length > 0) {
                     var file = fileInput.files[0];
-                    
+
                     // Check if the selected file is an image
                     if (file.type.match(/^image\//)) {
-                        signInput.classList.remove('is-invalid');
-                        signInput.closest('td').classList.remove('border', 'border-danger');
+                        fileInput.classList.remove('is-invalid');
+                        fileInput.closest('td').classList.remove('border', 'border-danger');
+
                         // Create a FileReader to read the selected file
                         var reader = new FileReader();
 
@@ -1028,6 +1048,9 @@
                         reader.onload = function(event) {
                             // Set the src attribute of the image element to the loaded image data
                             signatureImage.src = event.target.result;
+
+                            // Set the value of the hidden input to the loaded image data
+                            hiddenInput.value = event.target.result;
                         };
 
                         // Read the selected file as a data URL
@@ -1038,23 +1061,25 @@
                         fileInput.value = ''; // Clear the file input
                     }
                 } else {
-                    // Clear the image if no file is selected
-                    signatureImage.src = null;
+                    // Clear the image and the hidden input value if no file is selected
+                    signatureImage.src = '';
+                    hiddenInput.value = '';
                 }
             });
 
             ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
-                console.log('Input event triggered on:', event.target); // Log the target element
                 var kraField = $(this);
+                console.log('kraField.closest()');
+                console.log(kraField.closest('tr'));
 
-                var kraID = kraField.closest('tr').data('kra-id');
+                var kraID = kraField.closest('tr').attr('data-field-id');
                 var fieldName = kraField.data('field-name');
                 var fieldValue = kraField.val();
 
                 // Log the field name, ID, and value
                 console.log('Field Name:', fieldName);
-                console.log('KRA ID:', kraID);
+                console.log('CURRENT KRA ID:', kraID);
                 console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
@@ -1071,10 +1096,11 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        console.log(response.kraData);
+                        kraField.attr('data-field-id', response.kraData.kra_id);
+                        kraField.closest('tr').attr('data-field-id', response.kraData.kra_id);
 
-                        kraField.closest('tr').data('kra-id', response.kraData.kra_id); 
-                        
+                        var kraID = kraField.closest('tr').attr('data-field-id');
+                        console.log('NEW KRA ID:', kraID);
                     },
                     error: function(xhr, status, error) {
 
@@ -1111,7 +1137,6 @@
                     },
                     success: function(response) {
                         wpafield.closest('tr').data('wpa-id', response.wpaData.performance_plan_id);
-
                     },
                     error: function(xhr, status, error) {
                         // Handle errors if any
@@ -1159,9 +1184,8 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        field.closest('tr').data('ldp-id', response.ldpData.development_plan_id); // Update 'data-ldp-id'
+                        field.closest('tr').data('ldp-id', response.ldpData.development_plan_id);
 
-                        // Handle the success response if needed
                     },
                     error: function(xhr, status, error) {
                         console.log('{{ route('autosaveLDPField') }}');
@@ -1205,6 +1229,15 @@
                     }
                 });
             });
+
+            loadTableData();
+            updateFrequencyCounter('SID_table');
+            updateFrequencyCounter('SR_table');
+            updateFrequencyCounter('S_table');
+            formChecker();
+
+            updateBHTotal();
+            updateWeightedTotal();
         });
 
         function loadTableData() {
@@ -1666,18 +1699,22 @@
 
                     data.signData.forEach(function(sign, index) {
                         var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('[data-appraisal-id="' + appraisalId +
-                            '"]');
-                        console.log(sign);
+                        var row = document.querySelector('.signature-row');
+
                         if (row) {
                             var signCell = row.querySelector('#signcell');
                             var signatureImage = document.querySelector('#signatureImage');
-
+                            var hiddenInput = document.querySelector('#uploadsign_1');
+                            var dateCell = row.querySelector('.date-cell'); // Define dateCell here
+                                            
                             if (sign.sign_data) {
                                 // Validation for signature data
-                                signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
+                                $('#signatureImage').attr('src', sign.sign_data);
+
                                 signatureImage.width = 100;
-                                // signCell.append(signatureImage);
+
+                                // Update the hidden input with the loaded signature data
+                                hiddenInput.value = sign.sign_data;
                             } else {
                                 var errorText = document.createElement('p');
                                 errorText.textContent = 'Invalid signature data';
@@ -1685,11 +1722,9 @@
                                 signCell.appendChild(errorText);
                             }
 
-                            var dateCell = row.querySelector('.date-cell');
-
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.text(sign.updated_at);
+                                dateCell.textContent = sign.updated_at;
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';
@@ -1697,6 +1732,7 @@
                             }
                         }
                     });
+
                 } else {
                     console.error('Data retrieval failed.');
                 }
@@ -1737,7 +1773,7 @@
             var tbody = $('#KRA_table_body');
 
             var nextKRAID = (kraData && kraData.kra_id) ? kraData.kra_id : 0;
-            var row = $('<tr>').attr('data-kra-id', nextKRAID).addClass('align-middle');
+            var row = $('<tr>').attr('data-field-id', nextKRAID).addClass('align-middle');
 
             $('<input>').attr({
                 type: 'hidden',
@@ -1761,7 +1797,7 @@
                 .attr('aria-label', 'Default select example')
                 .attr('name', 'KRA[' + nextKRAID + '][' + {{ $appraisalId }} + '][KRA_kra_weight]')
                 .attr('data-appraisal-id', {{ $appraisalId }}) 
-                .attr('data-kra-id', nextKRAID) 
+                .attr('data-field-id', nextKRAID) 
                 .attr('data-field-name', 'kra_weight') 
                 .appendTo($('<td>'))
                 .appendTo(row);
@@ -1821,7 +1857,7 @@
                     class: 'form-check-input autosave-field',
                     value: i,
                     'data-appraisal-id': {{ $appraisalId }},
-                    'data-kra-id': nextKRAID,
+                    'data-field-id': nextKRAID,
                     'data-field-name': 'performance_level'
                 });
 
@@ -1940,7 +1976,7 @@
         }
 
         function addNewLDPRow(ldpData) {
-            var nextLDPID = (ldpData && ldpData.ldp_id) ? ldpData.ldp_id : 0;
+            var nextLDPID = (ldpData && ldpData.development_plan_id) ? ldpData.development_plan_id : 0;
 
             var ldptbody = $('#ldp_table_body');
             var ldprow = $('<tr>').attr('data-ldp-id', nextLDPID).addClass('align-middle');
@@ -2097,17 +2133,12 @@
                     console.log(response.phaseData);
 
                     if (response.phaseData === "kra") {
-                        // $('html, body').animate({
-                        //     scrollTop: $('#kra_table').offset().top
-                        // }, 1000);           
-
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
                         $('#KRA_table_body select').prop('disabled', true);
 
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
-                        $('.kra-delete-btn').prop('disabled', true);
                         $('.wpa-delete-btn').prop('disabled', true);
                         $('.ldp-delete-btn').prop('disabled', true);
                     
@@ -2118,6 +2149,10 @@
                         $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
                         $('#submit-btn-form').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 1000);
                     } else if (response.phaseData === "pr") {
                         $('textarea').prop('readonly', true);
                         $('input[type="radio"]').prop('disabled', true);

@@ -78,12 +78,7 @@ class ISAppraisalController extends Controller
     $jicData = JIC::where('appraisal_id', $appraisalId)->get();
     $signData = Signature::where('appraisal_id', $appraisalId)->get();
 
-    foreach ($signData as &$sign) {
-      $sign->sign_data = base64_encode($sign->sign_data);
-    }
-
     return response()->json(['success' => true, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
-
   }
 
   public function saveISAppraisal(Request $request)
@@ -111,7 +106,10 @@ class ISAppraisalController extends Controller
       $this->createKRA($request);
       $this->createWPA($request);
       $this->createLDP($request);
-      
+      $this->createJIC($request);
+
+      $this->createSign($request);
+
       $appraisalID = $request->input('appraisalID');
       $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
         ->first();
@@ -223,48 +221,46 @@ class ISAppraisalController extends Controller
     Log::info($fieldValue);
 
     try {
-        $typeChecker = Appraisals::where('appraisal_id', $appraisalId)->value('evaluation_type');
-
-        // Check if the field name requires updates with both appraisal IDs
-        $requiresDoubleUpdate = in_array($fieldName, ['kra', 'kra_weight', 'objective', 'performance_indicator']);
-
-        // Determine which appraisal IDs to use based on the field name
-        $appraisalIds = $requiresDoubleUpdate ? [$appraisalId, $appraisalId - 1] : [$appraisalId];
-
-        // Iterate through the appraisal IDs and update/create records
-        foreach ($appraisalIds as $id) {
-            // Find the KRA by appraisal ID, kraID, and fieldName
-            $kra = KRA::where('appraisal_id', $id)
-                      ->where('kra_id', $kraID)
-                      ->first();
-
-            if ($kra) {
-                // Update the specific field value
-                $kra->$fieldName = $fieldValue;
-            } else {
-                // Create a new KRA record
-                $kra = new KRA([
-                    'appraisal_id' => $id,
-                    'kra_id' => $kraID,
-                    $fieldName => $fieldValue,
-                ]);
-            }
-
-            // Save the KRA record
-            $kra->save();
-        }
-
-        return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
-    } catch (\Exception $e) {
-        Log::error('Exception Message: ' . $e->getMessage());
-        Log::error('Exception Line: ' . $e->getLine());
-        Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-        // Handle errors if any
-        return response()->json(['error' => 'Autosave failed'], 500);
-    }
+      // Check if the field name requires updates with both appraisal IDs
+      $requiresDoubleUpdate = in_array($fieldName, ['kra', 'kra_weight', 'objective', 'performance_indicator']);
+  
+      // Determine which appraisal IDs to use based on the field name
+      $appraisalIds = $requiresDoubleUpdate ? [$appraisalId - 1, $appraisalId] : [$appraisalId];
+      $KRAIds = $requiresDoubleUpdate ? [$kraID - 1, $kraID] : [$kraID];
+  
+      $count = 0; // Initialize count
+  
+      // Iterate through the appraisal IDs and update/create records
+      foreach ($appraisalIds as $id) {
+          // Find the KRA by appraisal ID, kraID, and fieldName
+          $kra = KRA::where('appraisal_id', $id)
+                    ->where('kra_id', $KRAIds[$count]) // Use the count variable to access KRA ID
+                    ->first();
+  
+          if ($kra) {
+              // Update the specific field value
+              $kra->$fieldName = $fieldValue;
+          } else {
+              // Create a new KRA record
+              $kra = new KRA([
+                  'appraisal_id' => $id,
+                  'kra_id' => $KRAIds[$count], // Use the count variable
+                  'kra_order' => $kraID,
+                  $fieldName => $fieldValue,
+              ]);
+          }
+          // Save the KRA record
+          $kra->save();
+          
+          $count++;
+      }
+  
+      return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
+  } catch (\Exception $e) {
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
+  }
 }
-
 
   public function autosaveWPPField(Request $request)
   {
@@ -631,15 +627,78 @@ class ISAppraisalController extends Controller
       return view('auth.login');
     }
 
-    $JICData = $request->input('feedback');
-    foreach ($JICData as $questionNumber => $data) {
-      JIC::create([
-        'appraisal_id' => $request->input('appraisalID'),
-        'job_incumbent_question' => $data['question'],
-        'answer' => $data['answer'],
-        'comments' => $data['comment'],
-      ]);
+    foreach ($request->input('feedback') as $jicID => $jicData) {
+      $existingJIC = JIC::where('appraisal_id', $request->input('appraisalID'))
+        ->where('job_incumbent_id', $jicID)
+        ->first();
+
+      if ($existingJIC) {
+        if (
+          $existingJIC->job_incumbent_question !== $jicData[$request->input('appraisalID')]['question'] ||
+          $existingJIC->answer !== $jicData[$request->input('appraisalID')]['answer'] ||
+          $existingJIC->comments !== $jicData[$request->input('appraisalID')]['comment']
+        ) {
+          $existingJIC->update([
+            'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
+            'answer' => $jicData[$request->input('appraisalID')]['answer'],
+            'comments' => $jicData[$request->input('appraisalID')]['comments'],
+          ]);
+        }
+      } else {
+        JIC::create([
+          'appraisal_id' => $request->input('appraisalID'),
+          'job_incumbent_question' => $jicData[$request->input('appraisalID')]['question'],
+          'answer' => $jicData[$request->input('appraisalID')]['answer'],
+          'comments' => $jicData[$request->input('appraisalID')]['comments'],
+          'question_order' => $jicID
+        ]);
+      }
     }
+  }
+
+  protected function createSign(Request $request)
+  {
+      if (!session()->has('account_id')) {
+          return view('auth.login');
+      }
+
+      $appraisalId = $request->input('appraisalID');
+      $signatureData = $request->input('SIGN.JI.' . $appraisalId);
+
+      // Check if the signature data exists and is not empty
+      if (!empty($signatureData)) {
+          // Try to find an existing signature
+          $existingSignature = Signature::where('appraisal_id', $appraisalId)
+              ->where('sign_type', 'IS')
+              ->first();
+
+          if ($existingSignature) {
+              // Update the existing signature data
+              $existingSignature->update([
+                  'sign_data' => $signatureData,
+                  'sign_type' => 'IS',
+              ]);
+          } else {
+              // Create a new signature if it doesn't exist
+              try {
+                  // Create a new signature and retrieve its ID
+                  $newSignature = Signature::create([
+                      'appraisal_id' => $appraisalId,
+                      'sign_data' => $signatureData,
+                      'sign_type' => 'IS',
+                  ]);
+
+                  // Get the ID of the newly created signature
+                  $newSignatureId = $newSignature->signature_id;
+              } catch (\Exception $e) {
+                  // Handle the database connection issue
+                  // You can log the error or display a user-friendly message
+                  Log::error('Exception Message: ' . $e->getMessage());
+                  Log::error('Exception Line: ' . $e->getLine());
+                  Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+              }
+          }
+      }
   }
 
   public function getAppraisalSE($employee_id)
@@ -725,7 +784,7 @@ class ISAppraisalController extends Controller
     }
 
     $ldpID = $request->input('ldpID');
-
+    Log::info('$ldpID: ' . $ldpID);
     // Perform the actual deletion of the WPA record from the database
     try {
       LDP::where('development_plan_id', $ldpID)->delete();

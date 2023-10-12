@@ -148,7 +148,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function(event) {
-                            var fileData = event.target.result;
+                        var fileData = event.target.result;
                             $.ajax({
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

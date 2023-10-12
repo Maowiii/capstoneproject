@@ -700,9 +700,13 @@
                                             <td id="partiescell">Job Incumbent</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell' class="sign-cell">
-                                                <input type='file' id="uploadsign_1"
-                                                    name="SIGN[JI][{{ $appraisalId }}]" class="form-control"
+                                                <input type='file' id="uploadsign"
+                                                    name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
                                                     accept='image/jpeg, image/png, image/jpg'>
+
+                                                <input type='hidden' id="uploadsign_1"
+                                                name="SIGN[JI][{{ $appraisalId }}]">
+                                                
                                                 <img src="" width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
@@ -769,8 +773,29 @@
             </div>
         </div>
 
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this item?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="d-flex justify-content-center gap-3 p-3">
-            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">Submit</button>
+            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -894,7 +919,7 @@
             }
         }
 
-        $(document).ready(function() {
+        $(document).ready(function() {  
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
             });
@@ -903,33 +928,33 @@
                 addNewLDPRow($('#ldp_table_body'));
             });
 
-            $(document).on('click', '.kra-delete-btn', function() {
-                var row = $(this).closest('tr');
-                var kraID = row.find('input[name$="[kraID]"]').val();
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('deleteKRA') }}',
-                    data: {
-                        kraID: kraID
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        row.remove();
-                        updateWeightedTotal();
-                        var rowCount = $('#kra_table tbody tr').length;
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
-
             ///////////////////////////////////// Delete  code///////////////////////////////////////////////////
+            // $(document).on('click', '.kra-delete-btn', function() {
+            //     var row = $(this).closest('tr');
+            //     var kraID = row.find('input[name$="[kraID]"]').val();
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: '{{ route('deleteKRA') }}',
+            //         data: {
+            //             kraID: kraID
+            //         },
+            //         headers: {
+            //             'X-CSRF-TOKEN': csrfToken
+            //         },
+            //         success: function(response) {
+            //             row.remove();
+            //             updateWeightedTotal();
+            //             var rowCount = $('#kra_table tbody tr').length;
+            //             if (rowCount === 1) {
+            //                 $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+            //             }
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.error(error);
+            //         }
+            //     });
+            // });
+
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
@@ -963,9 +988,8 @@
 
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
-                var row = $(this).closest('tr');
-                var ldpID = row.data(
-                    'ldp-id'); // Assuming you have a data attribute for LDP ID on the row
+                var row = $(this);
+                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -985,8 +1009,6 @@
                         if (rowCount === 1) {
                             $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
-
-                        console.log(rowCount);
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -1012,16 +1034,6 @@
             $(document).on('change', '#KRA_table_body input[type="radio"]', function() {
                 updateWeightedTotal();
             });
-
-            loadTableData();
-            formChecker();
-
-            updateFrequencyCounter('SID_table');
-            updateFrequencyCounter('SR_table');
-            updateFrequencyCounter('S_table');
-
-            updateBHTotal();
-            updateWeightedTotal();
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
@@ -1135,6 +1147,10 @@
                         reader.onload = function(event) {
                             // Set the src attribute of the image element to the loaded image data
                             signatureImage.src = event.target.result;
+
+                            // Set the value of the hidden input
+                            var hiddenInput = document.getElementById("uploadsign_1");
+                            hiddenInput.value = event.target.result;
                         };
 
                         // Read the selected file as a data URL
@@ -1147,6 +1163,10 @@
                 } else {
                     // Clear the image if no file is selected
                     signatureImage.src = '';
+
+                    // Clear the value of the hidden input
+                    var hiddenInput = document.getElementById("uploadsign_1");
+                    hiddenInput.value = '';
                 }
             });
 
@@ -1365,43 +1385,52 @@
             });
 
             $('#submit-btn-confirm').on('click', function() {
-                    var fileInput = $('#uploadsign_1')[0];
+                var fileInput = $('#uploadsign_1')[0];
 
-                    if (fileInput.files.length === 0) {
-                        $('#uploadsign_1').addClass('is-invalid');
-                        return;
-                    } else {
-                        var selectedFile = fileInput.files[0];
+                if (fileInput.files.length === 0) {
+                    $('#uploadsign_1').addClass('is-invalid');
+                    return;
+                } else {
+                    var selectedFile = fileInput.files[0];
 
-                        var reader = new FileReader();
-                        reader.onload = function(event) {
-                            var fileData = event.target.result;
-                            $.ajax({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                url: '{{ route('pe.submitICSignature') }}',
-                                type: 'POST',
-                                data: {
-                                    appraisalId: appraisalId,
-                                    esignature: fileData,
-                                },
-                                success: function(response) {
-                                    if (response.success) {
-                                        loadSignature();
-                                        console.log('Esignature Updated.');
-                                        formChecker();
-                                    } else {
-                                        console.log('Esignature Updated bot else');
-                                    }
-                                },
-                                error: function(xhr, status, error) {}
-                            });
-                        };
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var fileData = event.target.result;
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: '{{ route('pe.submitICSignature') }}',
+                            type: 'POST',
+                            data: {
+                                appraisalId: appraisalId,
+                                esignature: fileData,
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    loadSignature();
+                                    console.log('Esignature Updated.');
+                                    formChecker();
+                                } else {
+                                    console.log('Esignature Updated bot else');
+                                }
+                            },
+                            error: function(xhr, status, error) {}
+                        });
+                    };
 
-                        reader.readAsDataURL(selectedFile);
-                    }
-                });
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
+
+            loadTableData();
+            updateFrequencyCounter('SID_table');
+            updateFrequencyCounter('SR_table');
+            updateFrequencyCounter('S_table');
+            formChecker();
+
+            updateBHTotal();
+            updateWeightedTotal();
         });
 
         function loadTableData() {
@@ -2422,15 +2451,27 @@
                         $('input[type="radio"]').prop('disabled', true);
                         $('input[type="radio"]').attr("disabled", true);
 
+                        $('#submit-btn-form').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 1000);
                     } else if (response.phaseData === "pr") {
                         $('input[type="radio"]').prop('disabled', true);
-                        $('input[type="radio"]').attr("disabled", true);
-                        $('input[type="radio"]').attr("readonly", true);;
+
+                        // $('input[type="radio"]').attr("disabled", true);
+                        
                         $('textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);
                         $('#KRA_table_body select').attr('disabled', true);
 
+                        $('#submit-btn-form').hide();
+
                         $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 1000); 
                     } else if (response.phaseData === "eval") {
                         $('#KRA_table_body textarea').prop('readonly', true);
                         $('#KRA_table_body select').prop('disabled', true);

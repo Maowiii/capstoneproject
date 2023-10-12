@@ -564,27 +564,25 @@
                                     </thead>
                                     <tbody>
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
-                                            <td id="partiescell">Job Incumbent</td>
+                                            <td id="partiescell_JIC">Job Incumbent</td>
+                                            <td id="fullnamecell_JIC"></td>
+                                            <td id="signcell_JIC" class="sign-cell">
+                                            </td>
+                                            <td id="datecell_JIC"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="partiescell">Immediate Superior</td>
                                             <td id="fullnamecell"></td>
-                                            <td id='signcell' class="sign-cell">
-                                                <input type='file' id="uploadsign_1"
-                                                    name="SIGN[JI][{{ $appraisalId }}]" class="form-control"
-                                                    accept='image/jpeg, image/png, image/jpg'>
+                                            <td id='signcell'>
                                                 <img src="" width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
                                         </tr>
                                         <tr>
-                                            <td id="partiescell">Immediate Superior</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'></td>
-                                            <td id="datecell"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="partiescell">Next Higher Superior</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'></td>
-                                            <td id="datecell" style="width:15%"></td>
+                                            <td id="partiescell_">Next Higher Superior</td>
+                                            <td id="fullnamecell_"></td>
+                                            <td id='signcell_'></td>
+                                            <td id="datecell_"  style="width:15%"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -610,10 +608,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <!-- <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -636,6 +634,9 @@
             </div>
         </div>
         
+        <div class="d-flex justify-content-center gap-3 p-3">
+            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">View Signature</button>
+        </div>
     </form>
 
     <script>
@@ -702,6 +703,51 @@
 
             $('input[type="radio"]').prop('disabled', true);
             $('textarea').prop('disabled', true);
+
+            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
+                var form = document.getElementById('PEappraisalForm');
+                var valid = true;
+
+                var inputElements = form.querySelectorAll('input:not([type="hidden"])');
+
+                inputElements.forEach(function(inputElement) {
+                    if (inputElement.classList.contains('is-invalid')) {
+                        // Handle your validation logic here
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.focus(); // Corrected line
+                    }
+                });
+
+                if (!valid || !form.checkValidity()) {
+                    event.preventDefault(); // Prevent the form from submitting
+                    event.stopPropagation();
+
+                    var invalidInputs = form.querySelectorAll('.is-invalid');
+
+                    // Handle invalid inputs, display error messages, etc.
+                    invalidInputs.forEach(function(invalidInput) {
+                        // Handle validation messages for invalid inputs
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                    });
+
+                    // Optionally, focus on the first invalid input
+                    invalidInputs[0].focus();
+
+                    console.error('Form validation failed.');                
+                } else {
+                    // Form validation succeeded
+                    console.info('Form validation succeeded.');
+                    // Set a flag or trigger the modal opening here
+                    openModal();
+                }
+            });
+
+            // Function to open the modal
+            function openModal() {
+                console.log('submit clicked');
+                $('#signatory_modal').modal('show');
+            }
         });
 
         function loadTableData() {
@@ -937,6 +983,7 @@
                             $('#kra_table tbody tr .delete-btn').prop('disabled', true);
                         }
                     } else {
+                        console.log(data);
                         data.kraData.forEach(function(kra, index) {
                             var kraID = kra.kra_id;
 
@@ -1152,64 +1199,66 @@
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
+                       
+                        if (row) {
+                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) + '][{{ $appraisalId }}][answer]"][value="0"]');                  
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index + 1) +
-                            '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index + 1) +
-                            '][{{ $appraisalId }}][answer]"][value="0"]');
-
-                        if (jic.answer === 1) {
-                            answerRadioYes.checked = true;
-                        } else if (jic.answer === 0) {
-                            answerRadioNo.checked = true;
-                        }
-
-                        $(answerRadioYes).on('invalid', function() {
-                            $(this).addClass('is-invalid text-danger fw-bold');
-                            $(this).siblings('span').addClass('text-danger');
-                        });
-
-                        $(answerRadioNo).on('invalid', function() {
-                            $(this).addClass('is-invalid text-danger fw-bold');
-                            $(this).siblings('span').addClass('text-danger');
-                        });
-
-                        $(answerRadioYes).on('input', function() {
-                            var row = $(this).closest('tr');
-                            row.find('.is-invalid').removeClass('is-invalid');
-                            row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                            $(this).closest('tr').removeClass('text-danger fw-bold');
-                        });
-
-                        $(answerRadioNo).on('input', function() {
-                            var row = $(this).closest('tr');
-                            row.find('.is-invalid').removeClass('is-invalid');
-                            row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                            $(this).closest('tr').removeClass('text-danger fw-bold');
-                        });
-
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
-                            1) + '][{{ $appraisalId }}][comment]"]');
-                        commentTextarea.value = jic.comments;
-
-                        // Attach input event handlers for validation
-                        $(commentTextarea).on('input', function() {
-                            $(this).removeClass('border border-danger');
-                            $(this).removeClass('is-invalid');
-                        }).on('invalid', function() {
-                            $(this).addClass('is-invalid');
-                            $(this).attr('placeholder', 'Please provide a valid input');
-                        }).on('blur', function() {
-                            if ($(this).val().trim() === '') {
-                                $(this).addClass('is-invalid');
+                            if (jic.answer === 1) {
+                                answerRadioYes.checked = true;
+                            } else if (jic.answer === 0) {
+                                answerRadioNo.checked = true;
                             }
-                        });
 
-                        answerRadioYes.disabled = true;
-                        answerRadioNo.disabled = true;
-                        commentTextarea.disabled = true;
+                            $(answerRadioYes).on('invalid', function() {
+                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            $(answerRadioNo).on('invalid', function() {
+                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            $(answerRadioYes).on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                            });
+
+                            $(answerRadioNo).on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                            });
+
+                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +
+                                1) + '][{{ $appraisalId }}][comment]"]');
+                            commentTextarea.value = jic.comments;
+
+                            // Attach input event handlers for validation
+                            $(commentTextarea).on('input', function() {
+                                $(this).removeClass('border border-danger');
+                                $(this).removeClass('is-invalid');
+                            }).on('invalid', function() {
+                                $(this).addClass('is-invalid');
+                                $(this).attr('placeholder', 'Please provide a valid input');
+                            }).on('blur', function() {
+                                if ($(this).val().trim() === '') {
+                                    $(this).addClass('is-invalid');
+                                }
+                            });
+
+                            answerRadioYes.disabled = true;
+                            answerRadioNo.disabled = true;
+                            commentTextarea.disabled = true;
+                        } else {
+                            // console.log('Row not found for index ' + index);
+                        }
                     });
 
                     data.signData.forEach(function(sign, index) {
@@ -1217,11 +1266,36 @@
                         var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
 
                         if (row) {
+                            var fullnamecell = row.querySelector('#fullnamecell');
+                            
+                            if (sign.sign_data) {
+                                var fullnamecell = document.querySelector('#fullnamecell');
+                                var appraisal = sign.appraisal;
+                                var employee = appraisal.employee;
+
+                                if (employee.employee_id) {
+                                    // Check if all properties are defined before accessing them
+                                    fullnamecell.textContent = employee.first_name + ' ' + employee.last_name;
+                                }
+                            }
+
+                            var signatureImage = document.createElement('img');
+                            if (sign.sign_data) {
+                                // Validation for signature data
+                                $('#signatureImage').attr('src', sign.sign_data);
+                                signatureImage.width = 100;
+                            } else {
+                                var errorText = document.createElement('p');
+                                errorText.textContent = 'Invalid signature data';
+                                errorText.classList.add('text-danger', 'fw-bold');
+                                signCell.appendChild(errorText);
+                            }
+
                             var signCell = row.querySelector('.sign-cell');
                             var signatureImage = document.createElement('img');
                             if (sign.sign_data) {
                                 // Validation for signature data
-                                signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
+                                $('#signatureImage').attr('src', sign.sign_data);
                                 signatureImage.width = 100;
                                 signCell.appendChild(signatureImage);
                             } else {
@@ -1231,11 +1305,17 @@
                                 signCell.appendChild(errorText);
                             }
 
-                            var dateCell = row.querySelector('.date-cell');
-
+                            var dateCell = document.querySelector('.date-cell');
+                            
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.textContent = sign.updated_at;
+                                // Convert the timestamp to a JavaScript Date object
+                                var timestamp = new Date(sign.updated_at);
+
+                                // Format the date as a string (e.g., "YYYY-MM-DD HH:MM:SS")
+                                var formattedDate = timestamp.toLocaleString(); // You can customize the format further if needed
+
+                                dateCell.textContent = formattedDate;                            
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';

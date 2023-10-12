@@ -217,12 +217,9 @@ class SelfEvaluationController extends Controller
     $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
     $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
     $jicData = JIC::where('appraisal_id', $appraisalId)->get();
-    $signData = Signature::where('appraisal_id', $appraisalId)->get();
-
-    foreach ($signData as &$sign) {
-      $sign->sign_data = base64_encode($sign->sign_data);
-    }
-
+    $signData = Signature::where('appraisal_id', $appraisalId)
+    ->with('appraisal.employee:employee_id,first_name,last_name')
+    ->get();
     return response()->json(['success' => true, 'eulaData' => $eulaData, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
   }
 
@@ -1024,7 +1021,9 @@ class SelfEvaluationController extends Controller
       ////////////PHASES/////////////
       // $currentDate = Carbon::now();
 
-      $currentDate = Carbon::parse("2023-11-11");
+      // $currentDate = Carbon::parse("2023-10-31"); //KRA
+      // $currentDate = Carbon::parse("2023-11-11"); //PR
+      $currentDate = Carbon::parse("2023-11-22"); //EVAL
 
       $activeYear = EvalYear::where('status', 'active')->first();
 
