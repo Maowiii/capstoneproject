@@ -163,7 +163,8 @@
                                 <td>Internal Customer 1</td>
                                 <td id="IC1_perc" data-val="0.2">20%</td>
                                 <td id="IC1_rating"></td>
-                                <td id="IC1_wtotal"></td>                            </tr>
+                                <td id="IC1_wtotal"></td>                            
+                            </tr>
                             <tr>
                                 <td>Internal Customer 2</td>
                                 <td id="IC2_perc" data-val="0.2">20%</td>
