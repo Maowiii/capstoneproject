@@ -560,3 +560,41 @@ textarea {
 }
 
 /* PORTABILITY */
+/* Responsive font size */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 400px) {
+    .sidebar {
+        width: 78px;
+    }
+
+    .sidebar.close {
+        width: 0;
+    }
+
+    .content-section {
+        left: 78px;
+        width: calc(100% - 78px);
+    }
+
+    .sidebar.close ~ .content-section {
+        width: 100%;
+        left: 0;
+    }
+
+    .sidebar .nav-links li .sub-menu {
+        display: none;
+    }
+}
+
+/* Adjust font sizes for different screen sizes */
+@media (min-width: 768px) {
+    body {
+        font-size: 18px;
+    }
+}
