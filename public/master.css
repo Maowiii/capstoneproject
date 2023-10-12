@@ -559,3 +559,29 @@ textarea {
     max-width: 30%!important;
 }
 
+/* PORTABILITY */
+/* Media query for screens larger than 768px */
+@media (min-width: 768px) {
+    body {
+        font-size: 18px;
+    }
+
+    #formcard {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+/* Media query for screens larger than 992px */
+@media (min-width: 992px) {
+    #formcard {
+        max-width: 600px;
+    }
+}
+
+/* Media query for screens larger than 1200px */
+@media (min-width: 1200px) {
+    body {
+        font-size: 20px;
+    }
+}
