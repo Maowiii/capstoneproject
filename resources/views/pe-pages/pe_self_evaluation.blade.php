@@ -711,7 +711,7 @@
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
                                         </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <td id="partiescell">Immediate Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
@@ -722,11 +722,11 @@
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
                                             <td id="datecell" style="width:15%"></td>
-                                        </tr>
+                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>
-                            <h3>Notation</h3>
+                            {{-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -744,7 +744,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -792,7 +792,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="d-flex justify-content-center gap-3 p-3">
             <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
@@ -1069,7 +1068,7 @@
 
                     console.error('Form validation failed.');                
                 } else {
-                    // Form validation succeeded
+                    // Form validation succeeded    
                     console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
@@ -1089,20 +1088,17 @@
                 $modal.modal('hide');
                 $modal.css('display', 'none');
 
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 signInput.classList.remove('is-invalid');
                 signInput.closest('td').classList.remove('border', 'border-danger');
             });
 
             document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 var signatureImage = document.querySelector('#signatureImage');
 
-                console.log(signInput.files.length);
-
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null ||
-                        signatureImage.getAttribute('src') === '')) {
+                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null || signatureImage.getAttribute('src') === '')) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1114,8 +1110,8 @@
                     });
 
                     console.error('Signature validation failed.');
-                    return;
-                } else {
+                    return null;
+                }else{
                     // Clear validation if files are uploaded or a signature image is displayed
                     signInput.classList.remove('is-invalid');
                     signInput.closest('td').classList.remove('border', 'border-danger');
@@ -1125,10 +1121,10 @@
                 }
             });
 
-            // Get references to the file input and the image element
-            var fileInput = document.getElementById('uploadsign_1');
+            // Get references to the file input, the image element, and the hidden input
+            var fileInput = document.getElementById('uploadsign');
             var signatureImage = document.getElementById('signatureImage');
-            var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}]"]');
+            var hiddenInput = document.getElementById("uploadsign_1");
 
             // Add an event listener to the file input
             fileInput.addEventListener('change', function() {
@@ -1138,8 +1134,9 @@
 
                     // Check if the selected file is an image
                     if (file.type.match(/^image\//)) {
-                        signInput.classList.remove('is-invalid');
-                        signInput.closest('td').classList.remove('border', 'border-danger');
+                        fileInput.classList.remove('is-invalid');
+                        fileInput.closest('td').classList.remove('border', 'border-danger');
+
                         // Create a FileReader to read the selected file
                         var reader = new FileReader();
 
@@ -1148,8 +1145,7 @@
                             // Set the src attribute of the image element to the loaded image data
                             signatureImage.src = event.target.result;
 
-                            // Set the value of the hidden input
-                            var hiddenInput = document.getElementById("uploadsign_1");
+                            // Set the value of the hidden input to the loaded image data
                             hiddenInput.value = event.target.result;
                         };
 
@@ -1161,11 +1157,8 @@
                         fileInput.value = ''; // Clear the file input
                     }
                 } else {
-                    // Clear the image if no file is selected
+                    // Clear the image and the hidden input value if no file is selected
                     signatureImage.src = '';
-
-                    // Clear the value of the hidden input
-                    var hiddenInput = document.getElementById("uploadsign_1");
                     hiddenInput.value = '';
                 }
             });
@@ -2072,26 +2065,28 @@
 
                     data.signData.forEach(function(sign, index) {
                         var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('[data-appraisal-id="' + appraisalId +
-                            '"]');
+                        var row = document.querySelector('.signature-row');
 
                         if (row) {
-                            var signCell = row.querySelector('.sign-cell');
+                            var signCell = row.querySelector('#signcell');
                             var signatureImage = document.querySelector('#signatureImage');
-
+                            var hiddenInput = document.querySelector('#uploadsign_1');
+                            var dateCell = row.querySelector('.date-cell'); 
+                                            
                             if (sign.sign_data) {
                                 // Validation for signature data
-                                signatureImage.src = 'data:image/jpeg;base64,' + sign.sign_data;
+                                $('#signatureImage').attr('src', sign.sign_data);
+
                                 signatureImage.width = 100;
-                                signCell.appendChild(signatureImage);
+
+                                // Update the hidden input with the loaded signature data
+                                hiddenInput.value = sign.sign_data;
                             } else {
                                 var errorText = document.createElement('p');
                                 errorText.textContent = 'Invalid signature data';
                                 errorText.classList.add('text-danger', 'fw-bold');
                                 signCell.appendChild(errorText);
                             }
-
-                            var dateCell = row.querySelector('.date-cell');
 
                             if (sign.updated_at) {
                                 // Validation for date data

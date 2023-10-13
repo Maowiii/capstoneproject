@@ -124,7 +124,7 @@
                                         AppraiseLink = $('<a>').addClass(
                                                 'btn btn-outline-primary')
                                             .attr('href',
-                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
 

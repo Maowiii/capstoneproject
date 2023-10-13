@@ -972,7 +972,7 @@
 
                     console.error('Form validation failed.');                
                 } else {
-                    // Form validation succeeded
+                    // Form validation succeeded    
                     console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
@@ -1754,6 +1754,8 @@
                     $(this).removeClass('border border-danger');
                     $(this).closest('td').removeClass(
                         'border border-danger');
+                    $(this).closest('div').removeClass(
+                    'border border-danger');
                     $(this).removeClass('is-invalid');
                 }).on('invalid', function() {
                     $(this).addClass('is-invalid');
@@ -2152,7 +2154,7 @@
 
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
-                        }, 1000);
+                        }, 100);
                     } else if (response.phaseData === "pr") {
                         $('textarea').prop('readonly', true);
                         $('input[type="radio"]').prop('disabled', true);

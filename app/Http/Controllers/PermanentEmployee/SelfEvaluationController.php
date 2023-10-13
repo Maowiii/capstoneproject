@@ -327,7 +327,8 @@ class SelfEvaluationController extends Controller
     return Validator::make($request->all(), [
       'appraisalID' => 'required|numeric',
 
-      'SIGN.JI.*' => 'required|image|mimes:jpeg,png,jpg|max:50000',
+      'SIGN.JI.*.file' => 'required|image|mimes:jpeg,png,jpg|max:50000',
+      'SIGN.JI.*' => 'required',
 
       'SID' => 'required|array',
       'SID.*' => 'required|array',
@@ -936,48 +937,47 @@ class SelfEvaluationController extends Controller
 
   protected function createSign(Request $request)
   {
-    if (!session()->has('account_id')) {
-      return view('auth.login');
-    }
-
-    $appraisalId = $request->input('appraisalID'); // Add a semicolon here
-    $signatureFile = $request->file('SIGN.JI.' . $appraisalId);
-
-    // Check if the file exists and is valid
-    if ($signatureFile && $signatureFile->isValid()) {
-      $existingSignature = Signature::where('appraisal_id', $appraisalId)
-        ->where('sign_type', 'JI')
-        ->first();
-
-      if ($existingSignature) {
-        // Get signature data from uploaded file
-        $signatureData = file_get_contents($signatureFile->getRealPath());
-
-        $existingSignature->update([
-          'sign_data' => $signatureData,
-          'sign_type' => 'JI',
-        ]);
-      } else {
-        try {
-          $signatureData = file_get_contents($signatureFile->getRealPath());
-
-          // Create a new signature and retrieve its ID
-          $newSignature = Signature::create([
-            'appraisal_id' => $appraisalId,
-            'sign_data' => $signatureData,
-            'sign_type' => 'JI',
-            // You should add other necessary fields here
-          ]);
-
-          // Get the ID of the newly created signature
-          $newSignatureId = $newSignature->signature_id;
-        } catch (QueryException $e) {
-          // Handle the database connection issue
-          // You can log the error or display a user-friendly message
-          dd('Error: ' . $e->getMessage());
-        }
+      if (!session()->has('account_id')) {
+          return view('auth.login');
       }
-    }
+
+      $appraisalId = $request->input('appraisalID');
+      $signatureData = $request->input('SIGN.JI.' . $appraisalId);
+
+      // Check if the signature data exists and is not empty
+      if (!empty($signatureData)) {
+          // Try to find an existing signature
+          $existingSignature = Signature::where('appraisal_id', $appraisalId)
+              ->where('sign_type', 'IS')
+              ->first();
+
+          if ($existingSignature) {
+              // Update the existing signature data
+              $existingSignature->update([
+                  'sign_data' => $signatureData,
+                  'sign_type' => 'IS',
+              ]);
+          } else {
+              // Create a new signature if it doesn't exist
+              try {
+                  // Create a new signature and retrieve its ID
+                  $newSignature = Signature::create([
+                      'appraisal_id' => $appraisalId,
+                      'sign_data' => $signatureData,
+                      'sign_type' => 'IS',
+                  ]);
+
+                  // Get the ID of the newly created signature
+                  $newSignatureId = $newSignature->signature_id;
+              } catch (\Exception $e) {
+                  // Handle the database connection issue
+                  // You can log the error or display a user-friendly message
+                  Log::error('Exception Message: ' . $e->getMessage());
+                  Log::error('Exception Line: ' . $e->getLine());
+                  Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+              }
+          }
+      }
   }
 
   public function formChecker(Request $request)
