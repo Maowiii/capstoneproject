@@ -38,6 +38,9 @@
             <p>-</p>
         </div>
     </div>
+    <div class="content-container">
+        <canvas id="lineChart" aria-label="chart" height="140" width="580"></canvas>
+    </div>
 
     <div class="content-container">
         <div class="input-group mb-2 search-box">
@@ -57,6 +60,26 @@
         </table>
         <nav id="department_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
+        </nav>
+    </div>
+    <div class="content-container">
+        <div class="input-group mb-2 search-box">
+            <input type="text" class="form-control" placeholder="Employees" id="search">
+            <button class="btn btn-outline-secondary" type="button">
+                <i class='bx bx-search'></i>
+            </button>
+        </div>
+        <table class='table table-bordered table-sm align-middle' id="employees_table">
+            <thead>
+                <tr>
+                    <th>Employees</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <nav id="employees_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="employees_pagination"></ul>
         </nav>
     </div>
 
@@ -283,7 +306,8 @@
 
                             var departmentNameLink = $('<a>')
                                 .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
-                                    "&department_id=" + department.department.department_id + '&department_name=' +
+                                    "&department_id=" + department.department.department_id +
+                                    '&department_name=' +
                                     encodeURIComponent(department.department.department_name))
                                 .text(department.department.department_name);
 
@@ -909,5 +933,127 @@
                 }
             });
         }
+
+        function fetchAndDisplayLineChart() {
+            var historicalData = {
+                labels: [],
+                datasets: []
+            };
+
+            $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
+                if (data.success) {
+                    var ctx = document.getElementById('lineChart').getContext('2d');
+                    var scoresPerYear = data.scoresPerYear;
+
+                    var labels = [];
+                    var datasets = [];
+
+                    for (var yearRange in scoresPerYear) {
+                        if (scoresPerYear.hasOwnProperty(yearRange)) {
+                            labels.push(yearRange);
+                            var data = scoresPerYear[yearRange].map(item => item.total_score);
+
+                            datasets.push({
+                                label: yearRange,
+                                data: data,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            });
+                        }
+                    }
+
+                    historicalData.labels = historicalData.labels.concat(labels);
+                    historicalData.datasets = historicalData.datasets.concat(datasets);
+
+                    var lineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: historicalData,
+                        options: {
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Evaluation Year'
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Total Final Score'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Calculate the overall average final score
+                    var overallAverageScore = calculateOverallAverageScore(scoresPerYear);
+                    console.log('Overall Average Final Score: ' + overallAverageScore);
+                }
+            });
+        }
+
+        function calculateOverallAverageScore(scoresPerYear) {
+            var totalScore = 0;
+            var totalEmployeeCount = 0;
+
+            for (var yearRange in scoresPerYear) {
+                if (scoresPerYear.hasOwnProperty(yearRange)) {
+                    scoresPerYear[yearRange].forEach(item => {
+                        totalScore += item.total_score;
+                        totalEmployeeCount += item.employee_count;
+                    });
+                }
+            }
+
+            if (totalEmployeeCount === 0) {
+                return 0; // Handle the case where no employees submitted scores
+            } else {
+                return totalScore / totalEmployeeCount;
+            }
+        }
+
+        fetchAndDisplayLineChart();
+
+
+        function loadEmployeeTable(search = '') {
+            $.ajax({
+                url: '{{ route('ad.loadEmployeeTable') }}',
+                method: 'GET',
+                data: {
+                    search
+                },
+                success: function(data) {
+                    if (data.success) {
+                        var employeesTable = $('#employees_table');
+                        employeesTable.find('tbody').empty();
+
+                        // Sort the employees array alphabetically by first_name
+                        data.employees.sort(function(a, b) {
+                            return a.first_name.localeCompare(b.first_name);
+                        });
+
+                        data.employees.forEach(function(employee) {
+                            var viewButton =
+                                '<button class="btn btn-primary btn-sm" onclick="viewEmployee(' +
+                                employee.employee_id + ')">View</button>';
+                            employeesTable.find('tbody').append('<tr><td>' + employee.first_name + ' ' +
+                                employee.last_name + '</td><td>' + viewButton + '</td></tr>');
+                        });
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while loading employee data.');
+                }
+            });
+        }
+
+        // Initial load
+        $(document).ready(function() {
+            loadEmployeeTable();
+        });
     </script>
 @endsection

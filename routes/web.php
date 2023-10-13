@@ -65,6 +65,8 @@ Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::clas
 Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::class, 'loadBCQuestions'])->name('ad.loadDashboardBCQuestions');
 Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loadCards'])->name('ad.loadCards');
+Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
+Route::get('/dashboard-admin/get-employees', [AdminDashboardController::class, 'loadEmployeeTable'])->name('ad.loadEmployeeTable');
 
 
 // Departmental Analytics
@@ -204,5 +206,3 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showICForm'])->name('ce.viewICAppraisalForm');
-
-

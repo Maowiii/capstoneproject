@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
@@ -129,7 +131,6 @@ class AdminDashboardController extends Controller
           $page,
           ['path' => $request->url(), 'query' => $request->query()]
         );
-
       } else {
         if (FinalScores::tableExists()) {
           $perPage = 20;
@@ -167,7 +168,6 @@ class AdminDashboardController extends Controller
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
           );
-
         } else {
           return response()->json(['success' => false]);
         }
@@ -334,9 +334,8 @@ class AdminDashboardController extends Controller
       'success' => true,
       'ic' => $icQuestions
     ]);
-
   }
- 
+
   public function loadPointsSystem(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
@@ -417,6 +416,57 @@ class AdminDashboardController extends Controller
       'poor' => $poor
     ]);
   }
+  public function getFinalScoresPerYear()
+  {
+    // Get all evaluation years, whether active or not
+    $evaluationYears = EvalYear::all();
+    $scoresPerYear = [];
+    foreach ($evaluationYears as $year) {
+      $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
+
+      // Fetch the total final scores and count of employees who submitted for the current year
+      $scores = DB::table($table)
+        ->select(
+          'employee_id',
+          DB::raw('SUM(final_score) as total_score'),
+          DB::raw('COUNT(DISTINCT employee_id) as employee_count')
+        )
+        ->groupBy('employee_id')
+        ->get();
+
+      $scoresPerYear[$year->sy_start . '-' . $year->sy_end] = $scores;
+    }
+
+    // Divide total scores by the number of employees who submitted for each year
+    foreach ($scoresPerYear as $yearRange => $scores) {
+      foreach ($scores as $score) {
+        $score->total_score /= $score->employee_count;
+      }
+    }
+
+    // Log the result (You can use Laravel's Log::info or write to a log file)
+    Log::info('Computed Final Scores Per Year', $scoresPerYear);
+    return response()->json([
+      'success' => true,
+      'scoresPerYear' => $scoresPerYear,
+    ]);
+  }
 
 
+  public function loadEmployeeTable(Request $request)
+  {
+    if (session()->has('account_id')) {
+      $search = $request->input('search');
+
+      $employees = Employees::where('first_name', 'LIKE', '%' . $search . '%')
+        ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+        ->orderBy('last_name')
+        ->orderBy('first_name')
+        ->get();
+
+      return response()->json(['success' => true, 'employees' => $employees]);
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+  }
 }
