@@ -934,64 +934,90 @@
             });
         }
 
-        // Define a global variable to store historical data
-        var historicalData = {
-            labels: [],
-            datasets: []
-        };
-        // Make an AJAX request to fetch final scores per year for all evaluation years
-        $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
-            if (data.success) {
-                var ctx = document.getElementById('lineChart').getContext('2d');
-                var scoresPerYear = data.scoresPerYear;
+        function fetchAndDisplayLineChart() {
+            var historicalData = {
+                labels: [],
+                datasets: []
+            };
 
-                // Extract the labels and data for each year
-                var labels = [];
-                var datasets = [];
+            $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
+                if (data.success) {
+                    var ctx = document.getElementById('lineChart').getContext('2d');
+                    var scoresPerYear = data.scoresPerYear;
 
-                for (var yearRange in scoresPerYear) {
-                    if (scoresPerYear.hasOwnProperty(yearRange)) {
-                        labels.push(yearRange);
-                        var data = scoresPerYear[yearRange].map(item => item.total_score);
+                    var labels = [];
+                    var datasets = [];
 
-                        datasets.push({
-                            label: yearRange,
-                            data: data,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                        });
+                    for (var yearRange in scoresPerYear) {
+                        if (scoresPerYear.hasOwnProperty(yearRange)) {
+                            labels.push(yearRange);
+                            var data = scoresPerYear[yearRange].map(item => item.total_score);
+
+                            datasets.push({
+                                label: yearRange,
+                                data: data,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            });
+                        }
                     }
-                }
 
-                // Append the new data to historical data
-                historicalData.labels = historicalData.labels.concat(labels);
-                historicalData.datasets = historicalData.datasets.concat(datasets);
+                    historicalData.labels = historicalData.labels.concat(labels);
+                    historicalData.datasets = historicalData.datasets.concat(datasets);
 
-                var lineChart = new Chart(ctx, {
-                    type: 'line',
-                    data: historicalData, // Use historical data for the chart
-                    options: {
-                        scales: {
-                            x: {
-                                display: true,
-                                title: {
+                    var lineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: historicalData,
+                        options: {
+                            scales: {
+                                x: {
                                     display: true,
-                                    text: 'Evaluation Year'
-                                }
-                            },
-                            y: {
-                                display: true,
-                                title: {
+                                    title: {
+                                        display: true,
+                                        text: 'Evaluation Year'
+                                    }
+                                },
+                                y: {
                                     display: true,
-                                    text: 'Total Final Score'
+                                    title: {
+                                        display: true,
+                                        text: 'Total Final Score'
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+
+                    // Calculate the overall average final score
+                    var overallAverageScore = calculateOverallAverageScore(scoresPerYear);
+                    console.log('Overall Average Final Score: ' + overallAverageScore);
+                }
+            });
+        }
+
+        function calculateOverallAverageScore(scoresPerYear) {
+            var totalScore = 0;
+            var totalEmployeeCount = 0;
+
+            for (var yearRange in scoresPerYear) {
+                if (scoresPerYear.hasOwnProperty(yearRange)) {
+                    scoresPerYear[yearRange].forEach(item => {
+                        totalScore += item.total_score;
+                        totalEmployeeCount += item.employee_count;
+                    });
+                }
             }
-        });
+
+            if (totalEmployeeCount === 0) {
+                return 0; // Handle the case where no employees submitted scores
+            } else {
+                return totalScore / totalEmployeeCount;
+            }
+        }
+
+        fetchAndDisplayLineChart();
+
 
         function loadEmployeeTable(search = '') {
             $.ajax({

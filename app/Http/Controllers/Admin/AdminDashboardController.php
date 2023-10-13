@@ -424,12 +424,24 @@ class AdminDashboardController extends Controller
     foreach ($evaluationYears as $year) {
       $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
 
-      // Fetch the total final scores for each employee for the current year
+      // Fetch the total final scores and count of employees who submitted for the current year
       $scores = DB::table($table)
-        ->select('employee_id', DB::raw('SUM(final_score) as total_score'))
+        ->select(
+          'employee_id',
+          DB::raw('SUM(final_score) as total_score'),
+          DB::raw('COUNT(DISTINCT employee_id) as employee_count')
+        )
         ->groupBy('employee_id')
         ->get();
+
       $scoresPerYear[$year->sy_start . '-' . $year->sy_end] = $scores;
+    }
+
+    // Divide total scores by the number of employees who submitted for each year
+    foreach ($scoresPerYear as $yearRange => $scores) {
+      foreach ($scores as $score) {
+        $score->total_score /= $score->employee_count;
+      }
     }
 
     // Log the result (You can use Laravel's Log::info or write to a log file)
@@ -439,7 +451,8 @@ class AdminDashboardController extends Controller
       'scoresPerYear' => $scoresPerYear,
     ]);
   }
-  
+
+
   public function loadEmployeeTable(Request $request)
   {
     if (session()->has('account_id')) {
