@@ -216,9 +216,10 @@ class ISAppraisalController extends Controller
     $kraID = $request->input('kraID');
     $fieldName = $request->input('fieldName');
     $fieldValue = $request->input('fieldValue');
-    Log::info($appraisalId);
-    Log::info($fieldName);
-    Log::info($fieldValue);
+    
+    Log::info('appraisalId: ' . $appraisalId);
+    Log::info('fieldName: ' . $fieldName);
+    Log::info('fieldValue: ' . $fieldValue);
 
     try {
       // Check if the field name requires updates with both appraisal IDs
@@ -257,8 +258,11 @@ class ISAppraisalController extends Controller
   
       return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
   } catch (\Exception $e) {
-      // Handle errors if any
-      return response()->json(['error' => 'Autosave failed'], 500);
+    Log::error('Exception Message: ' . $e->getMessage());
+    Log::error('Exception Line: ' . $e->getLine());
+    Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+    
+    return response()->json(['error' => 'Autosave failed'], 500);
   }
 }
 
@@ -493,7 +497,11 @@ class ISAppraisalController extends Controller
       $existingKRA = KRA::where('appraisal_id', $request->input('appraisalID'))
         ->where('kra_id', $kraID)
         ->first();
+
       if ($existingKRA) {
+        Log::info('IS KRA ID: ' . ($kraID)); // Use parentheses for subtraction
+        Log::info('IS Appraisal ID: ' . $request->input('appraisalID')); // Use parentheses for subtraction
+
         if (
           $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
           $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
@@ -517,13 +525,15 @@ class ISAppraisalController extends Controller
           'kra_order' => $kraID,
         ]);
       }
+
       $existingSelfEvalKRA = KRA::where('appraisal_id', $request->input('appraisalID') - 1)
-        ->where('kra_id', $kraID + 1)
+        ->where('kra_id', $kraID - 1)
         ->first();
+
       if ($existingSelfEvalKRA) {
-        Log::info($existingSelfEvalKRA);
-        Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
-        Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        Log::info('SE KRA ID: ' . ($kraID + 1)); // Use parentheses for subtraction
+        Log::info('SE Appraisal ID: ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        
         if (
           $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
           $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
@@ -541,6 +551,7 @@ class ISAppraisalController extends Controller
         Log::info('No matching KRA found.');
         Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
         Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
+        
         KRA::create([
           'appraisal_id' => $request->input('appraisalID') - 1,
           'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
