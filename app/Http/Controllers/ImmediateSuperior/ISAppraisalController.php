@@ -7,6 +7,7 @@ use App\Models\AppraisalAnswers;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\KRA;
+use App\Models\ScoreWeights;
 use App\Models\Signature;
 use App\Models\WPP;
 use App\Models\LDP;
@@ -99,7 +100,7 @@ class ISAppraisalController extends Controller
     DB::beginTransaction();
 
     try {
-                  
+
       $this->createSID($request);
       $this->createSR($request);
       $this->createS($request);
@@ -164,7 +165,7 @@ class ISAppraisalController extends Controller
 
     return Validator::make($request->all(), [
       'appraisalID' => 'required|numeric',
-      
+
       'SID' => 'required|array',
       'SID.*' => 'required|array',
       'SID.*.*.SIDanswer' => 'required',
@@ -176,7 +177,7 @@ class ISAppraisalController extends Controller
       'S' => 'required|array',
       'S.*' => 'required|array',
       'S.*.*.Sanswer' => 'required',
-      
+
       'KRA' => 'required|array',
       'KRA.*' => 'required|array',
       'KRA.*.*.kraID' => 'required|numeric',
@@ -187,7 +188,7 @@ class ISAppraisalController extends Controller
       'KRA.*.*.KRA_actual_result' => 'required|string',
       'KRA.*.*.KRA_performance_level' => 'required|numeric',
       'KRA.*.*.KRA_weighted_total' => 'required|numeric',
-      
+
       'WPA' => 'required|array',
       'WPA.*' => 'required|array',
       'WPA.*.*.continue_doing' => 'required|string',
@@ -198,7 +199,7 @@ class ISAppraisalController extends Controller
       'LDP.*' => 'required|array',
       'LDP.*.*.learning_need' => 'required|string',
       'LDP.*.*.methodology' => 'required|string',
-      
+
       'feedback' => 'required|array',
       'feedback.*' => 'required|array',
       'feedback.*.*.question' => 'required|string',
@@ -210,13 +211,13 @@ class ISAppraisalController extends Controller
   }
 
   public function autosaveKRAField(Request $request)
-{
+  {
     // Retrieve the data sent from the frontend
     $appraisalId = $request->input('appraisalId');
     $kraID = $request->input('kraID');
     $fieldName = $request->input('fieldName');
     $fieldValue = $request->input('fieldValue');
-    
+
     Log::info('appraisalId: ' . $appraisalId);
     Log::info('fieldName: ' . $fieldName);
     Log::info('fieldValue: ' . $fieldValue);
@@ -224,47 +225,48 @@ class ISAppraisalController extends Controller
     try {
       // Check if the field name requires updates with both appraisal IDs
       $requiresDoubleUpdate = in_array($fieldName, ['kra', 'kra_weight', 'objective', 'performance_indicator']);
-  
+
       // Determine which appraisal IDs to use based on the field name
       $appraisalIds = $requiresDoubleUpdate ? [$appraisalId - 1, $appraisalId] : [$appraisalId];
       $KRAIds = $requiresDoubleUpdate ? [$kraID - 1, $kraID] : [$kraID];
-  
+
       $count = 0; // Initialize count
-  
+
       // Iterate through the appraisal IDs and update/create records
       foreach ($appraisalIds as $id) {
-          // Find the KRA by appraisal ID, kraID, and fieldName
-          $kra = KRA::where('appraisal_id', $id)
-                    ->where('kra_id', $KRAIds[$count]) // Use the count variable to access KRA ID
-                    ->first();
-  
-          if ($kra) {
-              // Update the specific field value
-              $kra->$fieldName = $fieldValue;
-          } else {
-              // Create a new KRA record
-              $kra = new KRA([
-                  'appraisal_id' => $id,
-                  'kra_id' => $KRAIds[$count], // Use the count variable
-                  'kra_order' => $kraID,
-                  $fieldName => $fieldValue,
-              ]);
-          }
-          // Save the KRA record
-          $kra->save();
-          
-          $count++;
+        // Find the KRA by appraisal ID, kraID, and fieldName
+        $kra = KRA::where('appraisal_id', $id)
+          ->where('kra_id', $KRAIds[$count]) // Use the count variable to access KRA ID
+          ->first();
+
+        if ($kra) {
+          // Update the specific field value
+          $kra->$fieldName = $fieldValue;
+        } else {
+          // Create a new KRA record
+          $kra = new KRA([
+            'appraisal_id' => $id,
+            'kra_id' => $KRAIds[$count],
+            // Use the count variable
+            'kra_order' => $kraID,
+            $fieldName => $fieldValue,
+          ]);
+        }
+        // Save the KRA record
+        $kra->save();
+
+        $count++;
       }
-  
+
       return response()->json(['message' => 'KRA created and autosave successful', 'kraData' => $kra]);
-  } catch (\Exception $e) {
-    Log::error('Exception Message: ' . $e->getMessage());
-    Log::error('Exception Line: ' . $e->getLine());
-    Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-    
-    return response()->json(['error' => 'Autosave failed'], 500);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+      return response()->json(['error' => 'Autosave failed'], 500);
+    }
   }
-}
 
   public function autosaveWPPField(Request $request)
   {
@@ -313,44 +315,45 @@ class ISAppraisalController extends Controller
 
   public function autosaveLDPField(Request $request)
   {
-      // Retrieve the data sent from the frontend
-      $ldpID = $request->input('ldpID');
-      $fieldName = $request->input('fieldName');
-      $fieldValue = $request->input('fieldValue');
-      $appraisalId = $request->input('appraisalId');
+    // Retrieve the data sent from the frontend
+    $ldpID = $request->input('ldpID');
+    $fieldName = $request->input('fieldName');
+    $fieldValue = $request->input('fieldValue');
+    $appraisalId = $request->input('appraisalId');
 
-      try {
-          // Find the existing record based on the criteria
-          $ldp = LDP::where([
-              'development_plan_id' => $ldpID,
-              'appraisal_id' => $appraisalId,
-          ])->first();
+    try {
+      // Find the existing record based on the criteria
+      $ldp = LDP::where([
+        'development_plan_id' => $ldpID,
+        'appraisal_id' => $appraisalId,
+      ])->first();
 
-          // If the record exists, update the specific field value; otherwise, create a new record
-          if ($ldp) {
-              $ldp->$fieldName = $fieldValue;
-              $ldp->save();
-          } else {
-              // Create a new record with the criteria and the specific field value
-              $ldp = new LDP([
-                  'development_plan_id' => $ldpID, // Use 'development_plan_id' here
-                  'appraisal_id' => $appraisalId,
-                  'development_plan_order' => $ldpID,
-                  $fieldName => $fieldValue
-              ]);
-              $ldp->save();
-          }
-
-          // Return the ID in the response
-          return response()->json(['message' => 'Autosave successful', 'ldpData' => $ldp]);
-      } catch (\Exception $e) {
-          Log::error('Exception Message: ' . $e->getMessage());
-          Log::error('Exception Line: ' . $e->getLine());
-          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-          // Handle errors if any
-          return response()->json(['error' => 'Autosave failed'], 500);
+      // If the record exists, update the specific field value; otherwise, create a new record
+      if ($ldp) {
+        $ldp->$fieldName = $fieldValue;
+        $ldp->save();
+      } else {
+        // Create a new record with the criteria and the specific field value
+        $ldp = new LDP([
+          'development_plan_id' => $ldpID,
+          // Use 'development_plan_id' here
+          'appraisal_id' => $appraisalId,
+          'development_plan_order' => $ldpID,
+          $fieldName => $fieldValue
+        ]);
+        $ldp->save();
       }
+
+      // Return the ID in the response
+      return response()->json(['message' => 'Autosave successful', 'ldpData' => $ldp]);
+    } catch (\Exception $e) {
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+      // Handle errors if any
+      return response()->json(['error' => 'Autosave failed'], 500);
+    }
   }
 
   public function autosaveJICField(Request $request)
@@ -533,7 +536,7 @@ class ISAppraisalController extends Controller
       if ($existingSelfEvalKRA) {
         Log::info('SE KRA ID: ' . ($kraID + 1)); // Use parentheses for subtraction
         Log::info('SE Appraisal ID: ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
-        
+
         if (
           $existingSelfEvalKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
           $existingSelfEvalKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
@@ -551,7 +554,7 @@ class ISAppraisalController extends Controller
         Log::info('No matching KRA found.');
         Log::info('KRA ID: ' . ($kraID - 1)); // Use parentheses for subtraction
         Log::info('Appraisal ID ' . ($request->input('appraisalID') - 1)); // Use parentheses for subtraction
-        
+
         KRA::create([
           'appraisal_id' => $request->input('appraisalID') - 1,
           'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
@@ -669,47 +672,47 @@ class ISAppraisalController extends Controller
 
   protected function createSign(Request $request)
   {
-      if (!session()->has('account_id')) {
-          return view('auth.login');
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalId = $request->input('appraisalID');
+    $signatureData = $request->input('SIGN.JI.' . $appraisalId);
+
+    // Check if the signature data exists and is not empty
+    if (!empty($signatureData)) {
+      // Try to find an existing signature
+      $existingSignature = Signature::where('appraisal_id', $appraisalId)
+        ->where('sign_type', 'IS')
+        ->first();
+
+      if ($existingSignature) {
+        // Update the existing signature data
+        $existingSignature->update([
+          'sign_data' => $signatureData,
+          'sign_type' => 'IS',
+        ]);
+      } else {
+        // Create a new signature if it doesn't exist
+        try {
+          // Create a new signature and retrieve its ID
+          $newSignature = Signature::create([
+            'appraisal_id' => $appraisalId,
+            'sign_data' => $signatureData,
+            'sign_type' => 'IS',
+          ]);
+
+          // Get the ID of the newly created signature
+          $newSignatureId = $newSignature->signature_id;
+        } catch (\Exception $e) {
+          // Handle the database connection issue
+          // You can log the error or display a user-friendly message
+          Log::error('Exception Message: ' . $e->getMessage());
+          Log::error('Exception Line: ' . $e->getLine());
+          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+        }
       }
-
-      $appraisalId = $request->input('appraisalID');
-      $signatureData = $request->input('SIGN.JI.' . $appraisalId);
-
-      // Check if the signature data exists and is not empty
-      if (!empty($signatureData)) {
-          // Try to find an existing signature
-          $existingSignature = Signature::where('appraisal_id', $appraisalId)
-              ->where('sign_type', 'IS')
-              ->first();
-
-          if ($existingSignature) {
-              // Update the existing signature data
-              $existingSignature->update([
-                  'sign_data' => $signatureData,
-                  'sign_type' => 'IS',
-              ]);
-          } else {
-              // Create a new signature if it doesn't exist
-              try {
-                  // Create a new signature and retrieve its ID
-                  $newSignature = Signature::create([
-                      'appraisal_id' => $appraisalId,
-                      'sign_data' => $signatureData,
-                      'sign_type' => 'IS',
-                  ]);
-
-                  // Get the ID of the newly created signature
-                  $newSignatureId = $newSignature->signature_id;
-              } catch (\Exception $e) {
-                  // Handle the database connection issue
-                  // You can log the error or display a user-friendly message
-                  Log::error('Exception Message: ' . $e->getMessage());
-                  Log::error('Exception Line: ' . $e->getLine());
-                  Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-              }
-          }
-      }
+    }
   }
 
   public function getAppraisalSE($employee_id)
@@ -811,15 +814,23 @@ class ISAppraisalController extends Controller
 
   function calculateFinalScore($appraisals)
   {
-    $behavioralCompetenciesGrade = 0;
+    $behavioralCompetenciesWeightedTotal = 0;
     $kraGrade = 0;
-    $kraFS = 0;
-    $finalGrade = null; // Initialize the finalGrade to null
-    $allSubmitted = false;
+    $kraFinalScore = 0;
+    $allSubmitted = 0;
     $kraFormsCount = 0;
+    $finalGrade = null;
 
-    // Log initial information
+    $weightedTotals = [
+      'self evaluation' => 0,
+      'is evaluation' => 0,
+      'internal customer 1' => 0,
+      'internal customer 2' => 0,
+    ];
+
     Log::info('Starting final score calculation');
+    Log::info('Appraisal List:');
+    Log::info($appraisals);
 
     foreach ($appraisals as $appraisal) {
       $evaluationType = $appraisal['evaluation_type'];
@@ -827,62 +838,112 @@ class ISAppraisalController extends Controller
       $kraScore = $appraisal['kra_score'];
       $icScore = $appraisal['ic_score'];
 
-      // Log information for the current appraisal
       Log::info('Processing appraisal for evaluation type: ' . $evaluationType);
+      Log::info('Processing appraisal: ' . $appraisal);
       Log::info('BH Score: ' . $bhScore);
       Log::info('KRA Score: ' . $kraScore);
       Log::info('IC Score: ' . $icScore);
+      // Log::info('allSubmitted Before Processing:' . $allSubmitted);
+      Log::info('allSubmitted kraGrade: ' . $kraGrade);
+      Log::info('allSubmitted kraScore: ' . $kraScore);
+      Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
 
-      // Check if date_submitted is not null
       if ($appraisal['date_submitted'] !== null) {
-        // Calculate the behavioral competencies grade
-        if ($evaluationType === 'self evaluation') {
-          $behavioralCompetenciesGrade += ($bhScore * 0.1);
-        } elseif ($evaluationType === 'is evaluation') {
-          $behavioralCompetenciesGrade += ($bhScore * 0.5);
-        } elseif ($evaluationType === 'internal customer 1' || $evaluationType === 'internal customer 2') {
-          $behavioralCompetenciesGrade += ($icScore * 0.2);
-        }
+        // Retrieve the latest active evaluation year
+        $latestActiveEvalYear = EvalYear::where('status', 'active')->latest('eval_id')->first();
 
-        // Calculate the KRA grade for 'self evaluation' and 'is evaluation'
-        if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
-          $kraGrade += $kraScore;
-          $kraFormsCount++;
-        }
+        if (!$latestActiveEvalYear) {
+          Log::error('Latest active evaluation year not found. Handle this case as needed.');
+        } else {
+          $evalYearId = $latestActiveEvalYear->eval_id;
+          Log::info('Latest active evaluation id founded:' . $evalYearId);
 
-        $allSubmitted = true;
+          // Retrieve the score weights for the current evaluation type in the latest active year
+          $scoreWeights = ScoreWeights::where('eval_id', $evalYearId)->first();
+
+          if ($scoreWeights) {
+            Log::info('Latest active scoreWeights id founded:' . $scoreWeights);
+
+            $selfEvalWeight = $scoreWeights->self_eval_weight / 100;
+            $ic1Weight = $scoreWeights->ic1_weight / 100;
+            $ic2Weight = $scoreWeights->ic2_weight / 100;
+            $isWeight = $scoreWeights->is_weight / 100;
+
+            if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+              $kraGrade += $kraScore;
+              $kraFormsCount++;
+              Log::info('allSubmitted kraGrade: ' . $kraGrade);
+              Log::info('allSubmitted kraScore: ' . $kraScore);
+              Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
+
+              // Update the weighted total based on the evaluation type
+              if ($evaluationType === 'self evaluation') {
+                $weightedTotals['self evaluation'] += ($bhScore * $selfEvalWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['self evaluation'];
+
+              } elseif ($evaluationType === 'is evaluation') {
+                $weightedTotals['is evaluation'] += ($bhScore * $isWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['is evaluation'];
+
+              }
+            } elseif ($evaluationType === 'internal customer 1') {
+              $weightedTotals['internal customer 1'] += ($icScore * $ic1Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 1'];
+
+            } elseif ($evaluationType === 'internal customer 2') {
+              $weightedTotals['internal customer 2'] += ($icScore * $ic2Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 2'];
+            }
+
+          } else {
+            Log::error('Final Grade calculation skipped due to scoreWeights being null for an appraisal.');
+          }
+        }
+        $allSubmitted = 1;
       } else {
-        // Set the finalGrade to null and break out of the loop
-        $allSubmitted = false;
+        Log::error('Final Grade calculation skipped due to date_submitted being null for an appraisal.');
+
+        $allSubmitted = 0;
         $finalGrade = null;
         $kraFormsCount = null;
-
         break;
       }
     }
 
-    // Check if the loop completed successfully (date_submitted was not null for all appraisals)
+    Log::info('allSubmitted After Processing:' . $allSubmitted);
+
     if ($allSubmitted) {
-      $kraFS = $kraGrade / $kraFormsCount; // Calculate the average KRA grade
-      $finalGrade = ($behavioralCompetenciesGrade * 0.4) + ($kraFS * 0.6);
+      Log::info('allSubmitted kraGrade: ' . $kraGrade);
+      Log::info('allSubmitted kraScore: ' . $kraScore);
+      Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
 
-      // Log the final grade
+      $kraFinalScore = $kraGrade / $kraFormsCount;
+      $scoreWeights = ScoreWeights::where('eval_id', $evalYearId)->first();
+
+      $bhWeight = $scoreWeights->bh_weight / 100;
+      $kraWeight = $scoreWeights->kra_weight / 100;
+
+      $finalGrade = ($behavioralCompetenciesWeightedTotal * $bhWeight) + ($kraFinalScore * $kraWeight);
+
       Log::info('Final Grade Calculation:');
-      Log::info('Behavioral Competencies Grade: ' . $behavioralCompetenciesGrade);
-      Log::info('KRA Grade: ' . $kraGrade);
+      Log::info('Self Eval Weighted Total: ' . $weightedTotals['self evaluation']);
+      Log::info('Immediate Superior Weighted Total: ' . $weightedTotals['is evaluation']);
+      Log::info('Internal Cust 1 Weighted Total: ' . $weightedTotals['internal customer 1']);
+      Log::info('Internal Cust 2 Weighted Total: ' . $weightedTotals['internal customer 2']);
 
-      Log::info('KRA Final Score: ' . $kraFS);
-      Log::info('Final Grade Computation: (' . $behavioralCompetenciesGrade . ' x 40%)  + (' . $kraFS . ' x 60%)');
+      Log::info('Behavioral Competencies Weighted Total: ' . $behavioralCompetenciesWeightedTotal);
+      Log::info('KRA Weighted Total: ' . $kraFinalScore);
+      Log::info('Final Grade Computation: (' . $behavioralCompetenciesWeightedTotal . ' x ' . $scoreWeights->bh_weight . '%)  + (' . $kraFinalScore . ' x ' . $scoreWeights->kra_weight . '%)');
       Log::info('Final Grade: ' . $finalGrade);
     } else {
-      // Log that the loop did not complete successfully
-      Log::info('Final Grade calculation skipped due to date_submitted being null for an appraisal.');
+      Log::info('allSubmitted Error Log:' . $allSubmitted);
+
+      Log::error('Final Grade calculation skipped due to date_submitted being null for an appraisal.');
     }
 
-    // Log the complete result
     Log::info('Final Score Calculation Complete');
 
-    return [$finalGrade, $behavioralCompetenciesGrade, $kraFS];
+    return [$finalGrade, $behavioralCompetenciesWeightedTotal, $kraFinalScore, $weightedTotals];
   }
 
   public function calculateStatus($appraisals)

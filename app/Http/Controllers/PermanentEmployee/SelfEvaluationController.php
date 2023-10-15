@@ -1073,6 +1073,13 @@ class SelfEvaluationController extends Controller
     $kraFormsCount = 0;
     $finalGrade = null;
 
+    $weightedTotals = [
+      'self evaluation' => 0,
+      'is evaluation' => 0,
+      'internal customer 1' => 0,
+      'internal customer 2' => 0,
+    ];
+
     Log::info('Starting final score calculation');
     Log::info('Appraisal List:');
     Log::info($appraisals);
@@ -1114,35 +1121,32 @@ class SelfEvaluationController extends Controller
             $ic2Weight = $scoreWeights->ic2_weight / 100;
             $isWeight = $scoreWeights->is_weight / 100;
 
-            if ($evaluationType === 'self evaluation') {
+            if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
               $kraGrade += $kraScore;
               $kraFormsCount++;
               Log::info('allSubmitted kraGrade: ' . $kraGrade);
               Log::info('allSubmitted kraScore: ' . $kraScore);
               Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
 
-              $behavioralCompetenciesWeightedTotal += ($bhScore * $selfEvalWeight);
-              Log::info('allSubmitted behavioralCompetenciesWeightedTotal: ' . $behavioralCompetenciesWeightedTotal);
+              // Update the weighted total based on the evaluation type
+              if ($evaluationType === 'self evaluation') {
+                $weightedTotals['self evaluation'] += ($bhScore * $selfEvalWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['self evaluation'];
 
-            } elseif ($evaluationType === 'is evaluation') {
-              $kraGrade += $kraScore;
-              $kraFormsCount++;
-              Log::info('allSubmitted kraGrade: ' . $kraGrade);
-              Log::info('allSubmitted kraScore: ' . $kraScore);
-              Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
+              } elseif ($evaluationType === 'is evaluation') {
+                $weightedTotals['is evaluation'] += ($bhScore * $isWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['is evaluation'];
 
-              $behavioralCompetenciesWeightedTotal += ($bhScore * $isWeight);
-              Log::info('allSubmitted behavioralCompetenciesWeightedTotal: ' . $behavioralCompetenciesWeightedTotal);
-
+              }
             } elseif ($evaluationType === 'internal customer 1') {
-              $behavioralCompetenciesWeightedTotal += ($icScore * $ic1Weight);
-              Log::info('allSubmitted behavioralCompetenciesWeightedTotal: ' . $behavioralCompetenciesWeightedTotal);
+              $weightedTotals['internal customer 1'] += ($icScore * $ic1Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 1'];
 
             } elseif ($evaluationType === 'internal customer 2') {
-              $behavioralCompetenciesWeightedTotal += ($icScore * $ic2Weight);
-              Log::info('allSubmitted behavioralCompetenciesWeightedTotal: ' . $behavioralCompetenciesWeightedTotal);
-
+              $weightedTotals['internal customer 2'] += ($icScore * $ic2Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 2'];
             }
+
           } else {
             Log::error('Final Grade calculation skipped due to scoreWeights being null for an appraisal.');
           }
@@ -1174,6 +1178,11 @@ class SelfEvaluationController extends Controller
       $finalGrade = ($behavioralCompetenciesWeightedTotal * $bhWeight) + ($kraFinalScore * $kraWeight);
 
       Log::info('Final Grade Calculation:');
+      Log::info('Self Eval Weighted Total: ' . $weightedTotals['self evaluation']);
+      Log::info('Immediate Superior Weighted Total: ' . $weightedTotals['is evaluation']);
+      Log::info('Internal Cust 1 Weighted Total: ' . $weightedTotals['internal customer 1']);
+      Log::info('Internal Cust 2 Weighted Total: ' . $weightedTotals['internal customer 2']);
+
       Log::info('Behavioral Competencies Weighted Total: ' . $behavioralCompetenciesWeightedTotal);
       Log::info('KRA Weighted Total: ' . $kraFinalScore);
       Log::info('Final Grade Computation: (' . $behavioralCompetenciesWeightedTotal . ' x ' . $scoreWeights->bh_weight . '%)  + (' . $kraFinalScore . ' x ' . $scoreWeights->kra_weight . '%)');
@@ -1186,7 +1195,7 @@ class SelfEvaluationController extends Controller
 
     Log::info('Final Score Calculation Complete');
 
-    return [$finalGrade, $behavioralCompetenciesWeightedTotal, $kraFinalScore];
+    return [$finalGrade, $behavioralCompetenciesWeightedTotal, $kraFinalScore, $weightedTotals];
   }
 
   public function calculateStatus($appraisals)
