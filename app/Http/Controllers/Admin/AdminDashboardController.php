@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -336,7 +338,7 @@ class AdminDashboardController extends Controller
     ]);
 
   }
- 
+
   public function loadPointsSystem(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
@@ -418,5 +420,21 @@ class AdminDashboardController extends Controller
     ]);
   }
 
+  public function loadEmployees(Request $request)
+  {
+    $perPage = 20;
+    $search = $request->input('search');
+    $page = $request->input('page', 1);
+
+    $query = Accounts::where('type', 'PE')->with('employee.department');
+
+    if (!empty($search)) {
+      $query->where('email', 'LIKE', '%' . $search . '%');
+    }
+
+    $employees = $query->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json(['success' => true, 'employees' => $employees]);
+  }
 
 }
