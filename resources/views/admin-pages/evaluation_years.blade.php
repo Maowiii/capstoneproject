@@ -242,8 +242,8 @@
                                     <tr>
                                         <td class="text-end">Total:</td>
                                         <td>
-                                            <input class="form-control @error('bhTotal') is-invalid @enderror" name="bhTotal" id="bh_total" type="text"
-                                                value="0" readonly>
+                                            <input class="form-control @error('bhTotal') is-invalid @enderror"
+                                                name="bhTotal" id="bh_total" type="text" value="0" readonly>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -288,8 +288,9 @@
                                     <tr>
                                         <td class="text-end">Final Score:</td>
                                         <td>
-                                            <input class="form-control @error('finalTotal') is-invalid @enderror" name="finalTotal" id="final_total"
-                                                type="text" value="0" readonly>
+                                            <input class="form-control @error('finalTotal') is-invalid @enderror"
+                                                name="finalTotal" id="final_total" type="text" value="0"
+                                                readonly>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -327,6 +328,96 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary">Understood</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="weightsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="weightsModalTitle">School Year:</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Behavioral Competencies</h5>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <th>Components</th>
+                                <th>%</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Self-Evaluation:</td>
+                                    <td class="w-25">
+                                        <input type="text" class="form-control text-center" id="view_self_eval_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Internal Customer 1:</td>
+                                    <td>
+                                        <input type="text" class="form-control text-center" id="view_ic1_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Internal Customer 2:</td>
+                                    <td>
+                                        <input type="text" class="form-control text-center" id="view_ic2_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Immediate Superior:</td>
+                                    <td>
+                                        <input type="text" class="form-control text-center" id="view_is_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-end">Total:</td>
+                                    <td>
+                                        <input class="form-control text-center" id="view_bh_total" type="text" value="0"
+                                            readonly>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h5>Final Ratings</h5>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <th>Components</th>
+                                <th>%</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Behavioral Competencies:</td>
+                                    <td>
+                                        <input class="form-control text-center" type="text" id="view_bh_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>KRA/KPI:</td>
+                                    <td class="w-25">
+                                        <input class="form-control text-center" type="text" id="view_kra_weight" readonly disabled>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-end">Final Score:</td>
+                                    <td>
+                                        <input class="form-control text-center" id="view_final_total" type="text" value="0" readonly>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -376,7 +467,46 @@
             updateFinalTotal();
         });
 
-        // Initialize totals
+        $(document).on('click', '.btn-weights', function() {
+            var evalID = $(this).data('eval-id');
+            console.log('Eval ID: ' + evalID);
+            $('#weightsModal').modal('show');
+
+            $.ajax({
+                url: '{{ route('ad.getEvalWeights') }}',
+                type: 'GET',
+                data: {
+                    evalID: evalID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#weightsModalTitle').text('School Year: ' + response.sy);
+
+                        $('#view_self_eval_weight').val(response.weights[0].self_eval_weight);
+                        $('#view_ic1_weight').val(response.weights[0].ic1_weight);
+                        $('#view_ic2_weight').val(response.weights[0].ic2_weight);
+                        $('#view_is_weight').val(response.weights[0].is_weight);
+
+                        var bhTotal = parseInt(response.weights[0].self_eval_weight) +
+                            parseInt(response.weights[0].ic1_weight) +
+                            parseInt(response.weights[0].ic2_weight) +
+                            parseInt(response.weights[0].is_weight);
+
+                        $('#view_bh_total').val(bhTotal);
+
+                        $('#view_bh_weight').val(response.weights[0].bh_weight);
+                        $('#view_kra_weight').val(response.weights[0].kra_weight);
+
+                        var finalTotal = parseInt(response.weights[0].bh_weight) + parseInt(response.weights[0].kra_weight);
+
+                        $('#view_final_total').val(finalTotal);
+                    }
+                }
+            });
+        });
+
+
         updateBehavioralTotal();
         updateFinalTotal();
 
@@ -506,6 +636,12 @@
                                     .text(
                                         'Deactivate'));
                             }
+
+                            buttonGroup.append($('<button>').addClass(
+                                    'btn btn-outline-success btn-weights')
+                                .text('View Weights')
+                                .data('eval-id', eval_id)
+                            );
 
                             buttonGroup.append($('<button>').addClass(
                                     'btn btn-outline-danger delete-eval-yr-btn')

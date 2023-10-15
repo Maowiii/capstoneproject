@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -129,7 +131,6 @@ class AdminDashboardController extends Controller
           $page,
           ['path' => $request->url(), 'query' => $request->query()]
         );
-
       } else {
         if (FinalScores::tableExists()) {
           $perPage = 20;
@@ -167,7 +168,6 @@ class AdminDashboardController extends Controller
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
           );
-
         } else {
           return response()->json(['success' => false]);
         }
@@ -334,9 +334,8 @@ class AdminDashboardController extends Controller
       'success' => true,
       'ic' => $icQuestions
     ]);
-
   }
- 
+
   public function loadPointsSystem(Request $request)
   {
     $selectedYear = $request->input('selectedYear');
@@ -418,5 +417,44 @@ class AdminDashboardController extends Controller
     ]);
   }
 
+  public function loadEmployees(Request $request)
+  {
+    $perPage = 20;
+    $search = $request->input('search');
+    $page = $request->input('page', 1);
 
+    $query = Accounts::where('type', 'PE')->with('employee.department');
+
+    if (!empty($search)) {
+      $query->where('email', 'LIKE', '%' . $search . '%');
+    }
+
+    $employees = $query->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json(['success' => true, 'employees' => $employees]);
+  }
+
+  public function loadEmployeeTrends(Request $request)
+  {
+    $schoolYears = EvalYear::all()->map(function ($evalYear) {
+      return $evalYear->sy_start . '_' . $evalYear->sy_end;
+    })->toArray();
+
+    $employeeID = $request->input('employeeID');
+
+    $employee = Employees::find($employeeID);
+
+    $finalScores = [];
+
+    foreach ($schoolYears as $year) {
+      $tableName = 'final_scores_' . $year;
+      $score = FinalScores::from($tableName)->where('employee_id', $employeeID)->value('final_score');
+
+      if ($score !== null) {
+        $finalScores[$year] = $score;
+      }
+    }
+
+    return response()->json(['success' => true, 'employee' => $employee, 'finalScores' => $finalScores]);
+  }
 }

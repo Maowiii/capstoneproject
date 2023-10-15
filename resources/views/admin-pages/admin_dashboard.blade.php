@@ -24,6 +24,7 @@
         </div>
     </div>
 
+    <!-- Cards -->
     <div class='d-flex gap-3'>
         <div class="content-container text-middle" id="total-pe-container">
             <h4>Total Appraisees:</h4>
@@ -39,6 +40,7 @@
         </div>
     </div>
 
+    <!-- Departments Table -->
     <div class="content-container">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Department" id="search">
@@ -57,6 +59,29 @@
         </table>
         <nav id="department_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
+        </nav>
+    </div>
+
+    <!-- Employees Table -->
+    <div class="content-container">
+        <div class="input-group mb-2 search-box">
+            <input type="text" class="form-control" placeholder="Name" id="namesearch">
+            <button class="btn btn-outline-secondary" type="button">
+                <i class='bx bx-search'></i>
+            </button>
+        </div>
+        <table class='table table-bordered table-sm align-middle' id="employees_table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Trends</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <nav id="employee_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="employee_pagination"></ul>
         </nav>
     </div>
 
@@ -115,7 +140,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Behavioral Competencies:</h2>
-            <h4>Sustained Integral Development:</h4>
+            <h4>Search for Excellence and Sustained Integral Development:</h4>
             <table class="table table-sm mb-3" id="sid_table">
                 <thead>
                     <th>#</th>
@@ -129,10 +154,11 @@
             <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
+
     <!-- Social Responsibility -->
     <div class="d-flex gap-3">
         <div class="content-container">
-            <h4>Social Responsibility:</h4>
+            <h4>Spirit of St. Vincent de Paul and Social Responsibility:</h4>
             <table class="table table-sm mb-3" id="sr_table">
                 <thead>
                     <th>#</th>
@@ -146,6 +172,7 @@
             <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
+
     <!-- Solidarity -->
     <div class="d-flex gap-3">
         <div class="content-container">
@@ -190,11 +217,31 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="employeeTrendsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="employeeTrendsModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Employee Performance Trend Over School Years</h4>
+                      <canvas id="employee_trends_chart"></canvas>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         function printReport() {
-            window.print(); // Open the browser's print dialog
+            window.print();
         }
 
         $(document).ready(function() {
@@ -216,11 +263,72 @@
                 loadDepartmentTable(globalSelectedYear, query);
             });
 
+            $(document).on('click', '.view-employee-btn', function() {
+                var employeeID = $(this).data('employee-id');
+                console.log('Employee ID: ' + employeeID);
+                $('#employeeTrendsModal').modal('show');
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.loadEmployeeTrends') }}',
+                    type: 'GET',
+                    data: {
+                        employeeID: employeeID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log(response);
+                            const employee = response.employee;
+                            $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
+                                employee.last_name);
+
+                            var employeeTrendsChart = $('#employee_trends_chart');
+                            var canvas = employeeTrendsChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(employeeTrendsChart, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Final Score', 'Search for Excellence & Sustained Integral Development', 'Spirit of St. Vincent de Paul & Social Responsibility'],
+                                    
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+                        }
+                    }
+                });
+            });
+
+            $('#namesearch').on('input', function() {
+                var query = $(this).val();
+                console.log('Name Query: ' + query);
+                loadEmployeesTable(query);
+            });
+
             loadDepartmentTable(globalSelectedYear, null);
             loadICQuestions(globalSelectedYear);
             loadBCQuestions(globalSelectedYear);
             loadPointsSystem(globalSelectedYear);
             loadCards(globalSelectedYear);
+            loadEmployeesTable(null);
         });
 
         function loadCards(selectedYear = null) {
@@ -267,7 +375,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
                         var departments = response.departments.data;
 
                         departments.sort(function(a, b) {
@@ -278,12 +385,12 @@
 
                         for (var i = 0; i < departments.length; i++) {
                             var department = departments[i];
-                            console.log(department);
                             var row = $('<tr class="text-center">');
 
                             var departmentNameLink = $('<a>')
                                 .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
-                                    "&department_id=" + department.department.department_id + '&department_name=' +
+                                    "&department_id=" + department.department.department_id +
+                                    '&department_name=' +
                                     encodeURIComponent(department.department.department_name))
                                 .text(department.department.department_name);
 
@@ -906,6 +1013,72 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function loadEmployeesTable(namesearch = null, page = 1) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadEmployees') }}',
+                type: 'GET',
+                data: {
+                    search: namesearch,
+                    page: page
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var employees = response.employees.data;
+                        employees.sort((a, b) => a.employee.first_name.localeCompare(b.employee.first_name));
+
+                        $('#employees_table tbody').empty();
+
+                        for (var i = 0; i < employees.length; i++) {
+                            var employee = employees[i].employee;
+
+                            var row = $('<tr class="text-center">');
+
+                            row.append($('<td>').text(employee.first_name + ' ' + employee.last_name));
+                            row.append($('<td>').text(employee.department.department_name));
+                            row.append($('<td>').append($('<button>')
+                                .addClass('btn btn-outline-primary view-employee-btn')
+                                .data('employee-id', employee.employee_id)
+                                .text('View')));
+
+                            $('#employees_table tbody').append(row);
+                        }
+
+                        totalPage = response.employees.last_page;
+                        currentPage = response.employees.current_page;
+                        $('#employee_pagination').empty();
+                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    loadEmployeesTable(namesearch, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#employee_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
+                    } else {
+                        $('#employees_table tbody').empty();
+                        var row = $(
+                            '<tr><td colspan="2"><p class="text-secondary fst-italic mt-0">No employees found.</p></td></tr>'
+                        );
+                        $('#employees_table tbody').append(row);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
+                        'An error occurred.';
+                    console.log(errorMessage);
                 }
             });
         }
