@@ -1050,7 +1050,6 @@
                 }
             });
         }
-
         // Initial load
         $(document).ready(function() {
             loadEmployeeTable();

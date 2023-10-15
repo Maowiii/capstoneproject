@@ -7,6 +7,7 @@ use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\Employees;
+use App\Models\Accounts;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -457,9 +458,14 @@ class AdminDashboardController extends Controller
   {
     if (session()->has('account_id')) {
       $search = $request->input('search');
-
-      $employees = Employees::where('first_name', 'LIKE', '%' . $search . '%')
-        ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+      // Use the Accounts model to filter active employees
+      $employees = Employees::whereHas('account', function ($query) {
+        $query->where('status', 'active');
+      })
+        ->where(function ($query) use ($search) {
+          $query->where('first_name', 'LIKE', '%' . $search . '%')
+            ->orWhere('last_name', 'LIKE', '%' . $search . '%');
+        })
         ->orderBy('last_name')
         ->orderBy('first_name')
         ->get();
@@ -469,4 +475,5 @@ class AdminDashboardController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
   }
+
 }
