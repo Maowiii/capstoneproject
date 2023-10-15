@@ -228,12 +228,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h4>Employee Performance Trend Over School Years</h4>
-                      <canvas id="employee_trends_chart"></canvas>
+                    <h4>Employee Performance Trend Over The School Years:</h4>
+                    <canvas id="employee_final_score_trend" height="350" width="580"></canvas>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -284,8 +283,8 @@
                             $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
                                 employee.last_name);
 
-                            var employeeTrendsChart = $('#employee_trends_chart');
-                            var canvas = employeeTrendsChart[0];
+                            var employeeFinalScoreTrend = $('#employee_final_score_trend');
+                            var canvas = employeeFinalScoreTrend[0];
 
                             if (canvas) {
                                 var existingChart = Chart.getChart(canvas);
@@ -294,14 +293,35 @@
                                 }
                             }
 
-                            new Chart(employeeTrendsChart, {
+                            var finalScoresData = response
+                                .finalScores;
+                            var labels = Object.keys(finalScoresData);
+                            var scores = Object.values(finalScoresData);
+
+                            new Chart(employeeFinalScoreTrend, {
                                 type: 'line',
                                 data: {
-                                    labels: ['Final Score', 'Search for Excellence & Sustained Integral Development', 'Spirit of St. Vincent de Paul & Social Responsibility'],
-                                    
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Final Score',
+                                        data: scores,
+                                        fill: false,
+                                        backgroundColor: '#164783',
+                                        borderColor: '#c3d7f1',
+                                        tension: 0,
+                                        pointRadius: 10,
+                                    }, ],
                                 },
                                 options: {
+                                    responsive: true,
                                     scales: {
+                                        x: {
+                                            display: true,
+                                            title: {
+                                                display: true,
+                                                text: 'School Year',
+                                            },
+                                        },
                                         y: {
                                             beginAtZero: true,
                                             max: 5,
@@ -316,6 +336,7 @@
                     }
                 });
             });
+
 
             $('#namesearch').on('input', function() {
                 var query = $(this).val();
