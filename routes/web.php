@@ -68,9 +68,6 @@ Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loa
 Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 'loadEmployees'])->name('ad.loadEmployees');
 Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
 
-// Employee Analytics
-Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('viewEmployeeAnalytics');
-
 // Departmental Analytics
 Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
 Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadICQuestions');
