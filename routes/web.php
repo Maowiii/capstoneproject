@@ -66,10 +66,10 @@ Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::clas
 Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loadCards'])->name('ad.loadCards');
 Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 'loadEmployees'])->name('ad.loadEmployees');
+Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
 
 // Employee Analytics
 Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('viewEmployeeAnalytics');
-
 
 // Departmental Analytics
 Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
@@ -109,6 +109,7 @@ Route::post('/employees/save-employee', [EmployeeController::class, 'saveEmploye
 // Evaluation Year
 Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluationYears'])->name('viewEvaluationYears');
 Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
+Route::get('/evaluation-year/get-evaluation-weights', [EvaluationYearController::class, 'getEvalWeights'])->name('ad.getEvalWeights');
 Route::post('/evaluation-year/toggle-eval-year-status', [EvaluationYearController::class, 'toggleEvalYearStatus'])->name('ad.toggleEvalYearStatus');
 
 Route::post('/evaluation-year/add-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('addEvalYear');

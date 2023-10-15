@@ -5,16 +5,16 @@
 @endsection
 
 @section('content')
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            <!-- Display each error message -->
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                <!-- Display each error message -->
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="content-container">
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
@@ -46,8 +46,8 @@
             <form method="post" action="{{ route('import-new-employee') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-2">
-                <input class="form-control large-column" type="file" name="file">
-            </div>
+                    <input class="form-control large-column" type="file" name="file">
+                </div>
                 <button class="btn btn-primary large-column" type="submit">Upload Excel</button>
             </form>
         </div>
@@ -216,54 +216,59 @@
                 type: 'GET',
                 data: {
                     search: search,
-                    page: page // Pass the current page number
+                    page: page
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Parse the sample data
-                        var accounts = response.accounts; // Extract the paginated data
+                        var accounts = response.accounts;
                         var currentPage = response.current_page;
-                        var data = response.accounts.data; // Array of data for the current page                        
+                        var data = response.accounts.data;
 
-                        // Clear the table body
                         $('#employee_table_body').empty();
 
-                        // Iterate over the data and update your table
                         for (var i = 0; i < data.length; i++) {
                             var account = data[i];
                             var statusButton = account.status === 'active' ? 'Deactivate' : 'Activate';
                             var statusAction = account.status === 'active' ? 'deactivate' : 'activate';
-                            var newRow = $('<tr>').attr('id', account.account_id).addClass('text-center')
+
+                            var newRow = $('<tr>').attr('id', account.account_id).addClass('text-center');
+                            newRow.append($('<td>').html(account.email +
+                                '<br /><p class="fst-italic text-secondary">' +
+                                account.employee.employee_number + '</p>'));
+                            newRow.append($('<td>').text(account.employee.first_name));
+                            newRow.append($('<td>').text(account.employee.last_name));
+                            newRow.append($('<td>').append(createResetButton(account)));
+
+                            if (account.type == 'AD') {
+                                newRow.append($('<td>').text('Admin'));
+                            } else if (account.type == 'IS') {
+                                newRow.append($('<td>').text('Immediate Superior'));
+                            } else if (account.type == 'PE') {
+                                newRow.append($('<td>').text('Employee'));
+                            } else {
+                                newRow.append($('<td>').text('Internal Customer'));
+                            }
+                            newRow.append($('<td>').text(account.employee.department ? account.employee
+                                .department
+                                .department_name : ''));
+                            newRow.append($('<td>').text(account.status));
+                            newRow.append($('<td>').append(
+                                $('<div>').addClass('btn-group').attr('role', 'group')
                                 .append(
-                                    $('<td>').html(account.email +
-                                        '<br /><p class="fst-italic text-secondary">' +
-                                        account.employee.employee_number + '</p>'),
-                                    $('<td>').text(account.employee.first_name),
-                                    $('<td>').text(account.employee.last_name),
-                                    $('<td>').append(createResetButton(account)),
-                                    $('<td>').text(account.type),
-                                    $('<td>').text(account.employee.department ? account.employee.department
-                                        .department_name : ''),
-                                    $('<td>').text(account.status),
-                                    $('<td>').append(
-                                        $('<div>').addClass('btn-group').attr('role', 'group')
-                                        .append(
-                                            $('<button>').addClass('btn btn-outline-danger').text(statusButton)
-                                            .attr('onclick', 'changeStatus(' + account.account_id + ', "' +
-                                                statusAction + '")'),
-                                            $('<button>').addClass('btn btn-outline-primary edit-btn')
-                                            .html('<i class="bx bx-edit"></i>')
-                                            .attr('employee-id', account.employee.employee_id)
-                                        )
-                                    )
-                                );
+                                    $('<button>').addClass('btn btn-outline-danger').text(statusButton)
+                                    .attr('onclick', 'changeStatus(' + account.account_id + ', "' +
+                                        statusAction + '")'),
+                                    $('<button>').addClass('btn btn-outline-primary edit-btn')
+                                    .html('<i class="bx bx-edit"></i>')
+                                    .attr('employee-id', account.employee.employee_id)
+                                )
+                            ));
                             $('#employee_table_body').append(newRow);
                         }
 
-                        // Update the pagination links
                         $('#accounts_pagination').empty();
 
                         var paginationLinks = response.accounts.links;

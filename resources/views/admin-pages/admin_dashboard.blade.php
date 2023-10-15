@@ -75,6 +75,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Department</th>
+                    <th>Trends</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -139,7 +140,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Behavioral Competencies:</h2>
-            <h4>Sustained Integral Development:</h4>
+            <h4>Search for Excellence and Sustained Integral Development:</h4>
             <table class="table table-sm mb-3" id="sid_table">
                 <thead>
                     <th>#</th>
@@ -153,10 +154,11 @@
             <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
     </div>
+
     <!-- Social Responsibility -->
     <div class="d-flex gap-3">
         <div class="content-container">
-            <h4>Social Responsibility:</h4>
+            <h4>Spirit of St. Vincent de Paul and Social Responsibility:</h4>
             <table class="table table-sm mb-3" id="sr_table">
                 <thead>
                     <th>#</th>
@@ -215,11 +217,31 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="employeeTrendsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="employeeTrendsModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Employee Performance Trend Over School Years</h4>
+                      <canvas id="employee_trends_chart"></canvas>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         function printReport() {
-            window.print(); // Open the browser's print dialog
+            window.print();
         }
 
         $(document).ready(function() {
@@ -239,6 +261,60 @@
                 var query = $(this).val();
                 console.log('Query: ' + query);
                 loadDepartmentTable(globalSelectedYear, query);
+            });
+
+            $(document).on('click', '.view-employee-btn', function() {
+                var employeeID = $(this).data('employee-id');
+                console.log('Employee ID: ' + employeeID);
+                $('#employeeTrendsModal').modal('show');
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('ad.loadEmployeeTrends') }}',
+                    type: 'GET',
+                    data: {
+                        employeeID: employeeID,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log(response);
+                            const employee = response.employee;
+                            $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
+                                employee.last_name);
+
+                            var employeeTrendsChart = $('#employee_trends_chart');
+                            var canvas = employeeTrendsChart[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            new Chart(employeeTrendsChart, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Final Score', 'Search for Excellence & Sustained Integral Development', 'Spirit of St. Vincent de Paul & Social Responsibility'],
+                                    
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 5,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+                        }
+                    }
+                });
             });
 
             $('#namesearch').on('input', function() {
@@ -954,7 +1030,6 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
                         var employees = response.employees.data;
                         employees.sort((a, b) => a.employee.first_name.localeCompare(b.employee.first_name));
 
@@ -965,18 +1040,12 @@
 
                             var row = $('<tr class="text-center">');
 
-                            var employeeNameLink = $('<a>')
-                                .attr('href', "{{ route('viewEmployeeAnalytics') }}?employee_id=" + employee
-                                    .employee_id)
-                                .text(employee.first_name + ' ' + employee.last_name);
-
-                            var departmentName = employee.department ? employee.department.department_name :
-                            '-';
-
-                            var nameTd = $('<td>').append(employeeNameLink);
-                            var departmentTd = $('<td>').text(departmentName);
-
-                            row.append(nameTd, departmentTd);
+                            row.append($('<td>').text(employee.first_name + ' ' + employee.last_name));
+                            row.append($('<td>').text(employee.department.department_name));
+                            row.append($('<td>').append($('<button>')
+                                .addClass('btn btn-outline-primary view-employee-btn')
+                                .data('employee-id', employee.employee_id)
+                                .text('View')));
 
                             $('#employees_table tbody').append(row);
                         }
@@ -992,7 +1061,7 @@
                                 }
                                 var pageButton = $('<button>').addClass('page-link').text(pageCounter);
                                 pageButton.click(function() {
-                                    loadEmployeesTable(selectedYear, search, pageCounter);
+                                    loadEmployeesTable(namesearch, pageCounter);
                                 });
                                 pageItem.append(pageButton);
                                 $('#employee_pagination').append(pageItem);
