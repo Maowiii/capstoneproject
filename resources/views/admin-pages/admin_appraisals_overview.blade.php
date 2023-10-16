@@ -65,88 +65,104 @@
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body" >
+                    <!-- Loading spinner -->
+                    <div class="d-flex justify-content-center align-items-center">  
+                        <strong id="loadingText" class="text-primary" role="status" aria-hidden="true">Loading...</strong>
+                        <div id="loading" class="spinner-border text-primary" role="status" style="display: none;" aria-hidden="true">
+                        </div>
+                    </div>
 
-                <div class="modal-body">
-                    <h5>Behavioral Competencies</h5>
-                    <table class='table table-bordered'>
-                        <thead>
-                            <tr>
-                                <th>Components</th>
-                                <th>%</th>
-                                <th>Rating</th>
-                                <th>Weighted Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summary_score_body">
-                            <tr>
-                                <td>Self-Evaluation</td>
-                                <td id="SE_perc" data-val="0.1">10%</td>
-                                <td id="SE_rating"></td>
-                                <td id="SE_wtotal"></td>
-                            </tr>
-                            <tr>
-                                <td>Internal Customer 1</td>
-                                <td id="IC1_perc" data-val="0.2">20%</td>
-                                <td id="IC1_rating"></td>
-                                <td id="IC1_wtotal"></td>                            </tr>
-                            <tr>
-                                <td>Internal Customer 2</td>
-                                <td id="IC2_perc" data-val="0.2">20%</td>
-                                <td id="IC2_rating"></td>
-                                <td id="IC2_wtotal"></td>                            
-                            </tr>
-                            <tr>
-                                <td>Immediate Superior</td>
-                                <td id="IS_perc" data-val="0.5">50%</td>
-                                <td id="IS_rating"></td>
-                                <td id="IS_wtotal"></td>                            
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h5>Final Ratings</h5>
-                    <table class='table table-bordered'>
-                        <thead>
-                            <tr>
-                                <th>Components</th>
-                                <th>%</th>
-                                <th>Rating</th>
-                                <th>Weighted Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summary_score_body">
-                            <tr>
-                                <td>Behavioral Competencies</td>
-                                <td id="BC_perc" data-val="0.4">40%</td>
-                                <td id="BC_rating"></td>
-                                <td id="BC_wtotal"></td>                            
-                            </tr>
-                            <tr>
-                                <td>Key Results Area</td>
-                                <td id="KRA_perc" data-val="0.6">60%</td>
-                                <td id="KRA_rating">60%</td>
-                                <td id="KRA_wtotal"></td>                            
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td>Final Score</td>
-                                <td></td>
-                                <td id="FS_wtotal"></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Description</td>
-                                <td></td>
-                                <td id="descrip"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div id="SummaryModalBody">
+                        <h5>Behavioral Competencies</h5>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                    <th>Rating</th>
+                                    <th>Weighted Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary_score_body">
+                                <tr>
+                                    <td>Self-Evaluation</td>
+                                    <td id="SE_perc"></td>
+                                    <td id="SE_rating"></td>
+                                    <td id="SE_wtotal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Internal Customer 1</td>
+                                    <td id="IC1_perc"></td>
+                                    <td id="IC1_rating"></td>
+                                    <td id="IC1_wtotal"></td>                            
+                                </tr>
+                                <tr>
+                                    <td>Internal Customer 2</td>
+                                    <td id="IC2_perc"></td>
+                                    <td id="IC2_rating"></td>
+                                    <td id="IC2_wtotal"></td>                            
+                                </tr>
+                                <tr>
+                                    <td>Immediate Superior</td>
+                                    <td id="IS_perc"></td>
+                                    <td id="IS_rating"></td>
+                                    <td id="IS_wtotal"></td>                            
+                                </tr>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-end col-12">Weighted Total:</td>
+                                        <td id="BC_rtotal"></td>
+                                    </tr>
+                                </tfoot>
+                            </tbody>
+                        </table>
+                        <h5>Final Ratings</h5>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                    <th>Rating</th>
+                                    <th>Weighted Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary_score_body">
+                                <tr>
+                                    <td>Behavioral Competencies</td>
+                                    <td id="BC_perc"></td>
+                                    <td id="BC_rating"></td>
+                                    <td id="BC_wtotal"></td>                            
+                                </tr>
+                                <tr>
+                                    <td>Key Results Area</td>
+                                    <td id="KRA_perc"></td>
+                                    <td id="KRA_rating"></td>
+                                    <td id="KRA_wtotal"></td>                            
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end">Final Score</td>
+                                    <td id="FS_wtotal"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end">Description</td>
+                                    <td id="descrip" class="col-12"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" style="width:90%">
@@ -393,6 +409,156 @@
                                     "<td><button type='button' class='btn btn-outline-primary view-btn'>View</button></td>"
 
                                 ));
+
+                                var summaryButton = $('<button>').addClass('btn btn-outline-primary')
+                                    .text('Summary').on('click', function() {
+                                        // Open the SummaryModal when the "Summary" button is clicked
+                                        if (response.appraisals.date_submitted !== null) {
+                                            $('#loading').show();
+                                            $('#SummaryModal').find('#loadingText').show().text('Loading');
+                                            $('#SummaryModalBody').hide();
+
+                                                $.ajax({
+                                                url: '{{ route('getScoreSummary') }}',
+                                                type: 'POST',
+                                                data: {
+                                                    employeeID: employeeID
+                                                }, 
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                },
+                                                success: function(response) {
+                                                    $('#loading').hide();
+                                                    $('#loadingText').hide();
+                                                    $('#SummaryModalBody').show();
+
+                                                    if (response.success) {
+                                                        console.log(response);
+                                                        $('#SummaryModal').find('#SE_perc').text(response.appraiseeFinalScores.scoreWeights.self_eval_weight + '%');
+                                                        $('#SummaryModal').find('#SE_rating').text((response.appraiseeFinalScores.appraisalRatings['self evaluation']).toFixed(2));
+                                                        $('#SummaryModal').find('#SE_wtotal').text(response.appraiseeFinalScores.weightedTotals['self evaluation'].toFixed(2));
+
+                                                        $('#SummaryModal').find('#IC1_perc').text(response.appraiseeFinalScores.scoreWeights.ic1_weight + '%');
+                                                        $('#SummaryModal').find('#IC1_rating').text((response.appraiseeFinalScores.appraisalRatings['internal customer 1']).toFixed(2));
+                                                        $('#SummaryModal').find('#IC1_wtotal').text(response.appraiseeFinalScores.weightedTotals['internal customer 1'].toFixed(2));
+
+                                                        $('#SummaryModal').find('#IC2_perc').text(response.appraiseeFinalScores.scoreWeights.ic2_weight + '%');
+                                                        $('#SummaryModal').find('#IC2_rating').text((response.appraiseeFinalScores.appraisalRatings['internal customer 2']).toFixed(2));
+                                                        $('#SummaryModal').find('#IC2_wtotal').text(response.appraiseeFinalScores.weightedTotals['internal customer 2'].toFixed(2));
+
+                                                        $('#SummaryModal').find('#IS_perc').text(response.appraiseeFinalScores.scoreWeights.is_weight + '%');
+                                                        $('#SummaryModal').find('#IS_rating').text((response.appraiseeFinalScores.appraisalRatings['is evaluation']).toFixed(2));
+                                                        $('#SummaryModal').find('#IS_wtotal').text(response.appraiseeFinalScores.weightedTotals['is evaluation'].toFixed(2));
+
+                                                        $('#SummaryModal').find('#BC_rtotal').text(response.appraiseeFinalScores.behavioralCompetenciesRating.toFixed(2));
+
+                                                        // Update the Final Ratings section
+                                                        $('#SummaryModal').find('#BC_perc').text(response.appraiseeFinalScores.scoreWeights.bh_weight + '%');
+                                                        $('#SummaryModal').find('#BC_rating').text(response.appraiseeFinalScores.behavioralCompetenciesRating.toFixed(2));
+                                                        $('#SummaryModal').find('#BC_wtotal').text(response.appraiseeFinalScores.behavioralCompetenciesWeightedTotal.toFixed(2));
+
+                                                        $('#SummaryModal').find('#KRA_perc').text(response.appraiseeFinalScores.scoreWeights.kra_weight + '%');
+                                                        $('#SummaryModal').find('#KRA_rating').text(response.appraiseeFinalScores.kraRating.toFixed(2));
+                                                        $('#SummaryModal').find('#KRA_wtotal').text(response.appraiseeFinalScores.kraWeightedTotal.toFixed(2));
+
+                                                        function isBetween(value, min, max) {
+                                                            return value >= min && value <= max;
+                                                        } 
+
+                                                        // Update the Final Score and Description
+                                                        function setDescription(value) {
+                                                            if (isBetween(value, 4.85, 5.00)) {
+                                                                $('#SummaryModal').find('#descrip').text('Outstanding');
+                                                            } else if (isBetween(value, 4.25, 4.84)) {
+                                                                $('#SummaryModal').find('#descrip').text('Very Satisfactory');
+                                                            } else if (isBetween(value, 3.50, 4.24)) {
+                                                                $('#SummaryModal').find('#descrip').text('Satisfactory');
+                                                            } else if (isBetween(value, 2.75, 3.49)) {
+                                                                $('#SummaryModal').find('#descrip').text('Fair');
+                                                            } else {
+                                                                $('#SummaryModal').find('#descrip').text('Poor');
+                                                            }
+                                                        }
+
+                                                        setDescription(response.appraiseeFinalScores.finalGrade);
+                                                        $('#SummaryModal').find('#FS_wtotal').text(response.appraiseeFinalScores.finalGrade.toFixed(2));
+
+                                                        // $('#SummaryModal').modal('show');
+                                                    }else{
+                                                        $('#SummaryModalBody').hide();
+                                                        $('#SummaryModal').find('#SE_perc').text('');
+                                                        $('#SummaryModal').find('#SE_rating').text('');
+                                                        $('#SummaryModal').find('#SE_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#IC1_perc').text('');
+                                                        $('#SummaryModal').find('#IC1_rating').text('');
+                                                        $('#SummaryModal').find('#IC1_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#IC2_perc').text('');
+                                                        $('#SummaryModal').find('#IC2_rating').text('');
+                                                        $('#SummaryModal').find('#IC2_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#IS_perc').text('');
+                                                        $('#SummaryModal').find('#IS_rating').text('');
+                                                        $('#SummaryModal').find('#IS_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#BC_rtotal').text('');
+
+                                                        // Update the Final Ratings section
+                                                        $('#SummaryModal').find('#BC_perc').text('');
+                                                        $('#SummaryModal').find('#BC_rating').text('');
+                                                        $('#SummaryModal').find('#BC_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#KRA_perc').text('');
+                                                        $('#SummaryModal').find('#KRA_rating').text('');
+                                                        $('#SummaryModal').find('#KRA_wtotal').text('');
+
+                                                        $('#SummaryModal').find('#loadingText').show().text('Pending...');
+                                                    }
+                                                },
+                                                error: function(xhr, status, error) {
+                                                    $('#loading').hide();
+                                                    console.log(error);
+                                                }
+                                            });
+                                        } else {
+                                            $('#SummaryModalBody').hide();
+
+                                            $('#SummaryModal').find('#SE_perc').text('');
+                                            $('#SummaryModal').find('#SE_rating').text('');
+                                            $('#SummaryModal').find('#SE_wtotal').text('');
+
+                                            $('#SummaryModal').find('#IC1_perc').text('');
+                                            $('#SummaryModal').find('#IC1_rating').text('');
+                                            $('#SummaryModal').find('#IC1_wtotal').text('');
+
+                                            $('#SummaryModal').find('#IC2_perc').text('');
+                                            $('#SummaryModal').find('#IC2_rating').text('');
+                                            $('#SummaryModal').find('#IC2_wtotal').text('');
+
+                                            $('#SummaryModal').find('#IS_perc').text('');
+                                            $('#SummaryModal').find('#IS_rating').text('');
+                                            $('#SummaryModal').find('#IS_wtotal').text('');
+
+                                            $('#SummaryModal').find('#BC_rtotal').text('');
+
+                                            // Update the Final Ratings section
+                                            $('#SummaryModal').find('#BC_perc').text('');
+                                            $('#SummaryModal').find('#BC_rating').text('');
+                                            $('#SummaryModal').find('#BC_wtotal').text('');
+
+                                            $('#SummaryModal').find('#KRA_perc').text('');
+                                            $('#SummaryModal').find('#KRA_rating').text('');
+                                            $('#SummaryModal').find('#KRA_wtotal').text('');
+
+                                            $('#SummaryModal').find('#FS_wtotal').text('');
+
+                                            $('#SummaryModal').find('#loadingText').show().text('Pending...');
+                                        }
+                                        $('#SummaryModal').modal('show');
+                                });
+
+                                row.append($('<td>').append(summaryButton));
 
                                 $(document).on('click', '.view-btn', function() {
                                     var closestTr = $(this).closest('tr');

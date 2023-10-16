@@ -2117,6 +2117,8 @@
                     $(this).removeClass('border border-danger');
                     $(this).closest('td').removeClass(
                         'border border-danger');
+                    $(this).closest('div').removeClass(
+                        'border border-danger');
                     $(this).removeClass('is-invalid');
                 }).on('invalid', function() {
                     $(this).addClass('is-invalid');

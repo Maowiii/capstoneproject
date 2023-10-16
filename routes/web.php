@@ -146,6 +146,7 @@ Route::post('/delete-kra', [ISAppraisalController::class, 'deleteKRA'])->name('d
 Route::post('/delete-wpa', [ISAppraisalController::class, 'deleteWPA'])->name('delete-wpa');
 Route::post('/delete-ldp', [ISAppraisalController::class, 'deleteLDP'])->name('deleteLDP');
 Route::post('/assign-internal-customer', [ISAppraisalsOverviewController::class, 'assignInternalCustomer'])->name('assignInternalCustomer');
+Route::post('/get-final-scores', [ISAppraisalsOverviewController::class, 'getScoreSummary'])->name('getScoreSummary');
 
 Route::post('/autosave-is-kra-field', [ISAppraisalController::class, 'autosaveKRAField'])->name('autosaveISKRAField');
 Route::post('/autosave-is-wpp-field', [ISAppraisalController::class, 'autosaveWPPField'])->name('autosaveISWPPField');
