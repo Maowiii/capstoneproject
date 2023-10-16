@@ -285,4 +285,29 @@ class EvaluationYearController extends Controller
       return response()->json(['success' => false, 'error' => 'Evaluation year not found.']);
     }
   }
+
+  public function getEvalWeights(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $evalID = $request->input('evalID');
+
+    if (is_null($evalID)) {
+      return response()->json(['success' => false, 'message' => 'EvalID is missing in the request.']);
+    }
+
+    $evalYear = EvalYear::find($evalID);
+
+    if ($evalYear) {
+      $sy = $evalYear->sy_start . '-' . $evalYear->sy_end;
+    } else {
+      return response()->json(['success' => false, 'message' => 'Eval Year not found.']);
+    }
+
+    $weights = ScoreWeights::where('eval_id', $evalID)->get();
+
+    return response()->json(['success' => true, 'weights' => $weights, 'sy' => $sy]);
+  }
 }

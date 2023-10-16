@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
 use App\Models\Employees;
-use App\Models\Accounts;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -453,27 +453,44 @@ class AdminDashboardController extends Controller
     ]);
   }
 
-
-  public function loadEmployeeTable(Request $request)
+  public function loadEmployees(Request $request)
   {
-    if (session()->has('account_id')) {
-      $search = $request->input('search');
-      // Use the Accounts model to filter active employees
-      $employees = Employees::whereHas('account', function ($query) {
-        $query->where('status', 'active');
-      })
-        ->where(function ($query) use ($search) {
-          $query->where('first_name', 'LIKE', '%' . $search . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $search . '%');
-        })
-        ->orderBy('last_name')
-        ->orderBy('first_name')
-        ->get();
+    $perPage = 20;
+    $search = $request->input('search');
+    $page = $request->input('page', 1);
 
-      return response()->json(['success' => true, 'employees' => $employees]);
-    } else {
-      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    $query = Accounts::where('type', 'PE')->with('employee.department');
+
+    if (!empty($search)) {
+      $query->where('email', 'LIKE', '%' . $search . '%');
     }
+
+    $employees = $query->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json(['success' => true, 'employees' => $employees]);
   }
 
+  public function loadEmployeeTrends(Request $request)
+  {
+    $schoolYears = EvalYear::all()->map(function ($evalYear) {
+      return $evalYear->sy_start . '_' . $evalYear->sy_end;
+    })->toArray();
+
+    $employeeID = $request->input('employeeID');
+
+    $employee = Employees::find($employeeID);
+
+    $finalScores = [];
+
+    foreach ($schoolYears as $year) {
+      $tableName = 'final_scores_' . $year;
+      $score = FinalScores::from($tableName)->where('employee_id', $employeeID)->value('final_score');
+
+      if ($score !== null) {
+        $finalScores[$year] = $score;
+      }
+    }
+
+    return response()->json(['success' => true, 'employee' => $employee, 'finalScores' => $finalScores]);
+  }
 }
