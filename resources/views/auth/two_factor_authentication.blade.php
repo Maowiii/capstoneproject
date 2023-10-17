@@ -17,10 +17,11 @@
             <h1>TWO-FACTOR AUTHENTICATION</h1>
         </center>
         <div class="container" id="codeForm">
-            <form method="post" action="{{route('verify-code')}}">
+            <form method="post" action="{{ route('verify-code') }}">
                 @csrf
                 <center>
                     <p>A four-digit code has been sent to your email. Enter the code below:</p>
+
                 </center>
                 <div class="d-flex justify-content-center">
                     <input type="text" class="form-control mx-1" id="code1" maxlength="1"
@@ -40,6 +41,10 @@
                         {{ Session::get('fail') }}
                     </div>
                 @endif
+                <center>
+                    <br>
+                    <i class='bx bx-refresh'></i><a href={{ route('resend-code') }}>Resend code</a>
+                </center>
                 <div class="d-grid gap-2 mt-3">
                     <button type="submit" class="btn btn-primary" id="verifyButton" value="Verify">Verify</button>
                 </div>

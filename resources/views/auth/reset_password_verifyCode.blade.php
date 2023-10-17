@@ -25,7 +25,6 @@
                 </div>
             @endif
                 <p>A four-digit code has been sent to your email. Enter the code below:</p>
-                <i class='bx bx-refresh'></i><a href={{route('resend-code')}}>Resend code</a>
             </center>
             <form method="POST" id="codeForm" action="{{ route('reset-password-verify-code') }}">
                 @csrf
@@ -48,6 +47,10 @@
                         {{ Session::get('fail') }}
                     </div>
                 @endif
+                <center>
+                    <br>
+                    <i class='bx bx-refresh'></i><a href={{ route('resend-code') }}>Resend code</a>
+                </center>
                 <div class="d-grid gap-2 mt-3">
                     <button type="submit" class="btn btn-primary" id="verifyButton">Verify</button>
                 </div>
