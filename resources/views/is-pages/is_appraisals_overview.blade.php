@@ -133,14 +133,14 @@
         </div>
     </div>
 
-    <div class="modal fade modal-xl" id="SummaryModal" data-bs-backdrop="static">
+    <div class="modal fade" id="SummaryModal" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body modal-xl">
+                <div class="modal-body">
                     <!-- Loading spinner -->
                     <div class="d-flex justify-content-center align-items-center">
                         <strong id="loadingText" class="text-primary" role="status" aria-hidden="true">Loading...</strong>

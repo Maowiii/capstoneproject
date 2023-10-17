@@ -58,7 +58,7 @@
         </nav>
     </div>
 
-    <div class="modal fade modal" id="SummaryModal" data-bs-backdrop="static">
+    <div class="modal fade" id="SummaryModal" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
