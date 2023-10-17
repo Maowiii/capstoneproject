@@ -65,7 +65,7 @@
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow-y: auto;">
                     <!-- Loading spinner -->
                     <div class="d-flex justify-content-center align-items-center">
                         <strong id="loadingText" class="text-primary" role="status" aria-hidden="true">Loading...</strong>
