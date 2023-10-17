@@ -222,12 +222,10 @@
                                 <tfoot>
                                     <tr>
                                         <td></td>
-                                        <td></td>
                                         <td class="text-end" colspan="2">Final Score</td>
                                         <td id="FS_wtotal"></td>
                                     </tr>
                                     <tr>
-                                        <td></td>
                                         <td></td>
                                         <td class="text-end col-12" colspan="2">Description</td>
                                         <td id="descrip"></td>

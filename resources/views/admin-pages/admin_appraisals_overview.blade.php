@@ -147,7 +147,6 @@
                                     <tfoot>
                                         <tr>
                                             <td></td>
-                                            <td></td>
                                             <td class="text-end" colspan="2">Final Score</td>
                                             <td id="FS_wtotal"></td>
                                         </tr>
