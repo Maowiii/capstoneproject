@@ -120,45 +120,47 @@
                                 </tfoot>
                                 </tbody>
                             </table>
-                            <h5>Final Ratings</h5>
-                            <table class='table table-bordered  table-responsive'>
-                                <thead>
-                                    <tr>
-                                        <th>Components</th>
-                                        <th>%</th>
-                                        <th>Rating</th>
-                                        <th>Weighted Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="summary_score_body">
-                                    <tr>
-                                        <td>Behavioral Competencies</td>
-                                        <td id="BC_perc"></td>
-                                        <td id="BC_rating"></td>
-                                        <td id="BC_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Key Results Area</td>
-                                        <td id="KRA_perc"></td>
-                                        <td id="KRA_rating"></td>
-                                        <td id="KRA_wtotal"></td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td class="text-end">Final Score</td>
-                                        <td id="FS_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td class="text-end">Description</td>
-                                        <td id="descrip" class="col-12"></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div id="SummaryModalBody">
+                                <h5>Final Ratings</h5>
+                                <table class='table table-bordered  table-responsive'>
+                                    <thead>
+                                        <tr>
+                                            <th>Components</th>
+                                            <th>%</th>
+                                            <th>Rating</th>
+                                            <th>Weighted Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="summary_score_body">
+                                        <tr>
+                                            <td>Behavioral Competencies</td>
+                                            <td id="BC_perc"></td>
+                                            <td id="BC_rating"></td>
+                                            <td id="BC_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Key Results Area</td>
+                                            <td id="KRA_perc"></td>
+                                            <td id="KRA_rating"></td>
+                                            <td id="KRA_wtotal"></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end">Final Score</td>
+                                            <td id="FS_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end">Description</td>
+                                            <td id="descrip" class="col-12"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -291,7 +293,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    );
+                                                );
 
                                             cell.append(link);
                                         } else {
@@ -346,7 +348,7 @@
                                                 .addClass("appraisal-link")
                                                 .html(
                                                     '<i class="bx bx-check-circle"></i>'
-                                                    );
+                                                );
 
                                             cell.append(link);
                                         } else {
@@ -477,13 +479,13 @@
                                                 headers: {
                                                     'X-CSRF-TOKEN': $(
                                                         'meta[name="csrf-token"]'
-                                                        ).attr('content')
+                                                    ).attr('content')
                                                 },
                                                 success: function(response) {
                                                     $('#loading').hide();
                                                     $('#loadingText').hide();
                                                     $('#SummaryModalBody')
-                                                    .show();
+                                                        .show();
 
                                                     if (response.success) {
                                                         console.log(response);
@@ -500,7 +502,7 @@
                                                                     .appraiseeFinalScores
                                                                     .appraisalRatings[
                                                                         'self evaluation'
-                                                                        ])
+                                                                    ])
                                                                 .toFixed(2));
                                                         $('#SummaryModal').find(
                                                                 '#SE_wtotal')
@@ -508,8 +510,8 @@
                                                                 .appraiseeFinalScores
                                                                 .weightedTotals[
                                                                     'self evaluation'
-                                                                    ].toFixed(2)
-                                                                );
+                                                                ].toFixed(2)
+                                                            );
 
                                                         $('#SummaryModal').find(
                                                                 '#IC1_perc')
@@ -524,7 +526,7 @@
                                                                     .appraiseeFinalScores
                                                                     .appraisalRatings[
                                                                         'internal customer 1'
-                                                                        ])
+                                                                    ])
                                                                 .toFixed(2));
                                                         $('#SummaryModal').find(
                                                                 '#IC1_wtotal')
@@ -532,8 +534,8 @@
                                                                 .appraiseeFinalScores
                                                                 .weightedTotals[
                                                                     'internal customer 1'
-                                                                    ].toFixed(2)
-                                                                );
+                                                                ].toFixed(2)
+                                                            );
 
                                                         $('#SummaryModal').find(
                                                                 '#IC2_perc')
@@ -548,7 +550,7 @@
                                                                     .appraiseeFinalScores
                                                                     .appraisalRatings[
                                                                         'internal customer 2'
-                                                                        ])
+                                                                    ])
                                                                 .toFixed(2));
                                                         $('#SummaryModal').find(
                                                                 '#IC2_wtotal')
@@ -556,8 +558,8 @@
                                                                 .appraiseeFinalScores
                                                                 .weightedTotals[
                                                                     'internal customer 2'
-                                                                    ].toFixed(2)
-                                                                );
+                                                                ].toFixed(2)
+                                                            );
 
                                                         $('#SummaryModal').find(
                                                                 '#IS_perc')
@@ -565,14 +567,14 @@
                                                                 .appraiseeFinalScores
                                                                 .scoreWeights
                                                                 .is_weight + '%'
-                                                                );
+                                                            );
                                                         $('#SummaryModal').find(
                                                                 '#IS_rating')
                                                             .text((response
                                                                     .appraiseeFinalScores
                                                                     .appraisalRatings[
                                                                         'is evaluation'
-                                                                        ])
+                                                                    ])
                                                                 .toFixed(2));
                                                         $('#SummaryModal').find(
                                                                 '#IS_wtotal')
@@ -580,8 +582,8 @@
                                                                 .appraiseeFinalScores
                                                                 .weightedTotals[
                                                                     'is evaluation'
-                                                                    ].toFixed(2)
-                                                                );
+                                                                ].toFixed(2)
+                                                            );
 
                                                         $('#SummaryModal').find(
                                                                 '#BC_rtotal')
@@ -597,7 +599,7 @@
                                                                 .appraiseeFinalScores
                                                                 .scoreWeights
                                                                 .bh_weight + '%'
-                                                                );
+                                                            );
                                                         $('#SummaryModal').find(
                                                                 '#BC_rating')
                                                             .text(response
@@ -643,47 +645,47 @@
                                                             value) {
                                                             if (isBetween(value,
                                                                     4.85, 5.00
-                                                                    )) {
+                                                                )) {
                                                                 $('#SummaryModal')
                                                                     .find(
                                                                         '#descrip'
-                                                                        ).text(
+                                                                    ).text(
                                                                         'Outstanding'
-                                                                        );
+                                                                    );
                                                             } else if (
                                                                 isBetween(value,
                                                                     4.25, 4.84)
-                                                                ) {
+                                                            ) {
                                                                 $('#SummaryModal')
                                                                     .find(
                                                                         '#descrip'
-                                                                        ).text(
+                                                                    ).text(
                                                                         'Very Satisfactory'
-                                                                        );
+                                                                    );
                                                             } else if (
                                                                 isBetween(value,
                                                                     3.50, 4.24)
-                                                                ) {
+                                                            ) {
                                                                 $('#SummaryModal')
                                                                     .find(
                                                                         '#descrip'
-                                                                        ).text(
+                                                                    ).text(
                                                                         'Satisfactory'
-                                                                        );
+                                                                    );
                                                             } else if (
                                                                 isBetween(value,
                                                                     2.75, 3.49)
-                                                                ) {
+                                                            ) {
                                                                 $('#SummaryModal')
                                                                     .find(
                                                                         '#descrip'
-                                                                        ).text(
+                                                                    ).text(
                                                                         'Fair');
                                                             } else {
                                                                 $('#SummaryModal')
                                                                     .find(
                                                                         '#descrip'
-                                                                        ).text(
+                                                                    ).text(
                                                                         'Poor');
                                                             }
                                                         }
@@ -774,7 +776,7 @@
                                                     }
                                                 },
                                                 error: function(xhr, status,
-                                                error) {
+                                                    error) {
                                                     $('#loading').hide();
                                                     console.log(error);
                                                 }
