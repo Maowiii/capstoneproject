@@ -434,6 +434,9 @@ textarea {
 #wt{
     width: 90px!important;
 }
+#loadingtext{
+    color: #0b2a51!important;
+}
 
 /* BUTTONS */
 .btn-primary {
