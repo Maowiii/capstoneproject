@@ -134,7 +134,7 @@
     </div>
 
     <div class="modal fade" id="SummaryModal" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
