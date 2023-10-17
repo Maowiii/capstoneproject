@@ -188,7 +188,7 @@
                                 <tfoot>
                                     <tr>
                                         <td></td>
-                                        <td class="text-end col-12" colspan="2">Weighted Total:</td>
+                                        <td class="text-end" colspan="2">Weighted Total:</td>
                                         <td id="BC_rtotal"></td>
                                     </tr>
                                 </tfoot>
