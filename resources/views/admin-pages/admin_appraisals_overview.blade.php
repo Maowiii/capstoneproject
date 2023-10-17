@@ -153,8 +153,7 @@
                                         </tr>
                                         <tr>
                                             <td></td>
-                                            <td></td>
-                                            <td class="text-end col-12">Description</td>
+                                            <td class="text-end col-12" colspan="2">Description</td>
                                             <td id="descrip"></td>
                                         </tr>
                                     </tfoot>
