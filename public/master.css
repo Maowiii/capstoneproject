@@ -426,10 +426,10 @@ textarea {
     text-align: right;
 }
 #ar, #obj, #krainput{
-    width: 150px !important;
+    width: 130px !important;
 }
 #pi{
-    width: 160px!important;
+    width: 140px!important;
 }
 
 /* BUTTONS */
@@ -558,10 +558,6 @@ textarea {
 #SummaryModal .modal-dialog{
     max-width: 30%!important;
 }
-@media (min-width: 1200px) {
-    .table-responsive {
-        max-width: 100%; /* Adjust the percentage as needed */
-    }
-}
+
 
 
