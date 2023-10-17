@@ -558,5 +558,10 @@ textarea {
 #SummaryModal .modal-dialog{
     max-width: 30%!important;
 }
+@media (min-width: 1200px) {
+    .table-responsive {
+        max-width: 100%; /* Adjust the percentage as needed */
+    }
+}
 
 

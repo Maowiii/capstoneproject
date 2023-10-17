@@ -65,7 +65,7 @@
                     <h1 class="modal-title fs-5" id="SummaryModal-label">Summary of Ratings</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" style="overflow-y: auto;">
+                <div class="modal-body">
                     <!-- Loading spinner -->
                     <div class="d-flex justify-content-center align-items-center">
                         <strong id="loadingText" class="text-primary" role="status" aria-hidden="true">Loading...</strong>
@@ -120,9 +120,8 @@
                                 </tfoot>
                                 </tbody>
                             </table>
-                            <div id="SummaryModalBody">
                                 <h5>Final Ratings</h5>
-                                <table class='table table-bordered  table-responsive'>
+                                <table class='table table-bordered table-responsive'>
                                     <thead>
                                         <tr>
                                             <th>Components</th>
