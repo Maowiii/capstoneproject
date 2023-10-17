@@ -1057,7 +1057,6 @@
                                 input[0].disabled = true;
 
                                 var span = $('<span>').addClass('ms-1').text(i);
-                                label.append(input, span);
                                 performanceLevelDiv.append($('<div>').addClass('col-auto').append(
                                     label));
 
