@@ -74,7 +74,7 @@
                         </div>
                     </div>
                     <div>
-                        <div id="SummaryModalBody">
+                        <div id="SummaryModalBody modal-xl">
                             <h5>Behavioral Competencies</h5>
                             <table class='table table-bordered  table-responsive'>
                                 <thead>
