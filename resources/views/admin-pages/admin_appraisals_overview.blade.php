@@ -154,8 +154,8 @@
                                         <tr>
                                             <td></td>
                                             <td></td>
-                                            <td class="text-end">Description</td>
-                                            <td id="descrip" class="col-12"></td>
+                                            <td class="text-end col-12">Description</td>
+                                            <td id="descrip"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
