@@ -1040,9 +1040,7 @@
                             ).appendTo(row);
 
                             var performanceCell = $('<td>').appendTo(row);
-                            var performanceLevelDiv = $('<div>').addClass(
-                                'd-flex justify-content-center gap-2'
-                            ).appendTo(performanceCell);
+                            var performanceLevelDiv = $('<div>').addClass('d-flex justify-content-center gap-2').appendTo(performanceCell);
 
                             for (var i = 5; i >= 1; i--) {
                                 var label = $('<label>').addClass('form-check-label');
@@ -1056,9 +1054,8 @@
 
                                 input[0].disabled = true;
 
-                                var span = $('<span>').addClass('ms-1').text(i);
-                                performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                                    label));
+                                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                //     label));
 
                                 input.on('invalid', function() {
                                     $(this).addClass('is-invalid text-danger fw-bold');
@@ -1080,6 +1077,8 @@
                                         'is-invalid'
                                     );
                                 });
+
+                                var span = $('<span>').addClass('ms-1').text(i);
 
                                 label.append(input, span);
 
