@@ -426,10 +426,13 @@ textarea {
     text-align: right;
 }
 #ar, #obj, #krainput{
-    width: 130px !important;
+    width: 120px !important;
 }
 #pi{
-    width: 140px!important;
+    width: 130px!important;
+}
+#wt{
+    width: 90px!important;
 }
 
 /* BUTTONS */
