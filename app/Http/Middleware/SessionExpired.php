@@ -17,7 +17,7 @@ class SessionExpired
 
       $currentTime = time();
 
-      if ($currentTime - $lastActivity > 1800) { // seconds
+      if ($currentTime - $lastActivity > 600) { // seconds
         Log::debug('Session expired; performing logout.');
         $request->session()->destroy();
 

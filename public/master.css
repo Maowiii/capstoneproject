@@ -539,7 +539,7 @@ textarea {
 }
 .table-wrapper {
     overflow: auto;
-    max-height: 200px;
+    max-height: 250px;
 }
 #passchange .modal-footer{
     justify-content: right;
@@ -575,5 +575,5 @@ textarea {
 }
 
 #lockToast{
-    z-index: 100!important;
+    z-index: 99!important;
 }
