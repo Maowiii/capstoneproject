@@ -310,4 +310,42 @@ class EvaluationYearController extends Controller
 
     return response()->json(['success' => true, 'weights' => $weights, 'sy' => $sy]);
   }
+
+
+  public function deleteEvalYear(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return response()->json(['success' => false, 'message' => 'Your session has expired. Please log in again.']);
+    }
+
+    $evalID = $request->input('evalID');
+
+    $evalYear = EvalYear::find($evalID);
+    $scoreWeights = ScoreWeights::where('eval_id', $evalID)->first();
+
+
+    if (!$evalYear) {
+      return response()->json(['success' => false, 'message' => 'Evaluation Year not found.']);
+    }
+
+    if (!$scoreWeights) {
+      return response()->json(['success' => false, 'message' => 'Score Weight not found.']);
+    }
+
+    $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+    $tables = DB::select('SHOW TABLES');
+
+    foreach ($tables as $table) {
+      $tableName = reset($table);
+
+      if (str_ends_with($tableName, $schoolYear)) {
+        Schema::dropIfExists($tableName);
+      }
+    }
+
+    $scoreWeights->delete();
+    $evalYear->delete();
+
+    return response()->json(['success' => true]);
+  }
 }

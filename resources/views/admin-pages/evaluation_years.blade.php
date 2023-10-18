@@ -316,6 +316,7 @@
             </div>
         </div>
 
+        <!-- Delete Confirmation Modal -->
         <div class="modal fade" id="deleteConfirmationModal" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -326,14 +327,14 @@
                     </div>
                     <div class="modal-body"></div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="confirm-delete-btn">Understood</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Weights Modal -->
         <div class="modal fade" id="weightsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -353,25 +354,29 @@
                                 <tr>
                                     <td>Self-Evaluation:</td>
                                     <td class="w-25">
-                                        <input type="text" class="form-control text-center" id="view_self_eval_weight" readonly disabled>
+                                        <input type="text" class="form-control text-center" id="view_self_eval_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Internal Customer 1:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_ic1_weight" readonly disabled>
+                                        <input type="text" class="form-control text-center" id="view_ic1_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Internal Customer 2:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_ic2_weight" readonly disabled>
+                                        <input type="text" class="form-control text-center" id="view_ic2_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Immediate Superior:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_is_weight" readonly disabled>
+                                        <input type="text" class="form-control text-center" id="view_is_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                             </tbody>
@@ -379,8 +384,8 @@
                                 <tr>
                                     <td class="text-end">Total:</td>
                                     <td>
-                                        <input class="form-control text-center" id="view_bh_total" type="text" value="0"
-                                            readonly>
+                                        <input class="form-control text-center" id="view_bh_total" type="text"
+                                            value="0" readonly>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -396,13 +401,15 @@
                                 <tr>
                                     <td>Behavioral Competencies:</td>
                                     <td>
-                                        <input class="form-control text-center" type="text" id="view_bh_weight" readonly disabled>
+                                        <input class="form-control text-center" type="text" id="view_bh_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>KRA/KPI:</td>
                                     <td class="w-25">
-                                        <input class="form-control text-center" type="text" id="view_kra_weight" readonly disabled>
+                                        <input class="form-control text-center" type="text" id="view_kra_weight"
+                                            readonly disabled>
                                     </td>
                                 </tr>
                             </tbody>
@@ -410,7 +417,8 @@
                                 <tr>
                                     <td class="text-end">Final Score:</td>
                                     <td>
-                                        <input class="form-control text-center" id="view_final_total" type="text" value="0" readonly>
+                                        <input class="form-control text-center" id="view_final_total" type="text"
+                                            value="0" readonly>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -467,10 +475,35 @@
             updateFinalTotal();
         });
 
+        $(document).on('click', '#confirm-delete-btn', function() {
+            var evalID = $(this).data('eval-id');
+            console.log('Confirm Eval Year ID: ' + evalID);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.deleteEvalYear') }}',
+                type: 'POST',
+                data: {
+                    evalID: evalID
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response);
+                        loadEvaluationYearTable(page = 1);
+                        $('#deleteConfirmationModal').modal('hide');
+                    }
+                }
+            });
+        });
+
         $(document).on('click', '.btn-weights', function() {
             var evalID = $(this).data('eval-id');
             console.log('Eval ID: ' + evalID);
             $('#weightsModal').modal('show');
+            $('#deleteConfirmationModal').modal('show');
+
 
             $.ajax({
                 url: '{{ route('ad.getEvalWeights') }}',
@@ -498,14 +531,14 @@
                         $('#view_bh_weight').val(response.weights[0].bh_weight);
                         $('#view_kra_weight').val(response.weights[0].kra_weight);
 
-                        var finalTotal = parseInt(response.weights[0].bh_weight) + parseInt(response.weights[0].kra_weight);
+                        var finalTotal = parseInt(response.weights[0].bh_weight) + parseInt(response
+                            .weights[0].kra_weight);
 
                         $('#view_final_total').val(finalTotal);
                     }
                 }
             });
         });
-
 
         updateBehavioralTotal();
         updateFinalTotal();
@@ -596,7 +629,7 @@
                 url: '/evaluation-year/displayEvaluationYear',
                 type: 'GET',
                 data: {
-                    page: page // Pass the current page number
+                    page: page
                 },
                 success: function(response) {
                     if (response.success) {
@@ -646,7 +679,6 @@
                             buttonGroup.append($('<button>').addClass(
                                     'btn btn-outline-danger delete-eval-yr-btn')
                                 .data('eval-id', eval_id)
-                                .data('school-year', school_year)
                                 .text('Delete'));
                             row.append($('<td>').addClass('align-middle').append(buttonGroup));
 
@@ -812,14 +844,19 @@
         $(document).on('click', '.delete-eval-yr-btn', function() {
             var evalId = $(this).data('eval-id');
             var schoolYear = $(this).data('school-year');
+
+            console.log('Eval Year ID: ' + evalId);
+
             $('#deleteConfirmationModal').modal('show');
+            $('#confirm-delete-btn').data('eval-id', evalId);
+
             var message = $('<p>').text('Are you sure you want to delete all of the evaluations of school year ' +
                 schoolYear + '?');
 
-            var alertDiv = $('<div>').addClass('alert alert-warning mx-0 my-0').attr('role', 'alert').attr('id',
+            var alertDiv = $('<div>').addClass('alert alert-danger mx-0 my-0').attr('role', 'alert').attr('id',
                 'confirmationAlert');
             alertDiv.html(
-                '<i class="bx bx-info-circle"></i>This cannot be undone.'
+                '<i class="bx bx-info-circle me-3"></i>This cannot be undone.'
             );
 
             $('#deleteConfirmationModal .modal-body').empty().append(message, alertDiv);
