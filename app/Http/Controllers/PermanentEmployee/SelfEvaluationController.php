@@ -231,10 +231,13 @@ class SelfEvaluationController extends Controller
     }
 
     $kraID = $request->input('kraID');
-
+    $selfEvalkraID = $kraID-1;
+    
     // Perform the actual deletion of the KRA record from the database
     try {
       KRA::where('kra_id', $kraID)->delete();
+      KRA::where('kra_id', $selfEvalkraID)->delete();
+
       return response()->json(['success' => true]);
     } catch (\Exception $e) {
       return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
@@ -1033,11 +1036,11 @@ class SelfEvaluationController extends Controller
       Log::info($locked);
 
       ////////////PHASES/////////////
-      // $currentDate = Carbon::now();
+      $currentDate = Carbon::now();
 
-      // $currentDate = Carbon::parse("2023-10-31"); //KRA
+      $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
-      $currentDate = Carbon::parse("2023-11-22"); //EVAL
+      // $currentDate = Carbon::parse("2023-11-22"); //EVAL
 
       $activeYear = EvalYear::where('status', 'active')->first();
 
