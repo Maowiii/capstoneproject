@@ -285,8 +285,6 @@ body#loginPage {
     background-color: #E9ECEF;
     color: #999;
 }
-
-
 .content-wrapper {
     display: flex; /* Use flexbox */
     justify-content: space-between; /* Space the containers evenly */
