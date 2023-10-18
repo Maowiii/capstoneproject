@@ -670,16 +670,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this item?
+                    <h5>Are you sure you want to delete this item?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
                 </div>
                 </div>
@@ -863,29 +861,36 @@
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var wpaID = row.attr('data-field-id'); // Assuming you have a data attribute for WPA ID on the row
+                
+                // Show the confirmation modal
+                $('#confirmationModal').modal('show');
 
                 // Send an AJAX request to delete the WPA record from the database
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
-                    data: {
-                        wpaID: wpaID // Pass the WPA record ID to be deleted
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        // If the database deletion is successful, remove the row from the table
-                        row.remove();
+                $('#confirmDeleteBtn').on('click', function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
+                        data: {
+                            wpaID: wpaID // Pass the WPA record ID to be deleted
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            // If the database deletion is successful, remove the row from the table
+                            row.remove();
 
-                        var rowCount = $('#wpa_table_body tr').length;
-                        if (rowCount === 1) {
-                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            var rowCount = $('#wpa_table_body tr').length;
+                            if (rowCount === 1) {
+                                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            }
+                            $('#confirmationModal').modal('hide'); // Close the modal
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#confirmationModal').modal('hide');
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+                    });
                 });
             });
 
@@ -893,29 +898,36 @@
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var ldpID = row.attr('data-ldp-id'); // Assuming you have a data attribute for LDP ID on the row
-                console.log(ldpID);
-                // Send an AJAX request to delete the LDP record from the database
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
-                    data: {
-                        ldpID: ldpID // Pass the LDP record ID to be deleted
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        // If the database deletion is successful, remove the row from the table
-                        row.remove();
+                
+                // Show the confirmation modal
+                $('#confirmationModal').modal('show');
 
-                        var rowCount = $('#ldp_table_body tr').length;
-                        if (rowCount === 1) {
-                            $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
+                // When the confirmation modal's delete button is clicked
+                $('#confirmDeleteBtn').on('click', function() { 
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
+                        data: {
+                            ldpID: ldpID // Pass the LDP record ID to be deleted
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            // If the database deletion is successful, remove the row from the table
+                            row.remove();
+
+                            var rowCount = $('#ldp_table_body tr').length;
+                            if (rowCount === 1) {
+                                $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
+                            }
+                            $('#confirmationModal').modal('hide'); // Close the modal
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#confirmationModal').modal('hide'); // Close the modal
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+                    });
                 });
             });
 
@@ -2082,9 +2094,9 @@
 
             $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"]');
-                var selectedValue = weightOption.find("option:selected").val();
-                var weight = parseFloat(selectedValue) / 100;
+                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"] option:selected').val();
+                // var selectedValue = weightOption.find("option:selected").val();
+                var weight = parseFloat(weightOption) / 100;
 
                 var performanceLevel = parseInt(row.find(
                         'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
@@ -2107,7 +2119,7 @@
 
             totalWeight = totalWeight * 100;
 
-            if (totalWeight > 100) {
+            if (Math.floor(totalWeight) > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');

@@ -80,16 +80,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                                                                                                <br>I give consent to the retention of my personal data. (Y/N)<br>
+                            <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                                                                                                <br>I give consent to the sharing of my data. (Y/N)<br>
+                            <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                                                                                                <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                                                                                            Agreement.<br>
-                                                                                                            
-                                                                                                            <br>By clicking Yes, you consent that you are willing to answer the questions
-                                                                                                            in this survey and you answered YES to the three questions above.
-                                                                                                            (Y/N) -->
+                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                        Agreement.<br>
+                        
+                        <br>By clicking Yes, you consent that you are willing to answer the questions
+                        in this survey and you answered YES to the three questions above.
+                        (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -126,6 +126,21 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="confirmClose()">Close</button>
                     <button type="button" class="btn btn-primary" onclick="understood()">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-relative">
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <h5 class="mr-auto">Appraisal Form Locked</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="toast-body">
+                    <p>The appraisal form is currently locked and cannot be edited.</p>
                 </div>
             </div>
         </div>
@@ -777,16 +792,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this item?
+                    <h5>Are you sure you want to delete this item?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
                 </div>
                 </div>
@@ -957,8 +970,7 @@
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var wpaID = row.data(
-                    'wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
 
                 // Send an AJAX request to delete the WPA record from the database
                 $.ajax({
@@ -1829,8 +1841,8 @@
 
                                 var span = $('<span>').addClass('ms-1').text(i);
                                 label.append(input, span);
-                                performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                                    label));
+                                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                //     label));
 
                                 input.on('invalid', function() {
                                     $(this).addClass('is-invalid text-danger fw-bold');
@@ -2415,7 +2427,7 @@
 
             totalWeight = totalWeight * 100;
 
-            if (totalWeight > 100) {
+            if (Math.floor(totalWeight) > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');
