@@ -76,7 +76,7 @@
                     <div>
                         <div id="SummaryModalBody">
                             <h5>Behavioral Competencies</h5>
-                            <table class='table table-bordered  table-responsive'>
+                            <table class='table table-bordered'>
                                 <thead>
                                     <tr>
                                         <th>Components</th>
@@ -119,7 +119,7 @@
                                 </tbody>
                             </table>
                             <h5>Final Ratings</h5>
-                            <table class='table table-bordered table-responsive'>
+                            <table class='table table-bordered'>
                                 <thead>
                                     <tr>
                                         <th>Components</th>
