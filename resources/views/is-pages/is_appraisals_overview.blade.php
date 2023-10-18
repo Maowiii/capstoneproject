@@ -151,7 +151,7 @@
                     <div>
                         <div id="SummaryModalBody">
                             <h5>Behavioral Competencies</h5>
-                            <table class='table table-bordered  table-responsive'>
+                            <table class='table table-bordered'>
                                 <thead>
                                     <tr>
                                         <th>Components</th>
@@ -187,15 +187,14 @@
                                     </tr>
                                 <tfoot>
                                     <tr>
-                                        <td></td>
                                         <td class="text-end" colspan="2">Weighted Total:</td>
-                                        <td id="BC_rtotal"></td>
+                                        <td id="BC_rtotal" colspan="2"></td>
                                     </tr>
                                 </tfoot>
                                 </tbody>
                             </table>
                                 <h5>Final Ratings</h5>
-                                <table class='table table-bordered table-responsive'>
+                                <table class='table table-bordered'>
                                     <thead>
                                         <tr>
                                             <th>Components</th>
@@ -220,14 +219,12 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td></td>
                                             <td class="text-end" colspan="2">Final Score</td>
-                                            <td id="FS_wtotal"></td>
+                                            <td id="FS_wtotal" colspan="2"></td>
                                         </tr>
-                                        <tr>
-                                            <td></td>
+                                        <tr>                                         
                                             <td class="text-end" colspan="2">Description</td>
-                                            <td id="descrip"></td>
+                                            <td id="descrip" colspan="2"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
