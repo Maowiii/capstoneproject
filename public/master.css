@@ -573,3 +573,7 @@ textarea {
 .pagination .page-link {
   color: #164783 !important;
 }
+
+#lockToast{
+    z-index: 100!important;
+}
