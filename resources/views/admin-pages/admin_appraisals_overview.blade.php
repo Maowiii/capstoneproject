@@ -58,7 +58,7 @@
         </nav>
     </div>
 
-    <div class="modal fade modal-md" id="SummaryModal" data-bs-backdrop="static">
+    <div class="modal fade modal" id="SummaryModal" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -112,9 +112,8 @@
                                     </tr>
                                 <tfoot>
                                     <tr>
-                                        <td></td>
-                                        <td class="text-end" colspan="2">Weighted Total:</td>
-                                        <td id="BC_rtotal"></td>
+                                        <td colspan="2">Weighted Total:</td>
+                                        <td id="BC_rtotal" colspan="2"></td>
                                     </tr>
                                 </tfoot>
                                 </tbody>
@@ -145,14 +144,12 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td></td>
-                                            <td class="text-end" colspan="2">Final Score</td>
-                                            <td id="FS_wtotal"></td>
+                                            <td colspan="2">Final Score</td>
+                                            <td id="FS_wtotal" colspan="2"></td>
                                         </tr>
                                         <tr>
-                                            <td></td>
-                                            <td class="text-end" colspan="2">Description</td>
-                                            <td id="descrip"></td>
+                                            <td colspan="2">Description</td>
+                                            <td id="descrip" colspan="2"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
