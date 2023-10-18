@@ -24,21 +24,25 @@
         <div class="content-container">
             <h2>Point System:</h2>
             <h4>Oustanding Employees:</h4>
-            <table class="table table-sm" id="outstanding_table">
-                <thead>
-                    <th>Name</th>
-                    <th>Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <h4>Very Satisfactory:</h4>
-            <table class="table table-sm" id="verySatisfactory_table">
-                <thead>
-                    <th>Name</th>
-                    <th>Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="table table-sm" id="outstanding_table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="table-wrapper">
+                <h4>Very Satisfactory:</h4>
+                <table class="table table-sm" id="verySatisfactory_table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <h4>Satisfactory:</h4>
             <table class="table table-sm" id="satisfactory_table">
                 <thead>
@@ -48,21 +52,25 @@
                 <tbody></tbody>
             </table>
             <h4>Fair:</h4>
-            <table class="table table-sm" id="fair_table">
-                <thead>
-                    <th>Name</th>
-                    <th>Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="table table-sm" id="fair_table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <h4>Poor:</h4>
-            <table class="table table-sm" id="poor_table">
-                <thead>
-                    <th>Name</th>
-                    <th>Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="table table-sm" id="poor_table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -142,13 +150,13 @@
         <div class="floating-container">
             <div class="fixed-right p-4">
                 <div class="d-flex justify-content-end">
-                        <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
-                            <i class='bx bxs-printer'></i>
-                        </button>
-                    </div>
+                    <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                        <i class='bx bxs-printer'></i>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <script>
         function printReport() {
