@@ -748,7 +748,7 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: 5,
+                                            max: 6,
                                             ticks: {
                                                 stepSize: 1,
                                             },
@@ -805,7 +805,7 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: 5,
+                                            max: 6,
                                             ticks: {
                                                 stepSize: 1,
                                             },
@@ -862,7 +862,7 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: 5,
+                                            max: 6,
                                             ticks: {
                                                 stepSize: 1,
                                             },
