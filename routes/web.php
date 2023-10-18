@@ -23,6 +23,7 @@ use App\Http\Controllers\PermanentEmployee\PEDashboardController;
 use App\Http\Controllers\PermanentEmployee\PEInternalCustomerController;
 use App\Http\Controllers\PermanentEmployee\SelfEvaluationController;
 use App\Http\Controllers\SettingsController;
+use App\Models\EvalYear;
 use Illuminate\Support\Facades\Route;
 
 
@@ -110,6 +111,8 @@ Route::get('/evaluation-year', [EvaluationYearController::class, 'viewEvaluation
 Route::get('/evaluation-year/displayEvaluationYear', [EvaluationYearController::class, 'displayEvaluationYear'])->name('displayEvaluationYear');
 Route::get('/evaluation-year/get-evaluation-weights', [EvaluationYearController::class, 'getEvalWeights'])->name('ad.getEvalWeights');
 Route::post('/evaluation-year/toggle-eval-year-status', [EvaluationYearController::class, 'toggleEvalYearStatus'])->name('ad.toggleEvalYearStatus');
+
+Route::post('evaluation-year/delete-eval', [EvaluationYearController::class, 'deleteEvalYear'])->name('ad.deleteEvalYear');
 
 Route::post('/evaluation-year/add-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('addEvalYear');
 Route::post('/evaluation-year/confirm-eval-year', [EvaluationYearController::class, 'confirmEvalYear'])->name('confirmEvalYear');

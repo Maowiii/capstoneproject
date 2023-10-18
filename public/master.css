@@ -15,7 +15,7 @@
     height: 100%;
     width: 260px;
     background: #164783;
-    z-index: 100!important;
+    z-index: 100 !important;
     transition: all 0.5s ease;
 }
 .sidebar.close {
@@ -367,13 +367,13 @@ tbody {
     text-align: center !important;
 }
 thead {
-  text-align: center;
-  vertical-align: middle;
+    text-align: center;
+    vertical-align: middle;
 }
 
 td {
-  vertical-align: middle;
-  text-align: center;
+    vertical-align: middle;
+    text-align: center;
 }
 .table-bordered {
     border: solid #c3d7f1 1px !important;
@@ -413,7 +413,7 @@ textarea {
 }
 
 .text-right {
-    text-align: right!important;
+    text-align: right !important;
 }
 
 .position-right {
@@ -425,14 +425,16 @@ textarea {
     width: 300px !important;
     text-align: right;
 }
-#ar, #obj, #krainput{
+#ar,
+#obj,
+#krainput {
     width: 120px !important;
 }
-#pi{
-    width: 130px!important;
+#pi {
+    width: 130px !important;
 }
-#wt{
-    width: 90px!important;
+#wt {
+    width: 90px !important;
 }
 
 /* BUTTONS */
@@ -461,23 +463,23 @@ textarea {
     outline: none;
     cursor: pointer;
 }
-#print-button{
+#print-button {
     border-radius: 60%;
     width: 60px;
     height: 60px;
     font-size: 24px;
-    align-items: center!important;
-    z-index: 95!important; 
+    align-items: center !important;
+    z-index: 95 !important;
 }
 .floating-container {
     position: fixed;
     bottom: 20px;
-    right: 20px; 
-    z-index: 95!important; 
+    right: 20px;
+    z-index: 95 !important;
 }
-.fixed-right.p-4{
-    padding: 10px!important;
-    z-index: 95!important;
+.fixed-right.p-4 {
+    padding: 10px !important;
+    z-index: 95 !important;
 }
 /* MODALS */
 
@@ -503,25 +505,24 @@ textarea {
 }
 #SID_table input[type="radio"],
 #SR_table input[type="radio"],
-#S_table input[type="radio"]
-{
-    width: 20px!important;
-    height: 20px!important;
-    margin-right: 9px!important; 
+#S_table input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 9px !important;
 }
-#KRA_table_body input[type="radio"]{
-    width: 20px!important; 
-    height: 20px!important; 
-    margin-right: 2px!important;
+#KRA_table_body input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 2px !important;
 }
-#IC_table .form-check-input[type="radio"]{
-    width: 20px!important; 
-    height: 20px!important;
+#IC_table .form-check-input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
 }
-#jic_table .form-check-input[type="radio"]{
-    width: 20px!important;
-    height: 20px!important;
-    margin-right: 5px!important;
+#jic_table .form-check-input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 5px !important;
 }
 .row-selected {
     background-color: #ace1af;
@@ -534,7 +535,7 @@ textarea {
 }
 
 .table-fit {
-  width: 1px;
+    width: 1px;
 }
 .table-wrapper {
     overflow: auto;
@@ -548,21 +549,27 @@ textarea {
     align-items: center;
     justify-content: center;
 }
-#consentform .modal-footer{
+#consentform .modal-footer {
     justify-content: center;
 }
 #consentform .modal-content {
     display: flex;
     flex-direction: column;
 }
-#consentform .modal-dialog{
+#consentform .modal-dialog {
     max-width: 60%;
 }
 #consentform .modal-body {
     text-align: justify;
-    padding: 25px!important;
+    padding: 25px !important;
 }
 
+.pagination .active .page-link{
+    background-color: #164783 !important;
+    border-color: #164783 !important;
+    color: #fff !important;
+}
 
-
-
+.pagination .page-link {
+  color: #164783 !important;
+}
