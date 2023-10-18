@@ -118,47 +118,47 @@
                                 </tfoot>
                                 </tbody>
                             </table>
-                                <h5>Final Ratings</h5>
-                                <table class='table table-bordered table-responsive'>
-                                    <thead>
-                                        <tr>
-                                            <th>Components</th>
-                                            <th>%</th>
-                                            <th>Rating</th>
-                                            <th>Weighted Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="summary_score_body">
-                                        <tr>
-                                            <td>Behavioral Competencies</td>
-                                            <td id="BC_perc"></td>
-                                            <td id="BC_rating"></td>
-                                            <td id="BC_wtotal"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Key Results Area</td>
-                                            <td id="KRA_perc"></td>
-                                            <td id="KRA_rating"></td>
-                                            <td id="KRA_wtotal"></td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2">Final Score</td>
-                                            <td id="FS_wtotal" colspan="2"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Description</td>
-                                            <td id="descrip" colspan="2"></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                            <h5>Final Ratings</h5>
+                            <table class='table table-bordered table-responsive'>
+                                <thead>
+                                    <tr>
+                                        <th>Components</th>
+                                        <th>%</th>
+                                        <th>Rating</th>
+                                        <th>Weighted Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary_score_body">
+                                    <tr>
+                                        <td>Behavioral Competencies</td>
+                                        <td id="BC_perc"></td>
+                                        <td id="BC_rating"></td>
+                                        <td id="BC_wtotal"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Key Results Area</td>
+                                        <td id="KRA_perc"></td>
+                                        <td id="KRA_rating"></td>
+                                        <td id="KRA_wtotal"></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2">Final Score</td>
+                                        <td id="FS_wtotal" colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Description</td>
+                                        <td id="descrip" colspan="2"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
