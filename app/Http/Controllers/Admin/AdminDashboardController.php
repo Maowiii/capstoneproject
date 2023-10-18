@@ -11,6 +11,7 @@ use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
+use App\Models\ScoreWeights;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -446,7 +447,6 @@ class AdminDashboardController extends Controller
     }
 
     // Log the result (You can use Laravel's Log::info or write to a log file)
-    Log::info('Computed Final Scores Per Year', $scoresPerYear);
     return response()->json([
       'success' => true,
       'scoresPerYear' => $scoresPerYear,
@@ -472,17 +472,28 @@ class AdminDashboardController extends Controller
 
   public function loadEmployeeTrends(Request $request)
   {
-    $schoolYears = EvalYear::all()->map(function ($evalYear) {
-      return $evalYear->sy_start . '_' . $evalYear->sy_end;
-    })->toArray();
+    $schoolYears = EvalYear::all()
+      ->map(function ($evalYear) {
+        $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+        $evalId = $evalYear->eval_id;
+        return [
+          'school_year' => $schoolYear,
+          'eval_id' => $evalId,
+        ];
+      })
+      ->toArray();
+
 
     $employeeID = $request->input('employeeID');
 
     $employee = Employees::find($employeeID);
+    Log::debug('School Years: ' . json_encode($schoolYears));
+    Log::debug('Employee ID: ' . $employeeID);
 
     $finalScores = [];
 
-    foreach ($schoolYears as $year) {
+    foreach ($schoolYears as $yearData) {
+      $year = $yearData['school_year'];
       $tableName = 'final_scores_' . $year;
       $score = FinalScores::from($tableName)->where('employee_id', $employeeID)->value('final_score');
 
@@ -491,6 +502,77 @@ class AdminDashboardController extends Controller
       }
     }
 
-    return response()->json(['success' => true, 'employee' => $employee, 'finalScores' => $finalScores]);
+    $bhScores = [];
+
+    foreach ($schoolYears as $yearData) {
+      $year = $yearData['school_year'];
+      $yearID = $yearData['eval_id'];
+      $bhTable = 'appraisals_' . $year;
+
+      $selfEvalScore = Appraisals::from($bhTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'self evaluation')
+        ->value('bh_score');
+
+      
+
+      $isScore = Appraisals::from($bhTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'is evaluation')
+        ->value('bh_score');
+
+      $ic1Score = Appraisals::from($bhTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'internal customer 1')
+        ->value('ic_score');
+
+      $ic2Score = Appraisals::from($bhTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'internal customer 2')
+        ->value('ic_score');
+
+      if ($selfEvalScore !== null && $isScore !== null && $ic1Score !== null && $ic2Score !== null) {
+        $selfEvalWeight = ScoreWeights::where('eval_id', $yearID)->value('self_eval_weight') / 100;
+        $isWeight = ScoreWeights::where('eval_id', $yearID)->value('is_weight') / 100;
+        $ic1Weight = ScoreWeights::where('eval_id', $yearID)->value('ic1_weight') / 100;
+        $ic2Weight = ScoreWeights::where('eval_id', $yearID)->value('ic2_weight') / 100;
+
+        $selfEvalScore *= $selfEvalWeight;
+        $isScore *= $isWeight;
+        $ic1Score *= $ic1Weight;
+        $ic2Score *= $ic2Weight;
+
+        $totalBHScore = $selfEvalScore + $isScore + $ic1Score + $ic2Score;
+        $bhScores[$year] = $totalBHScore;
+      }
+    }
+
+    $kraScores = [];
+    foreach ($schoolYears as $yearData) {
+      $year = $yearData['school_year'];
+      $yearID = $yearData['eval_id'];
+      $kraTable = 'appraisals_' . $year;
+
+      $selfEvalKRAScore = Appraisals::from($kraTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'self evaluation')
+        ->value('kra_score');
+
+      $isKRAScore = Appraisals::from($kraTable)
+        ->where('employee_id', $employeeID)
+        ->where('evaluation_type', 'is evaluation')
+        ->value('kra_score');
+
+      if ($selfEvalKRAScore !== null && $isKRAScore !== null) {
+
+        $selfEvalKRAScore *= .5;
+        $isKRAScore *= .5;
+
+        $totalKRAScore = $selfEvalKRAScore + $isKRAScore;
+        $kraScores[$year] = $totalKRAScore;
+      }
+    }
+
+    return response()->json(['success' => true, 'employee' => $employee, 'finalScores' => $finalScores, 'bhScores' => $bhScores, 'kraScores' => $kraScores]);
   }
 }

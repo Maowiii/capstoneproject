@@ -233,6 +233,10 @@
                 <div class="modal-body">
                     <h4>Employee Performance Trend Over The School Years:</h4>
                     <canvas id="employee_final_score_trend" height="350" width="580"></canvas>
+                    <h4>Behavioral Score Trend:</h4>
+                    <canvas id="employee_bh_trend" height="350" width="580"></canvas>
+                    <h4>KRA Score Trend:</h4>
+                    <canvas id="employee_kra_trend" height="350" width="580"></canvas>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -265,6 +269,7 @@
                 loadDepartmentTable(globalSelectedYear, query);
             });
 
+            // Employee Trends
             $(document).on('click', '.view-employee-btn', function() {
                 var employeeID = $(this).data('employee-id');
                 console.log('Employee ID: ' + employeeID);
@@ -286,6 +291,7 @@
                             $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
                                 employee.last_name);
 
+                            // Final Scores Trend
                             var employeeFinalScoreTrend = $('#employee_final_score_trend');
                             var canvas = employeeFinalScoreTrend[0];
 
@@ -327,7 +333,7 @@
                                         },
                                         y: {
                                             beginAtZero: true,
-                                            max: 5,
+                                            max: 6,
                                             ticks: {
                                                 stepSize: 1,
                                             },
@@ -335,6 +341,109 @@
                                     },
                                 },
                             });
+
+                            // Behavioral Scores Trend:
+                            var employeeBHScoreTrend = $('#employee_bh_trend');
+                            var canvas = employeeBHScoreTrend[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            var bhScoresData = response
+                                .bhScores;
+                            var labels = Object.keys(bhScoresData);
+                            var scores = Object.values(bhScoresData);
+
+                            new Chart(employeeBHScoreTrend, {
+                                type: 'line',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Behavioral Competencies Scores',
+                                        data: scores,
+                                        fill: false,
+                                        backgroundColor: '#164783',
+                                        borderColor: '#c3d7f1',
+                                        tension: 0,
+                                        pointRadius: 10,
+                                    }, ],
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        x: {
+                                            display: true,
+                                            title: {
+                                                display: true,
+                                                text: 'School Year',
+                                            },
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 6,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+
+                            // KRA Scores Trend:
+                            var employeeKRAScoreTrend = $('#employee_kra_trend');
+                            var canvas = employeeKRAScoreTrend[0];
+
+                            if (canvas) {
+                                var existingChart = Chart.getChart(canvas);
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            var kraScoresData = response
+                                .kraScores;
+                            var labels = Object.keys(kraScoresData);
+                            var scores = Object.values(kraScoresData);
+
+                            new Chart(employeeKRAScoreTrend, {
+                                type: 'line',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'KRA Scores',
+                                        data: scores,
+                                        fill: false,
+                                        backgroundColor: '#164783',
+                                        borderColor: '#c3d7f1',
+                                        tension: 0,
+                                        pointRadius: 10,
+                                    }, ],
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        x: {
+                                            display: true,
+                                            title: {
+                                                display: true,
+                                                text: 'School Year',
+                                            },
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 6,
+                                            ticks: {
+                                                stepSize: 1,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+
                         }
                     }
                 });
@@ -523,7 +632,7 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: 5,
+                                            max: 6,
                                             ticks: {
                                                 stepSize: 1,
                                             },
