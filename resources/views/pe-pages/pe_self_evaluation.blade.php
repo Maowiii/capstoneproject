@@ -132,7 +132,7 @@
     </div>
 
     <div class="position-relative">
-        <div class="position-fixed bottom-0 end-0 p-3">
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
             <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <h5 class="mr-auto">Appraisal Form Locked</h5>
