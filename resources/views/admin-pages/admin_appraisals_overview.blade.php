@@ -1174,11 +1174,9 @@
                     success: function(response) {
                         if (response.success) {
                             if (response.locked == true) {
-                                console.log('Unlock Button.');
                                 $button.text('Lock');
                             } else {
-                                $button.text('Lock');
-                                console.log('Unlock Button.');
+                                $button.text('Unlock');
                             }
                         } else {
                             console.log('Error: ' + response.message);
