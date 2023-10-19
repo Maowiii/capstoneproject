@@ -268,7 +268,7 @@ class AdminAppraisalsOverviewController extends Controller
     $appraisal = Appraisals::find($appraisalID);
 
     if ($appraisal) {
-      $locked = $appraisal->kra_locked;
+      $locked = $appraisal->pr_locked;
 
       $appraisal->update(['pr_locked' => !$locked]);
 
@@ -288,7 +288,7 @@ class AdminAppraisalsOverviewController extends Controller
     $appraisal = Appraisals::find($appraisalID);
 
     if ($appraisal) {
-      $locked = $appraisal->kra_locked;
+      $locked = $appraisal->eval_locked;
 
       $appraisal->update(['eval_locked' => !$locked]);
 
