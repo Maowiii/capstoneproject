@@ -1343,7 +1343,7 @@
                         row.append(orderCell, questionCell, performanceCell);
 
                         $('#SID_table_body').append(row);
-                        $('#SID_table input[type="radio"]').trigger('change');
+                        // $('#SID_table input[type="radio"]').trigger('change');
                     });
 
                     $('#SR_table_body').empty();
