@@ -1862,8 +1862,8 @@
 
                 var span = $('<span>').addClass('ms-1').text(i);
                 
-                performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                    label));
+                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                //     label));
 
                 if (Math.abs((kraData && kraData.performance_level) ? parseInt(kraData.performance_level) - i : 1) < 1) {
                     console.log((kraData && kraData.performance_level) ? kraData.performance_level : 0 == 1);
