@@ -1047,6 +1047,7 @@ class SelfEvaluationController extends Controller
       $activeYear = EvalYear::where('status', 'active')->first();
 
       $currentDate = Carbon::now();
+      $locks['dateNow'] = $currentDate;
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
