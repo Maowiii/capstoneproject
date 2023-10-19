@@ -2148,9 +2148,8 @@
                         $('#submit-btn-sign').hide();
                     } else {
                         if (response.phaseData === "kra") {
-                            $('input[type="radio"]').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true).addClass('disabled');
                             $('textarea').prop('disabled', true);
-                            $('#KRA_table_body select').prop('disabled', true);
 
                             $('#add-wpa-btn').prop('disabled', true);
                             $('#add-ldp-btn').prop('disabled', true);
