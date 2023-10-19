@@ -4,22 +4,7 @@
     <h1>Appraisal Form</h1>
 @endsection
 
-@section('content')
-    <div class="position-relative">
-        <div class="position-fixed bottom-0 end-0 p-3">
-            <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <h5 class="mr-auto">Appraisal Form Locked</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    <span aria-hidden="true"></span>
-                </div>
-                <div class="toast-body">
-                    <p>The appraisal form is currently locked and cannot be edited.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+@section('content')    
     <!-- Modal -->
     <div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -146,7 +131,6 @@
         </div>
     </div>
 
-<<<<<<< Updated upstream
     <div class="position-relative">
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
             <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
@@ -162,8 +146,6 @@
         </div>
     </div>
 
-=======
->>>>>>> Stashed changes
     <div class="content-container">
         <h2>Employee Information</h2>
         <div class="row g-3 align-items-center mb-3">
