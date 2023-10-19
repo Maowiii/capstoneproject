@@ -2149,7 +2149,6 @@
                     } else {
                         if (response.phaseData === "kra") {
                             $('textarea').prop('disabled', true);
-                            $('input[type="radio"]').prop('disabled', true).addClass('disabled');
 
                             $('#add-wpa-btn').prop('disabled', true);
                             $('#add-ldp-btn').prop('disabled', true);
@@ -2160,6 +2159,9 @@
                             $('#KRA_table_body select').prop('disabled', false);
                             $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                             $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
+
+                            $('input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            $('.form-check-input').prop('disabled', true);
 
                             $('#submit-btn-form').hide();
 
