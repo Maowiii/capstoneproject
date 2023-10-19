@@ -2148,8 +2148,7 @@
                         $('#submit-btn-sign').hide();
                     } else {
                         if (response.phaseData === "kra") {
-                            // $('input[type="radio"]').prop('disabled', true).addClass('disabled');
-
+                            $('input[type="radio"]').prop('disabled', true).addClass('disabled');
                             $('textarea').prop('disabled', true);
 
                             $('#add-wpa-btn').prop('disabled', true);
@@ -2167,7 +2166,6 @@
                             $('html, body').animate({
                                 scrollTop: $('#kra_table').offset().top
                             }, 100);
-                            $('input[type="radio"]').prop('disabled', true);
                         } else if (response.phaseData === "pr") {
                             $('textarea').prop('readonly', true);
                             $('input[type="radio"]').prop('disabled', true);
