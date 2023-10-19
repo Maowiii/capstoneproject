@@ -1096,6 +1096,8 @@
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
+                var buttonText = $button.text(); // Get the text content of the button
+
                 console.log('Appraisal ID KRA: ' + appraisalID);
 
                 $.ajax({
@@ -1109,10 +1111,15 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            if (response.locked == true) {
-                                $button.text('Unlock');
-                            } else {
+                            // if (response.locked == true) {
+                            //     $button.text('Unlock');
+                            // } else {
+                            //     $button.text('Lock');
+                            // }
+                            if (buttonText == 'Unlock'){
                                 $button.text('Lock');
+                            } else{
+                                $button.text('Unlock');
                             }
                         } else {
                             console.log('Error: ' + response.message);
@@ -1128,6 +1135,8 @@
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
+                var buttonText = $button.text(); // Get the text content of the button
+
                 console.log('Appraisal ID PR: ' + appraisalID);
 
                 $.ajax({
@@ -1141,9 +1150,15 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            if (response.locked == true) {
+                            // if (response.locked == true) {
+                            //     $button.text('Lock');
+                            // } else {
+                            //     $button.text('Unlock');
+                            // }
+
+                            if (buttonText == 'Unlock'){
                                 $button.text('Lock');
-                            } else {
+                            } else{
                                 $button.text('Unlock');
                             }
                         } else {
@@ -1160,6 +1175,8 @@
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
+                var buttonText = $button.text(); // Get the text content of the button
+
                 console.log('Appraisal ID EVAL: ' + appraisalID);
 
                 $.ajax({
@@ -1173,9 +1190,15 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            if (response.locked == true) {
+                            // if (response.locked == true) {
+                            //     $button.text('Lock');
+                            // } else {
+                            //     $button.text('Unlock');
+                            // }
+
+                            if (buttonText == 'Unlock'){
                                 $button.text('Lock');
-                            } else {
+                            } else{
                                 $button.text('Unlock');
                             }
                         } else {
