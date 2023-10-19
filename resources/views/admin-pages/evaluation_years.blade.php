@@ -354,28 +354,28 @@
                                 <tr>
                                     <td>Self-Evaluation:</td>
                                     <td class="w-25">
-                                        <input type="text" class="form-control text-center" id="view_self_eval_weight"
+                                        <input type="text" class="form-control text-center bc" id="view_self_eval_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Internal Customer 1:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_ic1_weight"
+                                        <input type="text" class="form-control text-center bc" id="view_ic1_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Internal Customer 2:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_ic2_weight"
+                                        <input type="text" class="form-control text-center bc" id="view_ic2_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Immediate Superior:</td>
                                     <td>
-                                        <input type="text" class="form-control text-center" id="view_is_weight"
+                                        <input type="text" class="form-control text-center bc" id="view_is_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
@@ -401,14 +401,14 @@
                                 <tr>
                                     <td>Behavioral Competencies:</td>
                                     <td>
-                                        <input class="form-control text-center" type="text" id="view_bh_weight"
+                                        <input class="form-control text-center final" type="text" id="view_bh_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>KRA/KPI:</td>
                                     <td class="w-25">
-                                        <input class="form-control text-center" type="text" id="view_kra_weight"
+                                        <input class="form-control text-center final" type="text" id="view_kra_weight"
                                             readonly disabled>
                                     </td>
                                 </tr>
@@ -438,12 +438,19 @@
         sy_end.value = sy_start_value + 1;
 
         function updateBehavioralTotal() {
+            console.log('updateBehavioralTotal');
             var selfEvalWeight = parseInt($('#self_eval_weight').val());
             var ic1Weight = parseInt($('#ic1_weight').val());
             var ic2Weight = parseInt($('#ic2_weight').val());
             var isWeight = parseInt($('#is_weight').val());
 
-            var bhTotal = selfEvalWeight + ic1Weight + ic1Weight + isWeight;
+            console.log(selfEvalWeight);
+            console.log(ic1Weight);
+            console.log(ic2Weight);
+            console.log(isWeight);
+
+            var bhTotal = selfEvalWeight + ic1Weight + ic2Weight + isWeight;
+            console.log(bhTotal);
             $('#bh_total').val(bhTotal);
 
             if (bhTotal > 100) {
