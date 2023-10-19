@@ -11,6 +11,7 @@ use App\Models\FinalScores;
 use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentalAnalyticsController extends Controller
 {
@@ -294,7 +295,6 @@ class DepartmentalAnalyticsController extends Controller
         ->with('employee')
         ->orderBy('final_score')
         ->get();
-
     } else {
       if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
 
@@ -340,4 +340,45 @@ class DepartmentalAnalyticsController extends Controller
       'poor' => $poor
     ]);
   }
+
+  public function getFinalScoresPerDepartment(Request $request)
+  {
+    try {
+      $departmentID = $request->input('departmentID');
+      Log::info('Department ID: ' . $departmentID);
+
+      $evaluationYears = EvalYear::all();
+      $scoresByDepartment = [];
+
+      foreach ($evaluationYears as $year) {
+        $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
+
+        $scores = DB::table($table)
+          ->select('department_id', DB::raw('AVG(final_score) as total_score'))
+          ->where('department_id', $departmentID)
+          ->groupBy('department_id')
+          ->get();
+        $scoresByDepartment[$year->sy_start . '-' . $year->sy_end] = $scores;
+        // Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
+      }
+
+      return response()->json([
+        'success' => true,
+        'scoresByDepartment' => $scoresByDepartment,
+      ]);
+      
+    } catch (\Exception $e) {
+      // Log the exception along with department ID and scores by department
+      Log::error('Error in getFinalScoresPerDepartment: ' . $e->getMessage());
+      Log::info('Department ID: ' . $departmentID);
+      Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
+
+      // You can handle the exception as needed, e.g., return an error response
+      return response()->json([
+        'success' => false,
+        'error' => 'An error occurred while fetching final scores.',
+      ], 500); // 500 indicates a server error
+    }
+  }
 }
+

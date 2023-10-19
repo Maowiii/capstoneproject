@@ -1227,40 +1227,34 @@
         }
 
         function fetchAndDisplayLineChart() {
-            var historicalData = {
-                labels: [],
-                datasets: []
-            };
-
             $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
                 if (data.success) {
                     var ctx = document.getElementById('lineChart').getContext('2d');
                     var scoresPerYear = data.scoresPerYear;
-
                     var labels = [];
-                    var datasets = [];
+                    var allData = []; // An array to store all data
 
                     for (var yearRange in scoresPerYear) {
                         if (scoresPerYear.hasOwnProperty(yearRange)) {
                             labels.push(yearRange);
-                            var data = scoresPerYear[yearRange].map(item => item.total_score);
+                            var data = scoresPerYear[yearRange].total_score; // Assuming data is the average score
 
-                            datasets.push({
-                                label: yearRange,
-                                data: data,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 2,
-                                fill: false,
-                            });
+                            allData.push(data);
                         }
                     }
 
-                    historicalData.labels = historicalData.labels.concat(labels);
-                    historicalData.datasets = historicalData.datasets.concat(datasets);
-
                     var lineChart = new Chart(ctx, {
                         type: 'line',
-                        data: historicalData,
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Average Score',
+                                data: allData, // Use the concatenated data
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                            }],
+                        },
                         options: {
                             scales: {
                                 x: {
@@ -1280,32 +1274,8 @@
                             }
                         }
                     });
-
-                    // Calculate the overall average final score
-                    var overallAverageScore = calculateOverallAverageScore(scoresPerYear);
-                    console.log('Overall Average Final Score: ' + overallAverageScore);
                 }
             });
-        }
-
-        function calculateOverallAverageScore(scoresPerYear) {
-            var totalScore = 0;
-            var totalEmployeeCount = 0;
-
-            for (var yearRange in scoresPerYear) {
-                if (scoresPerYear.hasOwnProperty(yearRange)) {
-                    scoresPerYear[yearRange].forEach(item => {
-                        totalScore += item.total_score;
-                        totalEmployeeCount += item.employee_count;
-                    });
-                }
-            }
-
-            if (totalEmployeeCount === 0) {
-                return 0; // Handle the case where no employees submitted scores
-            } else {
-                return totalScore / totalEmployeeCount;
-            }
         }
 
         fetchAndDisplayLineChart();

@@ -76,7 +76,7 @@ Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyti
 Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadICQuestions');
 Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
 Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadPointsSystem');
-
+Route::post('/dashboard-admin/department/line-chart', [DepartmentalAnalyticsController::class, 'getFinalScoresPerDepartment'])->name('ad.departmentLineChart');
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');
