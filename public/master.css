@@ -559,7 +559,9 @@ textarea {
     text-align: justify;
     padding: 25px !important;
 }
-
+#SummaryModal .modal-body {
+    max-width: 100%!important;
+}
 .pagination .active .page-link{
     background-color: #164783 !important;
     border-color: #164783 !important;
