@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
+use App\Models\EvalYear;
 use App\Models\FinalScores;
+use App\Models\ScoreWeights;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
@@ -248,54 +251,83 @@ class PEInternalCustomerController extends Controller
       return response()->json(['success' => false, 'message' => 'Appraisal not found for the given appraisal ID'], 400);
     }
 
+    $date = Carbon::now();
+
     $appraisal->update([
       'ic_score' => $totalWeightedScore,
-      'date_submitted' => now(),
+      'date_submitted' => $date,
       'locked' => true,
     ]);
 
-    $allFormsSubmitted = Appraisals::where('employee_id', $employeeId)
-      ->whereIn('evaluation_type', ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'])
-      ->whereNotNull('date_submitted')
-      ->count() == 4;
+    // $allFormsSubmitted = Appraisals::where('employee_id', $employeeId)
+    //   ->whereIn('evaluation_type', ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'])
+    //   ->whereNotNull('date_submitted')
+    //   ->count() == 4;
+
+    $appraisalData = Appraisals::where('employee_id', $employeeId)->get(); // Get all appraisals for the employee
+    $allFormsSubmitted = $appraisalData->every(function ($appraisal) {
+        return $appraisal->date_submitted !== null;
+      });
 
     if ($allFormsSubmitted) {
-      $selfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'self evaluation')
-        ->value('bh_score');
+      // $selfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'self evaluation')
+      //   ->value('bh_score');
 
-      $ic1Score = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'internal customer 1')
-        ->value('ic_score');
+      // $ic1Score = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'internal customer 1')
+      //   ->value('ic_score');
 
-      $ic2Score = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'internal customer 2')
-        ->value('ic_score');
+      // $ic2Score = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'internal customer 2')
+      //   ->value('ic_score');
 
-      $isEvalScore = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'is evaluation')
-        ->value('bh_score');
+      // $isEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'is evaluation')
+      //   ->value('bh_score');
 
-      $behavioralWeight = 0.4;
-      $kraWeight = 0.6;
+      // $behavioralWeight = 0.4;
+      // $kraWeight = 0.6;
 
-      $behavioralTotalScore = ($selfEvalScore + $ic1Score + $ic2Score + $isEvalScore) / 4;
-      $kraSelfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'self evaluation')
-        ->value('kra_score');
+      // $behavioralTotalScore = ($selfEvalScore + $ic1Score + $ic2Score + $isEvalScore) / 4;
+      // $kraSelfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'self evaluation')
+      //   ->value('kra_score');
 
-      $kraISEvalScore = Appraisals::where('appraisal_id', $appraisalId)
-        ->where('evaluation_type', 'is evaluation')
-        ->value('kra_score');
+      // $kraISEvalScore = Appraisals::where('appraisal_id', $appraisalId)
+      //   ->where('evaluation_type', 'is evaluation')
+      //   ->value('kra_score');
 
-      $kraTotalScore = (($kraSelfEvalScore * 0.4) + ($kraISEvalScore * 0.6)) / 2;
+      // $kraTotalScore = (($kraSelfEvalScore * 0.4) + ($kraISEvalScore * 0.6)) / 2;
 
-      $finalScore = ($behavioralTotalScore * $behavioralWeight) + ($kraTotalScore * $kraWeight);
+      // $finalScore = ($behavioralTotalScore * $behavioralWeight) + ($kraTotalScore * $kraWeight);
 
-      FinalScores::updateOrCreate(
-        ['employee_id' => $employeeId],
-        ['final_score' => $finalScore]
-      );
+      // FinalScores::updateOrCreate(
+      //   ['employee_id' => $employeeId],
+      //   ['final_score' => $finalScore]
+      // );
+
+      $finalScore = $this->calculateFinalScore($appraisalData);
+      $roundedFinalScore = round($finalScore[0], 2); // Round to 2 decimal places
+
+      // Log some information for debugging
+      Log::info('Trying to update the record.');
+      // Log::info('Table Name: ' . (new FinalScores)->getTable());
+      Log::info('Employee ID: ' . $employeeId);
+      Log::info('Final Score: ' . $finalScore[0]);
+      Log::info('rounded Final Score: ' . $roundedFinalScore);
+
+      // Attempt to update the record
+      try {
+        FinalScores::updateOrCreate(
+          ['employee_id' => $employeeId],
+          ['final_score' => $finalScore[0]]
+        );
+
+        Log::info('Record updated successfully.');
+      } catch (\Exception $e) {
+        Log::error('Error while updating the record: ' . $e->getMessage());
+      }
     } else {
       return response()->json(['success' => true, 'message' => 'IC signature updated and final score computed.']);
     }
@@ -325,6 +357,139 @@ class PEInternalCustomerController extends Controller
       'form_submitted' => $locked,
       'hideSignatory' => $shouldHideSignatory,
     ]);
+  }
 
+  function calculateFinalScore($appraisals)
+  {
+    $behavioralCompetenciesWeightedTotal = 0;
+    $kraGrade = 0;
+    $kraFinalScore = 0;
+    $allSubmitted = 0;
+    $kraFormsCount = 0;
+    $finalGrade = null;
+
+    $weightedTotals = [
+      'self evaluation' => 0,
+      'is evaluation' => 0,
+      'internal customer 1' => 0,
+      'internal customer 2' => 0,
+    ];
+
+    Log::info('Starting final score calculation');
+    Log::info('Appraisal List:');
+    Log::info($appraisals);
+
+    foreach ($appraisals as $appraisal) {
+      $evaluationType = $appraisal['evaluation_type'];
+      $bhScore = $appraisal['bh_score'];
+      $kraScore = $appraisal['kra_score'];
+      $icScore = $appraisal['ic_score'];
+
+      Log::info('Processing appraisal for evaluation type: ' . $evaluationType);
+      Log::info('Processing appraisal: ' . $appraisal);
+      Log::info('BH Score: ' . $bhScore);
+      Log::info('KRA Score: ' . $kraScore);
+      Log::info('IC Score: ' . $icScore);
+      // Log::info('allSubmitted Before Processing:' . $allSubmitted);
+      Log::info('allSubmitted kraGrade: ' . $kraGrade);
+      Log::info('allSubmitted kraScore: ' . $kraScore);
+      Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
+
+      if ($appraisal['date_submitted'] !== null) {
+        // Retrieve the latest active evaluation year
+        $latestActiveEvalYear = EvalYear::where('status', 'active')->latest('eval_id')->first();
+
+        if (!$latestActiveEvalYear) {
+          Log::error('Latest active evaluation year not found. Handle this case as needed.');
+        } else {
+          $evalYearId = $latestActiveEvalYear->eval_id;
+          Log::info('Latest active evaluation id founded:' . $evalYearId);
+
+          // Retrieve the score weights for the current evaluation type in the latest active year
+          $scoreWeights = ScoreWeights::where('eval_id', $evalYearId)->first();
+
+          if ($scoreWeights) {
+            Log::info('Latest active scoreWeights id founded:' . $scoreWeights);
+
+            $selfEvalWeight = $scoreWeights->self_eval_weight / 100;
+            $ic1Weight = $scoreWeights->ic1_weight / 100;
+            $ic2Weight = $scoreWeights->ic2_weight / 100;
+            $isWeight = $scoreWeights->is_weight / 100;
+
+            if ($evaluationType === 'self evaluation' || $evaluationType === 'is evaluation') {
+              $kraGrade += $kraScore;
+              $kraFormsCount++;
+              Log::info('allSubmitted kraGrade: ' . $kraGrade);
+              Log::info('allSubmitted kraScore: ' . $kraScore);
+              Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
+
+              // Update the weighted total based on the evaluation type
+              if ($evaluationType === 'self evaluation') {
+                $weightedTotals['self evaluation'] += ($bhScore * $selfEvalWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['self evaluation'];
+
+              } elseif ($evaluationType === 'is evaluation') {
+                $weightedTotals['is evaluation'] += ($bhScore * $isWeight);
+                $behavioralCompetenciesWeightedTotal += $weightedTotals['is evaluation'];
+
+              }
+            } elseif ($evaluationType === 'internal customer 1') {
+              $weightedTotals['internal customer 1'] += ($icScore * $ic1Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 1'];
+
+            } elseif ($evaluationType === 'internal customer 2') {
+              $weightedTotals['internal customer 2'] += ($icScore * $ic2Weight);
+              $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 2'];
+            }
+
+          } else {
+            Log::error('Final Grade calculation skipped due to scoreWeights being null for an appraisal.');
+          }
+        }
+        $allSubmitted = 1;
+      } else {
+        Log::error('Final Grade calculation skipped due to date_submitted being null for an appraisal.');
+
+        $allSubmitted = 0;
+        $finalGrade = null;
+        $kraFormsCount = null;
+        break;
+      }
+    }
+
+    Log::info('allSubmitted After Processing:' . $allSubmitted);
+
+    if ($allSubmitted) {
+      Log::info('allSubmitted kraGrade: ' . $kraGrade);
+      Log::info('allSubmitted kraScore: ' . $kraScore);
+      Log::info('allSubmitted kraFormsCount: ' . $kraFormsCount);
+
+      $kraFinalScore = $kraGrade / $kraFormsCount;
+      $scoreWeights = ScoreWeights::where('eval_id', $evalYearId)->first();
+
+      $bhWeight = $scoreWeights->bh_weight / 100;
+      $kraWeight = $scoreWeights->kra_weight / 100;
+
+      $finalGrade = ($behavioralCompetenciesWeightedTotal * $bhWeight) + ($kraFinalScore * $kraWeight);
+
+      Log::info('Final Grade Calculation:');
+      Log::info('Self Eval Weighted Total: ' . $weightedTotals['self evaluation']);
+      Log::info('Immediate Superior Weighted Total: ' . $weightedTotals['is evaluation']);
+      Log::info('Internal Cust 1 Weighted Total: ' . $weightedTotals['internal customer 1']);
+      Log::info('Internal Cust 2 Weighted Total: ' . $weightedTotals['internal customer 2']);
+
+      Log::info('Behavioral Competencies Weighted Total: ' . $behavioralCompetenciesWeightedTotal);
+      Log::info('KRA Weighted Total: ' . $kraFinalScore);
+      Log::info('Final Grade Computation: (' . $behavioralCompetenciesWeightedTotal . ' x ' . $scoreWeights->bh_weight . '%)  + (' . $kraFinalScore . ' x ' . $scoreWeights->kra_weight . '%)');
+      Log::info('Final Grade: ' . $finalGrade);
+    } else {
+      Log::info('allSubmitted Error Log:' . $allSubmitted);
+
+      Log::error('Final Grade calculation skipped due to date_submitted being null for an appraisal.');
+    }
+
+    Log::info('Final Score Calculation Complete');
+
+    return [$finalGrade, $behavioralCompetenciesWeightedTotal, $kraFinalScore, $weightedTotals];
   }
 }

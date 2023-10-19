@@ -123,6 +123,7 @@ class ISAppraisalController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'locked' => true,
       ]);
 
       $employee_id = $existingRecord->employee_id;

@@ -2454,66 +2454,121 @@
                     console.log("PHASE");
                     console.log(response.phaseData);
 
-                    if (response.phaseData === "kra") {
+                    if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
+                        $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('input[type="radio"]').attr("disabled", true);
 
-                        $('#submit-btn-form').hide();
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 1000);
-                    } else if (response.phaseData === "pr") {
+                        $('#lockToast').toast('show');
                         $('input[type="radio"]').prop('disabled', true);
 
-                        // $('input[type="radio"]').attr("disabled", true);
-                        
-                        $('textarea').prop('readonly', true);
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('#KRA_table_body select').attr('disabled', true);
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+                    } else {
+                        if (response.phaseData === "kra") {
+                            $('textarea').prop('disabled', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('input[type="radio"]').attr("disabled", true);
 
-                        $('#submit-btn-form').hide();
+                            $('#submit-btn-form').hide();
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 1000);
+                        } else if (response.phaseData === "pr") {
+                            $('input[type="radio"]').prop('disabled', true);
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 1000); 
-                    } else if (response.phaseData === "eval") {
-                        $('#KRA_table_body textarea').prop('readonly', true);
-                        $('#KRA_table_body select').prop('disabled', true);
+                            // $('input[type="radio"]').attr("disabled", true);
+                            
+                            $('textarea').prop('readonly', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('#KRA_table_body select').attr('disabled', true);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                        $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
-                    } else if (response.phaseData === "lock") {
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('.content-body').addClass('modal fade');
+                            $('#submit-btn-form').hide();
+
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 1000); 
+                        } else if (response.phaseData === "eval") {
+                            $('#KRA_table_body textarea').prop('readonly', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                            $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
+                        } else if (response.phaseData === "lock") {
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                        }
                     }
 
                     console.log("LOCK");
-                    console.log(response.locked);
+                    console.log(response.locks);
 
-                    if (response.locked === "eval") {
+                    if (response.locks.kra) {
+                        $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
+                        
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
+
+                    if (response.locks.pr) {
+                        $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('disabled', false);
+
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
+                        
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
+
+                    if (response.locks.eval) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else if (response.locked === "pr") {
-                        $('input[type="radio"]').prop('readonly', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                    } else if (response.locked === "lock") {
+                        $('#submit-btn-form').text('Submit');
+                        $('#submit-btn-form').show();
+                        $('#uploadsign').show();
+                        $('#submit-btn-sign').show();
+                    } 
+                    
+                    if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else {
-
-                    }
+                    } 
                 },
                 error: function(xhr, status, error) {
                     if (xhr.responseText) {

@@ -2130,6 +2130,7 @@
                 success: function(response) {
                     console.log("PHASE");
                     console.log(response);
+
                     if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
@@ -2155,7 +2156,6 @@
                             $('#add-ldp-btn').prop('disabled', true);
                             $('.wpa-delete-btn').prop('disabled', true);
                             $('.ldp-delete-btn').prop('disabled', true);
-                        
 
                             $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
                             $('#KRA_table_body select').prop('disabled', false);

@@ -16,7 +16,6 @@ use App\Models\Signature;
 use App\Models\Appraisals;
 use App\Models\Employees;
 use App\Models\FormQuestions;
-use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -285,6 +284,7 @@ class SelfEvaluationController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'locked' => true,
       ]);
 
       $employee_id = $existingRecord->employee_id;
@@ -1049,8 +1049,8 @@ class SelfEvaluationController extends Controller
       $currentDate = Carbon::now();
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
-      $currentDate = Carbon::parse("2023-11-11"); //PR
-      // $currentDate = Carbon::parse("2023-11-22"); //EVAL
+      // $currentDate = Carbon::parse("2023-11-11"); //PR
+      $currentDate = Carbon::parse("2023-11-22"); //EVAL
 
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);

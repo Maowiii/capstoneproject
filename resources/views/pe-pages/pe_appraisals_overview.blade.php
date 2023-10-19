@@ -240,7 +240,10 @@
                                 if (response.final_score.length !== 0) {
                                     // If the self-evaluation is submitted and final score is available, append the final score
                                     // var finalScore = parseFloat(response.final_score).toFixed(2);
-                                    var finalScore = Math.trunc(response.final_score * 100) / 100;
+                                    var finalScore = (response.final_score * 100) / 100;
+                                    console.log(finalScore);
+                                    console.log(finalScore.toFixed(2));
+
                                     newRow.append($('<td>').text(finalScore.toFixed(2)));
                                 } else{ 
                                     // If the self-evaluation is submitted but final score is not available, display "Pending"
