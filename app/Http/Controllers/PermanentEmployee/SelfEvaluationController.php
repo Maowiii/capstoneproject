@@ -1050,7 +1050,7 @@ class SelfEvaluationController extends Controller
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
-      $currentDate = Carbon::parse("2023-11-22"); //EVAL
+      // $currentDate = Carbon::parse("2023-11-22"); //EVAL
 
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);
