@@ -1343,7 +1343,7 @@
                         row.append(orderCell, questionCell, performanceCell);
 
                         $('#SID_table_body').append(row);
-                        // $('#SID_table input[type="radio"]').trigger('change');
+                        $('#SID_table input[type="radio"]').trigger('change');
                     });
 
                     $('#SR_table_body').empty();
@@ -2160,8 +2160,9 @@
                             $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                             $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
-                            $('input[type="radio"]').prop('disabled', true).addClass('disabled');
-                            $('.form-check-input').prop('disabled', true);
+                            $('#SID_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            $('#SR_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            $('#S_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
 
                             $('#submit-btn-form').hide();
 
