@@ -187,8 +187,9 @@
                                     </tr>
                                 <tfoot>
                                     <tr>
+                                        <td></td>
                                         <td class="text-end" colspan="2">Weighted Total:</td>
-                                        <td id="BC_rtotal" colspan="2"></td>
+                                        <td id="BC_rtotal"></td>
                                     </tr>
                                 </tfoot>
                                 </tbody>
@@ -361,31 +362,30 @@
                                                 loadEmployeeData(employeeId);
                                             });
                                     } else {
-                                        var url =
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(appraisal
-                                            .employee
-                                            .first_name + ' ' + appraisal.employee.last_name
-                                            );
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                            url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                            url += "&appraisee_account_id=" + encodeURIComponent(
+                                                appraisal.employee.account_id);
+                                            url += "&appraisee_name=" + encodeURIComponent(appraisal
+                                                .employee.first_name + ' ' + appraisal.employee.last_name);
+                                            url += "&appraisee_department=" + encodeURIComponent(
+                                                appraisal.employee.department.department_name);
 
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href', url.replace(':appraisal_id', appraisal
-                                                .appraisal_id))
-                                            .text(appraisal.evaluator.first_name + ' ' +
-                                                appraisal.evaluator.last_name);
+                                            ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name);
+                                        } else {
+                                            ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                        }
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
                                         AppraiseLink = $('<a>').addClass(
                                                 'btn btn-outline-primary')
                                             .attr('href',
-                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
                                     } else {

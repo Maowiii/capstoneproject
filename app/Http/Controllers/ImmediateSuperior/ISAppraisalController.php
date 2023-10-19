@@ -123,6 +123,7 @@ class ISAppraisalController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'locked' => true,
       ]);
 
       $employee_id = $existingRecord->employee_id;
@@ -764,10 +765,12 @@ class ISAppraisalController extends Controller
     }
 
     $kraID = $request->input('kraID');
-
+    $selfEvalkraID = $kraID-1;
+    
     // Perform the actual deletion of the KRA record from the database
     try {
       KRA::where('kra_id', $kraID)->delete();
+      KRA::where('kra_id', $selfEvalkraID)->delete();
       return response()->json(['success' => true]);
     } catch (\Exception $e) {
       return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);

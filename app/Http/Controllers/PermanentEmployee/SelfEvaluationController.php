@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PermanentEmployee;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
@@ -231,10 +232,13 @@ class SelfEvaluationController extends Controller
     }
 
     $kraID = $request->input('kraID');
-
+    $selfEvalkraID = $kraID-1;
+    
     // Perform the actual deletion of the KRA record from the database
     try {
       KRA::where('kra_id', $kraID)->delete();
+      KRA::where('kra_id', $selfEvalkraID)->delete();
+
       return response()->json(['success' => true]);
     } catch (\Exception $e) {
       return response()->json(['success' => false, 'message' => 'Error deleting KRA record.']);
@@ -280,6 +284,7 @@ class SelfEvaluationController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'locked' => true,
       ]);
 
       $employee_id = $existingRecord->employee_id;
@@ -998,48 +1003,54 @@ class SelfEvaluationController extends Controller
       return view('auth.login');
     }
 
+    // $kraLocked = 1;
+    // $prLocked = 1;
+    // $evalLocked = 1;
+    // $fullLocked = 1;
+
+    $account_id = session()->get('account_id');
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
 
     if ($appraisal) {
-      $submitionChecker = $appraisal->date_submitted;
+      ////////////PERMISSION/////////////
+      $employeeId = $appraisal->employee_id;
+      $evaluatorId = $appraisal->evaluator_id;
+
+      $isAdmin = Accounts::where('account_id', $account_id)->where('type', 'AD')->exists();
+
+      $isImmediateSuperior = Accounts::where('account_id', $account_id)
+            ->where('type', 'IS')
+            ->whereHas('employee', function ($query) use ($appraisal) {
+                $query->where('department_id', $appraisal->department_id);
+            })
+            ->exists();
+
+      $isEvaluator = ($account_id == $evaluatorId);
+      $isEmployee = ($account_id == $employeeId);
+
+      // Check permissions for viewing the form
+      if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {
+        return response()->json(['success' => false, 'message' => 'You do not have permission to view this form.'], 403);
+      }
 
       ////////////LOCK/////////////
-      $kraLocked = $appraisal->kra_locked;
-      $prLocked = $appraisal->pr_locked;
-      $evalLocked = $appraisal->eval_locked;
-      $fullLocked = $appraisal->locked;
+      // Lock statuses stored as binary with text keys
+      $locks = [];
 
-      // $kraLocked = 1;
-      // $prLocked = 1;
-      // $evalLocked = 1;
-      // $fullLocked = 1;
-      // Log::info($kraLocked);
-      // Log::info($prLocked);
-      // Log::info($evalLocked);
-      // Log::info($fullLocked);
-
-      $locked = null;
-
-      if ($kraLocked == true) {
-        $locked = "kra";
-      } elseif ($prLocked == true) {
-        $locked = "pr";
-      } elseif ($evalLocked == true) {
-        $locked = "eval";
-      } elseif ($fullLocked == true) {
-        $locked = "lock";
-      }
-      Log::info($locked);
+      $locks['kra'] = $appraisal->kra_locked == 1;
+      $locks['pr'] = $appraisal->pr_locked == 1;
+      $locks['eval'] = $appraisal->eval_locked == 1;
+      $locks['lock'] = $appraisal->locked == 1;
 
       ////////////PHASES/////////////
-      // $currentDate = Carbon::now();
+      $activeYear = EvalYear::where('status', 'active')->first();
+
+      $currentDate = Carbon::now();
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
       $currentDate = Carbon::parse("2023-11-22"); //EVAL
-
-      $activeYear = EvalYear::where('status', 'active')->first();
 
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);
@@ -1057,8 +1068,11 @@ class SelfEvaluationController extends Controller
       } else {
         $phaseData = "lock";
       }
+      
+      $submitionChecker = $appraisal->date_submitted;
+      $isSubmissionMade = !is_null($submitionChecker);
 
-      return response()->json(['success' => true, 'locked' => $locked, 'phaseData' => $phaseData, 'submitionChecker' => $submitionChecker]);
+      return response()->json(['success' => true, 'locks' => $locks, 'phaseData' => $phaseData, 'submitionChecker' => $isSubmissionMade]);
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
     }

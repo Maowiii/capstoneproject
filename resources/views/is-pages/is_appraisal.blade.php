@@ -6,12 +6,11 @@
 
 @section('content')
     <div class="position-relative">
-        <div class="position-fixed bottom-0 end-0 p-3">
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
             <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <strong class="mr-auto">Appraisal Form Locked</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    <span aria-hidden="true"></span>
                 </div>
                 <div class="toast-body">
                     The appraisal form is currently locked and cannot be edited.
@@ -670,24 +669,22 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this item?
+                    <h5>Are you sure you want to delete this item?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
                 </div>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-center gap-3 p-3">
-            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">Submit</button>
+        <div class="d-flex content-container justify-content-center gap-3 p-3">
+            <button type="button" class="btn btn-primary medium-column " id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -863,29 +860,36 @@
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var wpaID = row.attr('data-field-id'); // Assuming you have a data attribute for WPA ID on the row
+                
+                // Show the confirmation modal
+                $('#confirmationModal').modal('show');
 
                 // Send an AJAX request to delete the WPA record from the database
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
-                    data: {
-                        wpaID: wpaID // Pass the WPA record ID to be deleted
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        // If the database deletion is successful, remove the row from the table
-                        row.remove();
+                $('#confirmDeleteBtn').on('click', function() {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('delete-wpa') }}", // Use the route() function to generate the URL
+                        data: {
+                            wpaID: wpaID // Pass the WPA record ID to be deleted
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            // If the database deletion is successful, remove the row from the table
+                            row.remove();
 
-                        var rowCount = $('#wpa_table_body tr').length;
-                        if (rowCount === 1) {
-                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            var rowCount = $('#wpa_table_body tr').length;
+                            if (rowCount === 1) {
+                                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            }
+                            $('#confirmationModal').modal('hide'); // Close the modal
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#confirmationModal').modal('hide');
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+                    });
                 });
             });
 
@@ -893,29 +897,36 @@
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
                 var ldpID = row.attr('data-ldp-id'); // Assuming you have a data attribute for LDP ID on the row
-                console.log(ldpID);
-                // Send an AJAX request to delete the LDP record from the database
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
-                    data: {
-                        ldpID: ldpID // Pass the LDP record ID to be deleted
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        // If the database deletion is successful, remove the row from the table
-                        row.remove();
+                
+                // Show the confirmation modal
+                $('#confirmationModal').modal('show');
 
-                        var rowCount = $('#ldp_table_body tr').length;
-                        if (rowCount === 1) {
-                            $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
+                // When the confirmation modal's delete button is clicked
+                $('#confirmDeleteBtn').on('click', function() { 
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('deleteLDP') }}", // Use the route() function to generate the URL
+                        data: {
+                            ldpID: ldpID // Pass the LDP record ID to be deleted
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            // If the database deletion is successful, remove the row from the table
+                            row.remove();
+
+                            var rowCount = $('#ldp_table_body tr').length;
+                            if (rowCount === 1) {
+                                $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
+                            }
+                            $('#confirmationModal').modal('hide'); // Close the modal
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#confirmationModal').modal('hide'); // Close the modal
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+                    });
                 });
             });
 
@@ -1145,21 +1156,8 @@
                 });
             });
 
-            // Define a debounce function
-            function debounce(func, delay) {
-                let timer;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timer);
-                    timer = setTimeout(() => {
-                        func.apply(context, args);
-                    }, delay);
-                };
-            }
-
             // Wrap your change event handler in the debounce function
-            $('#ldp_table_body').on('change', '.autosave-field', debounce(function() {
+            $('#ldp_table_body').on('change', '.autosave-field', function() {
                 var field = $(this);
                 var ldpID = field.closest('tr').data('ldp-id'); // Use 'data-ldp-id'
                 var fieldName = field.data('field-name');
@@ -1194,7 +1192,7 @@
                         console.error('Autosave failed:', error);
                     }
                 });
-            }, 500)); // Adjust the delay (in milliseconds) as needed
+            }); 
 
 
             $('#jic_table_body').on('change', '.autosave-field', function() {
@@ -1229,15 +1227,14 @@
                     }
                 });
             });
-
             loadTableData();
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
-            formChecker();
 
             updateBHTotal();
             updateWeightedTotal();
+            formChecker();
         });
 
         function loadTableData() {
@@ -1692,7 +1689,7 @@
                         answerRadioNo.required = true;
                         commentTextarea.required = true;
                         } else {
-                            console.log('Row not found for index ' + index);
+                            // console.log('Row not found for index ' + index);
                         }
                                             
                     });
@@ -2082,9 +2079,9 @@
 
             $('#KRA_table_body tr').each(function() {
                 var row = $(this);
-                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"]');
-                var selectedValue = weightOption.find("option:selected").val();
-                var weight = parseFloat(selectedValue) / 100;
+                var weightOption = row.find('select[name^="KRA"][name$="[KRA_kra_weight]"] option:selected').val();
+                // var selectedValue = weightOption.find("option:selected").val();
+                var weight = parseFloat(weightOption) / 100;
 
                 var performanceLevel = parseInt(row.find(
                         'input[type="radio"][name^="KRA"][name$="[KRA_performance_level]"]:checked')
@@ -2107,7 +2104,7 @@
 
             totalWeight = totalWeight * 100;
 
-            if (totalWeight > 100) {
+            if (Math.floor(totalWeight) > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');
@@ -2132,76 +2129,133 @@
                 },
                 success: function(response) {
                     console.log("PHASE");
-                    console.log(response.phaseData);
+                    console.log(response);
 
-                    if (response.phaseData === "kra") {
-                        $('input[type="radio"]').prop('disabled', true);
+                    if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
+                        $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        $('#KRA_table_body select').prop('disabled', true);
 
+                        $('#add-kra-btn').prop('disabled', true);
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
-                        $('.wpa-delete-btn').prop('disabled', true);
-                        $('.ldp-delete-btn').prop('disabled', true);
-                    
+                        $('.btn-danger').prop('disabled', true);
+
+                        $('#lockToast').toast('show');
+                        $('input[type="radio"]').prop('disabled', true);
+
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+                    } else {
+                        if (response.phaseData === "kra") {
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.wpa-delete-btn').prop('disabled', true);
+                            $('.ldp-delete-btn').prop('disabled', true);
+
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
+                            $('#KRA_table_body select').prop('disabled', false);
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
+
+                            $('#submit-btn-form').hide();
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 100);
+                        } else if (response.phaseData === "pr") {
+                            $('textarea').prop('readonly', true);
+                            $('input[type="radio"]').prop('disabled', true);
+
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.btn-danger').prop('disabled', true);
+
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', true);
+                        
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 100);
+                        } else if (response.phaseData === "eval") {
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
+                            $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', true);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', true);
+
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('.kra-delete-btn').prop('disabled', true);
+                        } else if (response.phaseData === "lock") {
+                            $('select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                            $('#lockToast').toast('show');
+                        }
+                    }
+
+                    console.log("LOCK");
+                    console.log(response.locks);
+
+                    if (response.locks.kra) {
+                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', false);
 
                         $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
-                        $('#submit-btn-form').hide();
+                        $('#add-kra-btn').prop('disabled', false);
+                        $('.kra-delete-btn').prop('disabled', false);
 
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
                         }, 100);
-                    } else if (response.phaseData === "pr") {
-                        $('textarea').prop('readonly', true);
-                        $('input[type="radio"]').prop('disabled', true);
+                    } 
 
-                        $('#add-kra-btn').prop('disabled', true);
-                        $('#add-wpa-btn').prop('disabled', true);
-                        $('#add-ldp-btn').prop('disabled', true);
+                    if (response.locks.pr) {
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('disabled', false);
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
 
-                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', true);
+                    if (response.locks.eval) {
+                        $('input[type="radio"]').prop('disabled', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
+
+                        $('#submit-btn-form').text('Submit');
+                        $('#submit-btn-form').show();
+                        $('#uploadsign').show();
+                        $('#submit-btn-sign').show();
+                    } 
                     
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                    } else if (response.phaseData === "eval") {
-                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
-                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
-                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', true);
-                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', true);
-
-                        $('#add-kra-btn').prop('disabled', true);
-                        $('.kra-delete-btn').prop('disabled', true);
-                    } else if (response.phaseData === "lock") {
-                        $('select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('#lockToast').toast('show');
-                    }
-
-                    console.log("LOCK");
-                    console.log(response.locked);
-
-                    if (response.locked === "eval") {
+                    if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else if (response.locked === "lock") {
-                        $('input[type="radio"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
-                    } else{
-
-                    }
+                    } 
                 },
                 error: function(xhr, status, error) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        $('#lockToast .toast-body').text('You do not have permission to view this form.');
+                        $('#lockToast').toast('show');
+
+                        $('.content-container').remove();
+                        $('.content-body').remove();
+                        $('.modal').remove();
                     } else {
                         console.log('An error occurred.');
                     }

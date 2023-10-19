@@ -107,7 +107,7 @@
                                         // Append the Self-Evaluation link to the first <td>
                                         viewLink = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href',
-                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
                                         newRow.append($('<td>').append(viewLink));
@@ -121,18 +121,11 @@
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
-                                        AppraiseLink = $('<a>').addClass(
-                                                'btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text('View');
+                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',`{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                            .replace(':appraisal_id', appraisal_id)).text('View');
 
-                                        newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(AppraiseLink)
-                                            ),
-                                        );
+                                        newRow.append($('<td>').append($('<div>').append(AppraiseLink)));
                                     } else {
                                         AppraiseLink = $('<a>').addClass(
                                                 'btn btn-outline-secondary disabled')
@@ -142,13 +135,11 @@
                                             .text('View');
 
                                         AppraiseLink.on('click', function(event) {
-                                            event
-                                                .preventDefault(); // Prevent the default navigation action
+                                            event.preventDefault(); // Prevent the default navigation action
                                             // Optionally, change the visual appearance to indicate it's disabled
-                                            $(this).addClass(
-                                                'disabled'
-                                            ); // Add a CSS class to style it as disabled
+                                            $(this).addClass('disabled'); 
                                         });
+
                                         newRow.append(
                                             $('<td>').append(
                                                 $('<div>').append(AppraiseLink)
@@ -169,7 +160,7 @@
                                         );
                                     } else {
                                         var url =
-                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                            "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
                                         url += "?appraisal_id=" + encodeURIComponent(appraisal
                                             .appraisal_id);
                                         url += "&appraisee_account_id=" + encodeURIComponent(
@@ -205,7 +196,7 @@
                                         );
                                     } else {
                                         var url =
-                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                            "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
                                         url += "?appraisal_id=" + encodeURIComponent(appraisal
                                             .appraisal_id);
                                         url += "&appraisee_account_id=" + encodeURIComponent(
@@ -249,7 +240,10 @@
                                 if (response.final_score.length !== 0) {
                                     // If the self-evaluation is submitted and final score is available, append the final score
                                     // var finalScore = parseFloat(response.final_score).toFixed(2);
-                                    var finalScore = Math.trunc(response.final_score * 100) / 100;
+                                    var finalScore = (response.final_score * 100) / 100;
+                                    console.log(finalScore);
+                                    console.log(finalScore.toFixed(2));
+
                                     newRow.append($('<td>').text(finalScore.toFixed(2)));
                                 } else{ 
                                     // If the self-evaluation is submitted but final score is not available, display "Pending"

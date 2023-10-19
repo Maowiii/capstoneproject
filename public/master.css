@@ -537,7 +537,11 @@ textarea {
 .table-fit {
     width: 1px;
 }
-#passchange .modal-footer {
+.table-wrapper {
+    overflow: auto;
+    max-height: 250px;
+}
+#passchange .modal-footer{
     justify-content: right;
 }
 #consentform {
@@ -569,4 +573,8 @@ textarea {
 }
 .pagination .page-link {
   color: #164783 !important;
+}
+
+#lockToast{
+    z-index: 99!important;
 }

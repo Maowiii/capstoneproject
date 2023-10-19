@@ -418,34 +418,41 @@ class AdminDashboardController extends Controller
       'poor' => $poor
     ]);
   }
+
   public function getFinalScoresPerYear()
   {
     // Get all evaluation years, whether active or not
     $evaluationYears = EvalYear::all();
     $scoresPerYear = [];
+
     foreach ($evaluationYears as $year) {
       $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
 
       // Fetch the total final scores and count of employees who submitted for the current year
+      // $scores = DB::table($table)
+      //   ->select('employee_id',
+      //     DB::raw('AVG(final_score) as total_score'),
+      //     DB::raw('COUNT(DISTINCT employee_id) as employee_count'))
+      //   ->groupBy('employee_id')
+      //   ->get();
+
       $scores = DB::table($table)
-        ->select(
-          'employee_id',
-          DB::raw('SUM(final_score) as total_score'),
-          DB::raw('COUNT(DISTINCT employee_id) as employee_count')
-        )
-        ->groupBy('employee_id')
-        ->get();
+      ->select(DB::raw('AVG(final_score) as total_score'))
+      ->first();
 
       $scoresPerYear[$year->sy_start . '-' . $year->sy_end] = $scores;
     }
 
     // Divide total scores by the number of employees who submitted for each year
-    foreach ($scoresPerYear as $yearRange => $scores) {
-      foreach ($scores as $score) {
-        $score->total_score /= $score->employee_count;
-      }
-    }
-
+    // foreach ($scoresPerYear as $yearRange => $scores) {
+    //   foreach ($scores as $score) {
+    //     $score->total_score /= $score->employee_count;
+    //   }
+    // }
+    
+    Log::info('$scoresPerYear');
+    Log::info($scoresPerYear);
+    
     // Log the result (You can use Laravel's Log::info or write to a log file)
     return response()->json([
       'success' => true,
@@ -513,8 +520,6 @@ class AdminDashboardController extends Controller
         ->where('employee_id', $employeeID)
         ->where('evaluation_type', 'self evaluation')
         ->value('bh_score');
-
-      
 
       $isScore = Appraisals::from($bhTable)
         ->where('employee_id', $employeeID)

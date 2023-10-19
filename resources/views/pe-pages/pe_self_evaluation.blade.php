@@ -4,7 +4,7 @@
     <h1>Appraisal Form</h1>
 @endsection
 
-@section('content')
+@section('content')    
     <!-- Modal -->
     <div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -80,16 +80,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                                                                                                <br>I give consent to the retention of my personal data. (Y/N)<br>
+                            <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                                                                                                <br>I give consent to the sharing of my data. (Y/N)<br>
+                            <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                                                                                                <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                                                                                            Agreement.<br>
-                                                                                                            
-                                                                                                            <br>By clicking Yes, you consent that you are willing to answer the questions
-                                                                                                            in this survey and you answered YES to the three questions above.
-                                                                                                            (Y/N) -->
+                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                        Agreement.<br>
+                        
+                        <br>By clicking Yes, you consent that you are willing to answer the questions
+                        in this survey and you answered YES to the three questions above.
+                        (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -126,6 +126,21 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="confirmClose()">Close</button>
                     <button type="button" class="btn btn-primary" onclick="understood()">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-relative">
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
+            <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <h5 class="mr-auto">Appraisal Form Locked</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="toast-body">
+                    <p>The appraisal form is currently locked and cannot be edited.</p>
                 </div>
             </div>
         </div>
@@ -480,13 +495,13 @@
             <table class='table table-bordered' id="kra_table">
                 <thead>
                     <tr>
-                        <th class='large-column'>KRA</th>
+                        <th class='large-column' id="krainput">KRA</th>
                         <th class='xxs-column'>Weight</th>
-                        <th class='large-column'>Objectives</th>
-                        <th class='large-column'>Performance Indicators</th>
-                        <th class='large-column'>Actual Results</th>
+                        <th class='large-column' id="obj">Objectives</th>
+                        <th class='large-column' id="pi">Performance Indicators</th>
+                        <th class='large-column' id="ar">Actual Results</th>
                         <th class='medium-column'>Performance Level</th>
-                        <th class="xxs-column">Weighted Total</th>
+                        <th class="xxs-column" id="wt">Weighted Total</th>
                     </tr>
                 </thead>
                 <tbody id="KRA_table_body">
@@ -777,16 +792,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this item?
+                    <h5>Are you sure you want to delete this item?</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
                 </div>
                 </div>
@@ -957,8 +970,7 @@
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var wpaID = row.data(
-                    'wpa-id'); // Assuming you have a data attribute for WPA ID on the row
+                var wpaID = row.data('wpa-id'); // Assuming you have a data attribute for WPA ID on the row
 
                 // Send an AJAX request to delete the WPA record from the database
                 $.ajax({
@@ -1829,8 +1841,8 @@
 
                                 var span = $('<span>').addClass('ms-1').text(i);
                                 label.append(input, span);
-                                performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                                    label));
+                                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                //     label));
 
                                 input.on('invalid', function() {
                                     $(this).addClass('is-invalid text-danger fw-bold');
@@ -2415,7 +2427,7 @@
 
             totalWeight = totalWeight * 100;
 
-            if (totalWeight > 100) {
+            if (Math.floor(totalWeight) > 100) {
                 isTotalWeightInvalid = true;
                 $('#KRA_Weight_Total').addClass('is-invalid');
                 $('textarea[name^="KRA"][name$="[KRA_kra_weight]"]').addClass('is-invalid');
@@ -2442,70 +2454,130 @@
                     console.log("PHASE");
                     console.log(response.phaseData);
 
-                    if (response.phaseData === "kra") {
+                    if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
+                        $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('input[type="radio"]').attr("disabled", true);
 
-                        $('#submit-btn-form').hide();
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 1000);
-                    } else if (response.phaseData === "pr") {
+                        $('#lockToast').toast('show');
                         $('input[type="radio"]').prop('disabled', true);
 
-                        // $('input[type="radio"]').attr("disabled", true);
-                        
-                        $('textarea').prop('readonly', true);
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('#KRA_table_body select').attr('disabled', true);
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+                    } else {
+                        if (response.phaseData === "kra") {
+                            $('textarea').prop('disabled', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('input[type="radio"]').attr("disabled", true);
 
-                        $('#submit-btn-form').hide();
+                            $('#submit-btn-form').hide();
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 1000);
+                        } else if (response.phaseData === "pr") {
+                            $('input[type="radio"]').prop('disabled', true);
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 1000); 
-                    } else if (response.phaseData === "eval") {
-                        $('#KRA_table_body textarea').prop('readonly', true);
-                        $('#KRA_table_body select').prop('disabled', true);
+                            // $('input[type="radio"]').attr("disabled", true);
+                            
+                            $('textarea').prop('readonly', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('#KRA_table_body select').attr('disabled', true);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                        $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
-                    } else if (response.phaseData === "lock") {
-                        $('#KRA_table_body select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('.content-body').addClass('modal fade');
+                            $('#submit-btn-form').hide();
+
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 1000); 
+                        } else if (response.phaseData === "eval") {
+                            $('#KRA_table_body textarea').prop('readonly', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                            $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
+                        } else if (response.phaseData === "lock") {
+                            $('#KRA_table_body select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                        }
                     }
 
                     console.log("LOCK");
-                    console.log(response.locked);
+                    console.log(response.locks);
 
-                    if (response.locked === "eval") {
+                    if (response.locks.kra) {
+                        $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
+                        
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
+
+                    if (response.locks.pr) {
+                        $('#KRA_table_body select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('disabled', false);
+
+                        $('#add-kra-btn').prop('disabled', true);
+                        $('#add-wpa-btn').prop('disabled', true);
+                        $('#add-ldp-btn').prop('disabled', true);
+                        $('.btn-danger').prop('disabled', true);
+                        
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
+
+                    if (response.locks.eval) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else if (response.locked === "pr") {
-                        $('input[type="radio"]').prop('readonly', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
 
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                    } else if (response.locked === "lock") {
+                        $('#submit-btn-form').text('Submit');
+                        $('#submit-btn-form').show();
+                        $('#uploadsign').show();
+                        $('#submit-btn-sign').show();
+                    } 
+                    
+                    if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else {
-
-                    }
+                    } 
                 },
                 error: function(xhr, status, error) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        $('#lockToast .toast-body').text('You do not have permission to view this form.');
+                        $('#lockToast').toast('show');
+
+                        $('.content-container').remove();
+                        $('.content-body').remove();
+                        $('.modal').remove();
                     } else {
                         console.log('An error occurred.');
                     }
