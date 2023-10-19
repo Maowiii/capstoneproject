@@ -11,7 +11,6 @@
                 <div class="toast-header">
                     <strong class="mr-auto">Appraisal Form Locked</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    <span aria-hidden="true"></span>
                 </div>
                 <div class="toast-body">
                     The appraisal form is currently locked and cannot be edited.
@@ -684,8 +683,8 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-center gap-3 p-3">
-            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">Submit</button>
+        <div class="d-flex content-container justify-content-center gap-3 p-3">
+            <button type="button" class="btn btn-primary medium-column " id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -1157,21 +1156,8 @@
                 });
             });
 
-            // Define a debounce function
-            function debounce(func, delay) {
-                let timer;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timer);
-                    timer = setTimeout(() => {
-                        func.apply(context, args);
-                    }, delay);
-                };
-            }
-
             // Wrap your change event handler in the debounce function
-            $('#ldp_table_body').on('change', '.autosave-field', debounce(function() {
+            $('#ldp_table_body').on('change', '.autosave-field', function() {
                 var field = $(this);
                 var ldpID = field.closest('tr').data('ldp-id'); // Use 'data-ldp-id'
                 var fieldName = field.data('field-name');
@@ -1206,7 +1192,7 @@
                         console.error('Autosave failed:', error);
                     }
                 });
-            }, 500)); // Adjust the delay (in milliseconds) as needed
+            }); 
 
 
             $('#jic_table_body').on('change', '.autosave-field', function() {
@@ -1241,15 +1227,14 @@
                     }
                 });
             });
-
             loadTableData();
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
-            formChecker();
 
             updateBHTotal();
             updateWeightedTotal();
+            formChecker();
         });
 
         function loadTableData() {
@@ -1704,7 +1689,7 @@
                         answerRadioNo.required = true;
                         commentTextarea.required = true;
                         } else {
-                            console.log('Row not found for index ' + index);
+                            // console.log('Row not found for index ' + index);
                         }
                                             
                     });
@@ -2144,76 +2129,133 @@
                 },
                 success: function(response) {
                     console.log("PHASE");
-                    console.log(response.phaseData);
-
-                    if (response.phaseData === "kra") {
-                        $('input[type="radio"]').prop('disabled', true);
+                    console.log(response);
+                    if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
+                        $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        $('#KRA_table_body select').prop('disabled', true);
 
+                        $('#add-kra-btn').prop('disabled', true);
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
-                        $('.wpa-delete-btn').prop('disabled', true);
-                        $('.ldp-delete-btn').prop('disabled', true);
-                    
+                        $('.btn-danger').prop('disabled', true);
+
+                        $('#lockToast').toast('show');
+                        $('input[type="radio"]').prop('disabled', true);
+
+                        $('#submit-btn-form').text('View Signature');
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
+                    } else {
+                        if (response.phaseData === "kra") {
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                            $('#KRA_table_body select').prop('disabled', true);
+
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.wpa-delete-btn').prop('disabled', true);
+                            $('.ldp-delete-btn').prop('disabled', true);
+                        
+
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
+                            $('#KRA_table_body select').prop('disabled', false);
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
+
+                            $('#submit-btn-form').hide();
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 100);
+                        } else if (response.phaseData === "pr") {
+                            $('textarea').prop('readonly', true);
+                            $('input[type="radio"]').prop('disabled', true);
+
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.btn-danger').prop('disabled', true);
+
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', true);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', true);
+                        
+                            $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+
+                            $('html, body').animate({
+                                scrollTop: $('#kra_table').offset().top
+                            }, 100);
+                        } else if (response.phaseData === "eval") {
+                            $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
+                            $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
+                            $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', true);
+                            $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', true);
+
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('.kra-delete-btn').prop('disabled', true);
+                        } else if (response.phaseData === "lock") {
+                            $('select').prop('disabled', true);
+                            $('input[type="radio"]').prop('disabled', true);
+                            $('textarea').prop('disabled', true);
+                            $('#lockToast').toast('show');
+                        }
+                    }
+
+                    console.log("LOCK");
+                    console.log(response.locks);
+
+                    if (response.locks.kra) {
+                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', false);
+                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', false);
 
                         $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
-                        $('#submit-btn-form').hide();
+                        $('#add-kra-btn').prop('disabled', false);
+                        $('.kra-delete-btn').prop('disabled', false);
 
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
                         }, 100);
-                    } else if (response.phaseData === "pr") {
-                        $('textarea').prop('readonly', true);
-                        $('input[type="radio"]').prop('disabled', true);
+                    } 
 
-                        $('#add-kra-btn').prop('disabled', true);
-                        $('#add-wpa-btn').prop('disabled', true);
-                        $('#add-ldp-btn').prop('disabled', true);
+                    if (response.locks.pr) {
+                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('disabled', false);
+                        $('html, body').animate({
+                            scrollTop: $('#kra_table').offset().top
+                        }, 100);
+                    } 
 
-                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', true);
-                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', true);
+                    if (response.locks.eval) {
+                        $('input[type="radio"]').prop('disabled', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
+
+                        $('#submit-btn-form').text('Submit');
+                        $('#submit-btn-form').show();
+                        $('#uploadsign').show();
+                        $('#submit-btn-sign').show();
+                    } 
                     
-                        $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
-                    } else if (response.phaseData === "eval") {
-                        $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
-                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
-                        $('#KRA_table_body [name$="[KRA_objective]"]').prop('readonly', true);
-                        $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('readonly', true);
-
-                        $('#add-kra-btn').prop('disabled', true);
-                        $('.kra-delete-btn').prop('disabled', true);
-                    } else if (response.phaseData === "lock") {
-                        $('select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('#lockToast').toast('show');
-                    }
-
-                    console.log("LOCK");
-                    console.log(response.locked);
-
-                    if (response.locked === "eval") {
+                    if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } else if (response.locked === "lock") {
-                        $('input[type="radio"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
-                    } else{
-
-                    }
+                    } 
                 },
                 error: function(xhr, status, error) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        $('#lockToast .toast-body').text('You do not have permission to view this form.');
+                        $('#lockToast').toast('show');
+
+                        $('.content-container').remove();
+                        $('.content-body').remove();
+                        $('.modal').remove();
                     } else {
                         console.log('An error occurred.');
                     }
