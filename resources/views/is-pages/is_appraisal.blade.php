@@ -1227,10 +1227,10 @@
                     }
                 });
             });
-            loadTableData();
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
+            loadTableData();
 
             updateBHTotal();
             updateWeightedTotal();
