@@ -2045,6 +2045,7 @@
 
             var weightedTotal = questionCount > 0 ? (total / questionCount).toFixed(2) : 0;
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
+            formChecker();
         }
 
 
