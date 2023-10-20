@@ -1344,6 +1344,7 @@
 
                         $('#SID_table_body').append(row);
                         $('#SID_table input[type="radio"]').trigger('change');
+                        formChecker();
                     });
 
                     $('#SR_table_body').empty();
@@ -1438,6 +1439,7 @@
 
                         $('#SR_table_body').append(row);
                         $('#SR_table input[type="radio"]').trigger('change');
+                        formChecker();
                     });
 
                     $('#S_table_body').empty();
@@ -1532,6 +1534,7 @@
 
                         $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
+                        formChecker();
                     });
                 }
             });
@@ -2045,7 +2048,7 @@
 
             var weightedTotal = questionCount > 0 ? (total / questionCount).toFixed(2) : 0;
             $('#' + tableId + ' .total-frequency').val(weightedTotal);
-            formChecker();
+            // formChecker();
         }
 
 
