@@ -2162,10 +2162,9 @@
                             $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
                             $('input[type="radio"]').prop('disabled', true);
-                            console.log($('#SID_table_body [name$="[SIDanswer]"]'));
-                            $('#SID_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
-                            $('#SR_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
-                            $('#S_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            // $('#SID_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            // $('#SR_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
+                            // $('#S_table_body input[type="radio"]').prop('disabled', true).addClass('disabled');
 
                             $('#submit-btn-form').hide();
 
