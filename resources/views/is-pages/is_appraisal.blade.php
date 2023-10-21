@@ -521,13 +521,13 @@
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1"
                                         value="1">
-                                    <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2"
                                         value="0">
-                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                    <label class="form-check-label" for="inlineRadio2" required>No</label>
                                 </div>
                             </td>
                             <td class="td-textarea">
@@ -546,13 +546,13 @@
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1"
                                         value="1">
-                                    <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2"
                                         value="0">
-                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                    <label class="form-check-label" for="inlineRadio2" required>No</label>
                                 </div>
                             </td>
                             <td class="td-textarea">
@@ -571,13 +571,13 @@
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1"
                                         value="1">
-                                    <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2"
                                         value="0">
-                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                    <label class="form-check-label" for="inlineRadio2" required>No</label>
                                 </div>
                             </td>
                             <td class="td-textarea">
@@ -1771,6 +1771,7 @@
                                         'border border-danger');
                                 }
                             });
+
                             commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;
