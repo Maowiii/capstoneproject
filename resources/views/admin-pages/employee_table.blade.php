@@ -7,8 +7,7 @@
 @section('content')
     @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show">
-            <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             </button>
             <ul>
                 <!-- Display each error message -->

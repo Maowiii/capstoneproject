@@ -968,7 +968,7 @@
                     }
                 });
 
-                if (!valid || !form.checkValidity()) {
+                if (!valid && !form.checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
@@ -1734,7 +1734,7 @@
                                     minute: 'numeric',
                                     second: 'numeric',
                                 });
-                                
+
                                 dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data

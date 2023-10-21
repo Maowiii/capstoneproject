@@ -1070,8 +1070,8 @@
                     }
                 });
 
-                if (!valid || !form.checkValidity()) {
-                    event.preventDefault(); // Prevent the form from submitting
+                if (!valid && !form.checkValidity()) {
+                    event.preventDefault();
                     event.stopPropagation();
 
                     var invalidInputs = form.querySelectorAll('.is-invalid');
@@ -2126,7 +2126,7 @@
                                     minute: 'numeric',
                                     second: 'numeric',
                                 });
-                                
+
                                 dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
