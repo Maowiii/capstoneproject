@@ -2593,9 +2593,12 @@
                         $('#lockToast').toast('show');
 
                         $('.content-container').remove();
+                        $('.content-body').remove();
                         $('.modal').remove();
                         $('.fade').remove();
+                        $('#submit-btn-sign').remove();
                         $('#consentform').remove();
+                        $('#consentform').modal('hide');
 
                         // Create a new div element
                         var errorDiv = $('<div></div>');
@@ -2606,7 +2609,8 @@
                         errorDiv.text('An error occurred: You do not have permission to view this form.');
 
                         // Append the error div to a specific element (e.g., the body)
-                        errorDiv.appendTo('body');
+                        errorDiv.appendTo('.content-section');
+
                     } else {
                         console.log('An error occurred.');
                     }
