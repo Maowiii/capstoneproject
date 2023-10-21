@@ -2596,7 +2596,8 @@
 
                         // $('.content-container').remove();
                         // $('.content-body').remove();
-                        // $('.modal').remove();
+                        $('.modal').remove();
+                        $('.fade').remove();
                     } else {
                         console.log('An error occurred.');
                     }
