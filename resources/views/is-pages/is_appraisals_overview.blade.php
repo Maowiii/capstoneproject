@@ -688,7 +688,7 @@
                                 });
 
                             newRow.append(
-                                $('<td>').append($('<div>').append(viewLink)),
+                                $('<td>').append(viewLink),
                                 $('<td>').append($('<div>').append(ic1Link)),
                                 $('<td>').append($('<div>').append(ic2Link)),
                                 $('<td>').text(status),
