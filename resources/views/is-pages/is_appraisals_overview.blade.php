@@ -168,19 +168,19 @@
                                         <td id="SE_wtotal"></td>
                                     </tr>
                                     <tr>
-                                        <td>Internal Customer 1</td>
+                                        <td>Internal<br>Customer 1</td>
                                         <td id="IC1_perc"></td>
                                         <td id="IC1_rating"></td>
                                         <td id="IC1_wtotal"></td>
                                     </tr>
                                     <tr>
-                                        <td>Internal Customer 2</td>
+                                        <td>Internal<br>Customer 2</td>
                                         <td id="IC2_perc"></td>
                                         <td id="IC2_rating"></td>
                                         <td id="IC2_wtotal"></td>
                                     </tr>
                                     <tr>
-                                        <td>Immediate Superior</td>
+                                        <td>Immediate<br>Superior</td>
                                         <td id="IS_perc"></td>
                                         <td id="IS_rating"></td>
                                         <td id="IS_wtotal"></td>
