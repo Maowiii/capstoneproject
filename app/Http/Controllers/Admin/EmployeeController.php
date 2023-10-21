@@ -119,14 +119,14 @@ class EmployeeController extends Controller
 
       $account_id = $account->account_id;
 
-      $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
+      // $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
 
       $employee = Employees::create([
         'account_id' => $account_id,
         'employee_number' => $request->input('employee_number'),
         'first_name' => $request->input('first_name'),
         'last_name' => $request->input('last_name'),
-        'department_id' => $department_id
+        'department_id' => $request->input('department')
       ]);
 
       $activeYear = EvalYear::where('status', 'active')->first();

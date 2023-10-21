@@ -125,8 +125,6 @@ class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
             Log::error('Error importing employee: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
             Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-
         }
     }
     public function uniqueBy()
