@@ -769,6 +769,7 @@
                 $(this).addClass('is-invalid');
             } else {
                 $(this).removeClass('is-invalid');
+                $(this).closest('tr').removeClass('text-danger fw-bold');
             }
         });
 
