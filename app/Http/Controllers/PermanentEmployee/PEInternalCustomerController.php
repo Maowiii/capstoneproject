@@ -322,7 +322,7 @@ class PEInternalCustomerController extends Controller
       try {
         FinalScores::updateOrCreate(
           [
-            'employee_id' => $employee_id,
+            'employee_id' => $employeeId,
             'department_id' => $departmentId,
           ],
           ['final_score' => $finalScore[0]]
