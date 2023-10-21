@@ -1701,13 +1701,12 @@
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
 
-                        if (row) {
-                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
                                 1) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
                                 1) + '][{{ $appraisalId }}][answer]"][value="0"]');
 
-
+                        if (row) {
                             if (jic.answer === 1) {
                                 answerRadioYes.checked = true;
                             } else if (jic.answer === 0) {
@@ -1765,14 +1764,13 @@
                                         'border border-danger');
                                 }
                             });
-
-                            answerRadioYes.required = true;
-                            answerRadioNo.required = true;
                             commentTextarea.required = true;
                         } else {
+                            answerRadioYes.required = true;
+                            answerRadioNo.required = true;
+                            
                             // console.log('Row not found for index ' + index);
                         }
-
                     });
 
                     data.signData.forEach(function(sign, index) {
