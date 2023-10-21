@@ -1054,15 +1054,19 @@
                 var requiredInputs = form.find('input[required]');
 
                 requiredInputs.each(function(index, inputElement) {
+                    // Wrap the DOM element in a jQuery object
+                    var $inputElement = $(inputElement);
+
                     // Check if the required input is empty or has a validation error
-                    if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
+                    if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement
                             .validationMessage);
-                        inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
-                        inputElement.focus();
+
+                        // Use the jQuery object to add the 'is-invalid' class
+                        $inputElement.addClass('is-invalid');
+                        $inputElement.closest('td').addClass('border border-danger');
+                        $inputElement[0].focus(); // Access the DOM element for focusing
                     }
                 });
 
