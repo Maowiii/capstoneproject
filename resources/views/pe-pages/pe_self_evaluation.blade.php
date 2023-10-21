@@ -2483,11 +2483,11 @@
 
                             $('#submit-btn-form').hide();
 
-                            if ($('#kra_table').length > 0) {
-                                $('html, body').animate({
-                                    scrollTop: $('#kra_table').offset().top
-                                }, 100);
-                            }
+                            // if ($('#kra_table').length > 0) {
+                            //     $('html, body').animate({
+                            //         scrollTop: $('#kra_table').offset().top
+                            //     }, 100);
+                            // }
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
 
@@ -2507,11 +2507,11 @@
 
                             $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
 
-                            if ($('#kra_table').length > 0) {
-                                $('html, body').animate({
-                                    scrollTop: $('#kra_table').offset().top
-                                }, 100);
-                            }
+                            // if ($('#kra_table').length > 0) {
+                            //     $('html, body').animate({
+                            //         scrollTop: $('#kra_table').offset().top
+                            //     }, 100);
+                            // }
                         } else if (response.phaseData === "eval") {
                             $('#KRA_table_body textarea').prop('readonly', true);
                             $('#KRA_table_body select').prop('disabled', true);
@@ -2542,9 +2542,9 @@
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 3000);
+                        // $('html, body').animate({
+                        //     scrollTop: $('#kra_table').offset().top
+                        // }, 3000);
                     } 
 
                     if (response.locks.pr) {
@@ -2563,9 +2563,9 @@
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
 
-                        $('html, body').animate({
-                            scrollTop: $('#kra_table').offset().top
-                        }, 100);
+                        // $('html, body').animate({
+                        //     scrollTop: $('#kra_table').offset().top
+                        // }, 100);
                     } 
 
                     if (response.locks.eval) {

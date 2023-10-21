@@ -2169,11 +2169,11 @@
 
                             $('#submit-btn-form').hide();
 
-                            if ($('#kra_table').length > 0) {
-                                $('html, body').animate({
-                                    scrollTop: $('#kra_table').offset().top
-                                }, 10);
-                            }
+                            // if ($('#kra_table').length > 0) {
+                            //     $('html, body').animate({
+                            //         scrollTop: $('#kra_table').offset().top
+                            //     }, 10);
+                            // }
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
 
@@ -2194,11 +2194,11 @@
                             
                             $('#submit-btn-form').hide();
 
-                            if ($('#kra_table').length > 0) {
-                                $('html, body').animate({
-                                    scrollTop: $('#kra_table').offset().top
-                                }, 10);
-                            }
+                            // if ($('#kra_table').length > 0) {
+                            //     $('html, body').animate({
+                            //         scrollTop: $('#kra_table').offset().top
+                            //     }, 10);
+                            // }
                         } else if (response.phaseData === "eval") {
                             $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
                             $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
