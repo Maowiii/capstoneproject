@@ -1751,8 +1751,8 @@
                     if (data.eulaData == 1 || data.eulaData == true) {
                         $('#consentform').remove();
                     } else {
-                        formChecker();
                         $('#consentform').modal('show');
+                        formChecker();
                     }
 
                     $('#KRA_table_body').empty();
