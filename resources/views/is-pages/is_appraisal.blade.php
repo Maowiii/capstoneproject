@@ -1071,7 +1071,7 @@
                         // Add an input event handler to remove the 'is-invalid' class
                         $inputElement.on('input', function() {
                             $inputElement.removeClass('is-invalid');
-                            $inputElement.closest('input').removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"]').removeClass('is-invalid');
                             $inputElement.closest('td').removeClass('border border-danger');
                         });
                     }
