@@ -45,13 +45,13 @@
 
     <!-- Departments Table -->
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Department" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <div class="table-responsive">
             <table class='table table-bordered table-sm align-middle' id="departments_table">
                 <thead>
                     <tr>
@@ -69,13 +69,13 @@
 
     <!-- Employees Table -->
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Name" id="namesearch">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <div class="table-responsive">
             <table class='table table-bordered table-sm align-middle' id="employees_table">
                 <thead>
                     <tr>
