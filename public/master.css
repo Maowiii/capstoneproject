@@ -394,7 +394,7 @@ textarea {
 }
 
 #employee_table th.large-column, #employee_table td.large-column {
-    overflow-wrap: break-word!important;
+    word-break: break-all!important; /* Break words as necessary to prevent overflow */
 }
 
 .textarea {
