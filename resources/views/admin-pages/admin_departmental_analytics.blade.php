@@ -227,94 +227,7 @@
                         // const ctx = document.getElementById('line-chart').getContext('2d');
                         new Chart(ctx, config);
 
-                        // var historicalData = {
-                        //     labels: [], // This will set the x-axis labels
-                        //     datasets: []
-                        // };
-
-                        // // var labels = [];
-                        // // var datasets = [];
-
-                        // for (var yearRange in scoresByDepartment) {
-                        //     // console.log(yearRange);
-                        //     if (scoresByDepartment.hasOwnProperty(yearRange)) {
-                        //         // console.log(yearRange);
-                        //         historicalData.labels.push(yearRange);
-                        //         var data = scoresByDepartment[yearRange].map(item => parseFloat(item.total_score));
-
-                        //         console.log(`Label: ${yearRange}, Data: ${data}`); // Add this line for debugging
-
-                        //         historicalData.datasets.push({
-                        //             label: yearRange,
-                        //             data: data,
-                        //             borderColor: 'rgba(75, 192, 192, 1)',
-                        //             borderWidth: 2,
-                        //             fill: false,
-                        //         });
-                        //     }
-                        // }
-
-                        // // labels.sort();
                         
-                        // historicalData.labels.sort();
-                        // // historicalData.datasets = datasets;
-                        // // console.log('X-Axis Labels: ', historicalData.labels);
-
-                        // // console.log(historicalData);
-
-                        // var labels = Object.keys(scoresByDepartment).sort();
-
-                        // var datasets = labels.map(function(label) {
-                        //     var totalScores = scoresByDepartment[label] || []; // Handle null values
-
-                        //     totalScores = totalScores.map(function(item) {
-                        //         return item.total_score !== null ? item.total_score : 0;
-                        //     });
-
-                        //     return {
-                        //         label: label,
-                        //         data: totalScores,
-                        //         borderColor: 'rgba(75, 192, 192, 1)',
-                        //         borderWidth: 2,
-                        //         fill: false,
-                        //     };
-                        // console.log(datasets);
-                        // });
-
-                        // historicalData.labels = historicalData.labels.concat(labels);
-                        // historicalData.datasets = historicalData.datasets.concat(datasets);
-
-                        // // console.log(historicalData);
-
-                        // var lineChart = new Chart(ctx, {
-                        //     type: 'line',
-                        //     data: historicalData,
-                        //     options: {
-                        //         scales: {
-                        //             x: {
-                        //                 type: 'category', // Set the x-axis type to 'category'
-                        //                 display: true,
-                        //                 title: {
-                        //                     display: true,
-                        //                     text: 'Evaluation Year'
-                        //                 },
-                        //             },
-                        //             y: {
-                        //                 display: true,
-                        //                 title: {
-                        //                     display: true,
-                        //                     text: 'Total Final Score'
-                        //                 }
-                        //             }
-                        //         }
-                        //     }
-                        // });
-
-                        // var datasetLabels = lineChart.data.datasets.map(dataset => dataset.label);
-                        // var datasetData = lineChart.data.datasets.map(dataset => dataset.data);
-                        // // console.log('Dataset Labels: ', datasetLabels);  
-                        // // console.log('Dataset Data: ', datasetData); 
-                        // console.log(lineChart.data);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -323,22 +236,6 @@
                 }
             });
         }
-
-// console.log(scoresByDepartment);
-// var labels = Object.keys(scoresByDepartment).sort();
-// var datasets = labels.map(function(label) {
-//     var totalScores = scoresByDepartment[label] || []; // Handle null values
-//     totalScores = totalScores.map(function(item) {
-//         return item.total_score !== null ? item.total_score : 0;
-//     });
-//     return {
-//         label: label,
-//         data: totalScores,
-//         borderColor: 'rgba(75, 192, 192, 1)',
-//         borderWidth: 2,
-//         fill: false,
-//     };
-// });
 
         function loadCards(selectedYear = null, departmentID = null) {
             $.ajax({
