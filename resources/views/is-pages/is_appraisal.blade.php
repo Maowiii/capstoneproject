@@ -2172,7 +2172,7 @@
                             if ($('#kra_table').length > 0) {
                                 $('html, body').animate({
                                     scrollTop: $('#kra_table').offset().top
-                                }, 100);
+                                }, 3000);
                             }
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
@@ -2197,7 +2197,7 @@
                             if ($('#kra_table').length > 0) {
                                 $('html, body').animate({
                                     scrollTop: $('#kra_table').offset().top
-                                }, 100);
+                                }, 3000);
                             }
                         } else if (response.phaseData === "eval") {
                             $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);

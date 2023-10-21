@@ -2544,7 +2544,7 @@
 
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
-                        }, 100);
+                        }, 3000);
                     } 
 
                     if (response.locks.pr) {
