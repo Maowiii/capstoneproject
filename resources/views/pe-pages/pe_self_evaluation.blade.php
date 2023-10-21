@@ -618,7 +618,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]" required></textarea>
                             </div>
                         </td>
                     </tr>
@@ -643,7 +643,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]" required></textarea>
                             </div>
                         </td>
                     </tr>
@@ -666,7 +666,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]" required></textarea>
                             </div>
                         </td>
                     </tr>
@@ -689,7 +689,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]" required></textarea>
                             </div>
                         </td>
                     </tr>
@@ -1011,8 +1011,8 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
-                
+                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for WPA ID on the row
+
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -1733,7 +1733,7 @@
 
                                 $(this).removeClass(
                                     'is-invalid'
-                                ); // Also remove is-invalid class from the input
+                                ); 
 
                                 $.ajax({
                                     headers: {
@@ -2309,29 +2309,35 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = 0;
+            var wpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
             
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][continue_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][continue_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][stop_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][stop_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][start_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][start_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
 
@@ -2367,17 +2373,23 @@
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field')
-                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][learning_need]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][learning_need]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field')
-                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][methodology]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][methodology]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(
