@@ -1004,9 +1004,9 @@
 
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
-                var row = $(this);
-                var ldpID = row.closest('tr').attr(
-                'data-field-id'); // Assuming you have a data attribute for LDP ID on the row
+                var row = $(this).closest('tr');
+                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
+                
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
