@@ -520,13 +520,13 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                        value="1" required>
+                                        value="1">
                                     <label class="form-check-label" for="inlineRadio1">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                        value="0" required>
+                                        value="0">
                                     <label class="form-check-label" for="inlineRadio2">No</label>
                                 </div>
                             </td>
@@ -545,13 +545,13 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                        value="1" required>
+                                        value="1">
                                     <label class="form-check-label" for="inlineRadio1">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                        value="0" required>
+                                        value="0">
                                     <label class="form-check-label" for="inlineRadio2">No</label>
                                 </div>
                             </td>
@@ -570,13 +570,13 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                        value="1" required>
+                                        value="1">
                                     <label class="form-check-label" for="inlineRadio1">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input autosave-field" type="radio"
                                         name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                        value="0" required>
+                                        value="0">
                                     <label class="form-check-label" for="inlineRadio2">No</label>
                                 </div>
                             </td>
@@ -1003,18 +1003,16 @@
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
                         inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
+                        inputElement.closest('td').addClass('border border-danger');
                         inputElement.focus();
                     }
 
                     // Check if the input is required and its value is empty
-                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
+                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '' || $(inputElement).val() === null) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ': This field is required.');
                         inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
+                        inputElement.closest('td').addClass('border border-danger');
                         inputElement.focus();
                     }
                 });
@@ -1024,11 +1022,10 @@
 
                 requiredInputs.each(function(index, inputElement) {
                     // Check if the required input is empty or has a validation error
-                    if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
+                    if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
+                        inputElement.closest('td').addClass('border border-danger');
                         inputElement.addClass('is-invalid');
                         inputElement.focus();
                     }
@@ -1755,9 +1752,17 @@
                             }).on('invalid', function() {
                                 $(this).addClass('is-invalid');
                                 $(this).attr('placeholder', 'Please provide a valid input');
+                            }).on('change', function() {
+                                if ($(this).val().trim() === '') {
+                                    $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
+                                }
                             }).on('blur', function() {
                                 if ($(this).val().trim() === '') {
                                     $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
                                 }
                             });
 
