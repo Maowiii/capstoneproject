@@ -466,7 +466,7 @@
                     <tr>
                         <th class='medium-column'>Question</th>
                         <th class='small-column'>Answer</th>
-                        <th class='large-column' id="comments">Comments</th>
+                        <th class='large-column'>Comments</th>
                     </tr>
                 </thead>
                 <tbody id='jic_table_body'>
@@ -489,7 +489,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" style="width: 40%" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" style="width: 30%" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
