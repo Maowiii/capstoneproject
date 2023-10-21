@@ -2136,6 +2136,7 @@
                     console.log("PHASE");
                     console.log(response);
 
+                    console.log(response.submitionChecker && Object.values(response.locks).every(lock => !lock));
                     if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
@@ -2254,12 +2255,6 @@
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
                         $('#submit-btn-sign').show();
-                    } 
-                    
-                    if (response.locks.lock) {
-                        $('select').prop('disabled', true);
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
                     } 
                 },
                 error: function(xhr, status, error) {
