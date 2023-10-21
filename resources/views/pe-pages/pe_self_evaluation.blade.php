@@ -1734,6 +1734,7 @@
                         $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
+                    formChecker();
                 }
             });
         }
@@ -2474,7 +2475,11 @@
                             $('textarea').prop('disabled', true);
                             $('#KRA_table_body select').prop('disabled', true);
                             $('input[type="radio"]').prop('disabled', true);
-                            $('input[type="radio"]').attr("disabled", true);
+
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.wpa-delete-btn').prop('disabled', true);
+                            $('.ldp-delete-btn').prop('disabled', true);
 
                             $('#submit-btn-form').hide();
 
