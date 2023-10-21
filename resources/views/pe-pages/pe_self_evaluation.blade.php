@@ -1090,7 +1090,7 @@
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
             $('#submit-btn-form').on('click', function(event) {
-                const form = $('.needs-validation');
+                var form = $('.needs-validation');
                 var valid = true;
 
                 // Select all input elements inside the form
@@ -1119,7 +1119,7 @@
 
                 requiredInputs.each(function(index, inputElement) {
                     // Check if the required input is empty or has a validation error
-                    if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
+                    if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement
                             .validationMessage);
@@ -1127,7 +1127,7 @@
                     }
                 });
 
-                if (!valid && !form[0].checkValidity()) {
+                if (!valid || !form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
@@ -2226,6 +2226,12 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
                 })
             );
         }
@@ -2389,18 +2395,6 @@
         }
 
         function addNewLDPRow(ldptbody) {
-            var highestLDPID = 0;
-            ldptbody.find('[name^="LDP["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var ldpID = parseInt(matches[1]);
-                    if (ldpID > highestLDPID) {
-                        highestLDPID = ldpID;
-                    }
-                }
-            });
-
             // Calculate the next available lpaID
             var nextLDPID = 0;
 

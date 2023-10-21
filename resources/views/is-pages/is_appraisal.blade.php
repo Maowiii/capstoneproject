@@ -1843,6 +1843,12 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
                 })
             );
         }
@@ -1952,7 +1958,7 @@
                 }
 
                 label.append(input, span);
-                                input[0].required = true;
+                input[0].required = true;
 
                 input.on('invalid', function() {
                     $(this).addClass('is-invalid text-danger fw-bold');
