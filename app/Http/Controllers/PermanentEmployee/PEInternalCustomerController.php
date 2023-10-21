@@ -352,10 +352,35 @@ class PEInternalCustomerController extends Controller
     Log::info($accountId);
     
     $shouldHideSignatory = ($appraiseeId == $accountId);
+    $hasPermission = true;
+
+    if ($appraisal) {
+      ////////////PERMISSION/////////////
+      $employeeId = $appraisal->employee_id;
+      $evaluatorId = $appraisal->evaluator_id;
+
+      $isAdmin = Accounts::where('account_id', $accountId)->where('type', 'AD')->exists();
+
+      $isImmediateSuperior = Accounts::where('account_id', $accountId)
+            ->where('type', 'IS')
+            ->whereHas('employee', function ($query) use ($appraisal) {
+                $query->where('department_id', $appraisal->department_id);
+            })
+            ->exists();
+
+      $isEvaluator = ($accountId == $evaluatorId);
+      $isEmployee = ($accountId == $employeeId);
+
+      // Check permissions for viewing the form
+      if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {
+        $hasPermission = false;
+      }
+    }
 
     return response()->json([
       'form_submitted' => $locked,
       'hideSignatory' => $shouldHideSignatory,
+      'hasPermission' => $hasPermission
     ]);
   }
 

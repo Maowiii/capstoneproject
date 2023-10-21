@@ -2595,6 +2595,7 @@
                         $('.content-container').remove();
                         $('.content-body').remove();
                         $('.modal').remove();
+                        $('#consentform').remove();
                     } else {
                         console.log('An error occurred.');
                     }
