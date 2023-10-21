@@ -559,7 +559,7 @@
                             </div>
                         </td>
                         <td class="td-textarea">
-                            <div class="position-relative">
+                            <div class="position-relative" style="width: 90%">
                                 <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
