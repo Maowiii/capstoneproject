@@ -2483,7 +2483,7 @@
 
                             $('#submit-btn-form').hide();
 
-                            if ($('#kra_table').length) {
+                            if ($('#kra_table').length > 0) {
                                 $('html, body').animate({
                                     scrollTop: $('#kra_table').offset().top
                                 }, 100);
@@ -2507,7 +2507,7 @@
 
                             $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
 
-                            if ($('#kra_table').length) {
+                            if ($('#kra_table').length > 0) {
                                 $('html, body').animate({
                                     scrollTop: $('#kra_table').offset().top
                                 }, 100);
