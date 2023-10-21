@@ -2118,8 +2118,15 @@
                                 // Validation for date data
                                 const date = new Date(sign.updated_at);
 
-                                const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
+                                
                                 dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
