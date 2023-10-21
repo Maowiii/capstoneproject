@@ -480,10 +480,7 @@
                                 }
                             } else {
                                 if (!response.hasPermission){
-                                    $('.content-container').remove();
-                                    $('.content-body').remove();
-                                    $('.modal').remove();
-                                    $('#consentform').remove();
+                                    $('.modal').hide();
                                 } 
                                 return;
                             }

@@ -166,11 +166,10 @@
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href', url.replace(':appraisal_id', appraisal
                                                 .appraisal_id))
-                                            .text(appraisal.evaluator.first_name + ' ' +
-                                                appraisal.evaluator.last_name);
+                                            .text('View');
                                         } else {
                                             ic1Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                            .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                            .text('View'); 
                                         }  
 
                                         newRow.append($('<td>').append($('<div>').append(ic1Link)));
@@ -194,10 +193,10 @@
 
                                             ic2Link = $('<a>').addClass('btn btn-outline-primary')
                                                 .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
-                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name);
+                                                .text('View');
                                         } else {
                                             ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                                .text('View'); 
                                         }
 
                                         newRow.append($('<td>').append($('<div>').append(ic2Link)));
