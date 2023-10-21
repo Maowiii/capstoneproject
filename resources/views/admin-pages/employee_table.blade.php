@@ -23,10 +23,10 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class="table table-responsive" id="employee_table">
+        <table class="table" id="employee_table">
             <thead>
                 <tr>
-                    <th scope="col" class="large-column">Email | Employee #</th>
+                    <th scope="col" class="large-column" style="word-wrap: break-word">Email | Employee #</th>
                     <th scope="col" class="medium-column">First Name</th>
                     <th scope="col" class="medium-column">Last Name</th>
                     <th scope="col" class="medium-column">Default Password</th>
