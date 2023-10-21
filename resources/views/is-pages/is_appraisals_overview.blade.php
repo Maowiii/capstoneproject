@@ -48,8 +48,8 @@
                 <tr>
                     <th class='medium-column'>Name</th>
                     <th class='medium-column'>Self-Evaluation</th>
-                    <th>Internal<br>Customer 1</th>
-                    <th>Internal<br>Customer 2</th>
+                    <th>Internal Customer 1</th>
+                    <th>Internal Customer 2</th>
                     <th>Status</th>
                     <th>Action</th>
                     <th>Summary</th>
