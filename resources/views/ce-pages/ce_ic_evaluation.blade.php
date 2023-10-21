@@ -110,8 +110,125 @@
 
     <script>
         $(document).ready(function() {
-            var dataLoaded = false;
+            var isDataLoaded = false;
+
+            function loadICTable() {
+                return $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('pe.getICQuestions') }}',
+                    type: 'GET',
+                });
+            }
+
+            function loadSavedScore(questionId) {
+                var urlParams = new URLSearchParams(window.location.search);
+                var appraisalId = urlParams.get('appraisal_id');
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '{{ route('getSavedICScores') }}',
+                    type: 'GET',
+                    data: {
+                        appraisalId: appraisalId,
+                        questionId: questionId
+                    },
+                    success: function(savedScoreResponse) {
+                        if (savedScoreResponse.success) {
+                            var savedScore = savedScoreResponse.score;
+                            if (savedScore !== null) {
+                                $(`input[name="ic_${questionId}"][value="${savedScore}"]`).prop(
+                                    'checked', true);
+                            }
+
+                            formChecker();
+
+                        } else {
+                            console.log('Failed');
+                        }
+                        totalScore();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            $.when(loadICTable()).done(function(response) {
+                if (response.success) {
+                    var tbody = $('#IC_table tbody');
+                    tbody.empty();
+
+                    var questionCounter = 1;
+
+                    $.each(response.ICques, function(index, formquestions) {
+                        var questionId = formquestions.question_id;
+
+                        var row = $('<tr>');
+                        row.append($('<td>').addClass('align-middle').text(questionCounter));
+                        row.append($('<td>').addClass('align-baseline text-start editable').attr(
+                            'data-questionid', questionId).text(formquestions.question));
+
+                        var likertColumn = $('<td>').addClass('align-middle likert-column');
+                        for (let i = 5; i >= 1; i--) {
+                            var formCheckDiv = $('<div>').addClass('form-check form-check-inline');
+                            var input = $('<input>').addClass('form-check-input').attr({
+                                type: 'radio',
+                                id: `score_${questionId}_${i}`,
+                                name: `ic_${questionId}`,
+                                value: i
+                            });
+                            var label = $('<label>').addClass('form-check-label').attr('for',
+                                `score_${questionId}_${i}`).text(i);
+
+                            formCheckDiv.append(input).append(label);
+                            likertColumn.append(formCheckDiv);
+                        }
+                        row.append(likertColumn);
+
+                        tbody.append(row);
+                        loadSavedScore(questionId);
+
+                        questionCounter++;
+                    });
+
+                    formChecker(); // Call formChecker once the data is loaded
+                } else {
+                    console.log('Error:' + response.error);
+                }
+            });
         });
+
+        function formChecker() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.ICFormChecker') }}',
+                type: 'POST',
+                data: {
+                    appraisalId: appraisalId,
+                },
+                success: function(response) {
+                    if (response.form_submitted) {
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
+                        $('#submit-btn').text('View');
+                    } else {
+                        return;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
 
         $('#service_area').on('blur', function() {
             var newService = $(this).val();
@@ -301,101 +418,6 @@
             });
         });
 
-        function loadICTable() {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('pe.getICQuestions') }}',
-                type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        var tbody = $('#IC_table tbody');
-                        tbody.empty();
-
-                        var questionCounter = 1;
-
-                        $.each(response.ICques, function(index, formquestions) {
-                            var questionId = formquestions.question_id;
-
-                            var row = $('<tr>');
-                            row.append($('<td>').addClass('align-middle').text(
-                                questionCounter));
-                            row.append($('<td>').addClass(
-                                'align-baseline text-start editable').attr(
-                                'data-questionid', questionId).text(formquestions
-                                .question));
-
-                            var likertColumn = $('<td>').addClass(
-                                'align-middle likert-column');
-                            for (let i = 5; i >= 1; i--) {
-                                var formCheckDiv = $('<div>').addClass(
-                                    'form-check form-check-inline');
-                                var input = $('<input>').addClass('form-check-input').attr({
-                                    type: 'radio',
-                                    id: `score_${questionId}_${i}`,
-                                    name: `ic_${questionId}`,
-                                    value: i
-                                });
-                                var label = $('<label>').addClass('form-check-label').attr(
-                                    'for', `score_${questionId}_${i}`).text(i);
-
-                                formCheckDiv.append(input).append(label);
-                                likertColumn.append(formCheckDiv);
-                            }
-                            row.append(likertColumn);
-
-                            tbody.append(row);
-                            loadSavedScore(questionId);
-
-                            questionCounter++;
-                        });
-
-                    } else {
-                        console.log('Error:' + response.error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function loadSavedScore(questionId) {
-            var urlParams = new URLSearchParams(window.location.search);
-            var appraisalId = urlParams.get('appraisal_id');
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('getSavedICScores') }}',
-                type: 'GET',
-                data: {
-                    appraisalId: appraisalId,
-                    questionId: questionId
-                },
-                success: function(savedScoreResponse) {
-                    if (savedScoreResponse.success) {
-                        var savedScore = savedScoreResponse.score;
-                        if (savedScore !== null) {
-                            $(`input[name="ic_${questionId}"][value="${savedScore}"]`).prop(
-                                'checked', true);
-                        }
-
-                        formChecker();
-
-                    } else {
-                        console.log('Failed');
-                    }
-                    totalScore();
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
         function loadSignature() {
             var urlParams = new URLSearchParams(window.location.search);
             var appraisalId = urlParams.get('appraisal_id');
@@ -449,34 +471,6 @@
                     }
                 },
 
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function formChecker() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var appraisalId = urlParams.get('appraisal_id');
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('pe.ICFormChecker') }}',
-                type: 'POST',
-                data: {
-                    appraisalId: appraisalId,
-                },
-                success: function(response) {
-                    if (response.form_submitted) {
-                        $('input[type="radio"]').prop('disabled', true);
-                        $('textarea').prop('disabled', true);
-                        $('#submit-btn').text('View');
-                    } else {
-                        return;
-                    }
-                },
                 error: function(xhr, status, error) {
                     console.log(error);
                 }
