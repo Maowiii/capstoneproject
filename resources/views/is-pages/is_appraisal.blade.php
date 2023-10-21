@@ -588,13 +588,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                        <!-- <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell">Job Incumbent</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell' class="sign-cell">
+                                                
+                                            </td>
+                                            <td id="datecell" class="date-cell"></td>
+                                        </tr> -->
+                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                            <td id="partiescell">Immediate Superior</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id='signcell' class="sign-cell">
                                                 <input type='file' id="uploadsign"
-                                                        name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
-                                                        accept='image/jpeg, image/png, image/jpg'>
+                                                            name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
+                                                            accept='image/jpeg, image/png, image/jpg'>
 
                                                 <input type='hidden' id="uploadsign_1"
                                                 name="SIGN[JI][{{ $appraisalId }}]">
@@ -603,22 +611,16 @@
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
                                         </tr>
-                                        <tr>
-                                            <td id="partiescell">Immediate Superior</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'></td>
-                                            <td id="datecell"></td>
-                                        </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td id="partiescell">Next Higher Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
                                             <td id="datecell" style="width:15%"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
-                            <h3>Notation</h3>
+                            <!-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -636,7 +638,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="modal-footer">
