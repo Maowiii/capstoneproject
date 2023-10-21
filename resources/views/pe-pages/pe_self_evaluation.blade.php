@@ -2398,7 +2398,7 @@
 
         function addNewLDPRow(ldptbody) {
             // Calculate the next available lpaID
-            var nextLDPID = 0;
+            var ldpID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
             
