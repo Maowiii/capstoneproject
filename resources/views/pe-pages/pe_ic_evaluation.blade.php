@@ -481,8 +481,8 @@
                             } else {
                                 if (!response.hasPermission){
                                     $('.modal').hide();
-                                    $('.content-container').remove();
                                     $('.content-body').remove();
+                                    $('.content-container').remove();
                                 } 
                                 return;
                             }
