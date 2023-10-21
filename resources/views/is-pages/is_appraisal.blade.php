@@ -466,7 +466,7 @@
                     <tr>
                         <th class='medium-column'>Question</th>
                         <th class='small-column'>Answer</th>
-                        <th class='large-column'>Comments</th>
+                        <th class='large-column' id="comments">Comments</th>
                     </tr>
                 </thead>
                 <tbody id='jic_table_body'>
@@ -488,7 +488,7 @@
                             </div>
                         </td>
                         <td class="td-textarea">
-                            <div class="position-relative">
+                            <div class="position-relative" style="width: 40%">
                                 <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
@@ -513,7 +513,7 @@
                             </div>
                         </td>
                         <td class="td-textarea">
-                            <div class="position-relative">
+                            <div class="position-relative" style="width: 40%">
                                 <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
@@ -535,7 +535,7 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class="td-textarea">
+                        <td class="td-textarea" style="width: 40%">
                             <div class="position-relative">
                                 <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
@@ -558,7 +558,7 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class="td-textarea">
+                        <td class="td-textarea" style="width: 40%">
                             <div class="position-relative">
                                 <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
