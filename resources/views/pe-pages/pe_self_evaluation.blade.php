@@ -2593,7 +2593,6 @@
                         $('#lockToast').toast('show');
 
                         $('.content-container').remove();
-                        $('.content-body').remove();
                         $('.modal').remove();
                         $('.fade').remove();
                         $('#consentform').remove();
@@ -2603,7 +2602,7 @@
 
                         // Set the attributes and content for the error div
                         errorDiv.attr('id', 'error-message');
-                        errorDiv.addClass('alert alert-danger');
+                        errorDiv.addClass('alert alert-danger content-container');
                         errorDiv.text('An error occurred: You do not have permission to view this form.');
 
                         // Append the error div to a specific element (e.g., the body)
