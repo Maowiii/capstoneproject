@@ -374,6 +374,7 @@ thead {
 td {
     vertical-align: middle;
     text-align: center;
+    overflow-wrap: break-word;
 }
 .table-bordered {
     border: solid #c3d7f1 1px !important;
