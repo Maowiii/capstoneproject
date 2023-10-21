@@ -123,6 +123,9 @@ class ISAppraisalController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'kra_locked' => false,
+        'pr_locked' => false,
+        'eval_locked' => false,
         'locked' => true,
       ]);
 
