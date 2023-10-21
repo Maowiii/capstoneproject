@@ -393,6 +393,11 @@ textarea {
     resize: none !important;
 }
 
+#employee_table th.large-column, #employee_table td.large-column {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
 .textarea {
     margin: 0px;
     padding: 8px;
