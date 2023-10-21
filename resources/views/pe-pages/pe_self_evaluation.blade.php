@@ -2592,12 +2592,11 @@
                         $('#lockToast .toast-body').text('You do not have permission to view this form.');
                         $('#lockToast').toast('show');
 
-                        $('#consentform').modal('hide');
-
                         $('.content-container').remove();
                         $('.content-body').remove();
                         $('.modal').remove();
                         $('.fade').remove();
+                        $('#consentform').remove();
 
                         // Create a new div element
                         var errorDiv = $('<div></div>');
