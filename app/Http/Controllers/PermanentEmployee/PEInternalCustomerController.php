@@ -348,6 +348,8 @@ class PEInternalCustomerController extends Controller
 
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
+    Log::info('appraisal');
+    Log::info($appraisal);
     $locked = $appraisal->locked;
 
     $appraiseeId = $request->input('appraiseeId');

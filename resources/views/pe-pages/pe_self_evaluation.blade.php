@@ -4,7 +4,7 @@
     <h1>Appraisal Form</h1>
 @endsection
 
-@section('content')    
+@section('content')
     <!-- Modal -->
     <div class="modal fade mx-xl" id="consentform" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -80,16 +80,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                            <br>I give consent to the retention of my personal data. (Y/N)<br>
+                                <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                            <br>I give consent to the sharing of my data. (Y/N)<br>
+                                <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                        Agreement.<br>
-                        
-                        <br>By clicking Yes, you consent that you are willing to answer the questions
-                        in this survey and you answered YES to the three questions above.
-                        (Y/N) -->
+                                <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                            Agreement.<br>
+                            
+                            <br>By clicking Yes, you consent that you are willing to answer the questions
+                            in this survey and you answered YES to the three questions above.
+                            (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -492,43 +492,45 @@
                 </tbody>
             </table>
 
-            <table class='table table-bordered' id="kra_table">
-                <thead>
-                    <tr>
-                        <th class='large-column' id="krainput">KRA</th>
-                        <th class='xxs-column'>Weight</th>
-                        <th class='large-column' id="obj">Objectives</th>
-                        <th class='large-column' id="pi">Performance Indicators</th>
-                        <th class='large-column' id="ar">Actual Results</th>
-                        <th class='medium-column'>Performance Level</th>
-                        <th class="xxs-column" id="wt">Weighted Total</th>
-                    </tr>
-                </thead>
-                <tbody id="KRA_table_body">
-                    <!-- CONTENT -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td class='text-right'>Weight Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input id="KRA_Weight_Total" class="small-column form-control total-weight"
-                                    type="text" readonly>
-                            </div>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input id="KRA_Total" class="small-column form-control total-weighted text-center"
-                                    type="text" readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="table-responsive">
+                <table class='table table-bordered' id="kra_table">
+                    <thead>
+                        <tr>
+                            <th class='large-column' id="krainput">KRA</th>
+                            <th class='xxs-column'>Weight</th>
+                            <th class='large-column' id="obj">Objectives</th>
+                            <th class='large-column' id="pi">Performance Indicators</th>
+                            <th class='large-column' id="ar">Actual Results</th>
+                            <th class='medium-column'>Performance Level</th>
+                            <th class="xxs-column" id="wt">Weighted Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="KRA_table_body">
+                        <!-- CONTENT -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class='text-right'>Weight Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input id="KRA_Weight_Total" class="small-column form-control total-weight"
+                                        type="text" readonly>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input id="KRA_Total" class="small-column form-control total-weighted text-center"
+                                        type="text" readonly>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
         <div class="content-container">
@@ -713,15 +715,15 @@
                                     <tbody>
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell">Job Incumbent</td>
-                                            <td id="fullnamecell"></td>
+                                            <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }} {{ $appraisee->last_name ?? '' }}</td>
                                             <td id='signcell' class="sign-cell">
                                                 <input type='file' id="uploadsign"
                                                     name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
                                                     accept='image/jpeg, image/png, image/jpg'>
 
                                                 <input type='hidden' id="uploadsign_1"
-                                                name="SIGN[JI][{{ $appraisalId }}]">
-                                                
+                                                    name="SIGN[JI][{{ $appraisalId }}]">
+
                                                 <img src="" width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
@@ -788,20 +790,23 @@
             </div>
         </div>
 
-        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+            aria-labelledby="confirmationModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
-                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5>Are you sure you want to delete this item?</h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                </div>
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to delete this item?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            aria-label="Close">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -931,7 +936,7 @@
             }
         }
 
-        $(document).ready(function() {  
+        $(document).ready(function() {
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
             });
@@ -1000,7 +1005,8 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this);
-                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
+                var ldpID = row.closest('tr').attr(
+                'data-field-id'); // Assuming you have a data attribute for LDP ID on the row
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -1058,7 +1064,8 @@
                     if (inputElement.classList.contains('is-invalid')) {
                         // Handle your validation logic here
                         valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        console.error('Validation failed for', inputElement.name, ':', inputElement
+                            .validationMessage);
                         inputElement.focus(); // Corrected line
                     }
                 });
@@ -1072,13 +1079,14 @@
                     // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
                         // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                            .validationMessage);
                     });
 
                     // Optionally, focus on the first invalid input
                     invalidInputs[0].focus();
 
-                    console.error('Form validation failed.');                
+                    console.error('Form validation failed.');
                 } else {
                     // Form validation succeeded    
                     console.info('Form validation succeeded.');
@@ -1100,17 +1108,20 @@
                 $modal.modal('hide');
                 $modal.css('display', 'none');
 
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
+                var signInput = document.querySelector(
+                'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 signInput.classList.remove('is-invalid');
                 signInput.closest('td').classList.remove('border', 'border-danger');
             });
 
             document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
-                var signInput = document.querySelector('input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
+                var signInput = document.querySelector(
+                'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 var signatureImage = document.querySelector('#signatureImage');
 
                 // Check if files are uploaded or if a signature image is displayed
-                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null || signatureImage.getAttribute('src') === '')) {
+                if (signInput.files.length === 0 && (signatureImage.getAttribute('src') === null ||
+                        signatureImage.getAttribute('src') === '')) {
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -1123,7 +1134,7 @@
 
                     console.error('Signature validation failed.');
                     return null;
-                }else{
+                } else {
                     // Clear validation if files are uploaded or a signature image is displayed
                     signInput.classList.remove('is-invalid');
                     signInput.closest('td').classList.remove('border', 'border-danger');
@@ -1730,7 +1741,7 @@
                         }
                         performanceCell.append(performanceLevelDiv);
                         row.append(orderCell, questionCell, performanceCell);
-                        
+
                         $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
@@ -2013,67 +2024,69 @@
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
                         var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        
+                        if (row) {
+                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
+                                    1) +
+                                '][{{ $appraisalId }}][answer]"][value="1"]');
+                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
+                                    1) +
+                                '][{{ $appraisalId }}][answer]"][value="0"]');
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                1) +
-                            '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                1) +
-                            '][{{ $appraisalId }}][answer]"][value="0"]');
-
-                        if (jic.answer === 1) {
-                            answerRadioYes.checked = true;
-                        } else if (jic.answer === 0) {
-                            answerRadioNo.checked = true;
-                        }
-
-                        $(answerRadioYes).on('invalid', function() {
-                            $(this).addClass('is-invalid text-danger fw-bold');
-                            $(this).siblings('span').addClass('text-danger');
-                        });
-
-                        $(answerRadioNo).on('invalid', function() {
-                            $(this).addClass('is-invalid text-danger fw-bold');
-                            $(this).siblings('span').addClass('text-danger');
-                        });
-
-                        $(answerRadioYes).on('input', function() {
-                            var row = $(this).closest('tr');
-                            row.find('.is-invalid').removeClass('is-invalid');
-                            row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                            $(this).closest('tr').removeClass('text-danger fw-bold');
-                        });
-
-                        $(answerRadioNo).on('input', function() {
-                            var row = $(this).closest('tr');
-                            row.find('.is-invalid').removeClass('is-invalid');
-                            row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                            $(this).closest('tr').removeClass('text-danger fw-bold');
-                        });
-
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                            index +
-                            1) + '][{{ $appraisalId }}][comments]"]');
-                        commentTextarea.value = jic.comments;
-
-                        // Attach input event handlers for validation
-                        $(commentTextarea).on('input', function() {
-                            $(this).removeClass('border border-danger');
-                            $(this).removeClass('is-invalid');
-                        }).on('invalid', function() {
-                            $(this).addClass('is-invalid');
-                            $(this).attr('placeholder', 'Please provide a valid input');
-                        }).on('blur', function() {
-                            if ($(this).val().trim() === '') {
-                                $(this).addClass('is-invalid');
+                            if (jic.answer === 1) {
+                                answerRadioYes.checked = true;
+                            } else if (jic.answer === 0) {
+                                answerRadioNo.checked = true;
                             }
-                        });
 
-                        answerRadioYes.required = true;
-                        answerRadioNo.required = true;
-                        commentTextarea.required = true;
+                            $(answerRadioYes).on('invalid', function() {
+                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            $(answerRadioNo).on('invalid', function() {
+                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).siblings('span').addClass('text-danger');
+                            });
+
+                            $(answerRadioYes).on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                            });
+
+                            $(answerRadioNo).on('input', function() {
+                                var row = $(this).closest('tr');
+                                row.find('.is-invalid').removeClass('is-invalid');
+                                row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                            });
+
+                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
+                                index +
+                                1) + '][{{ $appraisalId }}][comments]"]');
+                            commentTextarea.value = jic.comments;
+
+                            // Attach input event handlers for validation
+                            $(commentTextarea).on('input', function() {
+                                $(this).removeClass('border border-danger');
+                                $(this).removeClass('is-invalid');
+                            }).on('invalid', function() {
+                                $(this).addClass('is-invalid');
+                                $(this).attr('placeholder', 'Please provide a valid input');
+                            }).on('blur', function() {
+                                if ($(this).val().trim() === '') {
+                                    $(this).addClass('is-invalid');
+                                }
+                            });
+
+                            answerRadioYes.required = true;
+                            answerRadioNo.required = true;
+                            commentTextarea.required = true;
+                        }
                     });
 
                     data.signData.forEach(function(sign, index) {
@@ -2084,8 +2097,8 @@
                             var signCell = row.querySelector('#signcell');
                             var signatureImage = document.querySelector('#signatureImage');
                             var hiddenInput = document.querySelector('#uploadsign_1');
-                            var dateCell = row.querySelector('.date-cell'); 
-                                            
+                            var dateCell = row.querySelector('.date-cell');
+
                             if (sign.sign_data) {
                                 // Validation for signature data
                                 $('#signatureImage').attr('src', sign.sign_data);
@@ -2103,7 +2116,18 @@
 
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.textContent = sign.updated_at;
+                                const date = new Date(sign.updated_at);
+
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
+                                
+                                dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';
@@ -2457,7 +2481,7 @@
                     console.log("PHASE");
                     console.log(response.phaseData);
 
-                    if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
+                    if (response.submitionChecker && Object.values(response.locks).every(lock => !lock)) {
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
 
@@ -2496,7 +2520,7 @@
                             $('textarea').prop('readonly', true);
 
                             // $('input[type="radio"]').attr("disabled", true);
-                            
+
                             $('#KRA_table_body select').prop('disabled', true);
                             $('#KRA_table_body select').attr('disabled', true);
 
@@ -2539,7 +2563,7 @@
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
                         $('.btn-danger').prop('disabled', true);
-                        
+
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
@@ -2547,20 +2571,20 @@
                         // $('html, body').animate({
                         //     scrollTop: $('#kra_table').offset().top
                         // }, 3000);
-                    } 
+                    }
 
                     if (response.locks.pr) {
                         $('#KRA_table_body select').prop('disabled', true);
                         $('input[type="radio"]').prop('disabled', true);
                         $('textarea').prop('disabled', true);
-                        
+
                         $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('disabled', false);
 
                         $('#add-kra-btn').prop('disabled', true);
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
                         $('.btn-danger').prop('disabled', true);
-                        
+
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
@@ -2568,7 +2592,7 @@
                         // $('html, body').animate({
                         //     scrollTop: $('#kra_table').offset().top
                         // }, 100);
-                    } 
+                    }
 
                     if (response.locks.eval) {
                         $('input[type="radio"]').prop('disabled', false);
@@ -2579,13 +2603,13 @@
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
                         $('#submit-btn-sign').show();
-                    } 
-                    
+                    }
+
                     if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-                    } 
+                    }
                 },
                 error: function(xhr, status, error) {
                     if (xhr.responseText) {
@@ -2610,7 +2634,6 @@
 
                         // Append the error div to a specific element (e.g., the body)
                         errorDiv.appendTo('.content-section');
-
                     } else {
                         console.log('An error occurred.');
                     }

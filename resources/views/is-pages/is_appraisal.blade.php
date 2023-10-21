@@ -588,13 +588,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                        <!-- <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell">Job Incumbent</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell' class="sign-cell">
+                                                
+                                            </td>
+                                            <td id="datecell" class="date-cell"></td>
+                                        </tr> -->
+                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                            <td id="partiescell">Immediate Superior</td>
+                                            <td id="fullnamecell">{{ $appraisee->immediateSuperior->first_name ?? 'N/A' }} {{ $appraisee->immediateSuperior->last_name ?? '' }}</td>
+                                            <td id='signcell' class="sign-cell">
                                                 <input type='file' id="uploadsign"
-                                                        name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
-                                                        accept='image/jpeg, image/png, image/jpg'>
+                                                            name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
+                                                            accept='image/jpeg, image/png, image/jpg'>
 
                                                 <input type='hidden' id="uploadsign_1"
                                                 name="SIGN[JI][{{ $appraisalId }}]">
@@ -603,22 +611,16 @@
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
                                         </tr>
-                                        <tr>
-                                            <td id="partiescell">Immediate Superior</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'></td>
-                                            <td id="datecell"></td>
-                                        </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td id="partiescell">Next Higher Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
                                             <td id="datecell" style="width:15%"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
-                            <h3>Notation</h3>
+                            <!-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -636,7 +638,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1722,7 +1724,18 @@
 
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.textContent = sign.updated_at;
+                                const date = new Date(sign.updated_at);
+
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
+                                
+                                dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';
@@ -2134,6 +2147,9 @@
                     console.log("PHASE");
                     console.log(response);
 
+                    console.log(response.submitionChecker);
+                    console.log(Object.values(response.locks).every(lock => !lock));
+
                     if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
@@ -2224,6 +2240,7 @@
 
                         $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').removeClass('pe-none');
                         $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
@@ -2251,12 +2268,6 @@
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
                         $('#submit-btn-sign').show();
-                    } 
-                    
-                    if (response.locks.lock) {
-                        $('input[type="radio"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
                     } 
                 },
                 error: function(xhr, status, error) {

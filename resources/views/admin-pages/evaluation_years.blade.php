@@ -31,6 +31,7 @@
                 New Evaluation Year</button>
         </div>
 
+        <!-- New Eval Year Modal -->
         <div class="modal fade" id="startNewEvalYear" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -335,7 +336,7 @@
         </div>
 
         <!-- Weights Modal -->
-        <div class="modal fade" id="weightsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="weightsModal"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -509,8 +510,6 @@
             var evalID = $(this).data('eval-id');
             console.log('Eval ID: ' + evalID);
             $('#weightsModal').modal('show');
-            $('#deleteConfirmationModal').modal('show');
-
 
             $.ajax({
                 url: '{{ route('ad.getEvalWeights') }}',

@@ -115,9 +115,9 @@
 
                 $('#comments_area').on('blur', function() {
                     var newSuggestion = $(this).val();
-
                     updateSuggestion(newSuggestion);
                 });
+
                 // Function to retrieve URL parameters by name
                 function getUrlParameter(name) {
                     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -132,7 +132,23 @@
                 // Set the employee's name in the input field
                 if (appraiseeName) {
                     $('#appraiseeName').val(appraiseeName);
+                }else{
+                    $('.modal').hide();
+                    $('.content-body').remove();
+                    $('.content-container').remove();
+
+                    // Create a new div element
+                    var errorDiv = $('<div></div>');
+
+                    // Set the attributes and content for the error div
+                    errorDiv.attr('id', 'error-message');
+                    errorDiv.addClass('alert alert-danger content-container');
+                    errorDiv.text('An error occurred: You do not have permission to view this form.');
+
+                    // Append the error div to a specific element (e.g., the body)
+                    errorDiv.appendTo('.content-section');
                 }
+
                 $('#esig-submit-btn').on('click', function() {
                     var fileInput = $('#esig')[0];
                     var urlParams = new URLSearchParams(window.location.search);

@@ -284,6 +284,9 @@ class SelfEvaluationController extends Controller
         'date_submitted' => $date,
         'bh_score' => $getBHave,
         'kra_score' => $getKRAave,
+        'kra_locked' => false,
+        'pr_locked' => false,
+        'eval_locked' => false,
         'locked' => true,
       ]);
 
@@ -1042,7 +1045,6 @@ class SelfEvaluationController extends Controller
       $locks['kra'] = $appraisal->kra_locked == 1;
       $locks['pr'] = $appraisal->pr_locked == 1;
       $locks['eval'] = $appraisal->eval_locked == 1;
-      $locks['lock'] = $appraisal->locked == 1;
 
       ////////////PHASES/////////////
       $activeYear = EvalYear::where('status', 'active')->first();
@@ -1050,7 +1052,7 @@ class SelfEvaluationController extends Controller
       $currentDate = Carbon::now();
       $currentDate = now();
 
-      $locks['dateNow'] = $currentDate;
+      // $locks['dateNow'] = $currentDate;
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
@@ -1072,9 +1074,9 @@ class SelfEvaluationController extends Controller
       } else {
         $phaseData = "lock";
       }
-      
+
       $submitionChecker = $appraisal->date_submitted;
-      $isSubmissionMade = !is_null($submitionChecker);
+      $isSubmissionMade = !is_null($submitionChecker) && $appraisal->locked == 1;
 
       return response()->json(['success' => true, 'locks' => $locks, 'phaseData' => $phaseData, 'submitionChecker' => $isSubmissionMade]);
     } else {
