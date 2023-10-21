@@ -957,14 +957,22 @@
                 var form = document.getElementById('PEappraisalForm');
                 var valid = true;
 
+                // Select all input elements inside the form
                 var inputElements = form.querySelectorAll('input:not([type="hidden"])');
 
                 inputElements.forEach(function(inputElement) {
+                    // Check if the input is marked as invalid
                     if (inputElement.classList.contains('is-invalid')) {
-                        // Handle your validation logic here
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
-                        inputElement.focus(); // Corrected line
+                        inputElement.focus();
+                    }
+
+                    // Check if the input is required and its value is empty
+                    if (inputElement.hasAttribute('required') && inputElement.value.trim() === '') {
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ': This field is required.');
+                        inputElement.focus();
                     }
                 });
 
@@ -983,9 +991,9 @@
                     // Optionally, focus on the first invalid input
                     invalidInputs[0].focus();
 
-                    console.error('Form validation failed.');                
+                    console.error('Form validation failed.');
                 } else {
-                    // Form validation succeeded    
+                    // Form validation succeeded
                     console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
