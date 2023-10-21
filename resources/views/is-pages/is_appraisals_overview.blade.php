@@ -335,7 +335,6 @@
                                                 appraisal.evaluator.last_name);
                                         } else {
                                             ic1Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
                                                 .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
                                         }  
                                     }
@@ -382,7 +381,6 @@
                                                 .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name);
                                         } else {
                                             ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
                                                 .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
                                         }                                       
                                     }
