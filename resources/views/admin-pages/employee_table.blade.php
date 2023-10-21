@@ -28,6 +28,7 @@
     @endif
 
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
             <input type="text" class="form-control" placeholder="Name" id="search">
@@ -35,7 +36,7 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <div class="table-responsive">
+
         <table class="table" id="employee_table">
             <thead>
                 <tr>
