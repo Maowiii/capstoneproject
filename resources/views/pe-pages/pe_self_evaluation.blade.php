@@ -606,124 +606,116 @@
                         </div>
                     </div>
 
-                    <div class="content-container">
-                        <h2>IV. Job Incumbent's Comments</h2>
-                        <div class="table-responsive">
-                            <table class='table table-bordered' id='jic_table'>
-                                <thead>
-                                    <tr>
-                                        <th class='medium-column'>Question</th>
-                                        <th class='small-column'>Answer</th>
-                                        <th class='large-column'>Comments</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='jic_table_body'>
-                                    <tr>
-                                        <td class='text-justify'>
-                                            <textarea class='textarea border-0' value="I agree with my performance rating."
-                                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                                    value="1">
-                                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                                    value="0">
-                                                <label class="form-check-label" for="inlineRadio2">No</label>
-                                            </div>
-                                        </td>
-                                        <td class="td-textarea">
-                                            <div class="position-relative">
-                                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class='text-justify'>
-                                            <textarea class='textarea border-0'
-                                                value="My future work objectives and learning opportunities have been set for the
+        <div class="content-container">
+            <h2>IV. Job Incumbent's Comments</h2>
+            <div class="table-responsive">
+            <table class='table table-bordered' id='jic_table'>
+                <thead>
+                    <tr>
+                        <th class='medium-column'>Question</th>
+                        <th class='small-column'>Answer</th>
+                        <th class='large-column'>Comments</th>
+                    </tr>
+                </thead>
+                <tbody id='jic_table_body'>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea border-0' value="I agree with my performance rating."
+                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]" required></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea border-0'
+                                value="My future work objectives and learning opportunities have been set for the
                             next review period."
-                                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                                    value="1">
-                                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                                    value="0">
-                                                <label class="form-check-label" for="inlineRadio2">No</label>
-                                            </div>
-                                        </td>
-                                        <td class="td-textarea">
-                                            <div class="position-relative">
-                                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class='text-justify'>
-                                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
-                                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                                    value="1">
-                                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                                    value="0">
-                                                <label class="form-check-label" for="inlineRadio2">No</label>
-                                            </div>
-                                        </td>
-                                        <td class="td-textarea">
-                                            <div class="position-relative">
-                                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class='text-justify'>
-                                            <textarea class='textarea' value="I am satisfied with the performance review process."
-                                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                                    value="1">
-                                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input autosave-field" type="radio"
-                                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                                    value="0">
-                                                <label class="form-check-label" for="inlineRadio2">No</label>
-                                            </div>
-                                        </td>
-                                        <td class="td-textarea">
-                                            <div class="position-relative">
-                                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]" required></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
+                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]" required></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='text-justify'>
+                            <textarea class='textarea' value="I am satisfied with the performance review process."
+                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
+                        </td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input autosave-field" type="radio"
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </td>
+                        <td class="td-textarea">
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]" required></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
 
                     <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
                         <div class="modal-dialog">
@@ -1048,8 +1040,8 @@
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
                 var row = $(this).closest('tr');
-                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
-                
+                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for WPA ID on the row
+
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -1098,7 +1090,7 @@
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
             $('#submit-btn-form').on('click', function(event) {
-                const form = $('.needs-validation');
+                var form = $('.needs-validation');
                 var valid = true;
 
                 // Select all input elements inside the form
@@ -1127,7 +1119,7 @@
 
                 requiredInputs.each(function(index, inputElement) {
                     // Check if the required input is empty or has a validation error
-                    if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
+                    if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement
                             .validationMessage);
@@ -1135,7 +1127,7 @@
                     }
                 });
 
-                if (!valid && !form[0].checkValidity()) {
+                if (!valid || !form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
@@ -1774,7 +1766,7 @@
 
                                 $(this).removeClass(
                                     'is-invalid'
-                                ); // Also remove is-invalid class from the input
+                                ); 
 
                                 $.ajax({
                                     headers: {
@@ -2234,6 +2226,12 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
                 })
             );
         }
@@ -2350,29 +2348,35 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = 0;
+            var wpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
             
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][continue_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][continue_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][stop_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][stop_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
-                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][start_doing]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][start_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
 
@@ -2391,34 +2395,28 @@
         }
 
         function addNewLDPRow(ldptbody) {
-            var highestLDPID = 0;
-            ldptbody.find('[name^="LDP["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var ldpID = parseInt(matches[1]);
-                    if (ldpID > highestLDPID) {
-                        highestLDPID = ldpID;
-                    }
-                }
-            });
-
             // Calculate the next available lpaID
             var nextLDPID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field')
-                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][learning_need]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][learning_need]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field')
-                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][methodology]')
-                    .prop('readonly', false)
-                    .prop('required', true) // Add the required attribute here
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][methodology]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(

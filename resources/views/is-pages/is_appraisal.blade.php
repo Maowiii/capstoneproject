@@ -1017,12 +1017,12 @@
                 var requiredInputs = form.find('input[required]');
 
                 requiredInputs.each(function(index, inputElement) {
-                // Check if the required input is empty or has a validation error
-                if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
-                    valid = false;
-                    console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
-                    inputElement.focus();
-                }
+                    // Check if the required input is empty or has a validation error
+                    if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.focus();
+                    }
                 });
 
                 if (!valid && !form[0].checkValidity()) {
@@ -1044,8 +1044,8 @@
                 } else {
                 // Form validation succeeded
                 console.info('Form validation succeeded.');
-                // Set a flag or trigger the modal opening here
-                openModal();
+                    // Set a flag or trigger the modal opening here
+                    openModal();
                 }
             });
 
@@ -1843,6 +1843,12 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                }).on('blur', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
                 })
             );
         }
@@ -1938,7 +1944,7 @@
                     'data-field-id': nextKRAID,
                     'data-field-name': 'performance_level'
                 });
-                
+
                 input[0].required = true;
 
                 var span = $('<span>').addClass('ms-1').text(i);
@@ -1952,7 +1958,7 @@
                 }
 
                 label.append(input, span);
-                                input[0].required = true;
+                input[0].required = true;
 
                 input.on('invalid', function() {
                     $(this).addClass('is-invalid text-danger fw-bold');
