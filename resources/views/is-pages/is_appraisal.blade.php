@@ -1930,6 +1930,8 @@
                     'data-field-id': nextKRAID,
                     'data-field-name': 'performance_level'
                 });
+                
+                input[0].required = true;
 
                 var span = $('<span>').addClass('ms-1').text(i);
 
@@ -1942,6 +1944,7 @@
                 }
 
                 label.append(input, span);
+                                input[0].required = true;
 
                 input.on('invalid', function() {
                     $(this).addClass('is-invalid text-danger fw-bold');
