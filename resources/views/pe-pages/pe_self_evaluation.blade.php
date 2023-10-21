@@ -1751,6 +1751,7 @@
                     if (data.eulaData == 1 || data.eulaData == true) {
                         $('#consentform').remove();
                     } else {
+                        formChecker();
                         $('#consentform').modal('show');
                     }
 
