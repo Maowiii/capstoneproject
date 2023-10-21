@@ -1044,7 +1044,6 @@ class SelfEvaluationController extends Controller
       $locks['kra'] = $appraisal->kra_locked == 1;
       $locks['pr'] = $appraisal->pr_locked == 1;
       $locks['eval'] = $appraisal->eval_locked == 1;
-      $locks['lock'] = $appraisal->locked == 1;
 
       ////////////PHASES/////////////
       $activeYear = EvalYear::where('status', 'active')->first();
@@ -1074,9 +1073,9 @@ class SelfEvaluationController extends Controller
       } else {
         $phaseData = "lock";
       }
-      
+
       $submitionChecker = $appraisal->date_submitted;
-      $isSubmissionMade = !is_null($submitionChecker);
+      $isSubmissionMade = !is_null($submitionChecker) && $appraisal->locked == 1;
 
       return response()->json(['success' => true, 'locks' => $locks, 'phaseData' => $phaseData, 'submitionChecker' => $isSubmissionMade]);
     } else {

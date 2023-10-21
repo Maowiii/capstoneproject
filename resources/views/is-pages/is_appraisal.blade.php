@@ -2257,9 +2257,9 @@
                     } 
                     
                     if (response.locks.lock) {
-                        $('input[type="radio"]').prop('disabled', false);
-                        $('#KRA_table_body select').prop('disabled', false);
-                        $('textarea').prop('disabled', false);
+                        $('select').prop('disabled', true);
+                        $('input[type="radio"]').prop('disabled', true);
+                        $('textarea').prop('disabled', true);
                     } 
                 },
                 error: function(xhr, status, error) {
