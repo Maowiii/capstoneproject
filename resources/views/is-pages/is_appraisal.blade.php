@@ -1003,6 +1003,9 @@
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement
                             .validationMessage);
+                        inputElement.addClass('is-invalid');
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
                         inputElement.focus();
                     }
 
@@ -1011,6 +1014,9 @@
                         valid = false;
                         console.error('Validation failed for', inputElement.name,
                             ': This field is required.');
+                        inputElement.addClass('is-invalid');
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
                         inputElement.focus();
                     }
                 });
@@ -1024,6 +1030,9 @@
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement
                             .validationMessage);
+                        inputElement.addClass('is-invalid');
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
                         inputElement.focus();
                     }
                 });
