@@ -1054,53 +1054,64 @@
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
-            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
-                var form = document.getElementById('PEappraisalForm');
+            $('#submit-btn-form').on('click', function(event) {
+                const form = $('.needs-validation');
                 var valid = true;
 
                 // Select all input elements inside the form
-                var inputElements = form.querySelectorAll('input:not([type="hidden"])');
+                var inputElements = form.find('input:not([type="hidden"])');
 
-                inputElements.forEach(function(inputElement) {
+                inputElements.each(function(index, inputElement) {
                     // Check if the input is marked as invalid
-                    if (inputElement.classList.contains('is-invalid')) {
+                    if ($(inputElement).hasClass('is-invalid')) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
                         inputElement.focus();
                     }
 
                     // Check if the input is required and its value is empty
-                    if (inputElement.hasAttribute('required') && inputElement.value.trim() === '') {
+                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ': This field is required.');
                         inputElement.focus();
                     }
                 });
 
-                if (!valid && !form.checkValidity()) {
-                    event.preventDefault(); // Prevent the form from submitting
-                    event.stopPropagation();
+                // Get all required input elements
+                var requiredInputs = form.find('input[required]');
 
-                    var invalidInputs = form.querySelectorAll('.is-invalid');
+                requiredInputs.each(function(index, inputElement) {
+                // Check if the required input is empty or has a validation error
+                if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
+                    valid = false;
+                    console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                    inputElement.focus();
+                }
+                });
 
-                    // Handle invalid inputs, display error messages, etc.
-                    invalidInputs.forEach(function(invalidInput) {
-                        // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
-                    });
+                if (!valid && !form[0].checkValidity()) {
+                event.preventDefault(); // Prevent the form from submitting
+                event.stopPropagation();
 
-                    // Optionally, focus on the first invalid input
-                    invalidInputs[0].focus();
+                var invalidInputs = form.find('.is-invalid');
 
-                    console.error('Form validation failed.');
+                // Handle invalid inputs, display error messages, etc.
+                invalidInputs.each(function(index, invalidInput) {
+                    // Handle validation messages for invalid inputs
+                    console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                });
+
+                // Optionally, focus on the first invalid input
+                invalidInputs[0].focus();
+
+                console.error('Form validation failed.');
                 } else {
-                    // Form validation succeeded
-                    console.info('Form validation succeeded.');
-                    // Set a flag or trigger the modal opening here
-                    openModal();
+                // Form validation succeeded
+                console.info('Form validation succeeded.');
+                // Set a flag or trigger the modal opening here
+                openModal();
                 }
             });
-
 
             // Function to open the modal
             function openModal() {
