@@ -2267,6 +2267,18 @@
                         $('.content-container').remove();
                         $('.content-body').remove();
                         $('.modal').remove();
+                        $('#submit-btn-sign').remove();
+
+                        // Create a new div element
+                        var errorDiv = $('<div></div>');
+
+                        // Set the attributes and content for the error div
+                        errorDiv.attr('id', 'error-message');
+                        errorDiv.addClass('alert alert-danger content-container');
+                        errorDiv.text('An error occurred: You do not have permission to view this form.');
+
+                        // Append the error div to a specific element (e.g., the body)
+                        errorDiv.appendTo('.content-section');
                     } else {
                         console.log('An error occurred.');
                     }
