@@ -2594,11 +2594,12 @@
                         $('#lockToast').toast('show');
 
                         $('#consentform').modal('hide');
+                        $('#consentform').modal('remove');
 
-                        $('.content-container').remove();
-                        $('.content-body').remove();
-                        $('.modal').remove();
-                        $('.modal-backdrop fade show').remove();
+
+                        // $('.content-container').remove();
+                        // $('.content-body').remove();
+                        // $('.modal').remove();
                     } else {
                         console.log('An error occurred.');
                     }
