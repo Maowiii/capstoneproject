@@ -309,6 +309,7 @@ class PEInternalCustomerController extends Controller
 
       $finalScore = $this->calculateFinalScore($appraisalData);
       $roundedFinalScore = round($finalScore[0], 2); // Round to 2 decimal places
+      $departmentId = $appraisal->department_id;
 
       // Log some information for debugging
       Log::info('Trying to update the record.');
@@ -320,7 +321,10 @@ class PEInternalCustomerController extends Controller
       // Attempt to update the record
       try {
         FinalScores::updateOrCreate(
-          ['employee_id' => $employeeId],
+          [
+            'employee_id' => $employee_id,
+            'department_id' => $departmentId,
+          ],
           ['final_score' => $finalScore[0]]
         );
 

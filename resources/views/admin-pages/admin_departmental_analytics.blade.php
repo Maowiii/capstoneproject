@@ -210,7 +210,6 @@
                             tension: 0.1,
                             }]
                         };
-
                         var config = {
                             type: 'line',
                             data: data,
@@ -222,16 +221,10 @@
                                 }
                             }
                         };
-
-                        
-                        // const ctx = document.getElementById('line-chart').getContext('2d');
                         new Chart(ctx, config);
-
-                        
                     }
                 },
                 error: function(xhr, status, error) {
-                    // Handle any errors here
                     console.error(error);
                 }
             });

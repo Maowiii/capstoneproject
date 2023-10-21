@@ -1392,7 +1392,7 @@
             $('#submit-btn-confirm').on('click', function() {
                 var fileInput = $('#uploadsign_1')[0];
 
-                if (fileInput.files.length === 0) {
+                if (fileInput && fileInput.files.length === 0) {
                     $('#uploadsign_1').addClass('is-invalid');
                     return;
                 } else {
