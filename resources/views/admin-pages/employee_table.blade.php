@@ -35,6 +35,7 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
+        <div class="table-responsive">
         <table class="table" id="employee_table">
             <thead>
                 <tr>
@@ -51,6 +52,7 @@
             <tbody id="employee_table_body">
             </tbody>
         </table>
+        </div>
         <nav id="accounts_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="accounts_pagination"></ul>
         </nav>

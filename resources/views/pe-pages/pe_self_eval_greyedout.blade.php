@@ -95,6 +95,7 @@
                 educational
                 services.</p>
             @csrf
+            <div class="table-responsive">
             <table class='table table-bordered' id="SID_table">
                 <thead>
                     <tr>
@@ -146,6 +147,7 @@
                     </tr>
                 </tfoot>
             </table>
+        </div>
 
             <h4>Spirit of St. Vincent de Paul</h4>
             <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
@@ -158,7 +160,7 @@
                 knowledge and human development. We are committed to work for the building of a society based on justice,
                 peace,
                 respect for human dignity and the integrity of creation.</p>
-
+                <div class="table-responsive">
             <table class='table table-bordered' id="SR_table">
                 <thead>
                     <tr>
@@ -211,6 +213,7 @@
                     </tr>
                 </tfoot>
             </table>
+                </div>
 
             <h4>Solidarity</h4>
             <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
@@ -218,7 +221,7 @@
                 participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
                 builds
                 up our community, encouraging us towards excellence and professionalism.</p>
-
+                <div class="table-responsive">
             <table class='table table-bordered' id='S_table'>
                 <thead>
                     <tr>
@@ -271,6 +274,8 @@
                     </tr>
                 </tfoot>
             </table>
+                </div>
+                <div class="table-responsive">
             <table class='table table-bordered' id='Overall_table'>
                 <thead>
                     <tr>
@@ -285,6 +290,7 @@
                     </tr>
                 </thead>
             </table>
+                </div>
         </div>
         
         <div class="content-container">
@@ -351,7 +357,7 @@
                     </tr>
                 </tbody>
             </table>
-
+            <div class="table-responsive">
             <table class='table table-bordered' id="kra_table">
                 <thead>
                     <tr>
@@ -389,12 +395,14 @@
                     </tr>
                 </tfoot>
             </table>
+            </div>
             
         </div>
         <div class="content-container">
             <h2>III. Future Performance Agenda</h2>
             <h3>Work Performance Plans</h3>
             <p>Identify work behaviors that the job incumbent needs to:</p>
+            <div class="table-responsive">
             <table class='table table-bordered' id='wpa-table'>
                 <thead>
                     <tr>
@@ -407,11 +415,13 @@
 
                 </tbody>
             </table>
+            </div>
 
             <h3>Learning Development Plans</h3>
             <p>Identify the learning needs of the job incumbent likewise recommend specific learning methodologies for each
                 need
                 that you have mentioned.</p>
+                <div class="table-responsive">
             <table class='table table-bordered' id='ldp_table'>
                 <thead>
                     <tr>
@@ -431,11 +441,13 @@
                     </tr>
                 </tbody>
             </table>
+                </div>
 
         </div>
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
+            <div class="table-responsive">
             <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
@@ -541,6 +553,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">

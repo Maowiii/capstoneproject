@@ -43,6 +43,7 @@
         </div>
     </div>
     <div class="content-container">
+        <div class="table-responsive">
         <table class='table' id="IS_appraisals_table">
             <thead>
                 <tr>
@@ -59,6 +60,7 @@
 
             </tbody>
         </table>
+        </div>
         <nav id="is_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="is_pagination"></ul>
         </nav>

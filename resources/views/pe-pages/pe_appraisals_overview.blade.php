@@ -43,6 +43,7 @@
         </div>
     </div>
     <div class="content-container">
+        <div class="table-responsive">
         <table class='table'>
             <thead>
                 <tr>
@@ -58,6 +59,7 @@
 
             </tbody>
         </table>
+        </div>
     </div>
     <script>
         $(document).ready(function() {
