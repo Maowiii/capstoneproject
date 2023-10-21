@@ -479,8 +479,15 @@
                                     $('#submit-btn').remove();
                                 }
                             } else {
+                                if (!response.hasPermission){
+                                    $('.content-container').remove();
+                                    $('.content-body').remove();
+                                    $('.modal').remove();
+                                    $('#consentform').remove();
+                                } 
                                 return;
                             }
+
                         },
                         error: function(xhr, status, error) {
                             console.log(error);
