@@ -32,13 +32,14 @@
     </div>
 
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Search" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <div class="table-responsive">
+  
             <table class="table table-bordered" id="admin_appraisals_table">
                 <thead class="align-middle">
                     <tr>
