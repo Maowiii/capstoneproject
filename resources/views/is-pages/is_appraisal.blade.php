@@ -744,6 +744,35 @@
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
 
+        // Apply required attribute to specific fields
+        $('textarea[name*="comments"]').attr('required', 'required');
+        $('input[type="radio"]').attr('required', 'required');
+
+        // Handle validation for radio buttons
+        $('input[type="radio"]').on('change', function () {
+            const feedbackRow = $(this).closest('tr');
+            const radioName = $(this).attr('name');
+
+            // Check if any radio button with the same name is checked
+            if ($(`input[name="${radioName}"]:checked`).length === 0) {
+                feedbackRow.find('.form-check-label').addClass('text-danger');
+                $(this).addClass('is-invalid');
+            } else {
+                feedbackRow.find('.form-check-label').removeClass('text-danger');
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Handle validation for textareas
+        $('textarea[name*="comments"]').on('input', function () {
+            if ($(this).val().trim() === '') {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        //////////////EULA///////////////
         let confirmationMode = false;
 
         function confirmClose() {
@@ -1712,6 +1741,10 @@
                                 1) + '][{{ $appraisalId }}][answer]"][value="1"]');
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
                                 1) + '][{{ $appraisalId }}][answer]"][value="0"]');
+
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
+                        index +
+                        1) + '][{{ $appraisalId }}][comments]"]');
 
                         if (row) {
                             if (jic.answer === 1) {
