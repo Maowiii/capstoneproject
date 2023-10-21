@@ -2610,7 +2610,6 @@
 
                         // Append the error div to a specific element (e.g., the body)
                         errorDiv.appendTo('.content-section');
-
                     } else {
                         console.log('An error occurred.');
                     }
