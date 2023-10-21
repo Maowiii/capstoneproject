@@ -1765,7 +1765,10 @@
                                 }
                             });
                             commentTextarea.required = true;
+                            answerRadioYes.required = true;
+                            answerRadioNo.required = true;
                         } else {
+                            commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;
                             
