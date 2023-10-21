@@ -1051,7 +1051,7 @@ class SelfEvaluationController extends Controller
       $currentDate = Carbon::now();
       $currentDate = now();
 
-      $locks['dateNow'] = $currentDate;
+      // $locks['dateNow'] = $currentDate;
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
