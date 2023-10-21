@@ -1067,6 +1067,12 @@
                         $inputElement.addClass('is-invalid');
                         $inputElement.closest('td').addClass('border border-danger');
                         $inputElement[0].focus(); // Access the DOM element for focusing
+
+                        // Add an input event handler to remove the 'is-invalid' class
+                        $inputElement.on('input', function() {
+                            $inputElement.removeClass('is-invalid');
+                            $inputElement.closest('td').removeClass('border border-danger');
+                        });
                     }
                 });
 
