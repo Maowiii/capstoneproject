@@ -598,7 +598,7 @@
                                         </tr> -->
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell">Immediate Superior</td>
-                                            <td id="fullnamecell"></td>
+                                            <td id="fullnamecell">{{ $appraisee->immediateSuperior->first_name ?? 'N/A' }} {{ $appraisee->immediateSuperior->last_name ?? '' }}</td>
                                             <td id='signcell' class="sign-cell">
                                                 <input type='file' id="uploadsign"
                                                             name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
