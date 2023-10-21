@@ -2136,7 +2136,9 @@
                     console.log("PHASE");
                     console.log(response);
 
-                    console.log(response.submitionChecker && Object.values(response.locks).every(lock => !lock));
+                    console.log(response.submitionChecker);
+                    console.log(Object.values(response.locks).every(lock => !lock));
+                    
                     if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);
