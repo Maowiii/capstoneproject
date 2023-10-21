@@ -2596,6 +2596,9 @@
                         $('.content-body').remove();
                         $('.modal').remove();
                         $('.fade').remove();
+                        $('#submit-btn-sign').remove();
+                        $('#consentform').remove();
+                        $('#consentform').modal('hide');
 
                         // Create a new div element
                         var errorDiv = $('<div></div>');
@@ -2608,8 +2611,6 @@
                         // Append the error div to a specific element (e.g., the body)
                         errorDiv.appendTo('.content-section');
 
-                        $('#consentform').hide();
-                        $('#consentform').remove();
                     } else {
                         console.log('An error occurred.');
                     }
