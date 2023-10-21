@@ -6,7 +6,9 @@
 
 @section('content')
     @if ($errors->any())
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible fade show">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
             <ul>
                 <!-- Display each error message -->
                 @foreach ($errors->all() as $error)
@@ -14,7 +16,17 @@
                 @endforeach
             </ul>
         </div>
+        
+        <script>
+            // Automatically close the alert after a specified duration (e.g., 5 seconds)
+            $(document).ready(function() {
+                $(".alert").delay(5000).slideUp(200, function() {
+                    $(this).alert('close');
+                });
+            });
+        </script>
     @endif
+
     <div class="content-container">
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>

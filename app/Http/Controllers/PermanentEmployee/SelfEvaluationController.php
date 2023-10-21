@@ -969,14 +969,14 @@ class SelfEvaluationController extends Controller
     if (!empty($signatureData)) {
       // Try to find an existing signature
       $existingSignature = Signature::where('appraisal_id', $appraisalId)
-        ->where('sign_type', 'IS')
+        ->where('sign_type', 'SE')
         ->first();
 
       if ($existingSignature) {
         // Update the existing signature data
         $existingSignature->update([
           'sign_data' => $signatureData,
-          'sign_type' => 'IS',
+          'sign_type' => 'SE',
         ]);
       } else {
         // Create a new signature if it doesn't exist
@@ -985,7 +985,7 @@ class SelfEvaluationController extends Controller
           $newSignature = Signature::create([
             'appraisal_id' => $appraisalId,
             'sign_data' => $signatureData,
-            'sign_type' => 'IS',
+            'sign_type' => 'SE',
           ]);
 
           // Get the ID of the newly created signature
