@@ -2594,7 +2594,6 @@
                         $('#lockToast').toast('show');
 
                         $('#consentform').modal('hide');
-                        $('#consentform').modal('remove');
 
                         $('#consentform').hide();
 
