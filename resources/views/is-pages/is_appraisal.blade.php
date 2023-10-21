@@ -2171,8 +2171,10 @@
 
                             $('html, body').animate({scrollTop: $('#kra_table').offset().top}, 100);
                         } else if (response.phaseData === "pr") {
-                            $('textarea').prop('readonly', true);
                             $('input[type="radio"]').prop('disabled', true);
+
+                            $('textarea').prop('readonly', true);
+                            $('textarea').attr('readonly', true);
 
                             $('#add-kra-btn').prop('disabled', true);
                             $('#add-wpa-btn').prop('disabled', true);

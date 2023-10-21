@@ -2488,12 +2488,18 @@
                             }, 1000);
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
+                            
+                            $('textarea').prop('readonly', true);
 
                             // $('input[type="radio"]').attr("disabled", true);
                             
-                            $('textarea').prop('readonly', true);
                             $('#KRA_table_body select').prop('disabled', true);
                             $('#KRA_table_body select').attr('disabled', true);
+
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.wpa-delete-btn').prop('disabled', true);
+                            $('.ldp-delete-btn').prop('disabled', true);
 
                             $('#submit-btn-form').hide();
 
