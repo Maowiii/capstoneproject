@@ -286,13 +286,13 @@
 
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     if (appraisal.date_submitted !== null) {
-                                    viewLink = $('<a>').addClass('btn btn-outline-primary')
-                                        .attr('href',
-                                            `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                            .replace(':appraisal_id', appraisal_id))
-                                        .text('View');
+                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
+                                            .attr('href',
+                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                .replace(':appraisal_id', appraisal_id))
+                                            .text('View');
                                     } else {
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                        viewLink = $('<a>').addClass('btn btn-outline-primary disabled')
                                             .text('View'); 
                                     }
                                 } else if (appraisal.evaluation_type === 'internal customer 1') {
@@ -688,7 +688,7 @@
                                 });
 
                             newRow.append(
-                                $('<td>').append(viewLink),
+                                $('<td>').append($('<div>').append(viewLink)),
                                 $('<td>').append($('<div>').append(ic1Link)),
                                 $('<td>').append($('<div>').append(ic2Link)),
                                 $('<td>').text(status),
