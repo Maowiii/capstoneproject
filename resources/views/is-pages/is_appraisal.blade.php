@@ -2224,6 +2224,7 @@
 
                         $('#KRA_table_body [name$="[KRA_kra]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_kra_weight]"]').prop('disabled', false);
+                        $('#KRA_table_body [name$="[KRA_kra_weight]"]').removeClass('pe-none');
                         $('#KRA_table_body [name$="[KRA_objective]"]').prop('disabled', false);
                         $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', false);
 
