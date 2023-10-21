@@ -1058,20 +1058,27 @@
                 var form = document.getElementById('PEappraisalForm');
                 var valid = true;
 
+                // Select all input elements inside the form
                 var inputElements = form.querySelectorAll('input:not([type="hidden"])');
 
                 inputElements.forEach(function(inputElement) {
+                    // Check if the input is marked as invalid
                     if (inputElement.classList.contains('is-invalid')) {
-                        // Handle your validation logic here
                         valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
-                        inputElement.focus(); // Corrected line
+                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.focus();
+                    }
+
+                    // Check if the input is required and its value is empty
+                    if (inputElement.hasAttribute('required') && inputElement.value.trim() === '') {
+                        valid = false;
+                        console.error('Validation failed for', inputElement.name, ': This field is required.');
+                        inputElement.focus();
                     }
                 });
 
                 if (!valid && !form.checkValidity()) {
-                    event.preventDefault();
+                    event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
                     var invalidInputs = form.querySelectorAll('.is-invalid');
@@ -1079,8 +1086,7 @@
                     // Handle invalid inputs, display error messages, etc.
                     invalidInputs.forEach(function(invalidInput) {
                         // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
-                            .validationMessage);
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
                     });
 
                     // Optionally, focus on the first invalid input
@@ -1088,12 +1094,13 @@
 
                     console.error('Form validation failed.');
                 } else {
-                    // Form validation succeeded    
+                    // Form validation succeeded
                     console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
                 }
             });
+
 
             // Function to open the modal
             function openModal() {
