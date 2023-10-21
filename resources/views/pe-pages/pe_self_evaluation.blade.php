@@ -2137,7 +2137,7 @@
                     $(this).addClass('is-invalid');
                     $(this).closest('div').addClass('border border-danger');
                     $(this).attr('placeholder', 'Please provide a valid input');
-                }).on('blur', function() {
+                }).on('change', function() {
                     if ($(this).val().trim() === '') {
                         $(this).addClass('is-invalid');
                         $(this).closest('td').addClass(
@@ -2488,7 +2488,7 @@
                             }, 1000);
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
-                            
+
                             $('textarea').prop('readonly', true);
 
                             // $('input[type="radio"]').attr("disabled", true);
