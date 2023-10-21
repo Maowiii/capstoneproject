@@ -1715,12 +1715,12 @@
                             }
 
                             $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).addClass('is-invalid');
                                 $(this).siblings('span').addClass('text-danger');
                             });
 
                             $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).addClass('is-invalid');
                                 $(this).siblings('span').addClass('text-danger');
                             });
 
