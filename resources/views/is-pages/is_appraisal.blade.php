@@ -1048,10 +1048,9 @@
                         invalidInputs.each(function(index, invalidInput) {
                             // Handle validation messages for invalid inputs
                             console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
-                        });
-
-                        // Focus on the first invalid input
-                        invalidInputs[0].focus();
+                            // Focus on the first invalid input
+                            invalidInputs.focus();
+                        });   
                     }
 
                     console.error('Form validation failed.');
