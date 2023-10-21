@@ -991,7 +991,7 @@
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
             $('#submit-btn-form').on('click', function(event) {
-                const form = $('.needs-validation');
+                var form = $('.needs-validation');
                 var valid = true;
 
                 // Select all input elements inside the form
@@ -1001,18 +1001,16 @@
                     // Check if the input is marked as invalid
                     if ($(inputElement).hasClass('is-invalid')) {
                         valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
-                        inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass('border border-danger');
+                        console.error('Validation failed for', inputElement.name, ':', inputElement
+                            .validationMessage);
                         inputElement.focus();
                     }
 
                     // Check if the input is required and its value is empty
-                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '' || $(inputElement).val() === null) {
+                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
                         valid = false;
-                        console.error('Validation failed for', inputElement.name, ': This field is required.');
-                        inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass('border border-danger');
+                        console.error('Validation failed for', inputElement.name,
+                            ': This field is required.');
                         inputElement.focus();
                     }
                 });
@@ -1024,32 +1022,32 @@
                     // Check if the required input is empty or has a validation error
                     if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
                         valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
-                        inputElement.closest('td').addClass('border border-danger');
-                        inputElement.addClass('is-invalid');
+                        console.error('Validation failed for', inputElement.name, ':', inputElement
+                            .validationMessage);
                         inputElement.focus();
                     }
                 });
 
-                if (!valid && !form[0].checkValidity()) {
-                event.preventDefault(); // Prevent the form from submitting
-                event.stopPropagation();
+                if (!valid || !form[0].checkValidity()) {
+                    event.preventDefault(); // Prevent the form from submitting
+                    event.stopPropagation();
 
-                var invalidInputs = form.find('.is-invalid');
+                    var invalidInputs = form.find('.is-invalid');
 
-                // Handle invalid inputs, display error messages, etc.
-                invalidInputs.each(function(index, invalidInput) {
-                    // Handle validation messages for invalid inputs
-                    console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
-                });
+                    // Handle invalid inputs, display error messages, etc.
+                    invalidInputs.each(function(index, invalidInput) {
+                        // Handle validation messages for invalid inputs
+                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
+                            .validationMessage);
+                    });
 
-                // Optionally, focus on the first invalid input
-                invalidInputs[0].focus();
+                    // Optionally, focus on the first invalid input
+                    invalidInputs[0].focus();
 
-                console.error('Form validation failed.');
+                    console.error('Form validation failed.');
                 } else {
-                // Form validation succeeded
-                console.info('Form validation succeeded.');
+                    // Form validation succeeded
+                    console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
                 }
