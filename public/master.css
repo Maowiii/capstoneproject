@@ -393,10 +393,6 @@ textarea {
     resize: none !important;
 }
 
-#employee_table th.large-column, #employee_table td.large-column {
-    word-break: break-all!important; /* Break words as necessary to prevent overflow */
-}
-
 .textarea {
     margin: 0px;
     padding: 8px;
