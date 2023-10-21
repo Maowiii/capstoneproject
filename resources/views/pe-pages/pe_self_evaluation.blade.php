@@ -537,6 +537,7 @@
             <h2>III. Future Performance Agenda</h2>
             <h3>Work Performance Plans</h3>
             <p>Identify work behaviors that the job incumbent needs to:</p>
+            <div class="table-responsive">
             <table class='table table-bordered' id='wpa-table'>
                 <thead>
                     <tr>
@@ -550,6 +551,7 @@
 
                 </tbody>
             </table>
+            </div>
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
             </div>
@@ -558,6 +560,7 @@
             <p>Identify the learning needs of the job incumbent likewise recommend specific learning methodologies for each
                 need
                 that you have mentioned.</p>
+                <div class="table-responsive">
             <table class='table table-bordered' id='ldp_table'>
                 <thead>
                     <tr>
@@ -578,6 +581,7 @@
                     </tr>
                 </tbody>
             </table>
+                </div>
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
             </div>
@@ -585,6 +589,7 @@
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
+            <div class="table-responsive">
             <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
@@ -690,6 +695,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
