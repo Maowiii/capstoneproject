@@ -290,8 +290,7 @@
                                             `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id))
                                         .text('View');
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 1') {
+                                } else if (appraisal.evaluation_type === 'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
                                         ic1Link = $('<a>').addClass(
                                                 'btn ic1 btn-outline-primary')
@@ -315,6 +314,7 @@
 
                                             });
                                     } else {
+                                        if (appraisal.date_submitted !== null) {
                                         var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
                                         url += "?appraisal_id=" + encodeURIComponent(appraisal
@@ -333,9 +333,13 @@
                                                 .appraisal_id))
                                             .text(appraisal.evaluator.first_name + ' ' +
                                                 appraisal.evaluator.last_name);
+                                        } else {
+                                            ic1Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                        }  
                                     }
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 2') {
+                                } else if (appraisal.evaluation_type === 'internal customer 2') {
                                     if (appraisal.evaluator_id === null) {
                                         ic2Link = $('<a>').addClass(
                                                 'btn ic2 btn-outline-primary')
@@ -377,8 +381,10 @@
                                                 .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
                                                 .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name);
                                         } else {
-                                            ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                        }
+                                            ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                        }                                       
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
