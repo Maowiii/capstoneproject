@@ -26,7 +26,7 @@
         <table class="table" id="employee_table">
             <thead>
                 <tr>
-                    <th scope="col" class="large-column" style="word-wrap: break-word">Email | Employee #</th>
+                    <th scope="col" class="large-column" id="empemail">Email | Employee #</th>
                     <th scope="col" class="medium-column">First Name</th>
                     <th scope="col" class="medium-column">Last Name</th>
                     <th scope="col" class="medium-column">Default Password</th>
