@@ -2169,9 +2169,7 @@
 
                             $('#submit-btn-form').hide();
 
-                            $('html, body').animate({
-                                scrollTop: $('#kra_table').offset().top
-                            }, 100);
+                            $('html, body').animate({scrollTop: $('#kra_table').offset().top}, 100);
                         } else if (response.phaseData === "pr") {
                             $('textarea').prop('readonly', true);
                             $('input[type="radio"]').prop('disabled', true);

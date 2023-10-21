@@ -958,6 +958,7 @@
                         $('#S_table_body').append(row);
                         $('#S_table input[type="radio"]').trigger('change');
                     });
+                    formChecker();
                 }
             });
         }
