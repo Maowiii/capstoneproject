@@ -2598,6 +2598,7 @@
                         $('.content-container').remove();
                         $('.content-body').remove();
                         $('.modal').remove();
+                        $('.modal-backdrop fade show').remove();
                     } else {
                         console.log('An error occurred.');
                     }
