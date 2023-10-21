@@ -977,7 +977,9 @@
             });
 
             $('#add-ldp-btn').click(function() {
-                addNewLDPRow($('#ldp_table_body'));
+                var ldptbody = $('#ldp_table_body');
+
+                addNewLDPRow(ldptbody);
             });
 
             ///////////////////////////////////// Delete  code///////////////////////////////////////////////////
@@ -2399,6 +2401,7 @@
             var nextLDPID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
+            
             $('<td>').addClass('td-textarea').append(
                 createTextArea(
                     'LDP[' +
