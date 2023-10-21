@@ -1047,9 +1047,9 @@
 
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
-                var row = $(this);
-                var ldpID = row.closest('tr').attr(
-                    'data-field-id'); // Assuming you have a data attribute for LDP ID on the row
+                var row = $(this).closest('tr');
+                var ldpID = row.closest('tr').attr('data-field-id'); // Assuming you have a data attribute for LDP ID on the row
+                
                 console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
@@ -2353,26 +2353,28 @@
             var nextWpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
+            
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
-                    false)
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
+                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][continue_doing]')
+                    .prop('readonly', false)
+                    .prop('required', true) // Add the required attribute here
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
-                    false)
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
+                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][stop_doing]')
+                    .prop('readonly', false)
+                    .prop('required', true) // Add the required attribute here
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
-                    false)
+                $('<textarea>').addClass('textarea form-control border-0 autosave-field')
+                    .attr('name', 'WPA[' + nextWpaID + '][' + {{ $appraisalId }} + '][start_doing]')
+                    .prop('readonly', false)
+                    .prop('required', true) // Add the required attribute here
             ).appendTo(wparow);
+
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle')
@@ -2406,19 +2408,17 @@
 
             var ldprow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
-                    'readonly',
-                    false)
+                $('<textarea>').addClass('textarea autosave-field')
+                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][learning_need]')
+                    .prop('readonly', false)
+                    .prop('required', true) // Add the required attribute here
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][methodology]').prop(
-                    'readonly',
-                    false)
+                $('<textarea>').addClass('textarea autosave-field')
+                    .attr('name', 'LDP[' + nextLDPID + '][' + {{ $appraisalId }} + '][methodology]')
+                    .prop('readonly', false)
+                    .prop('required', true) // Add the required attribute here
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(
