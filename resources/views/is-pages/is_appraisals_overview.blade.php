@@ -46,7 +46,7 @@
         <table class='table' id="IS_appraisals_table">
             <thead>
                 <tr>
-                    <th class='large-column'>Name</th>
+                    <th class='medium-column'>Name</th>
                     <th class='medium-column'>Self-Evaluation</th>
                     <th>Internal<br>Customer 1</th>
                     <th>Internal<br>Customer 2</th>
