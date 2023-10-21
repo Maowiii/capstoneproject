@@ -1002,6 +1002,9 @@
                     if ($(inputElement).hasClass('is-invalid')) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.addClass('is-invalid');
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
                         inputElement.focus();
                     }
 
@@ -1009,6 +1012,9 @@
                     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ': This field is required.');
+                        inputElement.addClass('is-invalid');
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
                         inputElement.focus();
                     }
                 });
@@ -1021,6 +1027,9 @@
                     if ($(inputElement).val() === '' || !inputElement.checkValidity()) {
                         valid = false;
                         console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
+                        inputElement.closest('td').addClass(
+                            'border border-danger');
+                        inputElement.addClass('is-invalid');
                         inputElement.focus();
                     }
                 });
