@@ -102,7 +102,7 @@
 
                                 console.log(appraisal.date_submitted)
                                 if (appraisal.evaluation_type === 'self evaluation') {
-                                    hasSelfEvaluation = true; // Set the flag to true   
+                                    hasSelfEvaluation = true; 
                                     if (appraisal.date_submitted !== null) {
                                         // Append the Self-Evaluation link to the first <td>
                                         viewLink = $('<a>').addClass('btn btn-outline-primary')
@@ -110,6 +110,7 @@
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
+
                                         newRow.append($('<td>').append(viewLink));
                                     } else {
                                         viewLink = $('<a>').addClass('btn btn-outline-primary')
@@ -117,6 +118,7 @@
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('Appraise');
+
                                         newRow.append($('<td>').append(viewLink));
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
@@ -134,12 +136,6 @@
                                                 .replace(':appraisal_id', appraisal_id))
                                             .text('View');
 
-                                        AppraiseLink.on('click', function(event) {
-                                            event.preventDefault(); // Prevent the default navigation action
-                                            // Optionally, change the visual appearance to indicate it's disabled
-                                            $(this).addClass('disabled'); 
-                                        });
-
                                         newRow.append(
                                             $('<td>').append(
                                                 $('<div>').append(AppraiseLink)
@@ -149,75 +145,63 @@
                             } else if (appraisal.evaluation_type ===
                                     'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
-                                        ic1Link = $('<a>').addClass(
-                                                'btn btn-outline-secondary disabled')
-                                            .text('View');
+                                        ic1Link = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
 
-                                            newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(ic1Link)
-                                            ),
-                                        );
+                                        newRow.append($('<td>').append($('<div>').append(ic1Link)));
                                     } else {
+                                        if (appraisal.date_submitted !== null) {
                                         var url =
-                                            "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
                                         url += "?appraisal_id=" + encodeURIComponent(appraisal
                                             .appraisal_id);
                                         url += "&appraisee_account_id=" + encodeURIComponent(
                                             appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
-                                            .first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal
+                                            .employee
+                                            .first_name + ' ' + appraisal.employee.last_name
+                                            );
                                         url += "&appraisee_department=" + encodeURIComponent(
                                             appraisal.employee.department.department_name);
 
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href', url.replace(':appraisal_id', appraisal
                                                 .appraisal_id))
-                                            .text('View');
+                                            .text(appraisal.evaluator.first_name + ' ' +
+                                                appraisal.evaluator.last_name);
+                                        } else {
+                                            ic1Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                            .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                        }  
 
-                                                newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(ic1Link)
-                                            ),
-                                        );
+                                        newRow.append($('<td>').append($('<div>').append(ic1Link)));
                                     }
-                                    
-                                } else if (appraisal.evaluation_type ===
-                                    'internal customer 2') {
+                                } else if (appraisal.evaluation_type ==='internal customer 2') {
                                     if (appraisal.evaluator_id === null) {
-                                        ic2Link = $('<a>').addClass(
-                                                'btn btn-outline-secondary disabled')
-                                            .text('View');
+                                        ic2Link = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
 
-                                            newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(ic2Link)
-                                            ),
-                                        );
+                                        newRow.append($('<td>').append($('<div>').append(ic2Link)));
                                     } else {
-                                        var url =
-                                            "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee
-                                            .first_name + ' ' + appraisal.employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                        if (appraisal.date_submitted !== null) {
+                                            var url =
+                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                            url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                            url += "&appraisee_account_id=" + encodeURIComponent(
+                                                appraisal.employee.account_id);
+                                            url += "&appraisee_name=" + encodeURIComponent(appraisal
+                                                .employee.first_name + ' ' + appraisal.employee.last_name);
+                                            url += "&appraisee_department=" + encodeURIComponent(
+                                                appraisal.employee.department.department_name);
 
-                                        ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href', url.replace(':appraisal_id', appraisal
-                                                .appraisal_id))
-                                            .text('View');
+                                            ic2Link = $('<a>').addClass('btn btn-outline-primary')
+                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
+                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name);
+                                        } else {
+                                            ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                                .text(appraisal.evaluator.first_name + ' ' + appraisal.evaluator.last_name); 
+                                        }
 
-                                                newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(ic2Link)
-                                            ),
-                                        );
+                                        newRow.append($('<td>').append($('<div>').append(ic2Link)));
                                     }
-                                    
                                 }
                             });
 

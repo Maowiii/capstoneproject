@@ -285,11 +285,16 @@
                                 var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
 
                                 if (appraisal.evaluation_type === 'self evaluation') {
+                                    if (appraisal.date_submitted !== null) {
                                     viewLink = $('<a>').addClass('btn btn-outline-primary')
                                         .attr('href',
                                             `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id))
                                         .text('View');
+                                    } else {
+                                        ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
+                                            .text('View'); 
+                                    }
                                 } else if (appraisal.evaluation_type === 'internal customer 1') {
                                     if (appraisal.evaluator_id === null) {
                                         ic1Link = $('<a>').addClass(
