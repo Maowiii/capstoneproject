@@ -2597,6 +2597,9 @@
 
                         $('#consentform').hide();
 
+                        $('#consentform').addClass('d-none');
+
+
                         // $('.content-container').remove();
                         // $('.content-body').remove();
                         // $('.modal').remove();
