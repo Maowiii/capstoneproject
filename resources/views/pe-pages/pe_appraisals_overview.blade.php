@@ -210,10 +210,7 @@
                                 newRow.append($('<td>').text(response.status));
                             } else if (response.status === 'Pending') {
                                 newRow.append($('<td>').text(response.status));
-                            } else {
-                                // Handle other status values if needed
-
-                            }
+                            } 
 
                            // Check if the user has submitted the self-evaluation
                            console.log(hasSelfEvaluation);
