@@ -566,7 +566,6 @@
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-primary medium-column d-flex justify-content-center" id="submit-btn-form">Submit</button>
         </div>
 
         <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
@@ -684,7 +683,8 @@
             </div>
         </div>
 
-        <div class=" content-container  gap-3 p-3">
+        <div class="d-flex content-container justify-content-center gap-3 p-3">
+            <button type="button" class="btn btn-primary medium-column " id="submit-btn-form">Submit</button>
         </div>
     </form>
 
@@ -2187,6 +2187,8 @@
                             $('#KRA_table_body [name$="[KRA_performance_indicator]"]').prop('disabled', true);
                         
                             $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
+                            
+                            $('#submit-btn-form').hide();
 
                             $('html, body').animate({
                                 scrollTop: $('#kra_table').offset().top
