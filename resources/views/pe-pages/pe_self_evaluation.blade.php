@@ -1432,7 +1432,7 @@
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
-            formChecker();
+            // formChecker();
 
             updateBHTotal();
             updateWeightedTotal();
@@ -1752,7 +1752,6 @@
                         $('#consentform').remove();
                     } else {
                         $('#consentform').modal('show');
-                        formChecker();
                     }
 
                     $('#KRA_table_body').empty();
@@ -2594,11 +2593,6 @@
                         $('#lockToast').toast('show');
 
                         $('#consentform').modal('hide');
-
-                        $('#consentform').hide();
-
-                        $('#consentform').addClass('d-none');
-
 
                         // $('.content-container').remove();
                         // $('.content-body').remove();
