@@ -1237,12 +1237,12 @@
                     for (var yearRange in scoresPerYear) {
                         if (scoresPerYear.hasOwnProperty(yearRange)) {
                             labels.push(yearRange);
-                            var data = scoresPerYear[yearRange].total_score; // Assuming data is the average score
+                            var data = scoresPerYear[yearRange].total_score ? scoresPerYear[yearRange].total_score :
+                                0;
 
                             allData.push(data);
                         }
                     }
-
                     var lineChart = new Chart(ctx, {
                         type: 'line',
                         data: {
