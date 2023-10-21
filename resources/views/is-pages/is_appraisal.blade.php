@@ -488,8 +488,8 @@
                             </div>
                         </td>
                         <td class="td-textarea">
-                            <div class="position-relative" style="width: 40%">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" style="width: 40%" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -513,8 +513,8 @@
                             </div>
                         </td>
                         <td class="td-textarea">
-                            <div class="position-relative" style="width: 40%">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                            <div class="position-relative">
+                                <textarea class="textarea form-control border-0 autosave-field" style="width: 40%" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -535,9 +535,9 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class="td-textarea" style="width: 40%">
+                        <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" style="width: 40%" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -558,9 +558,9 @@
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
-                        <td class="td-textarea" style="width: 40%">
+                        <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field" style="width: 40%" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
