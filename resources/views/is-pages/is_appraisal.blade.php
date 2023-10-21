@@ -1724,7 +1724,18 @@
 
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.textContent = sign.updated_at;
+                                const date = new Date(sign.updated_at);
+
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
+                                
+                                dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';
@@ -2136,7 +2147,9 @@
                     console.log("PHASE");
                     console.log(response);
 
-                    console.log(response.submitionChecker && Object.values(response.locks).every(lock => !lock));
+                    console.log(response.submitionChecker);
+                    console.log(Object.values(response.locks).every(lock => !lock));
+
                     if(response.submitionChecker && Object.values(response.locks).every(lock => !lock)){
                         $('select').prop('disabled', true);
                         $('textarea').prop('disabled', true);

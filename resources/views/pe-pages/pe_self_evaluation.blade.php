@@ -715,7 +715,7 @@
                                     <tbody>
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell">Job Incumbent</td>
-                                            <td id="fullnamecell"></td>
+                                            <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }} {{ $appraisee->last_name ?? '' }}</td>
                                             <td id='signcell' class="sign-cell">
                                                 <input type='file' id="uploadsign"
                                                     name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
@@ -1403,7 +1403,7 @@
             $('#submit-btn-confirm').on('click', function() {
                 var fileInput = $('#uploadsign_1')[0];
 
-                if (fileInput.files.length === 0) {
+                if (fileInput && fileInput.files.length === 0) {
                     $('#uploadsign_1').addClass('is-invalid');
                     return;
                 } else {
@@ -2116,7 +2116,18 @@
 
                             if (sign.updated_at) {
                                 // Validation for date data
-                                dateCell.textContent = sign.updated_at;
+                                const date = new Date(sign.updated_at);
+
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
+                                
+                                dateCell.textContent = formattedDate;
                             } else {
                                 // Handle invalid or missing date data
                                 dateCell.textContent = 'Invalid date';
