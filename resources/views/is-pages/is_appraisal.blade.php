@@ -108,6 +108,7 @@
                 educational
                 services.</p>
             @csrf
+            <div class="table-responsive">
             <table class='table table-bordered' id="SID_table">
                 <thead>
                     <tr>
@@ -159,6 +160,7 @@
                     </tr>
                 </tfoot>
             </table>
+            </div>
 
             <h4>Spirit of St. Vincent de Paul</h4>
             <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
@@ -171,7 +173,7 @@
                 knowledge and human development. We are committed to work for the building of a society based on justice,
                 peace,
                 respect for human dignity and the integrity of creation.</p>
-
+                <div class="table-responsive">
             <table class='table table-bordered' id="SR_table">
                 <thead>
                     <tr>
@@ -224,6 +226,7 @@
                     </tr>
                 </tfoot>
             </table>
+            <div class="table-responsive">
 
             <h4>Solidarity</h4>
             <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
@@ -231,7 +234,7 @@
                 participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
                 builds
                 up our community, encouraging us towards excellence and professionalism.</p>
-
+                <div class="table-responsive">
             <table class='table table-bordered' id='S_table'>
                 <thead>
                     <tr>
@@ -284,6 +287,8 @@
                     </tr>
                 </tfoot>
             </table>
+                </div>
+                <div class="table-responsive">
             <table class='table table-bordered' id='Overall_table'>
                 <thead>
                     <tr>
@@ -298,6 +303,7 @@
                     </tr>
                 </thead>
             </table>
+                </div>
         </div>
 
         <div class="content-container">
@@ -305,6 +311,7 @@
             <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
                 his/her
                 actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
+                <div class="table-responsive">
             <table class='table table-bordered'>
                 <thead>
                     <tr>
@@ -364,6 +371,7 @@
                     </tr>
                 </tbody>
             </table>
+                </div>
             <div class="table-responsive">
                 <table class='table table-bordered' id="kra_table">
                     <thead>

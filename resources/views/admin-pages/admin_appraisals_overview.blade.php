@@ -38,21 +38,23 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class="table table-bordered" id="admin_appraisals_table">
-            <thead class="align-middle">
-                <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Self-<br>Evaluation</th>
-                    <th>Immediate<br>Superior</th>
-                    <th>Internal<br>Customer 1</th>
-                    <th>Internal<br>Customer 2</th>
-                    <th>Action</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="admin_appraisals_table">
+                <thead class="align-middle">
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Self-<br>Evaluation</th>
+                        <th>Immediate<br>Superior</th>
+                        <th>Internal<br>Customer 1</th>
+                        <th>Internal<br>Customer 2</th>
+                        <th>Action</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <nav id="appraisal_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="appraisal_pagination"></ul>
         </nav>
@@ -76,50 +78,53 @@
                     <div>
                         <div id="SummaryModalBody">
                             <h5>Behavioral Competencies</h5>
-                            <table class='table table-bordered'>
-                                <thead>
-                                    <tr>
-                                        <th>Components</th>
-                                        <th>%</th>
-                                        <th>Rating</th>
-                                        <th>Weighted Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="summary_score_body">
-                                    <tr>
-                                        <td>Self-Evaluation</td>
-                                        <td id="SE_perc"></td>
-                                        <td id="SE_rating"></td>
-                                        <td id="SE_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 1</td>
-                                        <td id="IC1_perc"></td>
-                                        <td id="IC1_rating"></td>
-                                        <td id="IC1_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 2</td>
-                                        <td id="IC2_perc"></td>
-                                        <td id="IC2_rating"></td>
-                                        <td id="IC2_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Immediate Superior</td>
-                                        <td id="IS_perc"></td>
-                                        <td id="IS_rating"></td>
-                                        <td id="IS_wtotal"></td>
-                                    </tr>
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-end" colspan="2">Weighted Total:</td>
-                                        <td id="BC_rtotal"></td>
-                                    </tr>
-                                </tfoot>
-                                </tbody>
-                            </table>
-                                <h5>Final Ratings</h5>
+                            <div class="table-responsive">
+                                <table class='table table-bordered'>
+                                    <thead>
+                                        <tr>
+                                            <th>Components</th>
+                                            <th>%</th>
+                                            <th>Rating</th>
+                                            <th>Weighted Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="summary_score_body">
+                                        <tr>
+                                            <td>Self-Evaluation</td>
+                                            <td id="SE_perc"></td>
+                                            <td id="SE_rating"></td>
+                                            <td id="SE_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 1</td>
+                                            <td id="IC1_perc"></td>
+                                            <td id="IC1_rating"></td>
+                                            <td id="IC1_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 2</td>
+                                            <td id="IC2_perc"></td>
+                                            <td id="IC2_rating"></td>
+                                            <td id="IC2_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Immediate Superior</td>
+                                            <td id="IS_perc"></td>
+                                            <td id="IS_rating"></td>
+                                            <td id="IS_wtotal"></td>
+                                        </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td class="text-end" colspan="2">Weighted Total:</td>
+                                            <td id="BC_rtotal"></td>
+                                        </tr>
+                                    </tfoot>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h5>Final Ratings</h5>
+                            <div class="table-responsive">
                                 <table class='table table-bordered'>
                                     <thead>
                                         <tr>
@@ -148,7 +153,7 @@
                                             <td class="text-end" colspan="2">Final Score</td>
                                             <td id="FS_wtotal" colspan="2"></td>
                                         </tr>
-                                        <tr>                                         
+                                        <tr>
                                             <td class="text-end" colspan="2">Description</td>
                                             <td id="descrip" colspan="2"></td>
                                         </tr>
@@ -170,22 +175,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-sm" id="signtable">
-                        <thead>
-                            <tr>
-                                <th scope="col">Parties</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Signature</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">KRA</th>
-                                <th scope="col">Performance Review</th>
-                                <th scope="col">Evaluation</th>
-                                <th scope="col">Form</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm" id="signtable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Parties</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Signature</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">KRA</th>
+                                    <th scope="col">Performance Review</th>
+                                    <th scope="col">Evaluation</th>
+                                    <th scope="col">Form</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1116,9 +1123,9 @@
                             // } else {
                             //     $button.text('Lock');
                             // }
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
@@ -1156,9 +1163,9 @@
                             //     $button.text('Unlock');
                             // }
 
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
@@ -1196,9 +1203,9 @@
                             //     $button.text('Unlock');
                             // }
 
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
