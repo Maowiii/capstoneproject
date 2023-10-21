@@ -25,31 +25,32 @@
             <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
                 Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
                 5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
-                <div class="table-responsive">
-            <table class="table table-bordered" id="IC_table">
-                <thead>
-                    <tr>
-                        <th class="xxs-column">#</th>
-                        <th>Question</th>
-                        <th class="large-column">Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total Weighted Score:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input id="total-weighted-score"
-                                    class="small-column form-control total-weighted text-center" type="text" readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-                </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="IC_table">
+                    <thead>
+                        <tr>
+                            <th class="xxs-column">#</th>
+                            <th>Question</th>
+                            <th class="large-column">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total Weighted Score:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input id="total-weighted-score"
+                                        class="small-column form-control total-weighted text-center" type="text"
+                                        readonly>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
             <p>What did you like best about his/her customer service?</p>
             <textarea class="form-control" id="service_area"></textarea>
@@ -133,7 +134,7 @@
                 // Set the employee's name in the input field
                 if (appraiseeName) {
                     $('#appraiseeName').val(appraiseeName);
-                }else{
+                } else {
                     $('.modal').hide();
                     $('.content-body').remove();
                     $('.content-container').remove();
@@ -165,7 +166,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function(event) {
-                        var fileData = event.target.result;
+                            var fileData = event.target.result;
                             $.ajax({
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -274,7 +275,7 @@
                         url: '{{ route('getCommentsAndSuggestions') }}',
                         type: 'POST',
                         data: {
-                            appraisalId: appraisalId 
+                            appraisalId: appraisalId
                         },
                         success: function(response) {
                             if (response.success) {
@@ -493,15 +494,15 @@
                                 $('#confirmation-alert').addClass('d-none');
                                 $('#submit-btn').text('View');
 
-                                if (response.hideSignatory){
+                                if (response.hideSignatory) {
                                     $('#submit-btn').remove();
                                 }
                             } else {
-                                if (!response.hasPermission){
+                                if (!response.hasPermission) {
                                     $('.modal').hide();
                                     $('.content-body').remove();
                                     $('.content-container').remove();
-                                } 
+                                }
                                 return;
                             }
 

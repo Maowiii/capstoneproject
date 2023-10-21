@@ -18,7 +18,7 @@
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
             5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
-
+            <div class="table-responsive">
         <table class="table table-bordered" id="IC_table">
             <thead>
                 <tr>
@@ -31,6 +31,7 @@
                 <!-- Data ng Editable Internal Customer Form -->
             </tbody>
         </table>
+            </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary" id="addQuestionBtn">Add Question</button>
         </div>

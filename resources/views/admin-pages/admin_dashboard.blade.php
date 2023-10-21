@@ -51,15 +51,17 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class='table table-bordered table-sm align-middle' id="departments_table">
-            <thead>
-                <tr>
-                    <th>Department</th>
-                    <th>Average Score</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-responsive">
+            <table class='table table-bordered table-sm align-middle' id="departments_table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Average Score</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <nav id="department_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
         </nav>
@@ -73,16 +75,18 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class='table table-bordered table-sm align-middle' id="employees_table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Trends</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-responsive">
+            <table class='table table-bordered table-sm align-middle' id="employees_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Trends</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <nav id="employee_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="employee_pagination"></ul>
         </nav>
@@ -93,54 +97,64 @@
         <div class="content-container">
             <h2>Point System:</h2>
             <h4>Oustanding:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="outstanding_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="outstanding_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Very Satisfactory:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="verySatisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="verySatisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Satisfactory:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="satisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="satisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Fair:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="fair_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="fair_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Poor:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="poor_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="poor_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="content-container">
@@ -172,14 +186,16 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Spirit of St. Vincent de Paul and Social Responsibility:</h4>
-            <table class="table table-sm mb-3" id="sr_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm mb-3" id="sr_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -190,6 +206,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Solidarity</h4>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="s_table">
                 <thead>
                     <th>#</th>
@@ -198,6 +215,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -208,6 +226,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Internal Customers:</h2>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="ic_table">
                 <thead>
                     <th>#</th>
@@ -216,6 +235,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>

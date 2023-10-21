@@ -7,6 +7,7 @@
 
 @section('content')
     <div class="content-container">
+        <div class="table-responsive">
         <table class="table table-bordered" id="evalyear_table">
             <thead>
                 <tr>
@@ -23,6 +24,7 @@
 
             </tbody>
         </table>
+        </div>
         <nav id="evalyear_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
         </nav>
@@ -192,6 +194,7 @@
                         <!-- SCORE WEIGHTS -->
                         <div class="mx-3 mb-3">
                             <h5>Behavioral Competencies</h5>
+                            <div class="table-responsive">
                             <table class='table table-bordered'>
                                 <thead>
                                     <th>Components</th>
@@ -249,6 +252,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                             <span class="text-danger error-message" id="bhTotal_error">
                                 @error('bhTotal')
                                     {{ $message }}
@@ -258,6 +262,7 @@
 
                         <div class="mx-3">
                             <h5>Final Ratings</h5>
+                            <div class="table-responsive">
                             <table class='table table-bordered'>
                                 <thead>
                                     <th>Components</th>
@@ -296,6 +301,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                             <span class="text-danger error-message" id="finalTotal_error">
                                 @error('finalTotal')
                                     {{ $message }}
@@ -346,6 +352,7 @@
                     </div>
                     <div class="modal-body">
                         <h5>Behavioral Competencies</h5>
+                        <div class="table-responsive">
                         <table class='table table-bordered'>
                             <thead>
                                 <th>Components</th>
@@ -391,8 +398,9 @@
                                 </tr>
                             </tfoot>
                         </table>
-
+                        </div>
                         <h5>Final Ratings</h5>
+                        <div class="table-responsive">
                         <table class='table table-bordered'>
                             <thead>
                                 <th>Components</th>
@@ -424,6 +432,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
