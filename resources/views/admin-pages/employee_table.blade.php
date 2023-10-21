@@ -23,7 +23,7 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class="table" id="employee_table">
+        <table class="table table-responsive" id="employee_table">
             <thead>
                 <tr>
                     <th scope="col" class="large-column">Email | Employee #</th>
