@@ -441,7 +441,7 @@
                     <tr>
                         <th class='medium-column'>Question</th>
                         <th class='small-column'>Answer</th>
-                        <th class='large-column' id="comments">Comments</th>
+                        <th class='large-column'>Comments</th>
                     </tr>
                 </thead>
                 <tbody id='jic_table_body'>
