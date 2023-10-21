@@ -394,8 +394,7 @@ textarea {
 }
 
 #employee_table th.large-column, #employee_table td.large-column {
-    white-space: normal;
-    word-wrap: break-word;
+    overflow-wrap: break-word!important;
 }
 
 .textarea {
