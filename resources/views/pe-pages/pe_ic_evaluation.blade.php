@@ -469,6 +469,7 @@
                             appraiseeId: appraiseeId,
                         },
                         success: function(response) {
+                            console.log(response.hasPermission);
                             if (response.form_submitted) {
                                 $('input[type="radio"]').prop('disabled', true);
                                 $('textarea').prop('disabled', true);
@@ -481,8 +482,8 @@
                             } else {
                                 if (!response.hasPermission){
                                     $('.modal').hide();
-                                    $('.content-container').remove();
                                     $('.content-body').remove();
+                                    $('.content-container').remove();
                                 } 
                                 return;
                             }
