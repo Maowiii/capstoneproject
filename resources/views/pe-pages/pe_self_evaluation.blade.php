@@ -2593,10 +2593,11 @@
                         $('#lockToast .toast-body').text('You do not have permission to view this form.');
                         $('#lockToast').toast('show');
 
+                        $('#consentform').modal('hide');
+
                         $('.content-container').remove();
                         $('.content-body').remove();
                         $('.modal').remove();
-                        $('#consentform').modal('hide');
                     } else {
                         console.log('An error occurred.');
                     }
