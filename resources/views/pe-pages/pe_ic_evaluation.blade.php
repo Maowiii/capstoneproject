@@ -469,6 +469,7 @@
                             appraiseeId: appraiseeId,
                         },
                         success: function(response) {
+                            console.log(response.hasPermission);
                             if (response.form_submitted) {
                                 $('input[type="radio"]').prop('disabled', true);
                                 $('textarea').prop('disabled', true);
