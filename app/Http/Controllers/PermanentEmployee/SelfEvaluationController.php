@@ -301,19 +301,20 @@ class SelfEvaluationController extends Controller
 
       if ($allSubmitted) {
         $finalScore = $this->calculateFinalScore($appraisalData);
-        $roundedFinalScore = round($finalScore[0], 2); // Round to 2 decimal places
 
         // Log some information for debugging
         Log::info('Trying to update the record.');
         Log::info('Table Name: ' . (new FinalScores)->getTable());
         Log::info('Employee ID: ' . $employee_id);
         Log::info('Final Score: ' . $finalScore[0]);
-        Log::info('rounded Final Score: ' . $roundedFinalScore);
 
         // Attempt to update the record
         try {
           FinalScores::updateOrCreate(
-            ['employee_id' => $employee_id],
+            [
+              'employee_id' => $employee_id,
+              'department_id' => $departmentId,
+            ],
             ['final_score' => $finalScore[0]]
           );
 

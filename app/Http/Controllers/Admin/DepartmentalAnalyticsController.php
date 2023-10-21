@@ -359,7 +359,6 @@ class DepartmentalAnalyticsController extends Controller
           ->groupBy('department_id')
           ->get();
         $scoresByDepartment[$year->sy_start . '-' . $year->sy_end] = $scores;
-        // Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
       }
 
       return response()->json([
@@ -368,16 +367,14 @@ class DepartmentalAnalyticsController extends Controller
       ]);
       
     } catch (\Exception $e) {
-      // Log the exception along with department ID and scores by department
       Log::error('Error in getFinalScoresPerDepartment: ' . $e->getMessage());
       Log::info('Department ID: ' . $departmentID);
       Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
 
-      // You can handle the exception as needed, e.g., return an error response
       return response()->json([
         'success' => false,
         'error' => 'An error occurred while fetching final scores.',
-      ], 500); // 500 indicates a server error
+      ], 500); 
     }
   }
 }

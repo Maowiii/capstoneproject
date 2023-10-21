@@ -140,13 +140,19 @@ class ISAppraisalController extends Controller
 
       if ($allSubmitted) {
         $finalScore = $this->calculateFinalScore($appraisalData);
-        FinalScores::updateOrCreate(
-          [
-            'employee_id' => $employee_id,
-            'department_id' => $departmentId,
-          ],
-          ['final_score' => $finalScore[0]]
-        );
+        try {
+          FinalScores::updateOrCreate(
+            [
+              'employee_id' => $employee_id,
+              'department_id' => $departmentId,
+            ],
+            ['final_score' => $finalScore[0]]
+          );
+
+          Log::info('Record updated successfully.');
+        } catch (\Exception $e) {
+          Log::error('Error while updating the record: ' . $e->getMessage());
+        }
       }
       DB::commit();
       return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
