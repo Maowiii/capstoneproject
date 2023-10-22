@@ -595,48 +595,16 @@
                                     </thead>
                                     <tbody>
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
-                                            <td id="partiescell_JIC">Job Incumbent</td>
+                                            <td id="partiescell_JIC">Evaluator</td>
                                             <td id="fullnamecell_JIC"></td>
                                             <td id="signcell_JIC" class="sign-cell">
+                                                <img src="" width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell_JIC"></td>
                                         </tr>
-                                        <tr>
-                                            <td id="partiescell">Evaluator</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'>
-                                                <img src="" width="100" id="signatureImage" />
-                                            </td>
-                                            <td id="datecell" class="date-cell"></td>
-                                        </tr>
-                                        <!-- <tr>
-                                            <td id="partiescell_">Next Higher Superior</td>
-                                            <td id="fullnamecell_"></td>
-                                            <td id='signcell_'></td>
-                                            <td id="datecell_" style="width:15%"></td>
-                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- <h3>Notation</h3>
-                            <div class="table-responsive" id="signaturecon">
-                                <table class="table" id="signtable">
-                                    <tbody>
-                                        <tr>
-                                            <td id="partiescell" style="width:20%">HRMD Director</td>
-                                            <td id="fullnamecell" style="width:20%"></td>
-                                            <td id="signcell" style="width:25%"></td>
-                                            <td id="datecell" style="width:15%"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="partiescell">VP for Administrative Affairs</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id="signcell" style="width:25%"></td>
-                                            <td id="datecell" style="width:15%"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div> -->
                         </div>
                     </div>
                     <!-- <div class="modal-footer">
