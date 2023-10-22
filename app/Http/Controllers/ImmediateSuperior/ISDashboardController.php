@@ -107,7 +107,7 @@ class ISDashboardController extends Controller
       })->get();
 
       $departmentAppraisalsIC = Appraisals::whereHas('employee', function ($query) use ($immediateSuperiorDepartmentId) {
-        $query->where('department_id', $immediateSuperiorDepartmentId);
+        $query->where('department_id', $immediateSuperiorDepartmentId)->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2']);
       })->get();
 
       $completedKRACount = 0;
