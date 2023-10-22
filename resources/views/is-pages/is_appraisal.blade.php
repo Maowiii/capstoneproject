@@ -769,7 +769,7 @@
                 $(this).addClass('is-invalid');
             } else {
                 $(this).removeClass('is-invalid');
-                $(this).closest('tr').removeClass('border border-danger"');
+                $(this).closest('td').removeClass('border border-danger"');
             }
         });
 
@@ -1758,64 +1758,65 @@
                         1) + '][{{ $appraisalId }}][comments]"]');
 
                         if (row) {
-                            if (jic.answer === 1) {
-                                answerRadioYes.checked = true;
-                            } else if (jic.answer === 0) {
-                                answerRadioNo.checked = true;
+                            if(jic.question_order == (index+1)){
+                                if (jic.answer === 1) {
+                                    answerRadioYes.checked = true;
+                                } else if (jic.answer === 0) {
+                                    answerRadioNo.checked = true;
+                                }
+
+                                $(answerRadioYes).on('invalid', function() {
+                                    $(this).addClass('is-invalid');
+                                    $(this).siblings('span').addClass('text-danger');
+                                });
+
+                                $(answerRadioNo).on('invalid', function() {
+                                    $(this).addClass('is-invalid');
+                                    $(this).siblings('span').addClass('text-danger');
+                                });
+
+                                $(answerRadioYes).on('input', function() {
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                });
+
+                                $(answerRadioNo).on('input', function() {
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                });
+
+                                var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
+                                    index +
+                                    1) + '][{{ $appraisalId }}][comments]"]');
+                                commentTextarea.value = jic.comments;
+
+                                // Attach input event handlers for validation
+                                $(commentTextarea).on('input', function() {
+                                    $(this).removeClass('border border-danger');
+                                    $(this).removeClass('is-invalid');
+                                }).on('invalid', function() {
+                                    $(this).addClass('is-invalid');
+                                    $(this).attr('placeholder', 'Please provide a valid input');
+                                }).on('change', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                }).on('blur', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                });
                             }
-
-                            $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
-
-                            $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
-
-                            $(answerRadioYes).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
-                            });
-
-                            $(answerRadioNo).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
-                            });
-
-                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                                index +
-                                1) + '][{{ $appraisalId }}][comments]"]');
-                            commentTextarea.value = jic.comments;
-
-                            // Attach input event handlers for validation
-                            $(commentTextarea).on('input', function() {
-                                $(this).removeClass('border border-danger');
-                                $(this).removeClass('is-invalid');
-                            }).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).attr('placeholder', 'Please provide a valid input');
-                            }).on('change', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            }).on('blur', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            });
-
                             commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;

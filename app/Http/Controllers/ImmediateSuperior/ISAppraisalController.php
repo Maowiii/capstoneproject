@@ -385,7 +385,6 @@ class ISAppraisalController extends Controller
       // If the record exists, update the specific field value; otherwise, create a new record
       if ($jic) {
         $jic->$fieldName = $fieldValue;
-        $jic->job_incumbent_question = $fieldQuestion;
         $jic->save();
       } else {
         // Create a new record with the criteria and the specific field value
