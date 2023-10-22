@@ -1746,7 +1746,7 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        jicID = parseInt(jic.question_order);
+                        jicID = parseInt(jic.question_order)-1;
                         
                         var row = document.querySelectorAll('#jic_table_body tr')[jicID];
                         console.log(row);
