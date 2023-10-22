@@ -129,7 +129,7 @@
                                 '-') + '</h5>');
                         $('#KRAsContainer').html(
                             '<h4 class="text-center">KRA Encoded:</h4><h5 class="text-center">' +
-                            (encodedKRACount ? (encodedKRACount/totalAppraisalCount) + '/' + totalAppraisalCount : '-') + '</h5>');
+                            (encodedKRACount ? encodedKRACount + '/' + totalAppraisalCount : '-') + '</h5>');
                         $('#assignedICContainer').html(
                             '<h4 class="text-center">Assigned IC:</h4><h5 class="text-center">' +
                             (assignedICCount ? assignedICCount + '/' + totalICCount : '-') + '</h5>');
