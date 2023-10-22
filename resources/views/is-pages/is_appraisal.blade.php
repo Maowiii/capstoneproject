@@ -1026,35 +1026,9 @@
                 // });
 
                 // Get all required input elements
-                var requiredInputs = form.find('input[required]');
+                
 
-                requiredInputs.each(function(index, inputElement) {
-                    // Wrap the DOM element in a jQuery object
-                    var $inputElement = $(inputElement);
-
-                    // Check if the required input is empty or has a validation error
-                    if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
-
-                        // Use the jQuery object to add the 'is-invalid' class
-                        $inputElement.addClass('is-invalid');
-                        $inputElement.closest('td').addClass('border border-danger');
-                        $inputElement[0].focus(); 
-
-                        // Add an input event handler to remove the 'is-invalid' class
-                        $inputElement.on('input', function() {
-                            $inputElement.removeClass('is-invalid');
-                            $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
-                            $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
-                            $inputElement.find('.form-check-input').removeClass('is-invalid');
-                            $inputElement.closest('td').removeClass('border border-danger');
-                        });
-                    }
-                });
-
-                if (!valid || !form[0].checkValidity()) {
+                if (!form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
@@ -1069,6 +1043,62 @@
                             invalidInputs.focus();
                         });   
                     }
+
+                    var requiredInputs = form.find('input[required]');
+
+                    requiredInputs.each(function(index, inputElement) {
+                        // Wrap the DOM element in a jQuery object
+                        var $inputElement = $(inputElement);
+
+                        // Check if the required input is empty or has a validation error
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                            valid = false;
+                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                                .validationMessage);
+
+                            // Use the jQuery object to add the 'is-invalid' class
+                            $inputElement.addClass('is-invalid');
+                            $inputElement.closest('td').addClass('border border-danger');
+                            $inputElement[0].focus(); 
+
+                            // Add an input event handler to remove the 'is-invalid' class
+                            $inputElement.on('input', function() {
+                                $inputElement.removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                                $inputElement.find('.form-check-input').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
+                            });
+                        }
+                    });
+
+                    var requiredInputs = form.find('textarea[required]');
+
+                    requiredInputs.each(function(index, inputElement) {
+                        // Wrap the DOM element in a jQuery object
+                        var $inputElement = $(inputElement);
+
+                        // Check if the required input is empty or has a validation error
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                            valid = false;
+                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                                .validationMessage);
+
+                            // Use the jQuery object to add the 'is-invalid' class
+                            $inputElement.addClass('is-invalid');
+                            $inputElement.closest('td').addClass('border border-danger');
+                            $inputElement[0].focus(); 
+
+                            // Add an input event handler to remove the 'is-invalid' class
+                            $inputElement.on('input', function() {
+                                $inputElement.removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                                $inputElement.find('.form-check-input').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
+                            });
+                        }
+                    });
 
                     console.error('Form validation failed.');
                 } else {
