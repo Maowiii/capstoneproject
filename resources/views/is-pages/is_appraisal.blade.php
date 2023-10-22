@@ -1758,6 +1758,8 @@
                         1) + '][{{ $appraisalId }}][comments]"]');
                         console.log(jic);
                         if (row) {
+                            console.log('index+1');
+                            console.log(index+1);
                             if(jic.question_order === (index+1)){
                                 console.log('index+1');
                                 console.log(index+1);
