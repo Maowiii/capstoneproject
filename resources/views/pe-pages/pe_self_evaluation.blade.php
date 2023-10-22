@@ -1151,9 +1151,6 @@
                             invalidInputs.focus();
                         });   
                     }
-                    // Optionally, focus on the first invalid input
-                    invalidInputs[0].focus();
-
                     console.error('Form validation failed.');
                 } else {
                     // Form validation succeeded
