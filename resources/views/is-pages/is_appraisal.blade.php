@@ -1753,6 +1753,8 @@
                                 var $closestTD = $(this).closest('td');
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
                                 $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
                             $(answerRadioNo).on('input', function() {
@@ -1760,6 +1762,8 @@
                                 var $closestTD = $(this).closest('td');
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
                                 $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
                             if (commentTextarea) {
