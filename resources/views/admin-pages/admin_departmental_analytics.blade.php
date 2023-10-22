@@ -362,17 +362,18 @@
                         categories.forEach(category => {
                             const table = $(category.tableId);
                             table.empty();
-                            const row = $("<tr class='text-center'>");
 
                             if (response[category.key].length > 0) {
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
+                                    const row = $("<tr class='text-center'>");
                                     row.append($("<td>").text(fullName));
                                     row.append($("<td>").text(item.final_score));
-                                    table.append(row.clone());
+                                    table.append(row);
                                 });
                             } else {
+                                const row = $("<tr class='text-center'>");
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }
