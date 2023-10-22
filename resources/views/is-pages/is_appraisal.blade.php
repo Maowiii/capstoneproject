@@ -1024,32 +1024,32 @@
                 var form = $('.needs-validation');
                 var valid = true;
 
-                // Select all input elements inside the form
-                var inputElements = form.find('input:not([type="hidden"])');
+                // // Select all input elements inside the form
+                // var inputElements = form.find('input:not([type="hidden"])');
 
-                inputElements.each(function(index, inputElement) {
-                    // Check if the input is marked as invalid
-                    if ($(inputElement).hasClass('is-invalid')) {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
-                        inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
-                        inputElement.focus();
-                    }
+                // inputElements.each(function(index, inputElement) {
+                //     // Check if the input is marked as invalid
+                //     if ($(inputElement).hasClass('is-invalid')) {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name, ':', inputElement
+                //             .validationMessage);
+                //         inputElement.addClass('is-invalid');
+                //         inputElement.closest('td').addClass(
+                //             'border border-danger');
+                //         inputElement.focus();
+                //     }
 
-                    // Check if the input is required and its value is empty
-                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name,
-                            ': This field is required.');
-                        inputElement.addClass('is-invalid');
-                        inputElement.closest('td').addClass(
-                            'border border-danger');
-                        inputElement.focus();
-                    }
-                });
+                //     // Check if the input is required and its value is empty
+                //     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name,
+                //             ': This field is required.');
+                //         inputElement.addClass('is-invalid');
+                //         inputElement.closest('td').addClass(
+                //             'border border-danger');
+                //         inputElement.focus();
+                //     }
+                // });
 
                 // Get all required input elements
                 var requiredInputs = form.find('input[required]');
