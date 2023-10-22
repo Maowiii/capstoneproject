@@ -132,8 +132,8 @@ class ISDashboardController extends Controller
         }
       }
 
-      foreach ($departmentAppraisals as $appraisal) {
-        $kraCount = KRA::where('appraisal_id', ($appraisal->appraisal_id-1))
+      foreach ($totalAppraisalCount as $appraisal) {
+        $kraCount = KRA::where('appraisal_id', $appraisal->appraisal_id)
           ->whereNotNull('kra')
           ->whereNotNull('kra_weight')
           ->whereNotNull('objective')
