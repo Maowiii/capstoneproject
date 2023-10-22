@@ -1749,6 +1749,9 @@
                         console.log(jic.question_order);
 
                         var row = document.querySelectorAll('#jic_table_body tr')[parseInt(jic.question_order)];
+                        console.log(row);
+                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        console.log(row);
 
                         var answerRadioYes = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="1"]');
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="0"]');
