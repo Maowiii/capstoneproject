@@ -1142,13 +1142,15 @@
 
                     var invalidInputs = form.find('.is-invalid');
 
-                    // Handle invalid inputs, display error messages, etc.
-                    invalidInputs.each(function(index, invalidInput) {
-                        // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
-                            .validationMessage);
-                    });
-
+                    if (invalidInputs.length > 0) {
+                        // Handle invalid inputs, display error messages, etc.
+                        invalidInputs.each(function(index, invalidInput) {
+                            // Handle validation messages for invalid inputs
+                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                            // Focus on the first invalid input
+                            invalidInputs.focus();
+                        });   
+                    }
                     // Optionally, focus on the first invalid input
                     invalidInputs[0].focus();
 
