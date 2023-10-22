@@ -1756,7 +1756,7 @@
                         var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
                         index +
                         1) + '][{{ $appraisalId }}][comments]"]');
-
+                        console.log(jic)
                         if (row) {
                             if(jic.question_order == (index+1)){
                                 if (jic.answer === 1) {
