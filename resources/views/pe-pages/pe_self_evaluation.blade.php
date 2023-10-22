@@ -1096,30 +1096,30 @@
                 var valid = true;
 
                 // Select all input elements inside the form
-                var inputElements = form.find('input:not([type="hidden"])');
+                // var inputElements = form.find('input:not([type="hidden"])');
 
-                inputElements.each(function(index, inputElement) {
-                    // Check if the input is marked as invalid
-                    if ($(inputElement).hasClass('is-invalid')) {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
+                // inputElements.each(function(index, inputElement) {
+                //     // Check if the input is marked as invalid
+                //     if ($(inputElement).hasClass('is-invalid')) {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name, ':', inputElement
+                //             .validationMessage);
 
-                        $(inputElement).addClass('is-invalid');
-                        inputElement.focus();
-                    }
+                //         $(inputElement).addClass('is-invalid');
+                //         inputElement.focus();
+                //     }
 
-                    // Check if the input is required and its value is empty
-                    if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name,
-                            ': This field is required.');
+                //     // Check if the input is required and its value is empty
+                //     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name,
+                //             ': This field is required.');
 
-                        $(inputElement).addClass('is-invalid');
-                        inputElement.focus();
+                //         $(inputElement).addClass('is-invalid');
+                //         inputElement.focus();
 
-                    }
-                });
+                //     }
+                // });
 
                 // Get all required input elements
                 var requiredInputs = form.find('input[required]');
@@ -1133,6 +1133,14 @@
 
                         $(inputElement).addClass('is-invalid');
                         inputElement.focus();
+
+                        $inputElement.on('input', function() {
+                            $inputElement.removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                            $inputElement.find('.form-check-input').removeClass('is-invalid');
+                            $inputElement.closest('td').removeClass('border border-danger');
+                        });
                     }
                 });
 
