@@ -1755,9 +1755,6 @@
                         var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
 
                         var commentTextarea = row.querySelector('textarea[name^="comments"]');
-                        console.log(answerRadioYes);
-                        console.log(answerRadioNo);
-                        console.log(commentTextarea);
 
                         if (row) {
                             if (jic.answer === 1) {
@@ -1795,7 +1792,7 @@
                             if (commentTextarea) {
                                 commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
                             }
-                            
+
                             // Attach input event handlers for validation
                             $(commentTextarea).on('input', function() {
                                 $(this).removeClass('border border-danger');
@@ -1816,9 +1813,6 @@
                                         'border border-danger');
                                 }
                             });
-                            commentTextarea.required = true;
-                            answerRadioYes.required = true;
-                            answerRadioNo.required = true; 
                         } else {
                             commentTextarea.required = true;
                             answerRadioYes.required = true;
