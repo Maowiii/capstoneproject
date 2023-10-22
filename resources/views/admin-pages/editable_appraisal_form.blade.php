@@ -365,7 +365,7 @@
                     success: function(response) {
                         console.log(response);
                         if (response.formLocked == true) {
-                            $('.content-container .button').prop('disabled', true);
+                            $('.content-container button').prop('disabled', true);
                             $('.content-container .delete-button').prop('disabled', true);
 
                         }
