@@ -594,13 +594,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell_JIC">Job Incumbent</td>
                                             <td id="fullnamecell_JIC"></td>
                                             <td id="signcell_JIC" class="sign-cell">
                                             </td>
                                             <td id="datecell_JIC"></td>
-                                        </tr> -->
+                                        </tr>
                                         <tr>
                                             <td id="partiescell">Evaluator</td>
                                             <td id="fullnamecell"></td>
