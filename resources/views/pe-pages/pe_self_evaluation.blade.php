@@ -1117,7 +1117,6 @@
                             ': This field is required.');
 
                         $(inputElement).addClass('is-invalid');
-                        $(inputElement).closest('td').addClass('border border-danger');
                         inputElement.focus();
 
                     }
@@ -1134,16 +1133,7 @@
                             .validationMessage);
 
                         $(inputElement).addClass('is-invalid');
-                        $(inputElement).closest('td').addClass('border border-danger');
                         inputElement.focus();
-
-                        $inputElement.on('input', function() {
-                            $inputElement.removeClass('is-invalid');
-                            $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
-                            $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
-                            $inputElement.find('.form-check-input').removeClass('is-invalid');
-                            $inputElement.closest('td').removeClass('border border-danger');
-                        });
                     }
                 });
 
