@@ -1748,14 +1748,14 @@
                             //     $(this).siblings('span').addClass('text-danger');
                             // });
 
-                            $(answerRadioYes).on('change', function() {
+                            $(answerRadioYes).on('input', function() {
                                 // Handle the change event for "Yes" radio button
                                 var $closestTD = $(this).closest('td');
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
                                 $closestTD.removeClass('border border-danger');
                             });
 
-                            $(answerRadioNo).on('change', function() {
+                            $(answerRadioNo).on('input', function() {
                                 // Handle the change event for "No" radio button
                                 var $closestTD = $(this).closest('td');
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
