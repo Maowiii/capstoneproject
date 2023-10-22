@@ -1133,11 +1133,6 @@
 
                         $(inputElement).addClass('is-invalid');
                         inputElement.focus();
-
-                        $inputElement.on('input', function() {
-                            $inputElement.removeClass('is-invalid');
-
-                        });
                     }
                 });
 
