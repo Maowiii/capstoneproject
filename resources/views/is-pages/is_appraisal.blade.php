@@ -750,16 +750,15 @@
 
         // Handle validation for radio buttons
         $('input[type="radio"]').on('change', function () {
-            const feedbackRow = $(this).closest('tr');
             const radioName = $(this).attr('name');
 
             // Check if any radio button with the same name is checked
             if ($(`input[name="${radioName}"]:checked`).length === 0) {
-                feedbackRow.find('.form-check-label').addClass('text-danger');
                 $(this).addClass('is-invalid');
             } else {
-                feedbackRow.find('.form-check-label').removeClass('text-danger');
                 $(this).removeClass('is-invalid');
+                $(this).closest('input[type="radio"]').removeClass('is-invalid');
+                $(this).closest('td').removeClass('border border-danger');
             }
         });
 
