@@ -1762,30 +1762,26 @@
                                 answerRadioNo.checked = true;
                             }
 
-                            $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
+                            // $(answerRadioYes).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
-                            $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
+                            // $(answerRadioNo).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
                             $(answerRadioYes).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                $(this).removeClass('is-invalid');
+                                $(this).closest('input[type="radio"]').removeClass('is-invalid');
+                                $(this).closest('td').removeClass('border border-danger');
                             });
 
                             $(answerRadioNo).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                $(this).removeClass('is-invalid');
+                                $(this).closest('input[type="radio"]').removeClass('is-invalid');
+                                $(this).closest('td').removeClass('border border-danger');
                             });
 
                             if (commentTextarea) {
