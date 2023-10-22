@@ -1754,7 +1754,7 @@
                         var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
                         var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
 
-                        var commentTextarea = row.querySelector('textarea[name*="comments"]"]');
+                        var commentTextarea = row.querySelector('textarea[name^="comments"]');
                         console.log(answerRadioYes);
                         console.log(answerRadioNo);
                         console.log(commentTextarea);
