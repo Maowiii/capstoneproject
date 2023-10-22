@@ -1752,7 +1752,11 @@
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][answer]"][value="0"]');
 
                         var commentTextarea = row.querySelector('.textarea[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][comments]"]');
-                        console.log(jic);
+                        console.log(answerRadioYes);
+                        console.log(answerRadioNo);
+                        console.log(commentTextarea);
+
+
                         if (row) {
                             if (jic.answer === 1) {
                                 answerRadioYes.checked = true;
