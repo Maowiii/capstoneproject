@@ -133,12 +133,11 @@ class ISDashboardController extends Controller
       }
 
       foreach ($departmentAppraisals as $appraisal) {
-        $kraCount = KRA::where('appraisal_id', $appraisal->appraisal_id)
+        $kraCount = KRA::where('appraisal_id', ($appraisal->appraisal_id-1))
           ->whereNotNull('kra')
           ->whereNotNull('kra_weight')
           ->whereNotNull('objective')
           ->count();
-
         if ($kraCount > 0) {
           $completedKRACount++;
         }
