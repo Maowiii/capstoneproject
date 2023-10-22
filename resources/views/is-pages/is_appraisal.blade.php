@@ -1792,8 +1792,10 @@
                                 $(this).closest('tr').removeClass('text-danger fw-bold');
                             });
 
-                            commentTextarea.value = jic.comments;
-
+                            if (commentTextarea) {
+                                commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                            }
+                            
                             // Attach input event handlers for validation
                             $(commentTextarea).on('input', function() {
                                 $(this).removeClass('border border-danger');
