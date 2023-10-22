@@ -1122,23 +1122,27 @@
                 // });
 
                 // Get all required input elements
-                var requiredInputs = form.find('input[required]');
+                
 
-                requiredInputs.each(function(index, inputElement) {
-                    // Check if the required input is empty or has a validation error
-                    if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
+                // if (!valid || !form[0].checkValidity()) {
 
-                        $(inputElement).addClass('is-invalid');
-                        inputElement.focus();
-                    }
-                });
-
-                if (!valid || !form[0].checkValidity()) {
+                if (!form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
+
+                    var requiredInputs = form.find('input[required]');
+
+                    requiredInputs.each(function(index, inputElement) {
+                        // Check if the required input is empty or has a validation error
+                        if ($(inputElement).val() === '' || $(inputElement).val() === null || !inputElement.checkValidity()) {
+                            valid = false;
+                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                                .validationMessage);
+
+                            $(inputElement).addClass('is-invalid');
+                            inputElement.focus();
+                        }
+                    });
 
                     var invalidInputs = form.find('.is-invalid');
 
