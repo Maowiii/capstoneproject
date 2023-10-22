@@ -99,10 +99,15 @@ class ISDashboardController extends Controller
       $immediateSuperiorId = Employees::whereHas('account', function ($query) use ($immediateSuperiorAccountId) {
         $query->where('account_id', $immediateSuperiorAccountId);
       })->value('employee_id');
+      
 
       $immediateSuperiorDepartmentId = Employees::where('employee_id', $immediateSuperiorId)->value('department_id');
       $departmentAppraisals = Appraisals::whereHas('employee', function ($query) use ($immediateSuperiorDepartmentId) {
         $query->where('department_id', $immediateSuperiorDepartmentId)->whereIn('evaluation_type', ['is evaluation']);
+      })->get();
+
+      $departmentAppraisalsIC = Appraisals::whereHas('employee', function ($query) use ($immediateSuperiorDepartmentId) {
+        $query->where('department_id', $immediateSuperiorDepartmentId);
       })->get();
 
       $completedKRACount = 0;
@@ -121,7 +126,7 @@ class ISDashboardController extends Controller
         }
       }
 
-      foreach ($departmentAppraisals as $appraisal) {
+      foreach ($departmentAppraisalsIC as $appraisal) {
         $ICCount = Appraisals::where('appraisal_id', $appraisal->appraisal_id)
           ->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
           ->whereNotNull('evaluator_id')
