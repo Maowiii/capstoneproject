@@ -347,13 +347,13 @@
                             populateTable('SR', response.SR);
                             populateTable('S', response.S);
                         } else {
-                            console.log(response.error); // Handle error response
+                            // console.log(response.error); // Handle error response
                         }
                     },
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -363,7 +363,7 @@
                     url: '{{ route('ad.formChecker') }}',
                     type: 'GET',
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.formLocked == true) {
                             $('.content-container button').prop('disabled', true);
                         }
@@ -371,7 +371,7 @@
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -420,12 +420,12 @@
                         type: 'POST',
                         data: data,
                         success: function(response) {
-                            console.log(response); // Handle success response
+                            // console.log(response); // Handle success response
                         },
                         error: function(xhr, status, error) {
                             var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                                 .responseJSON.error : 'An error occurred.';
-                            console.log(errorMessage);
+                            // console.log(errorMessage);
                         }
                     });
                 }
@@ -457,9 +457,9 @@
                         success: function(response) {
                             if (response.success) {
                                 row.remove();
-                                console.log(response.message);
+                                // console.log(response.message);
                             } else {
-                                console.error(response.error);
+                                // console.error(response.error);
                             }
                         },
                         error: function(xhr, status, error) {
@@ -502,16 +502,16 @@
                                 },
                                 success: function(response) {
                                     if (response.success) {
-                                        console.log(response.message);
+                                        // console.log(response.message);
                                         const questionId = response.question_id;
                                         newCell.dataset.questionid = questionId;
-                                        console.log(response);
+                                        // console.log(response);
                                     } else {
-                                        console.error(response.error);
+                                        // console.error(response.error);
                                     }
                                 },
                                 error: function(xhr, status, error) {
-                                    console.error('Error adding question:', error);
+                                    // console.error('Error adding question:', error);
                                 }
                             });
                         });

@@ -285,7 +285,7 @@
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
-                console.log('Selected Year: ' + selectedYear);
+                // console.log('Selected Year: ' + selectedYear);
                 loadDepartmentTable(selectedYear, null);
                 loadICQuestions(selectedYear);
                 loadBCQuestions(selectedYear);
@@ -295,14 +295,14 @@
 
             $('#search').on('input', function() {
                 var query = $(this).val();
-                console.log('Query: ' + query);
+                // console.log('Query: ' + query);
                 loadDepartmentTable(globalSelectedYear, query);
             });
 
             // Employee Trends
             $(document).on('click', '.view-employee-btn', function() {
                 var employeeID = $(this).data('employee-id');
-                console.log('Employee ID: ' + employeeID);
+                // console.log('Employee ID: ' + employeeID);
                 $('#employeeTrendsModal').modal('show');
 
                 $.ajax({
@@ -316,7 +316,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log(response);
+                            // console.log(response);
                             const employee = response.employee;
                             $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
                                 employee.last_name);
@@ -482,7 +482,7 @@
 
             $('#namesearch').on('input', function() {
                 var query = $(this).val();
-                console.log('Name Query: ' + query);
+                // console.log('Name Query: ' + query);
                 loadEmployeesTable(query);
             });
 
@@ -515,7 +515,7 @@
                         $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
                             .totalAppraisals + '</p>');
                     } else {
-                        console.log('Load Cards failed.');
+                        // console.log('Load Cards failed.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -597,7 +597,7 @@
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    console.log(errorMessage);
+                    // console.log(errorMessage);
                 }
             });
         }
@@ -1241,7 +1241,7 @@
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
                         'An error occurred.';
-                    console.log(errorMessage);
+                    // console.log(errorMessage);
                 }
             });
         }

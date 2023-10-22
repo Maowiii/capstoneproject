@@ -223,7 +223,7 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 loadAdminAppraisalsTable(selectedYear, null);
-                console.log('Selected Year: ' + selectedYear);
+                // console.log('Selected Year: ' + selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -490,7 +490,7 @@
                                                         .show();
 
                                                     if (response.success) {
-                                                        console.log(response);
+                                                        // console.log(response);
                                                         $('#SummaryModal').find(
                                                                 '#SE_perc')
                                                             .text(response
@@ -780,7 +780,7 @@
                                                 error: function(xhr, status,
                                                     error) {
                                                     $('#loading').hide();
-                                                    console.log(error);
+                                                    // console.log(error);
                                                 }
                                             });
                                         } else {
@@ -872,7 +872,7 @@
                             );
                             $('#admin_appraisals_table tbody').append(row);
 
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
 
                         var totalPage = response.appraisals.last_page;
@@ -880,7 +880,7 @@
                         var paginationLinks = response.appraisals.links;
 
                         $('#appraisal_pagination').empty();
-                        console.log(response.appraisals);
+                        // console.log(response.appraisals);
                         for (var totalPageCounter = 1; totalPageCounter <=
                             totalPage; totalPageCounter++) {
                             (function(pageCounter) {
@@ -905,7 +905,7 @@
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -919,7 +919,7 @@
             }
 
             function loadSignatureOverview(employeeID, selectedYear = null) {
-                console.log('Load Signature Overview');
+                // console.log('Load Signature Overview');
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1023,20 +1023,20 @@
                             });
 
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
 
             $(document).on('click', '.view-esig-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
-                console.log('Global Selected Year: ' + globalSelectedYear);
+                // console.log('Global Selected Year: ' + globalSelectedYear);
                 loadSignature(appraisalID, globalSelectedYear);
             });
 
@@ -1055,11 +1055,11 @@
                         if (response.success) {
                             $('#modalImage').attr('src', response.sign_data);
                         } else {
-                            console.log('Fail');
+                            // console.log('Fail');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
 
@@ -1071,7 +1071,7 @@
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this);
-                console.log('Appraisal ID for Form Toggle: ' + appraisalID);
+                // console.log('Appraisal ID for Form Toggle: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1090,11 +1090,11 @@
                                 $button.text('Lock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
 
@@ -1106,7 +1106,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID KRA: ' + appraisalID);
+                // console.log('Appraisal ID KRA: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1130,11 +1130,11 @@
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });
@@ -1145,7 +1145,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID PR: ' + appraisalID);
+                // console.log('Appraisal ID PR: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1170,11 +1170,11 @@
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });
@@ -1185,7 +1185,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID EVAL: ' + appraisalID);
+                // console.log('Appraisal ID EVAL: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1210,11 +1210,11 @@
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });

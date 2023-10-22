@@ -191,8 +191,8 @@
             const departmentID = new URLSearchParams(window.location.search).get('department_id');
             const selectedYear = new URLSearchParams(window.location.search).get('sy');
 
-            console.log('Selected Year: ' + selectedYear);
-            console.log('Department ID: ' + departmentID);
+            // console.log('Selected Year: ' + selectedYear);
+            // console.log('Department ID: ' + departmentID);
 
             if (departmentName) {
                 $('#department-heading').text(departmentName);
@@ -273,7 +273,7 @@
                         $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
                             .totalAppraisals + '</p>');
                     } else {
-                        console.log('Load Cards failed.');
+                        // console.log('Load Cards failed.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -454,7 +454,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.ic) {
                             var icTable = $('#ic_table tbody');
                             icTable.empty();

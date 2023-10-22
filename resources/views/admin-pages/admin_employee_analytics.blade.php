@@ -15,8 +15,8 @@
             const employeeID = new URLSearchParams(window.location.search).get('employee_id');
             const selectedYear = new URLSearchParams(window.location.search).get('sy');
 
-            console.log('Selected Year: ' + selectedYear);
-            console.log('Employee ID: ' + employeeID);
+            // console.log('Selected Year: ' + selectedYear);
+            // console.log('Employee ID: ' + employeeID);
 
             if (departmentName) {
                 $('#department-heading').text(departmentName);
@@ -41,7 +41,7 @@
                         $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
                             '</p>');
                     } else {
-                        console.log('Load Cards failed.');
+                        // console.log('Load Cards failed.');
                     }
                 },
                 error: function(xhr, status, error) {

@@ -59,7 +59,7 @@
                     url: '{{ route('ad.formChecker') }}',
                     type: 'GET',
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.formLocked == true) {
                             $('.content-container button').prop('disabled', true);
                         }
@@ -67,7 +67,7 @@
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -100,11 +100,11 @@
                                 tbody.append(row); // Append new row to tbody
                             });
                         } else {
-                            console.log(response.error); // Handle error response
+                            // console.log(response.error); // Handle error response
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error); // Handle Ajax error
+                        // console.log(error); // Handle Ajax error
                     }
                 });
             }
