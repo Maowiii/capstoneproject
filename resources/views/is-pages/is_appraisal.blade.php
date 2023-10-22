@@ -1746,13 +1746,13 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        var row = document.querySelectorAll('#jic_table_body tr')[Math.floor(jic.question_order)];
+                        var row = document.querySelectorAll('#jic_table_body tr')[parseInt(jic.question_order)-1];
                         console.log(row);
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="0"]');
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)-1) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)-1) + '][{{ $appraisalId }}][answer]"][value="0"]');
 
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][comments]"]');
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (parseInt(jic.question_order)-1) + '][{{ $appraisalId }}][comments]"]');
                         console.log(answerRadioYes);
                         console.log(answerRadioNo);
                         console.log(commentTextarea);
