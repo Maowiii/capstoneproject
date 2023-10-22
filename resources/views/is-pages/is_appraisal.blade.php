@@ -745,34 +745,7 @@
         textareaElement4.innerText = valueToDisplay4;
 
         // Apply required attribute to specific fields
-        $('textarea[name*="comments"]').attr('required', 'required');
         $('input[type="radio"]').attr('required', 'required');
-
-        // Handle validation for radio buttons
-        $('input[type="radio"]').on('change', function () {
-            const radioName = $(this).attr('name');
-
-            // Check if any radio button with the same name is checked
-            if ($(`input[name="${radioName}"]:checked`).length === 0) {
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
-                $(this).closest('input[type="radio"]').removeClass('is-invalid');
-                $(this).closest('input[type="radio"][value="1"]').removeClass('is-invalid');
-                $(this).closest('input[type="radio"][value="0"]').removeClass('is-invalid');
-                $(this).closest('td').removeClass('border border-danger');
-            }
-        });
-
-        // Handle validation for textareas
-        $('textarea[name*="comments"]').on('input', function () {
-            if ($(this).val().trim() === '') {
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
-                $(this).closest('td').removeClass('border border-danger"');
-            }
-        });
 
         //////////////EULA///////////////
         let confirmationMode = false;
@@ -1775,16 +1748,18 @@
                             //     $(this).siblings('span').addClass('text-danger');
                             // });
 
-                            $(answerRadioYes).on('input', function() {
-                                $(this).removeClass('is-invalid');
-                                $(this).closest('input[type="radio"]').removeClass('is-invalid');
-                                $(this).closest('td').removeClass('border border-danger');
+                            $(answerRadioYes).on('change', function() {
+                                // Handle the change event for "Yes" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
                             });
 
-                            $(answerRadioNo).on('input', function() {
-                                $(this).removeClass('is-invalid');
-                                $(this).closest('input[type="radio"]').removeClass('is-invalid');
-                                $(this).closest('td').removeClass('border border-danger');
+                            $(answerRadioNo).on('change', function() {
+                                // Handle the change event for "No" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
                             });
 
                             if (commentTextarea) {
