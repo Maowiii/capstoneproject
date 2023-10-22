@@ -1165,14 +1165,6 @@
                         // Handle validation messages for invalid inputs
                         console.error('Validation failed for', invalidInput.name, ':', invalidInput
                             .validationMessage);
-
-                        $invalidInputs.on('input', function() {
-                            $invalidInputs.removeClass('is-invalid');
-                            $invalidInputs.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
-                            $invalidInputs.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
-                            $invalidInputs.find('.form-check-input').removeClass('is-invalid');
-                            $invalidInputs.closest('td').removeClass('border border-danger');
-                        });
                     });
 
                     // Optionally, focus on the first invalid input
