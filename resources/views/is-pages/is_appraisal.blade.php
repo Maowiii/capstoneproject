@@ -1746,7 +1746,7 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        var row = document.querySelectorAll('#jic_table_body tr')[jic.question_order];
 
                         var answerRadioYes = row.querySelector('input[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][answer]"][value="1"]');
                         var answerRadioNo = row.querySelector('input[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][answer]"][value="0"]');
@@ -1755,7 +1755,6 @@
                         console.log(answerRadioYes);
                         console.log(answerRadioNo);
                         console.log(commentTextarea);
-
 
                         if (row) {
                             if (jic.answer === 1) {
