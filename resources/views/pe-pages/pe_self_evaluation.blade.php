@@ -2089,51 +2089,53 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        jicID = parseInt(jic.question_order)-1;
+                        
+                        var row = document.querySelectorAll('#jic_table_body tr')[jicID];
+
+                        var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
+
+                        var commentTextarea = row.querySelector('textarea[name^="comments"]');
 
                         if (row) {
-                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                    1) +
-                                '][{{ $appraisalId }}][answer]"][value="1"]');
-                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                    1) +
-                                '][{{ $appraisalId }}][answer]"][value="0"]');
-
                             if (jic.answer === 1) {
                                 answerRadioYes.checked = true;
                             } else if (jic.answer === 0) {
                                 answerRadioNo.checked = true;
                             }
 
-                            $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
+                            // $(answerRadioYes).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
-                            $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                            });
+                            // $(answerRadioNo).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
                             $(answerRadioYes).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                // Handle the change event for "Yes" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
                             $(answerRadioNo).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                // Handle the change event for "No" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
-                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                                index +
-                                1) + '][{{ $appraisalId }}][comments]"]');
-                            commentTextarea.value = jic.comments;
+                            if (commentTextarea) {
+                                commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                            }
 
                             // Attach input event handlers for validation
                             $(commentTextarea).on('input', function() {
@@ -2142,15 +2144,25 @@
                             }).on('invalid', function() {
                                 $(this).addClass('is-invalid');
                                 $(this).attr('placeholder', 'Please provide a valid input');
+                            }).on('change', function() {
+                                if ($(this).val().trim() === '') {
+                                    $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
+                                }
                             }).on('blur', function() {
                                 if ($(this).val().trim() === '') {
                                     $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
                                 }
                             });
-
+                        } else {
+                            commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;
-                            commentTextarea.required = true;
+                            
+                            // console.log('Row not found for index ' + index);
                         }
                     });
 
