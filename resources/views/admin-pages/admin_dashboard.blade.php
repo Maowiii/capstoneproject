@@ -1033,6 +1033,7 @@
                     selectedYear: selectedYear,
                 },
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
                         const categories = [{
                                 label: 'Outstanding',
