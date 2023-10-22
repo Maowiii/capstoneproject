@@ -1151,6 +1151,11 @@
                             invalidInputs.focus();
                         });   
                     }
+                    invalidInputs.each(function(index, invalidInput) {
+                            // Handle validation messages for invalid inputs
+                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                        });  
+
                     console.error('Form validation failed.');
                 } else {
                     // Form validation succeeded
