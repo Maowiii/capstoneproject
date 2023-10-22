@@ -769,7 +769,7 @@
                 $(this).addClass('is-invalid');
             } else {
                 $(this).removeClass('is-invalid');
-                $(this).closest('tr').removeClass('text-danger fw-bold');
+                $(this).closest('tr').removeClass('border border-danger"');
             }
         });
 
@@ -1312,7 +1312,6 @@
                 });
             });
 
-
             $('#jic_table_body').on('change', '.autosave-field', function() {
                 var field = $(this);
                 var jicID = field.attr('name').match(/\d+/)[0];
@@ -1335,8 +1334,8 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        // Handle the success response if needed
-                    },
+                        console.log('Autosave successful.');
+                        console.log('FieldName Acquired: ' + fieldName);                    },
                     error: function(xhr, status, error) {
                         console.log('{{ route('autosaveLDPField') }}');
 
