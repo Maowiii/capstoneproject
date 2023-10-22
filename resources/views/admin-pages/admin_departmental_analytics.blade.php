@@ -27,7 +27,7 @@
         <!-- Point System -->
         <div class="content-container">
             <h2>Point System:</h2>
-            <h4>Oustanding Employees:</h4>
+            <h4>Outstanding Employees:</h4>
             <div class="table-wrapper">
                 <div class="table-responsive">
                     <table class="table table-sm" id="outstanding_table">

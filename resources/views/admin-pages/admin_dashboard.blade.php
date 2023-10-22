@@ -96,7 +96,7 @@
         <!-- Point System -->
         <div class="content-container">
             <h2>Point System:</h2>
-            <h4>Oustanding:</h4>
+            <h4>Outstanding:</h4>
             <div class="table-responsive">
                 <div class="table-wrapper">
                     <table class="table table-sm" id="outstanding_table">
