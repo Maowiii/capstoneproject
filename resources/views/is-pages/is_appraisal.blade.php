@@ -1749,7 +1749,6 @@
                         jicID = parseInt(jic.question_order)-1;
                         
                         var row = document.querySelectorAll('#jic_table_body tr')[jicID];
-                        console.log(row);
 
                         var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
                         var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
