@@ -595,12 +595,12 @@
                                     </thead>
                                     <tbody>
                                         <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
-                                            <td id="partiescell_JIC">Evaluator</td>
-                                            <td id="fullnamecell_JIC"></td>
-                                            <td id="signcell_JIC" class="sign-cell">
+                                            <td id="partiescell">Evaluator</td>
+                                            <td id="fullnamecell"></td>
+                                            <td id='signcell' class="sign-cell">
                                                 <img src="" width="100" id="signatureImage" />
                                             </td>
-                                            <td id="datecell_JIC"></td>
+                                            <td id="datecell" class="date-cell"></td>
                                         </tr>
                                     </tbody>
                                 </table>
