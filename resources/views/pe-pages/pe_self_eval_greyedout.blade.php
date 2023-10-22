@@ -594,31 +594,31 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                        <!-- <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
                                             <td id="partiescell_JIC">Job Incumbent</td>
                                             <td id="fullnamecell_JIC"></td>
                                             <td id="signcell_JIC" class="sign-cell">
                                             </td>
                                             <td id="datecell_JIC"></td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
-                                            <td id="partiescell">Immediate Superior</td>
+                                            <td id="partiescell">Evaluator</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'>
                                                 <img src="" width="100" id="signatureImage" />
                                             </td>
                                             <td id="datecell" class="date-cell"></td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td id="partiescell_">Next Higher Superior</td>
                                             <td id="fullnamecell_"></td>
                                             <td id='signcell_'></td>
                                             <td id="datecell_" style="width:15%"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
-                            <h3>Notation</h3>
+                            <!-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -636,7 +636,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <!-- <div class="modal-footer">
