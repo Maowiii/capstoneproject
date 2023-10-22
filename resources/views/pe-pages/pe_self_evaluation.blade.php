@@ -1115,10 +1115,18 @@
                         valid = false;
                         console.error('Validation failed for', inputElement.name,
                             ': This field is required.');
-                            
+
                         $(inputElement).addClass('is-invalid');
                         $(inputElement).closest('td').addClass('border border-danger');
                         inputElement.focus();
+
+                        $inputElement.on('input', function() {
+                            $inputElement.removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                            $inputElement.find('.form-check-input').removeClass('is-invalid');
+                            $inputElement.closest('td').removeClass('border border-danger');
+                        });
                     }
                 });
 
@@ -1135,6 +1143,14 @@
                         $(inputElement).addClass('is-invalid');
                         $(inputElement).closest('td').addClass('border border-danger');
                         inputElement.focus();
+
+                        $inputElement.on('input', function() {
+                            $inputElement.removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                            $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                            $inputElement.find('.form-check-input').removeClass('is-invalid');
+                            $inputElement.closest('td').removeClass('border border-danger');
+                        });
                     }
                 });
 
@@ -1149,6 +1165,14 @@
                         // Handle validation messages for invalid inputs
                         console.error('Validation failed for', invalidInput.name, ':', invalidInput
                             .validationMessage);
+
+                        $invalidInputs.on('input', function() {
+                            $invalidInputs.removeClass('is-invalid');
+                            $invalidInputs.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                            $invalidInputs.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                            $invalidInputs.find('.form-check-input').removeClass('is-invalid');
+                            $invalidInputs.closest('td').removeClass('border border-danger');
+                        });
                     });
 
                     // Optionally, focus on the first invalid input
