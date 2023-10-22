@@ -1748,12 +1748,12 @@
                     data.jicData.forEach(function(jic, index) {
                         console.log(jic.question_order);
 
-                        var row = document.querySelectorAll('#jic_table_body tr')[jic.question_order];
+                        var row = document.querySelectorAll('#jic_table_body tr')[parseInt(jic.question_order)];
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][answer]"][value="0"]');
+                        var answerRadioYes = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][answer]"][value="0"]');
 
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (jic.question_order) + '][{{ $appraisalId }}][comments]"]');
+                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (parseInt(jic.question_order)) + '][{{ $appraisalId }}][comments]"]');
                         console.log(answerRadioYes);
                         console.log(answerRadioNo);
                         console.log(commentTextarea);
