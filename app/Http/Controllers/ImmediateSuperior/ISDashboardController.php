@@ -105,6 +105,9 @@ class ISDashboardController extends Controller
         $query->where('department_id', $immediateSuperiorDepartmentId);
       })->get();
 
+      $departmentAppraisals = Appraisals::where('evaluator_id', $accountId)
+        ->whereIn('evaluation_type', ['is evaluation']);
+
       $completedKRACount = 0;
       $assignedICCount = 0;
       $totalICCount = 0;
@@ -132,7 +135,7 @@ class ISDashboardController extends Controller
         }
       }
 
-      foreach ($totalAppraisalCount as $appraisal) {
+      foreach ($departmentAppraisals as $appraisal) {
         $kraCount = KRA::where('appraisal_id', $appraisal->appraisal_id)
           ->whereNotNull('kra')
           ->whereNotNull('kra_weight')
