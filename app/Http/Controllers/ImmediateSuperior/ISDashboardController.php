@@ -114,7 +114,7 @@ class ISDashboardController extends Controller
       $assignedICCount = 0;
       $totalICCount = 0;
 
-      foreach ($departmentAppraisals as $appraisal) {
+      foreach ($departmentAppraisalsIC as $appraisal) {
         $appraisalID = $appraisal->appraisal_id;
         $ICCount = Appraisals::where('appraisal_id', $appraisalID)
           ->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
