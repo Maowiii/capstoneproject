@@ -46,12 +46,12 @@
     <!-- Departments Table -->
     <div class="content-container">
         <div class="table-responsive">
-        <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Department" id="search">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
-        </div>
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Department" id="search">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
             <table class='table table-bordered table-sm align-middle' id="departments_table">
                 <thead>
                     <tr>
@@ -70,12 +70,12 @@
     <!-- Employees Table -->
     <div class="content-container">
         <div class="table-responsive">
-        <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Name" id="namesearch">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
-        </div>
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Name" id="namesearch">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
             <table class='table table-bordered table-sm align-middle' id="employees_table">
                 <thead>
                     <tr>
@@ -207,14 +207,14 @@
         <div class="content-container">
             <h4>Solidarity</h4>
             <div class="table-responsive">
-            <table class="table table-sm mb-3" id="s_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+                <table class="table table-sm mb-3" id="s_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
         <div class="content-container">
@@ -227,14 +227,14 @@
         <div class="content-container">
             <h2>Internal Customers:</h2>
             <div class="table-responsive">
-            <table class="table table-sm mb-3" id="ic_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+                <table class="table table-sm mb-3" id="ic_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
         <div class="content-container">
@@ -1102,21 +1102,23 @@
                         categories.forEach(category => {
                             const table = $(category.tableId);
                             table.empty();
-                            const row = $("<tr class='text-center'>");
 
                             if (response[category.key].length > 0) {
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
+                                    const row = $("<tr class='text-center'>");
                                     row.append($("<td>").text(fullName));
                                     row.append($("<td>").text(item.final_score));
-                                    table.append(row.clone());
+                                    table.append(row);
                                 });
                             } else {
+                                const row = $("<tr class='text-center'>");
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }
                         });
+
                     } else {
                         var outstandingTable = $('#outstanding_table tbody');
                         var verySatisfactoryTable = $('#verySatisfactory_table tbody');
