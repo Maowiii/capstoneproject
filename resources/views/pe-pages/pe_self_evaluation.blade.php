@@ -1106,7 +1106,6 @@
                             .validationMessage);
 
                         $(inputElement).addClass('is-invalid');
-                        $(inputElement).closest('td').addClass('border border-danger');
                         inputElement.focus();
                     }
 
@@ -2107,13 +2106,12 @@
                             }
 
                             $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
+                                $(this).addClass('is-invalid');
                                 $(this).siblings('span').addClass('text-danger');
                             });
 
                             $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
-                                $(this).siblings('span').addClass('text-danger');
+                                $(this).addClass('is-invalid');
                             });
 
                             $(answerRadioYes).on('input', function() {
