@@ -310,11 +310,11 @@
                             $('#resetPasswordModal').modal('hide');
                         });
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -331,7 +331,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log('Password reset successfully.');
+                        // console.log('Password reset successfully.');
                         var toast = $('<div>').addClass(
                                 'toast align-items-center text-bg-primary border-0')
                             .attr('role', 'alert').attr('aria-live', 'assertive').attr(
@@ -348,11 +348,11 @@
                         var toastInstance = new bootstrap.Toast(toast[0]);
                         toastInstance.show();
                     } else {
-                        console.log('Password reset failed.');
+                        // console.log('Password reset failed.');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log('Error:', error);
+                    // console.log('Error:', error);
                 }
             });
         }
@@ -381,11 +381,11 @@
                         }
                         loadTableData();
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -396,7 +396,7 @@
             $(document).on('click', '.edit-btn', function() {
                 var employeeId = $(this).attr('employee-id');
                 selectedEmployeeId = employeeId;
-                console.log('Employee ID: ' + employeeId);
+                // console.log('Employee ID: ' + employeeId);
                 $('#addUserModal').modal('show');
                 $('#save-user-btn').removeClass('d-none');
                 $('#add-user-btn').addClass('d-none');
@@ -424,11 +424,11 @@
                             }
                             $('#department').val(response.employee.department_id);
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('Error: ' + error);
+                        // console.log('Error: ' + error);
                     }
                 });
             });
@@ -469,20 +469,20 @@
                         department: department
                     },
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.success) {
                             $('#addUserModalTitle').text('Add New User')
                             $('#addUserModal').modal('hide');
                             $('#addUserModal').hide();
                             loadTableData();
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
 
                             $('#add-user-btn').removeClass('d-none');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('Error: ' + error);
+                        // console.log('Error: ' + error);
                     }
                 });
             });

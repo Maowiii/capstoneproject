@@ -792,7 +792,7 @@
                 const consent2 = $('#consent2').prop('checked');
                 const consent3 = $('#consent3').prop('checked');
                 const consent4 = $('#consent4').prop('checked');
-                console.log(consent1 + ' ' + consent2 + ' ' + consent3 + ' ' + consent4);
+                // console.log(consent1 + ' ' + consent2 + ' ' + consent3 + ' ' + consent4);
 
                 if (consent1 && consent2 && consent3 && consent4) {
                     // Remove is-invalid class if checkboxes are checked
@@ -810,7 +810,7 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         success: function(response) {
-                            console.log('Data Privacy Accepted.');
+                            // console.log('Data Privacy Accepted.');
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -1081,12 +1081,12 @@
 
             // Function to open the modal
             function openModal() {
-                console.log('submit clicked');
+                // console.log('submit clicked');
                 $('#signatory_modal').modal('show');
             }
 
             $('.common-close-button').on('click', function() {
-                console.log('close clicked');
+                // console.log('close clicked');
                 var $modal = $(this).closest('.modal');
                 $modal.addClass('modal fade hide');
                 $modal.modal('hide');
@@ -1173,17 +1173,17 @@
             ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
                 var kraField = $(this);
-                console.log('kraField.closest()');
-                console.log(kraField.closest('tr'));
+                // console.log('kraField.closest()');
+                // console.log(kraField.closest('tr'));
 
                 var kraID = kraField.closest('tr').attr('data-field-id');
                 var fieldName = kraField.data('field-name');
                 var fieldValue = kraField.val();
 
                 // Log the field name, ID, and value
-                console.log('Field Name:', fieldName);
-                console.log('CURRENT KRA ID:', kraID);
-                console.log('Field Value:', fieldValue);
+                // console.log('Field Name:', fieldName);
+                // console.log('CURRENT KRA ID:', kraID);
+                // console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -1203,12 +1203,12 @@
                         kraField.closest('tr').attr('data-field-id', response.kraData.kra_id);
 
                         var kraID = kraField.closest('tr').attr('data-field-id');
-                        console.log('NEW KRA ID:', kraID);
+                        // console.log('NEW KRA ID:', kraID);
                     },
                     error: function(xhr, status, error) {
 
                         // Handle errors if any
-                        console.error('Autosave failed:', error);
+                        // console.error('Autosave failed:', error);
                     }
                 });
             });
@@ -1221,9 +1221,9 @@
                 var fieldValue = wpafield.val();
 
                 // Log the field name, ID, and value
-                console.log('WPA ID Before Update:', wppID);
-                console.log('Field Name:', fieldName);
-                console.log('Field Value:', fieldValue);
+                // console.log('WPA ID Before Update:', wppID);
+                // console.log('Field Name:', fieldName);
+                // console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -1257,9 +1257,9 @@
                 var fieldValue = field.val();
 
                 // Log the field name, ID, and value
-                console.log('LDP ID Before Update:', ldpID);
-                console.log('Field Name:', fieldName);
-                console.log('Field Value:', fieldValue);
+                // console.log('LDP ID Before Update:', ldpID);
+                // console.log('Field Name:', fieldName);
+                // console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -1280,10 +1280,10 @@
 
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveLDPField') }}');
+                        // console.log('{{ route('autosaveLDPField') }}');
 
                         // Handle errors if any
-                        console.error('Autosave failed:', error);
+                        // console.error('Autosave failed:', error);
                     }
                 });
             });
@@ -1310,13 +1310,13 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);                    },
+                        // console.log('Autosave successful.');
+                        // console.log('FieldName Acquired: ' + fieldName);                    },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveLDPField') }}');
+                        // console.log('{{ route('autosaveLDPField') }}');
 
                         // Handle errors if any
-                        console.error('Autosave failed:', error);
+                        // console.error('Autosave failed:', error);
                     }
                 });
             });
@@ -1417,16 +1417,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1511,16 +1511,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1605,16 +1605,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1641,7 +1641,7 @@
             success: function(data) {
                 if (data.success) {
                     if (data.eulaData == 1 || data.eulaData == true) {
-                        console.log('HIDE');
+                        // console.log('HIDE');
                         $('#consentform').remove();
                     } else {
                         $('#consentform').modal('show');
@@ -1682,7 +1682,7 @@
                         if (wparowCount === 1) {
                             $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
                         }
-                        console.log(wparowCount);
+                        // console.log(wparowCount);
                     } else {
                         data.wpaData.forEach(function(wpa, index) {
                             addNewWPARow(wpa)
@@ -1991,7 +1991,7 @@
                 //     label));
 
                 if (Math.abs((kraData && kraData.performance_level) ? parseInt(kraData.performance_level) - i : 1) < 1) {
-                    console.log((kraData && kraData.performance_level) ? kraData.performance_level : 0 == 1);
+                    // console.log((kraData && kraData.performance_level) ? kraData.performance_level : 0 == 1);
                     input.prop('checked', true);
                 }
 
@@ -2199,7 +2199,7 @@
         }
 
         function updateWeightedTotal() {
-            console.log("updateWeightedTotal() called");
+            // console.log("updateWeightedTotal() called");
 
             var totalWeight = 0;
             var totalWeighted = 0;
@@ -2255,11 +2255,11 @@
                     appraisalId: {{ $appraisalId }}
                 },
                 success: function(response) {
-                    console.log("PHASE");
-                    console.log(response);
+                    // console.log("PHASE");
+                    // console.log(response);
 
-                    console.log(response.submitionChecker);
-                    console.log(Object.values(response.locks).every(lock => !lock));
+                    // console.log(response.submitionChecker);
+                    // console.log(Object.values(response.locks).every(lock => !lock));
 
                     if (response.submitionChecker && Object.values(response.locks).every(lock => !lock)) {
                         $('select').prop('disabled', true);
@@ -2340,8 +2340,8 @@
                         }
                     }
 
-                    console.log("LOCK");
-                    console.log(response.locks);
+                    // console.log("LOCK");
+                    // console.log(response.locks);
 
                     if (response.locks.kra) {
                         $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', false);
@@ -2402,7 +2402,7 @@
                         // Append the error div to a specific element (e.g., the body)
                         errorDiv.appendTo('.content-section');
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });

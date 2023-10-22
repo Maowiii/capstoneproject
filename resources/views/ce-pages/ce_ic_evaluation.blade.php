@@ -148,12 +148,12 @@
                             formChecker();
 
                         } else {
-                            console.log('Failed');
+                            // console.log('Failed');
                         }
                         totalScore();
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }
@@ -198,7 +198,7 @@
 
                     formChecker(); // Call formChecker once the data is loaded
                 } else {
-                    console.log('Error:' + response.error);
+                    // console.log('Error:' + response.error);
                 }
             });
         });
@@ -226,7 +226,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -269,7 +269,7 @@
                         success: function(response) {
                             if (response.success) {
                                 loadSignature();
-                                console.log('Esignature Updated.');
+                                // console.log('Esignature Updated.');
                                 formChecker();
                             }
                         },
@@ -296,21 +296,21 @@
                     appraisalId: appraisalId
                 },
                 success: function(response) {
-                    console.log('Backend updated successfully.');
+                    // console.log('Backend updated successfully.');
                     $('#comments_area').removeClass('is-invalid');
                 },
                 error: function(xhr) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        // console.log('Error: ' + xhr.responseText);
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });
         }
 
         function updateService(value) {
-            console.log(value);
+            // console.log(value);
             var urlParams = new URLSearchParams(window.location.search);
             var appraisalId = urlParams.get('appraisal_id');
 
@@ -325,14 +325,14 @@
                     appraisalId: appraisalId
                 },
                 success: function(response) {
-                    console.log('Backend updated successfully.');
+                    // console.log('Backend updated successfully.');
                     $('#service_area').removeClass('is-invalid');
                 },
                 error: function(xhr) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        // console.log('Error: ' + xhr.responseText);
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });
@@ -368,14 +368,14 @@
                         $('#service_area').val(response.customerService);
                         $('#comments_area').val(response.suggestion);
                     } else {
-                        console.log('Comments not found or an error occurred.');
+                        // console.log('Comments not found or an error occurred.');
                     }
                 },
                 error: function(xhr) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        // console.log('Error: ' + xhr.responseText);
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });
@@ -390,7 +390,7 @@
             var radioButtonId = clickedRadio.attr('id');
             var questionId = radioButtonId.split('_')[1];
             var score = clickedRadio.val();
-            console.log('Question ID: ', questionId);
+            // console.log('Question ID: ', questionId);
 
             $.ajax({
                 headers: {
@@ -404,16 +404,16 @@
                     appraisalId: appraisalId
                 },
                 success: function(response) {
-                    console.log('Score saved for question ID:', questionId);
+                    // console.log('Score saved for question ID:', questionId);
                     clickedRadio.closest('tr').removeClass(
                         'table-danger');
                     totalScore();
                 },
                 error: function(xhr) {
                     if (xhr.responseText) {
-                        console.log('Error: ' + xhr.responseText);
+                        // console.log('Error: ' + xhr.responseText);
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });
@@ -434,7 +434,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log('success');
+                        // console.log('success');
                         $('#signtable tbody').empty();
                         var newRow = $('<tr>').addClass('align-middle');
                         newRow.append($('<td>').text('Internal Customer'));
@@ -468,12 +468,12 @@
                         $('#signtable tbody').append(newRow);
 
                     } else {
-                        console.log('fail');
+                        // console.log('fail');
                     }
                 },
 
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -537,7 +537,7 @@
 
                 $('#signatory_modal').modal('show');
             } else {
-                console.log('Please complete all fields and select all radio buttons.');
+                // console.log('Please complete all fields and select all radio buttons.');
             }
         });
 

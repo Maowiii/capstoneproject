@@ -156,7 +156,7 @@
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
                     var totalWeightedScore = $('#total-weighted-score').val();
-                    console.log('Total Weighted Score: ' + totalWeightedScore);
+                    // console.log('Total Weighted Score: ' + totalWeightedScore);
 
                     if (fileInput.files.length === 0) {
                         $('#esig').addClass('is-invalid');
@@ -181,10 +181,10 @@
                                 success: function(response) {
                                     if (response.success) {
                                         loadSignature();
-                                        console.log('Esignature Updated.');
+                                        // console.log('Esignature Updated.');
                                         formChecker();
                                     } else {
-                                        console.log('Esignature Updated bot else');
+                                        // console.log('Esignature Updated bot else');
                                     }
                                 },
                                 error: function(xhr, status, error) {}
@@ -210,21 +210,21 @@
                             appraisalId: appraisalId
                         },
                         success: function(response) {
-                            console.log('Backend updated successfully.');
+                            // console.log('Backend updated successfully.');
                             $('#comments_area').removeClass('is-invalid');
                         },
                         error: function(xhr) {
                             if (xhr.responseText) {
-                                console.log('Error: ' + xhr.responseText);
+                                // console.log('Error: ' + xhr.responseText);
                             } else {
-                                console.log('An error occurred.');
+                                // console.log('An error occurred.');
                             }
                         }
                     });
                 }
 
                 function updateService(value) {
-                    console.log(value);
+                    // console.log(value);
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
 
@@ -239,14 +239,14 @@
                             appraisalId: appraisalId
                         },
                         success: function(response) {
-                            console.log('Backend updated successfully.');
+                            // console.log('Backend updated successfully.');
                             $('#service_area').removeClass('is-invalid');
                         },
                         error: function(xhr) {
                             if (xhr.responseText) {
-                                console.log('Error: ' + xhr.responseText);
+                                // console.log('Error: ' + xhr.responseText);
                             } else {
-                                console.log('An error occurred.');
+                                // console.log('An error occurred.');
                             }
                         }
                     });
@@ -282,14 +282,14 @@
                                 $('#service_area').val(response.customerService);
                                 $('#comments_area').val(response.suggestion);
                             } else {
-                                console.log('Comments not found or an error occurred.');
+                                // console.log('Comments not found or an error occurred.');
                             }
                         },
                         error: function(xhr) {
                             if (xhr.responseText) {
-                                console.log('Error: ' + xhr.responseText);
+                                // console.log('Error: ' + xhr.responseText);
                             } else {
-                                console.log('An error occurred.');
+                                // console.log('An error occurred.');
                             }
                         }
                     });
@@ -304,7 +304,7 @@
                     var radioButtonId = clickedRadio.attr('id');
                     var questionId = radioButtonId.split('_')[1];
                     var score = clickedRadio.val();
-                    console.log('Question ID: ', questionId);
+                    // console.log('Question ID: ', questionId);
 
                     $.ajax({
                         headers: {
@@ -318,16 +318,16 @@
                             appraisalId: appraisalId
                         },
                         success: function(response) {
-                            console.log('Score saved for question ID:', questionId);
+                            // console.log('Score saved for question ID:', questionId);
                             clickedRadio.closest('tr').removeClass(
                                 'table-danger');
                             totalScore();
                         },
                         error: function(xhr) {
                             if (xhr.responseText) {
-                                console.log('Error: ' + xhr.responseText);
+                                // console.log('Error: ' + xhr.responseText);
                             } else {
-                                console.log('An error occurred.');
+                                // console.log('An error occurred.');
                             }
                         }
                     });
@@ -370,11 +370,11 @@
                                 });
 
                             } else {
-                                console.log('Error:' + response.error);
+                                // console.log('Error:' + response.error);
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.log(error);
+                            // console.log(error);
                         }
                     });
                 }
@@ -383,7 +383,7 @@
                     var urlParams = new URLSearchParams(window.location.search);
                     var appraisalId = urlParams.get('appraisal_id');
 
-                    console.log(appraisalId);
+                    // console.log(appraisalId);
                     $.ajax({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -405,7 +405,7 @@
                             totalScore();
                         },
                         error: function(xhr, status, error) {
-                            console.log(error);
+                            // console.log(error);
                         }
                     });
                 }
@@ -433,7 +433,7 @@
                                 $('#modalImage').attr('src', response.sign_data);
 
                                 if (response.sign_data) {
-                                    console.log('Response Data Received');
+                                    // console.log('Response Data Received');
                                     $('#cancel-btn').hide();
                                     $('#esig-submit-btn').hide();
                                     newRow.append($('<td>').addClass('align-middle').html(
@@ -442,7 +442,7 @@
                                         '</button>'
                                     ));
                                 } else {
-                                    console.log('Response data not received');
+                                    // console.log('Response data not received');
                                     newRow.append($('<td>').addClass('align-middle').html(
                                         '<div>' +
                                         '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
@@ -460,11 +460,11 @@
                                 $('#signtable tbody').append(newRow);
 
                             } else {
-                                console.log('fail');
+                                // console.log('fail');
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.log(error);
+                            // console.log(error);
                         }
                     });
                 }
@@ -474,7 +474,7 @@
                     var appraisalId = urlParams.get('appraisal_id');
                     var appraiseeId = urlParams.get('appraisee_account_id');
 
-                    console.log('Appraisal ID: ' + appraisalId)
+                    // console.log('Appraisal ID: ' + appraisalId)
 
                     $.ajax({
                         headers: {
@@ -487,7 +487,7 @@
                             appraiseeId: appraiseeId,
                         },
                         success: function(response) {
-                            console.log(response.hasPermission);
+                            // console.log(response.hasPermission);
                             if (response.form_submitted) {
                                 $('input[type="radio"]').prop('disabled', true);
                                 $('textarea').prop('disabled', true);
@@ -508,7 +508,7 @@
 
                         },
                         error: function(xhr, status, error) {
-                            console.log(error);
+                            // console.log(error);
                         }
                     });
                 }
@@ -538,7 +538,7 @@
 
                 $('#submit-btn').on('click', function() {
                     var totalWeightedScore = $('#total-weighted-score').val();
-                    console.log('Total Weighted Score: ' + totalWeightedScore);
+                    // console.log('Total Weighted Score: ' + totalWeightedScore);
                     $('#IC_table td').removeClass('is-invalid');
                     $('#service_area, #comments_area').removeClass(
                         'is-invalid');
@@ -576,7 +576,7 @@
                         loadSignature();
                         $('#signatory_modal').modal('show');
                     } else {
-                        console.log('Please complete all fields and select all radio buttons.');
+                        // console.log('Please complete all fields and select all radio buttons.');
                     }
                 });
 

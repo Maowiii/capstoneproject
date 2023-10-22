@@ -47,7 +47,7 @@
                 dataType: "json",
                 success: function(data) {
                     if (data.success) {
-                        console.log(data);
+                        // console.log(data);
 
                         var tableBody = $('#ic_overview_body');
                         tableBody.empty();
@@ -120,7 +120,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         });

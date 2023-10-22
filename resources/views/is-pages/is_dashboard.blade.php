@@ -76,14 +76,14 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log('Position Submitted');
+                            // console.log('Position Submitted');
                             $('#firstLoginModal').modal('hide');
                         } else {
 
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }
@@ -114,7 +114,7 @@
                         });
                     }
                     if (response.data) {
-                        console.log(response.data);
+                        // console.log(response.data);
 
                         var totalICCount = response.data.totalICCount;
                         var assignedICCount = response.data.assignedICCount;
@@ -137,7 +137,7 @@
 
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }

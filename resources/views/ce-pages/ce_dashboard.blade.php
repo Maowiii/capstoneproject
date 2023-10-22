@@ -92,7 +92,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -123,7 +123,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -158,14 +158,14 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log('Job Title Submitted');
+                            // console.log('Job Title Submitted');
                             $('#firstLoginModal').modal('hide');
                         } else {
 
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }

@@ -43,7 +43,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log(response);
+                            // console.log(response);
 
                             var tableBody = $('#ic_overview_body');
                             tableBody.empty();
@@ -140,11 +140,11 @@
                                 })(totalPageCounter);
                             }
                         } else {
-                            console.log(response.error);
+                            // console.log(response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }

@@ -135,12 +135,12 @@
                         type: 'POST',
                         data: data,
                         success: function(response) {
-                            console.log(response); // Handle success response
+                            // console.log(response); // Handle success response
                         },
                         error: function(xhr, status, error) {
                             var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                                 .responseJSON.error : 'An error occurred.';
-                            console.log(errorMessage);
+                            // console.log(errorMessage);
                         }
                     });
                 }
@@ -172,9 +172,9 @@
                         success: function(response) {
                             if (response.success) {
                                 row.remove();
-                                console.log(response.message);
+                                // console.log(response.message);
                             } else {
-                                console.error(response.error);
+                                // console.error(response.error);
                             }
                         },
                         error: function(xhr, status, error) {
@@ -219,12 +219,12 @@
                                 },
                                 success: function(response) {
                                     if (response.success) {
-                                        console.log(response.message);
+                                        // console.log(response.message);
                                         questionId = response
                                             .question_id; // Assign the questionId globally
                                         newCell.dataset.questionid = questionId;
                                     } else {
-                                        console.error(response.error);
+                                        // console.error(response.error);
                                     }
                                 },
                                 error: function(xhr, status, error) {

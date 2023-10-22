@@ -747,7 +747,7 @@
 
             // Function to open the modal
             function openModal() {
-                console.log('submit clicked');
+                // console.log('submit clicked');
                 $('#signatory_modal').modal('show');
             }
         });
@@ -985,7 +985,7 @@
                             $('#kra_table tbody tr .delete-btn').prop('disabled', true);
                         }
                     } else {
-                        console.log(data);
+                        // console.log(data);
                         data.kraData.forEach(function(kra, index) {
                             var kraID = kra.kra_id;
 
@@ -1576,7 +1576,7 @@
         }
 
         function updateWeightedTotal() {
-            console.log("updateWeightedTotal() called");
+            // console.log("updateWeightedTotal() called");
 
             var totalWeight = 0;
             var totalWeighted = 0;
@@ -1594,7 +1594,7 @@
                     totalWeight += weight;
                     totalWeighted += weightedValue;
 
-                    console.log(weightedValue);
+                    // console.log(weightedValue);
 
                     row.find('textarea[name^="KRA"][name$="[KRA_weighted_total]"]')
                         .val(weightedValue.toFixed(2));
