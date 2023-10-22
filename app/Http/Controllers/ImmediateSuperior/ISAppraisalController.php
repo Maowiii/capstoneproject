@@ -214,7 +214,7 @@ class ISAppraisalController extends Controller
       'feedback.*' => 'required|array',
       'feedback.*.*.question' => 'required|string',
       'feedback.*.*.answer' => 'required|numeric',
-      'feedback.*.*.comments' => 'required|string',
+      // 'feedback.*.*.comments' => 'required|string',
     ], [
       // Custom error messages
     ]);
