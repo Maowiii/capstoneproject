@@ -163,7 +163,7 @@ class ISDashboardController extends Controller
         $notifications[] = "The KRA encoding has started. Please insert KRAs for your employees.";
       }
       if ($currentDate >= $fiveDaysAfterKraEnd) {
-        $notifications[] = "The KRA encoding has ended. Check your self-evaluation on the appraisal page to view your KRAs.";
+        $notifications[] = "The KRA encoding has ended. Check your immediate superior evaluation form on the appraisal page to view your KRAs.";
       }
 
       // Performance Review
