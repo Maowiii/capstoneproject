@@ -1311,7 +1311,8 @@
                     },
                     success: function(response) {
                         // console.log('Autosave successful.');
-                        // console.log('FieldName Acquired: ' + fieldName);                    },
+                        // console.log('FieldName Acquired: ' + fieldName);                    
+                    },
                     error: function(xhr, status, error) {
                         // console.log('{{ route('autosaveLDPField') }}');
 
