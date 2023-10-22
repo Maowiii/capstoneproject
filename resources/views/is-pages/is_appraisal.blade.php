@@ -505,7 +505,7 @@
                             </td>
                             <td class="td-textarea">
                                 <div class="position-relative">
-                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]" required></textarea>
+                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                                 </div>
                             </td>
                         </tr>
@@ -532,7 +532,7 @@
                             </td>
                             <td class="td-textarea">
                                 <div class="position-relative">
-                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]" required></textarea>
+                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                                 </div>
                             </td>
                         </tr>
@@ -557,7 +557,7 @@
                             </td>
                             <td class="td-textarea">
                                 <div class="position-relative">
-                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]" required></textarea>
+                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                                 </div>
                             </td>
                         </tr>
@@ -582,7 +582,7 @@
                             </td>
                             <td class="td-textarea">
                                 <div class="position-relative">
-                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]" required></textarea>
+                                    <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                                 </div>
                             </td>
                         </tr>
