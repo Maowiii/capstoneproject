@@ -1751,10 +1751,10 @@
                         var row = document.querySelectorAll('#jic_table_body tr')[jicID];
                         console.log(row);
 
-                        var answerRadioYes = row.querySelector('input[name="feedback[' + (jicID) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[name="feedback[' + (jicID) + '][{{ $appraisalId }}][answer]"][value="0"]');
+                        var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
 
-                        var commentTextarea = row.querySelector('.textarea[name="feedback[' + (jicID) + '][{{ $appraisalId }}][comments]"]');
+                        var commentTextarea = row.querySelector('textarea[name*="comments"]"]');
                         console.log(answerRadioYes);
                         console.log(answerRadioNo);
                         console.log(commentTextarea);
