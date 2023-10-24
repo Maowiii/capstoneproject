@@ -2176,9 +2176,12 @@
                                 $closestTD.find('.form-check-input').removeClass('is-invalid');
                                 $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
+                            console.log(commentTextarea);
+                            console.log(commentTextarea.value);
+                            console.log(jic.comments);
 
                             if (jic.comments) {
-                                commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                                commentTextarea.value = jic.comments || '';
                             }
 
                             // Attach input event handlers for validation
