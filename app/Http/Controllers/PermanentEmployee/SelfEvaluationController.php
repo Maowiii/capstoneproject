@@ -1016,7 +1016,7 @@ class SelfEvaluationController extends Controller
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
 
-    $userEmployeeId = Employees::where('account_id', $account_id)->first();
+    $userEmployeeId = Employees::where('account_id', $account_id)->pluck('employee_id')->first();
 
     if ($appraisal) {
       ////////////PERMISSION/////////////
