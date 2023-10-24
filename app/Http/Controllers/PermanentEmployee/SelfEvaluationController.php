@@ -1016,6 +1016,8 @@ class SelfEvaluationController extends Controller
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
 
+    $userEmployeeId = Employees::where('account_id', $account_id)->first();
+
     if ($appraisal) {
       ////////////PERMISSION/////////////
       $employeeId = $appraisal->employee_id;
@@ -1030,8 +1032,8 @@ class SelfEvaluationController extends Controller
             })
             ->exists();
 
-      $isEvaluator = ($account_id == $evaluatorId);
-      $isEmployee = ($account_id == $employeeId);
+      $isEvaluator = ($account_id == $userEmployeeId);
+      $isEmployee = ($account_id == $userEmployeeId);
 
       // Check permissions for viewing the form
       if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {
