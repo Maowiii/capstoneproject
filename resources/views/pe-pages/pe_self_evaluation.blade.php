@@ -2177,9 +2177,9 @@
                                 $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
-                            if (commentTextarea) {
-                                commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
-                            }
+                            
+                            commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                            
 
                             // Attach input event handlers for validation
                             $(commentTextarea).on('input', function() {
