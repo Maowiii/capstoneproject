@@ -130,7 +130,7 @@ class EmployeeController extends Controller
       ]);
 
       $activeYear = EvalYear::where('status', 'active')->first();
-      if ($activeYear && !in_array($account->type, ['AD', 'CE'])) {
+      if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
         $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
         foreach ($evaluationTypes as $evaluationType) {
           $evaluatorId = null;
