@@ -153,6 +153,7 @@ class EmployeeController extends Controller
             'evaluation_type' => $evaluationType,
             'employee_id' => $employee->employee_id,
             'evaluator_id' => $evaluatorId,
+            'department_id' => $departmentId
           ]);
         }
       }
