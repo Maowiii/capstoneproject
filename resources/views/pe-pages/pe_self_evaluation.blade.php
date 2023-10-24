@@ -637,7 +637,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -662,7 +662,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -685,7 +685,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -708,7 +708,7 @@
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -2140,7 +2140,7 @@
                         var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
                         var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
 
-                        var commentTextarea = row.querySelector('textarea[name^="comments"]');
+                        var commentTextarea = $('.jicTA');
 
                         if (row) {
                             if (jic.answer === 1) {
@@ -2181,7 +2181,7 @@
                             console.log(jic.comments);
 
                             if (jic.comments) {
-                                commentTextarea.value = jic.comments || '';
+                                commentTextarea.val(jic.comments || '');
                             }
 
                             // Attach input event handlers for validation
