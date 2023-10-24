@@ -134,11 +134,11 @@ class EmployeeController extends Controller
         $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
         foreach ($evaluationTypes as $evaluationType) {
           $evaluatorId = null;
+          $departmentId = $employee->department_id;
 
           if ($evaluationType === 'self evaluation') {
             $evaluatorId = $employee->employee_id;
           } elseif ($evaluationType === 'is evaluation') {
-            $departmentId = $employee->department_id;
             $isAccount = Accounts::where('type', 'IS')
               ->whereHas('employee', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
