@@ -1032,8 +1032,8 @@ class SelfEvaluationController extends Controller
             })
             ->exists();
 
-      $isEvaluator = ($account_id == $userEmployeeId);
-      $isEmployee = ($account_id == $userEmployeeId);
+      $isEvaluator = ($userEmployeeId == $evaluatorId);
+      $isEmployee = ($userEmployeeId == $employeeId);
 
       // Check permissions for viewing the form
       if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {
