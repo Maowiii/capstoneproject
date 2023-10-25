@@ -302,7 +302,7 @@
                                             .text('View'); 
                                     }
                                 } else if (appraisal.evaluation_type === 'internal customer 1') {
-                                    if (appraisal.evaluator_id === null) {
+                                    if (appraisal.evaluator_id === null || appraisal.evaluator_id === 0) {
                                         ic1Link = $('<a>').addClass(
                                                 'btn ic1 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal1')
@@ -350,7 +350,7 @@
                                         }  
                                     }
                                 } else if (appraisal.evaluation_type === 'internal customer 2') {
-                                    if (appraisal.evaluator_id === null) {
+                                    if (appraisal.evaluator_id === null || appraisal.evaluator_id === 0) {
                                         ic2Link = $('<a>').addClass(
                                                 'btn ic2 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal2')
