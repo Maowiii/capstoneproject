@@ -26,38 +26,38 @@
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
             5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
-            <div class="table-responsive">
-        <table class="table table-bordered" id="IC_table">
-            <thead>
-                <tr>
-                    <th class="xxs-column">#</th>
-                    <th>Question</th>
-                    <th class="large-column">Score</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td class='text-right'>Total Weighted Score:</td>
-                    <td>
-                        <div class="d-flex justify-content-center gap-3">
-                            <input id="total-weighted-score" class="small-column form-control total-weighted text-center"
-                                type="text" readonly>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="IC_table">
+                <thead>
+                    <tr>
+                        <th class="xxs-column">#</th>
+                        <th>Question</th>
+                        <th class="large-column">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td class='text-right'>Total Weighted Score:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input id="total-weighted-score"
+                                    class="small-column form-control total-weighted text-center" type="text" readonly>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
         <p>What did you like best about his/her customer service?</p>
         <textarea class="form-control" id="service_area"></textarea>
 
         <p class="mt-3">Other comments and suggestions:</p>
         <textarea class="form-control" id="comments_area"></textarea>
-        
+
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
@@ -86,7 +86,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    
+
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
@@ -236,22 +236,22 @@
             updateService(newService);
         });
 
-            $('#comments_area').on('blur', function() {
-                var newSuggestion = $(this).val();
+        $('#comments_area').on('blur', function() {
+            var newSuggestion = $(this).val();
 
-                updateSuggestion(newSuggestion);
-            });
+            updateSuggestion(newSuggestion);
+        });
 
-            $('#esig-submit-btn').on('click', function() {
-                var fileInput = $('#esig')[0];
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
+        $('#esig-submit-btn').on('click', function() {
+            var fileInput = $('#esig')[0];
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
 
-                if (fileInput.files.length === 0) {
-                    $('#esig').addClass('is-invalid');
-                    return;
-                } else {
-                    var selectedFile = fileInput.files[0];
+            if (fileInput.files.length === 0) {
+                $('#esig').addClass('is-invalid');
+                return;
+            } else {
+                var selectedFile = fileInput.files[0];
 
                 var reader = new FileReader();
                 reader.onload = function(event) {
@@ -277,13 +277,13 @@
                     });
                 };
 
-                    reader.readAsDataURL(selectedFile);
-                }
-            });
+                reader.readAsDataURL(selectedFile);
+            }
+        });
 
-            function updateSuggestion(value) {
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
+        function updateSuggestion(value) {
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
 
             $.ajax({
                 headers: {
@@ -338,18 +338,18 @@
             });
         }
 
-            function totalScore() {
-                var total = 0;
+        function totalScore() {
+            var total = 0;
 
-                $('#IC_table .form-check-input[type="radio"]:checked').each(function() {
-                    var score = parseInt($(this).val());
-                    total += score;
-                });
+            $('#IC_table .form-check-input[type="radio"]:checked').each(function() {
+                var score = parseInt($(this).val());
+                total += score;
+            });
 
-                numQuestions = $('#IC_table tbody tr').length;
-                var averageScore = total / numQuestions;
-                $('#total-weighted-score').val(averageScore.toFixed(2));
-            }
+            numQuestions = $('#IC_table tbody tr').length;
+            var averageScore = total / numQuestions;
+            $('#total-weighted-score').val(averageScore.toFixed(2));
+        }
 
         function loadTextAreas() {
             var urlParams = new URLSearchParams(window.location.search);
@@ -381,11 +381,11 @@
             });
         }
 
-            $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
-                var clickedRadio = $(this);
+        $('#IC_table').on('click', '.form-check-input[type="radio"]', function() {
+            var clickedRadio = $(this);
 
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
 
             var radioButtonId = clickedRadio.attr('id');
             var questionId = radioButtonId.split('_')[1];
@@ -419,9 +419,9 @@
             });
         });
 
-            function loadSignature() {
-                var urlParams = new URLSearchParams(window.location.search);
-                var appraisalId = urlParams.get('appraisal_id');
+        function loadSignature() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var appraisalId = urlParams.get('appraisal_id');
 
             $.ajax({
                 headers: {
@@ -440,32 +440,32 @@
                         newRow.append($('<td>').text('Internal Customer'));
                         newRow.append($('<td>').text(response.full_name));
 
-                            $('#modalImage').attr('src', response.sign_data);
+                        $('#modalImage').attr('src', response.sign_data);
 
-                            if (response.sign_data) {
-                                $('#cancel-btn').hide();
-                                $('#esig-submit-btn').hide();
-                                newRow.append($('<td>').addClass('align-middle').html(
-                                    '<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#imageModal" id="viewSignature">' +
-                                    'View Signature' +
-                                    '</button>'
-                                ));
-                            } else {
-                                newRow.append($('<td>').addClass('align-middle').html(
-                                    '<div>' +
-                                    '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
-                                    '<img src="" width="100" id="signatureImage">' +
-                                    '</div>'
-                                ));
-                            }
+                        if (response.sign_data) {
+                            $('#cancel-btn').hide();
+                            $('#esig-submit-btn').hide();
+                            newRow.append($('<td>').addClass('align-middle').html(
+                                '<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#imageModal" id="viewSignature">' +
+                                'View Signature' +
+                                '</button>'
+                            ));
+                        } else {
+                            newRow.append($('<td>').addClass('align-middle').html(
+                                '<div>' +
+                                '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
+                                '<img src="" width="100" id="signatureImage">' +
+                                '</div>'
+                            ));
+                        }
 
-                            if (response.date_submitted) {
-                                newRow.append($('<td>').text(response.date_submitted));
-                            } else {
-                                newRow.append($('<td>').text('-'));
-                            }
+                        if (response.date_submitted) {
+                            newRow.append($('<td>').text(response.date_submitted));
+                        } else {
+                            newRow.append($('<td>').text('-'));
+                        }
 
-                            $('#signtable tbody').append(newRow);
+                        $('#signtable tbody').append(newRow);
 
                     } else {
                         console.log('fail');
@@ -478,62 +478,62 @@
             });
         }
 
-            $(document).on('click', '#view-sig-btn', function() {
-                $('#signatory_modal').modal('hide');
-                $('#imageModal').modal('show');
-            });
+        $(document).on('click', '#view-sig-btn', function() {
+            $('#signatory_modal').modal('hide');
+            $('#imageModal').modal('show');
+        });
 
-            $(document).on('click', '#esig-close-btn', function() {
-                $('#imageModal').modal('hide');
-                $('#signatory_modal').modal('show');
-            });
+        $(document).on('click', '#esig-close-btn', function() {
+            $('#imageModal').modal('hide');
+            $('#signatory_modal').modal('show');
+        });
 
-            function dataURItoBlob(dataURI) {
-                var byteString = atob(dataURI.split(',')[1]);
-                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-                var ab = new ArrayBuffer(byteString.length);
-                var ia = new Uint8Array(ab);
-                for (var i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-                return new Blob([ab], {
-                    type: mimeString
-                });
+        function dataURItoBlob(dataURI) {
+            var byteString = atob(dataURI.split(',')[1]);
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
             }
+            return new Blob([ab], {
+                type: mimeString
+            });
+        }
 
-            $('#submit-btn').on('click', function() {
-                $('#IC_table td').removeClass('is-invalid');
-                $('#service_area, #comments_area').removeClass(
-                    'is-invalid');
+        $('#submit-btn').on('click', function() {
+            $('#IC_table td').removeClass('is-invalid');
+            $('#service_area, #comments_area').removeClass(
+                'is-invalid');
 
-                var allRadioChecked = true;
-                $('#IC_table tbody tr').each(function() {
-                    var questionId = $(this).find('.form-check-input').attr('id').split('_')[1];
-                    var anyRadioChecked = false;
+            var allRadioChecked = true;
+            $('#IC_table tbody tr').each(function() {
+                var questionId = $(this).find('.form-check-input').attr('id').split('_')[1];
+                var anyRadioChecked = false;
 
-                    $(this).find('.form-check-input').each(function() {
-                        if ($(this).prop('checked')) {
-                            anyRadioChecked = true;
-                        }
-                    });
-
-                    if (!anyRadioChecked) {
-                        allRadioChecked = false;
-                        $(this).find('.form-check-input').closest('tr').addClass('table-danger');
+                $(this).find('.form-check-input').each(function() {
+                    if ($(this).prop('checked')) {
+                        anyRadioChecked = true;
                     }
                 });
 
-                var serviceValue = $('#service_area').val();
-                var suggestionValue = $('#comments_area').val();
-                var allTextAreasFilled = (serviceValue.trim() !== '') && (suggestionValue.trim() !== '');
-
-                if (!allTextAreasFilled) {
-                    $('#service_area, #comments_area').addClass(
-                        'is-invalid');
+                if (!anyRadioChecked) {
+                    allRadioChecked = false;
+                    $(this).find('.form-check-input').closest('tr').addClass('table-danger');
                 }
+            });
 
-                if (allRadioChecked && allTextAreasFilled) {
-                    loadSignature();
+            var serviceValue = $('#service_area').val();
+            var suggestionValue = $('#comments_area').val();
+            var allTextAreasFilled = (serviceValue.trim() !== '') && (suggestionValue.trim() !== '');
+
+            if (!allTextAreasFilled) {
+                $('#service_area, #comments_area').addClass(
+                    'is-invalid');
+            }
+
+            if (allRadioChecked && allTextAreasFilled) {
+                loadSignature();
 
                 $('#signatory_modal').modal('show');
             } else {
@@ -541,9 +541,8 @@
             }
         });
 
-            loadICTable();
-            loadTextAreas();
-            formChecker();
-        });
+        loadICTable();
+        loadTextAreas();
+        formChecker();
     </script>
 @endsection
