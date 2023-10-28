@@ -32,27 +32,30 @@
     </div>
 
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <input type="text" class="form-control" placeholder="Search" id="search">
             <button class="btn btn-outline-secondary" type="button">
                 <i class='bx bx-search'></i>
             </button>
         </div>
-        <table class="table table-bordered" id="admin_appraisals_table">
-            <thead class="align-middle">
-                <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Self-<br>Evaluation</th>
-                    <th>Immediate<br>Superior</th>
-                    <th>Internal<br>Customer 1</th>
-                    <th>Internal<br>Customer 2</th>
-                    <th>Action</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+  
+            <table class="table table-bordered" id="admin_appraisals_table">
+                <thead class="align-middle">
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Self-<br>Evaluation</th>
+                        <th>Immediate<br>Superior</th>
+                        <th>Internal<br>Customer 1</th>
+                        <th>Internal<br>Customer 2</th>
+                        <th>Action</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <nav id="appraisal_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="appraisal_pagination"></ul>
         </nav>
@@ -76,50 +79,53 @@
                     <div>
                         <div id="SummaryModalBody">
                             <h5>Behavioral Competencies</h5>
-                            <table class='table table-bordered'>
-                                <thead>
-                                    <tr>
-                                        <th>Components</th>
-                                        <th>%</th>
-                                        <th>Rating</th>
-                                        <th>Weighted Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="summary_score_body">
-                                    <tr>
-                                        <td>Self-Evaluation</td>
-                                        <td id="SE_perc"></td>
-                                        <td id="SE_rating"></td>
-                                        <td id="SE_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 1</td>
-                                        <td id="IC1_perc"></td>
-                                        <td id="IC1_rating"></td>
-                                        <td id="IC1_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 2</td>
-                                        <td id="IC2_perc"></td>
-                                        <td id="IC2_rating"></td>
-                                        <td id="IC2_wtotal"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Immediate Superior</td>
-                                        <td id="IS_perc"></td>
-                                        <td id="IS_rating"></td>
-                                        <td id="IS_wtotal"></td>
-                                    </tr>
-                                <tfoot>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-end" colspan="2">Weighted Total:</td>
-                                        <td id="BC_rtotal"></td>
-                                    </tr>
-                                </tfoot>
-                                </tbody>
-                            </table>
-                                <h5>Final Ratings</h5>
+                            <div class="table-responsive">
+                                <table class='table table-bordered'>
+                                    <thead>
+                                        <tr>
+                                            <th>Components</th>
+                                            <th>%</th>
+                                            <th>Rating</th>
+                                            <th>Weighted Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="summary_score_body">
+                                        <tr>
+                                            <td>Self-Evaluation</td>
+                                            <td id="SE_perc"></td>
+                                            <td id="SE_rating"></td>
+                                            <td id="SE_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 1</td>
+                                            <td id="IC1_perc"></td>
+                                            <td id="IC1_rating"></td>
+                                            <td id="IC1_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 2</td>
+                                            <td id="IC2_perc"></td>
+                                            <td id="IC2_rating"></td>
+                                            <td id="IC2_wtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Immediate Superior</td>
+                                            <td id="IS_perc"></td>
+                                            <td id="IS_rating"></td>
+                                            <td id="IS_wtotal"></td>
+                                        </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td class="text-end" colspan="2">Weighted Total:</td>
+                                            <td id="BC_rtotal"></td>
+                                        </tr>
+                                    </tfoot>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h5>Final Ratings</h5>
+                            <div class="table-responsive">
                                 <table class='table table-bordered'>
                                     <thead>
                                         <tr>
@@ -148,7 +154,7 @@
                                             <td class="text-end" colspan="2">Final Score</td>
                                             <td id="FS_wtotal" colspan="2"></td>
                                         </tr>
-                                        <tr>                                         
+                                        <tr>
                                             <td class="text-end" colspan="2">Description</td>
                                             <td id="descrip" colspan="2"></td>
                                         </tr>
@@ -170,22 +176,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-sm" id="signtable">
-                        <thead>
-                            <tr>
-                                <th scope="col">Parties</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Signature</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">KRA</th>
-                                <th scope="col">Performance Review</th>
-                                <th scope="col">Evaluation</th>
-                                <th scope="col">Form</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm" id="signtable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Parties</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Signature</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">KRA</th>
+                                    <th scope="col">Performance Review</th>
+                                    <th scope="col">Evaluation</th>
+                                    <th scope="col">Form</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -215,7 +223,7 @@
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
                 loadAdminAppraisalsTable(selectedYear, null);
-                console.log('Selected Year: ' + selectedYear);
+                // console.log('Selected Year: ' + selectedYear);
             });
 
             $('#search').on('input', function() {
@@ -482,7 +490,7 @@
                                                         .show();
 
                                                     if (response.success) {
-                                                        console.log(response);
+                                                        // console.log(response);
                                                         $('#SummaryModal').find(
                                                                 '#SE_perc')
                                                             .text(response
@@ -772,7 +780,7 @@
                                                 error: function(xhr, status,
                                                     error) {
                                                     $('#loading').hide();
-                                                    console.log(error);
+                                                    // console.log(error);
                                                 }
                                             });
                                         } else {
@@ -864,7 +872,7 @@
                             );
                             $('#admin_appraisals_table tbody').append(row);
 
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
 
                         var totalPage = response.appraisals.last_page;
@@ -872,7 +880,7 @@
                         var paginationLinks = response.appraisals.links;
 
                         $('#appraisal_pagination').empty();
-                        console.log(response.appraisals);
+                        // console.log(response.appraisals);
                         for (var totalPageCounter = 1; totalPageCounter <=
                             totalPage; totalPageCounter++) {
                             (function(pageCounter) {
@@ -897,7 +905,7 @@
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -911,7 +919,7 @@
             }
 
             function loadSignatureOverview(employeeID, selectedYear = null) {
-                console.log('Load Signature Overview');
+                // console.log('Load Signature Overview');
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1015,20 +1023,20 @@
                             });
 
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
 
             $(document).on('click', '.view-esig-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
-                console.log('Global Selected Year: ' + globalSelectedYear);
+                // console.log('Global Selected Year: ' + globalSelectedYear);
                 loadSignature(appraisalID, globalSelectedYear);
             });
 
@@ -1047,11 +1055,11 @@
                         if (response.success) {
                             $('#modalImage').attr('src', response.sign_data);
                         } else {
-                            console.log('Fail');
+                            // console.log('Fail');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
 
@@ -1063,7 +1071,7 @@
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this);
-                console.log('Appraisal ID for Form Toggle: ' + appraisalID);
+                // console.log('Appraisal ID for Form Toggle: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1082,11 +1090,11 @@
                                 $button.text('Lock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
 
@@ -1098,7 +1106,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID KRA: ' + appraisalID);
+                // console.log('Appraisal ID KRA: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1116,17 +1124,17 @@
                             // } else {
                             //     $button.text('Lock');
                             // }
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });
@@ -1137,7 +1145,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID PR: ' + appraisalID);
+                // console.log('Appraisal ID PR: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1156,17 +1164,17 @@
                             //     $button.text('Unlock');
                             // }
 
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });
@@ -1177,7 +1185,7 @@
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                console.log('Appraisal ID EVAL: ' + appraisalID);
+                // console.log('Appraisal ID EVAL: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1196,17 +1204,17 @@
                             //     $button.text('Unlock');
                             // }
 
-                            if (buttonText == 'Unlock'){
+                            if (buttonText == 'Unlock') {
                                 $button.text('Lock');
-                            } else{
+                            } else {
                                 $button.text('Unlock');
                             }
                         } else {
-                            console.log('Error: ' + response.message);
+                            // console.log('Error: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             });

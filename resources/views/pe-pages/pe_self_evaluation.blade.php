@@ -69,8 +69,7 @@
 
                         <br>To exercise data subjects right and for data privacy concerns or inquiries, please
                         communicate with the Human Resources Department and Management Office of Adamson University
-                        through <i>HRDMO Adamson Email:<a href="mailto:hrmdo@adamson.edu.ph"> hrmdo@adamson.edu.ph</a> or
-                            Contact no:</i>
+                        through <i>HRDMO Adamson Email:<a href="mailto:hrmdo@adamson.edu.ph"> hrmdo@adamson.edu.ph</a></i>
                         <br>
                         <!-- <<contact details of the person in-charge>> -->
 
@@ -80,16 +79,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                <br>I give consent to the retention of my personal data. (Y/N)<br>
+                                            <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                <br>I give consent to the sharing of my data. (Y/N)<br>
+                                            <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                            Agreement.<br>
-                            
-                            <br>By clicking Yes, you consent that you are willing to answer the questions
-                            in this survey and you answered YES to the three questions above.
-                            (Y/N) -->
+                                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                                        Agreement.<br>
+                                        
+                                        <br>By clicking Yes, you consent that you are willing to answer the questions
+                                        in this survey and you answered YES to the three questions above.
+                                        (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -235,57 +234,59 @@
                 educational
                 services.</p>
             @csrf
-            <table class='table table-bordered' id="SID_table">
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th>Performance Level</th>
-                    </tr>
-                </thead>
-                <tbody id='SID_table_body'>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+            <div class="table-responsive">
+                <table class='table table-bordered' id="SID_table">
+                    <thead>
+                        <tr>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th>Performance Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id='SID_table_body'>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input class="small-column form-control total-frequency text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
             <h4>Spirit of St. Vincent de Paul</h4>
             <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
@@ -298,59 +299,60 @@
                 knowledge and human development. We are committed to work for the building of a society based on justice,
                 peace,
                 respect for human dignity and the integrity of creation.</p>
-
-            <table class='table table-bordered' id="SR_table">
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="SR_table_body">
-                    <!-- CONTENT -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+            <div class="table-responsive">
+                <table class='table table-bordered' id="SR_table">
+                    <thead>
+                        <tr>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th class='small-column'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="SR_table_body">
+                        <!-- CONTENT -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input class="small-column form-control total-frequency text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
             <h4>Solidarity</h4>
             <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
@@ -358,233 +360,255 @@
                 participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
                 builds
                 up our community, encouraging us towards excellence and professionalism.</p>
-
-            <table class='table table-bordered' id='S_table'>
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id='S_table_body'>
-                    <!-- CONTENT -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-            <table class='table table-bordered' id='Overall_table'>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Overall Behavioral Competencies Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input id="BHTotal" class="small-column form-control total-frequency text-center"
-                                    type="text" readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-
-        <div class="content-container">
-            <h2>II. Key Results Areas & Work Objectives</h2>
-            <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
-                his/her
-                actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
-            <table class='table table-bordered'>
-                <thead>
-                    <tr>
-                        <th class='large-column'>Accomplishment Level</th>
-                        <th colspan="2">Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>5</td>
-                        <td>Oustanding Performance</td>
-                        <td class='text-justify'>Performance far exceeds the standard expected of a job holder at this
-                            level.
-                            The review/assessment indicates that the job holder has achieved greater than fully effective
-                            results against all of the performance criteria and indicators as specified in the Performance
-                            Agreement and Work plan. Maintained this in all areas of responsibility throughout the
-                            performance
-                            cycle.</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Performance significantly above expectations</td>
-                        <td class='text-justify'>Performance fully meets the standards expected for the job. The
-                            review/assessment indicates that the job holder has achieved better than fully effective results
-                            against more than half of the performance criteria and indicators as specified in the
-                            Performance
-                            Agreement and Work plan.</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Performance fully effective (and slightly above expectations)</td>
-                        <td class='text-justify'>Performance fully meets the standards expected in all areas of the job.
-                            The
-                            review/assessment indicates that the job holder has achieved as a minimum effective results
-                            against
-                            all of the performance criteria and indicators as specified in the Performance Agreement and
-                            Work
-                            plan.</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Performance not fully effective</td>
-                        <td class='text-justify'>Performance meets some of the standards expected for the job. The
-                            review/assessment indicates that the job holder has achieved less than fully effective results
-                            against more than half of the performance criteria and indicators as specified in the
-                            Performance
-                            Agreement and Work plan.</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Unacceptable performance</td>
-                        <td class='text-justify'>Performance does not meet the standard expected for the job. The
-                            review/assessment indicates that the job holder has achieved less than fully effective results
-                            against almost all of the performance criteria and indicators as specified in Performance
-                            Agreement
-                            and Work plan. </td>
-                    </tr>
-                </tbody>
-            </table>
-
             <div class="table-responsive">
-                <table class='table table-bordered' id="kra_table">
+                <table class='table table-bordered' id='S_table'>
                     <thead>
                         <tr>
-                            <th class='large-column' id="krainput">KRA</th>
-                            <th class='xxs-column'>Weight</th>
-                            <th class='large-column' id="obj">Objectives</th>
-                            <th class='large-column' id="pi">Performance Indicators</th>
-                            <th class='large-column' id="ar">Actual Results</th>
-                            <th class='medium-column'>Performance Level</th>
-                            <th class="xxs-column" id="wt">Weighted Total</th>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th class='small-column'>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="KRA_table_body">
+                    <tbody id='S_table_body'>
                         <!-- CONTENT -->
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td class='text-right'>Weight Total:</td>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
                             <td>
                                 <div class="d-flex justify-content-center gap-3">
-                                    <input id="KRA_Weight_Total" class="small-column form-control total-weight"
-                                        type="text" readonly>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center"
+                                            type="text" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center"
+                                            type="text" readonly>
+                                    </div>
                                 </div>
                             </td>
-                            <td></td>
-                            <td></td>
+                        </tr>
+                        <tr>
                             <td></td>
                             <td class='text-right'>Total:</td>
                             <td>
                                 <div class="d-flex justify-content-center gap-3">
-                                    <input id="KRA_Total" class="small-column form-control total-weighted text-center"
-                                        type="text" readonly>
+                                    <input class="small-column form-control total-frequency text-center" type="text"
+                                        readonly>
                                 </div>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-        </div>
-
-        <div class="content-container">
-            <h2>III. Future Performance Agenda</h2>
-            <h3>Work Performance Plans</h3>
-            <p>Identify work behaviors that the job incumbent needs to:</p>
-            <table class='table table-bordered' id='wpa-table'>
-                <thead>
-                    <tr>
-                        <th>Continue Doing</th>
-                        <th>Stop Doing</th>
-                        <th>Start Doing</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id='wpa_table_body'>
-
-                </tbody>
-            </table>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
+            <div class="table-responsive">
+                <table class='table table-bordered' id='Overall_table'>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Overall Behavioral Competencies Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input id="BHTotal" class="small-column form-control total-frequency text-center"
+                                        type="text" readonly>
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
             </div>
 
-            <h3>Learning Development Plans</h3>
-            <p>Identify the learning needs of the job incumbent likewise recommend specific learning methodologies for each
-                need
-                that you have mentioned.</p>
-            <table class='table table-bordered' id='ldp_table'>
-                <thead>
-                    <tr>
-                        <th>Learning Need</th>
-                        <th>Methodology</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id='ldp_table_body'>
-                    <tr id="ldp_1">
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="learning_need"></textarea>
-                        </td>
-                        <td class='td-textarea'>
-                            <textarea class='textarea' name="methodology"></textarea>
-                        </td>
-                        <td class='td-action'></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
-            </div>
-        </div>
+            <div class="content-container">
+                <h2>II. Key Results Areas & Work Objectives</h2>
+                <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
+                    his/her
+                    actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
+                <div class="table-responsive">
+                    <table class='table table-bordered'>
+                        <thead>
+                            <tr>
+                                <th class='large-column'>Accomplishment Level</th>
+                                <th colspan="2">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>5</td>
+                                <td>Oustanding Performance</td>
+                                <td class='text-justify'>Performance far exceeds the standard expected of a job holder at
+                                    this
+                                    level.
+                                    The review/assessment indicates that the job holder has achieved greater than fully
+                                    effective
+                                    results against all of the performance criteria and indicators as specified in the
+                                    Performance
+                                    Agreement and Work plan. Maintained this in all areas of responsibility throughout the
+                                    performance
+                                    cycle.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Performance significantly above expectations</td>
+                                <td class='text-justify'>Performance fully meets the standards expected for the job. The
+                                    review/assessment indicates that the job holder has achieved better than fully effective
+                                    results
+                                    against more than half of the performance criteria and indicators as specified in the
+                                    Performance
+                                    Agreement and Work plan.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Performance fully effective (and slightly above expectations)</td>
+                                <td class='text-justify'>Performance fully meets the standards expected in all areas of the
+                                    job.
+                                    The
+                                    review/assessment indicates that the job holder has achieved as a minimum effective
+                                    results
+                                    against
+                                    all of the performance criteria and indicators as specified in the Performance Agreement
+                                    and
+                                    Work
+                                    plan.</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Performance not fully effective</td>
+                                <td class='text-justify'>Performance meets some of the standards expected for the job. The
+                                    review/assessment indicates that the job holder has achieved less than fully effective
+                                    results
+                                    against more than half of the performance criteria and indicators as specified in the
+                                    Performance
+                                    Agreement and Work plan.</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Unacceptable performance</td>
+                                <td class='text-justify'>Performance does not meet the standard expected for the job. The
+                                    review/assessment indicates that the job holder has achieved less than fully effective
+                                    results
+                                    against almost all of the performance criteria and indicators as specified in
+                                    Performance
+                                    Agreement
+                                    and Work plan. </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table class='table table-bordered' id="kra_table">
+                                <thead>
+                                    <tr>
+                                        <th class='large-column' id="krainput">KRA</th>
+                                        <th class='xxs-column'>Weight</th>
+                                        <th class='large-column' id="obj">Objectives</th>
+                                        <th class='large-column' id="pi">Performance Indicators</th>
+                                        <th class='large-column' id="ar">Actual Results</th>
+                                        <th class='medium-column'>Performance Level</th>
+                                        <th class="xxs-column" id="wt">Weighted Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="KRA_table_body">
+                                    <!-- CONTENT -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class='text-right'>Weight Total:</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-3">
+                                                <input id="KRA_Weight_Total"
+                                                    class="small-column form-control total-weight" type="text"
+                                                    readonly>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class='text-right'>Total:</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-3">
+                                                <input id="KRA_Total"
+                                                    class="small-column form-control total-weighted text-center"
+                                                    type="text" readonly>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="content-container">
+                        <h2>III. Future Performance Agenda</h2>
+                        <h3>Work Performance Plans</h3>
+                        <p>Identify work behaviors that the job incumbent needs to:</p>
+                        <div class="table-responsive">
+                            <table class='table table-bordered' id='wpa-table'>
+                                <thead>
+                                    <tr>
+                                        <th>Continue Doing</th>
+                                        <th>Stop Doing</th>
+                                        <th>Start Doing</th>
+                                        <th class='small-column'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='wpa_table_body'>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
+                        </div>
+
+                        <h3>Learning Development Plans</h3>
+                        <p>Identify the learning needs of the job incumbent likewise recommend specific learning
+                            methodologies for
+                            each
+                            need
+                            that you have mentioned.</p>
+                        <div class="table-responsive">
+                            <table class='table table-bordered' id='ldp_table'>
+                                <thead>
+                                    <tr>
+                                        <th>Learning Need</th>
+                                        <th>Methodology</th>
+                                        <th class='small-column'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='ldp_table_body'>
+                                    <tr id="ldp_1">
+                                        <td class='td-textarea'>
+                                            <textarea class='textarea' name="learning_need"></textarea>
+                                        </td>
+                                        <td class='td-textarea'>
+                                            <textarea class='textarea' name="methodology"></textarea>
+                                        </td>
+                                        <td class='td-action'></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
+                        </div>
+                    </div>
 
         <div class="content-container">
             <h2>IV. Job Incumbent's Comments</h2>
+            <div class="table-responsive">
             <table class='table table-bordered' id='jic_table'>
                 <thead>
                     <tr>
@@ -602,18 +626,18 @@
                         <td>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -627,18 +651,18 @@
                         <td>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -650,18 +674,18 @@
                         <td>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
@@ -673,62 +697,68 @@
                         <td>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1">
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
                                 <label class="form-check-label" for="inlineRadio1">Yes</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0">
+                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
                                 <label class="form-check-label" for="inlineRadio2">No</label>
                             </div>
                         </td>
                         <td class="td-textarea">
                             <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            </div>
         </div>
 
-        <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content" id="signatory">
-                    <div class="modal-header">
-                        <h5 class="modal-title fs-5">Signatories</h5>
-                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid" id="instructioncon">
-                            <div class="table-responsive" id="signaturecon">
-                                <table class="table" id="signtable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" style="width:20%" id="partieshead">PARTIES</th>
-                                            <th scope="col" style="width:20%" id="fullnamehead">FULL NAME</th>
-                                            <th scope="col" style="width:25%" id="signhead">SIGNATURE</th>
-                                            <th scope="col" style="width:15%" id="datehead">DATE</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
-                                            <td id="partiescell">Job Incumbent</td>
-                                            <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }} {{ $appraisee->last_name ?? '' }}</td>
-                                            <td id='signcell' class="sign-cell">
-                                                <input type='file' id="uploadsign"
-                                                    name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
-                                                    accept='image/jpeg, image/png, image/jpg'>
+                    <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content" id="signatory">
+                                <div class="modal-header">
+                                    <h5 class="modal-title fs-5">Signatories</h5>
+                                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid" id="instructioncon">
+                                        <div class="table-responsive" id="signaturecon">
+                                            <table class="table" id="signtable">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width:20%" id="partieshead">PARTIES
+                                                        </th>
+                                                        <th scope="col" style="width:20%" id="fullnamehead">FULL NAME
+                                                        </th>
+                                                        <th scope="col" style="width:25%" id="signhead">SIGNATURE
+                                                        </th>
+                                                        <th scope="col" style="width:15%" id="datehead">DATE</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                                        <td id="partiescell">Job Incumbent</td>
+                                                        <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }}
+                                                            {{ $appraisee->last_name ?? '' }}</td>
+                                                        <td id='signcell' class="sign-cell">
+                                                            <input type='file' id="uploadsign"
+                                                                name="SIGN[JI][{{ $appraisalId }}][file]"
+                                                                class="form-control"
+                                                                accept='image/jpeg, image/png, image/jpg'>
 
-                                                <input type='hidden' id="uploadsign_1"
-                                                    name="SIGN[JI][{{ $appraisalId }}]">
+                                                            <input type='hidden' id="uploadsign_1"
+                                                                name="SIGN[JI][{{ $appraisalId }}]">
 
-                                                <img src="" width="100" id="signatureImage" />
-                                            </td>
-                                            <td id="datecell" class="date-cell"></td>
-                                        </tr>
-                                        {{-- <tr>
+                                                            <img src="" width="100" id="signatureImage" />
+                                                        </td>
+                                                        <td id="datecell" class="date-cell"></td>
+                                                    </tr>
+                                                    {{-- <tr>
                                             <td id="partiescell">Immediate Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
@@ -740,10 +770,10 @@
                                             <td id='signcell'></td>
                                             <td id="datecell" style="width:15%"></td>
                                         </tr> --}}
-                                    </tbody>
-                                </table>
-                            </div>
-                            {{-- <h3>Notation</h3>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {{-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -762,58 +792,63 @@
                                     </tbody>
                                 </table>
                             </div> --}}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="modal fade" id="confirmation-popup-modal" data-bs-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title fs-5">CONFIRMATION MESSAGE</h5>
-                        <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
+                    <div class="modal fade" id="confirmation-popup-modal" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title fs-5">CONFIRMATION MESSAGE</h5>
+                                    <button type="button" class="btn-close common-close-button"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h6 class="text-dark fs-5" id="confirmation-popup">Would you like to submit the form?
+                                    </h6>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" id="submit-btn-confirm"
+                                        class="btn btn-primary">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <h6 class="text-dark fs-5" id="confirmation-popup">Would you like to submit the form?</h6>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Confirm</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
-            aria-labelledby="confirmationModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
-                        <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+                        aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>Are you sure you want to delete this item?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        aria-label="Close">Cancel</button>
+                                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <h5>Are you sure you want to delete this item?</h5>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            aria-label="Close">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="d-flex justify-content-center gap-3 p-3">
-            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
-        </div>
+                    <div class="d-flex justify-content-center gap-3 p-3">
+                        <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
+                    </div>
     </form>
 
     <script>
@@ -885,7 +920,7 @@
                 const consent2 = $('#consent2').prop('checked');
                 const consent3 = $('#consent3').prop('checked');
                 const consent4 = $('#consent4').prop('checked');
-                console.log(consent1 + ' ' + consent2 + ' ' + consent3 + ' ' + consent4);
+                // console.log(consent1 + ' ' + consent2 + ' ' + consent3 + ' ' + consent4);
 
                 if (consent1 && consent2 && consent3 && consent4) {
                     // Remove is-invalid class if checkboxes are checked
@@ -903,7 +938,7 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         success: function(response) {
-                            console.log('Data Privacy Accepted.');
+                            // console.log('Data Privacy Accepted.');
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -942,7 +977,9 @@
             });
 
             $('#add-ldp-btn').click(function() {
-                addNewLDPRow($('#ldp_table_body'));
+                var ldptbody = $('#ldp_table_body');
+
+                addNewLDPRow(ldptbody);
             });
 
             ///////////////////////////////////// Delete  code///////////////////////////////////////////////////
@@ -1004,10 +1041,10 @@
 
             // For the LDP delete button
             $(document).on('click', '.ldp-delete-btn', function() {
-                var row = $(this);
-                var ldpID = row.closest('tr').attr(
-                'data-field-id'); // Assuming you have a data attribute for LDP ID on the row
-                console.log(ldpID);
+                var row = $(this).closest('tr');
+                var ldpID = row.data('ldp-id'); // Assuming you have a data attribute for WPA ID on the row
+
+                // console.log(ldpID);
                 // Send an AJAX request to delete the LDP record from the database
                 $.ajax({
                     type: 'POST',
@@ -1054,41 +1091,114 @@
 
             ///////////////////////////////////// Validation code///////////////////////////////////////////////////
             // Handle form submission and validation
-            document.getElementById('submit-btn-form').addEventListener('click', function(event) {
-                var form = document.getElementById('PEappraisalForm');
+            $('#submit-btn-form').on('click', function(event) {
+                var form = $('.needs-validation');
                 var valid = true;
 
-                var inputElements = form.querySelectorAll('input:not([type="hidden"])');
+                // Select all input elements inside the form
+                // var inputElements = form.find('input:not([type="hidden"])');
 
-                inputElements.forEach(function(inputElement) {
-                    if (inputElement.classList.contains('is-invalid')) {
-                        // Handle your validation logic here
-                        valid = false;
-                        console.error('Validation failed for', inputElement.name, ':', inputElement
-                            .validationMessage);
-                        inputElement.focus(); // Corrected line
-                    }
-                });
+                // inputElements.each(function(index, inputElement) {
+                //     // Check if the input is marked as invalid
+                //     if ($(inputElement).hasClass('is-invalid')) {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name, ':', inputElement
+                //             .validationMessage);
 
-                if (!valid || !form.checkValidity()) {
+                //         $(inputElement).addClass('is-invalid');
+                //         inputElement.focus();
+                //     }
+
+                //     // Check if the input is required and its value is empty
+                //     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
+                //         valid = false;
+                //         console.error('Validation failed for', inputElement.name,
+                //             ': This field is required.');
+
+                //         $(inputElement).addClass('is-invalid');
+                //         inputElement.focus();
+
+                //     }
+                // });
+
+                // Get all required input elements
+                
+
+                // if (!valid || !form[0].checkValidity()) {
+
+                if (!form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
 
-                    var invalidInputs = form.querySelectorAll('.is-invalid');
+                    var invalidInputs = form.find('.is-invalid');
 
-                    // Handle invalid inputs, display error messages, etc.
-                    invalidInputs.forEach(function(invalidInput) {
-                        // Handle validation messages for invalid inputs
-                        console.error('Validation failed for', invalidInput.name, ':', invalidInput
-                            .validationMessage);
+                    if (invalidInputs.length > 0) {
+                        // Handle invalid inputs, display error messages, etc.
+                        invalidInputs.each(function(index, invalidInput) {
+                            // Handle validation messages for invalid inputs
+                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                            // Focus on the first invalid input
+                            invalidInputs.focus();
+                        });   
+                    }
+
+                    var requiredInputs = form.find('input[required]');
+
+                    requiredInputs.each(function(index, inputElement) {
+                        // Wrap the DOM element in a jQuery object
+                        var $inputElement = $(inputElement);
+
+                        // Check if the required input is empty or has a validation error
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                            valid = false;
+                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                                .validationMessage);
+
+                            // Use the jQuery object to add the 'is-invalid' class
+                            $inputElement.addClass('is-invalid');
+                            $inputElement.closest('td').addClass('border border-danger');
+                            $inputElement[0].focus(); 
+
+                            // Add an input event handler to remove the 'is-invalid' class
+                            $inputElement.on('input', function() {
+                                $inputElement.removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                                $inputElement.find('.form-check-input').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
+                            });
+                        }
                     });
 
-                    // Optionally, focus on the first invalid input
-                    invalidInputs[0].focus();
+                    var requiredInputs = form.find('textarea[required]');
+
+                    requiredInputs.each(function(index, inputElement) {
+                        // Wrap the DOM element in a jQuery object
+                        var $inputElement = $(inputElement);
+
+                        // Check if the required input is empty or has a validation error
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                            valid = false;
+                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                                .validationMessage);
+
+                            // Use the jQuery object to add the 'is-invalid' class
+                            $inputElement.addClass('is-invalid');
+                            $inputElement.closest('td').addClass('border border-danger');
+                            $inputElement[0].focus(); 
+
+                            // Add an input event handler to remove the 'is-invalid' class
+                            $inputElement.on('input', function() {
+                                $inputElement.removeClass('is-invalid');
+                                $inputElement.find('.form-control').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
+                            });
+                        }
+                    });
 
                     console.error('Form validation failed.');
                 } else {
-                    // Form validation succeeded    
+                    // Form validation succeeded
                     console.info('Form validation succeeded.');
                     // Set a flag or trigger the modal opening here
                     openModal();
@@ -1097,26 +1207,26 @@
 
             // Function to open the modal
             function openModal() {
-                console.log('submit clicked');
+                // console.log('submit clicked');
                 $('#signatory_modal').modal('show');
             }
 
             $('.common-close-button').on('click', function() {
-                console.log('close clicked');
+                // console.log('close clicked');
                 var $modal = $(this).closest('.modal');
                 $modal.addClass('modal fade hide');
                 $modal.modal('hide');
                 $modal.css('display', 'none');
 
                 var signInput = document.querySelector(
-                'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
+                    'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 signInput.classList.remove('is-invalid');
                 signInput.closest('td').classList.remove('border', 'border-danger');
             });
 
             document.getElementById('submit-btn-sign').addEventListener('click', function(event) {
                 var signInput = document.querySelector(
-                'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
+                    'input[name="SIGN[JI][{{ $appraisalId }}][file]"]');
                 var signatureImage = document.querySelector('#signatureImage');
 
                 // Check if files are uploaded or if a signature image is displayed
@@ -1188,18 +1298,18 @@
 
             ///////////////////////////////////// Autosave code///////////////////////////////////////////////////
             $('#KRA_table_body').on('change', '.autosave-field', function() {
-                console.log('Change event triggered on:', event.target); // Log the target element
+                // console.log('Change event triggered on:', event.target); // Log the target element
                 var field = $(this);
-                console.log('I was a KRA. Field:', field);
+                // console.log('I was a KRA. Field:', field);
 
                 var kraID = field.attr('name').match(/\d+/)[0];
                 var fieldName = field.attr('name').split('][')[2].replace(/\]/g, '');
                 var fieldValue = field.val();
 
                 // Log the field name, ID, and value
-                console.log('Field Name:', fieldName);
-                console.log('KRA ID:', kraID);
-                console.log('Field Value:', fieldValue);
+                // console.log('Field Name:', fieldName);
+                // console.log('KRA ID:', kraID);
+                // console.log('Field Value:', fieldValue);
 
                 // Send the updated field value to the server via Ajax
                 $.ajax({
@@ -1215,15 +1325,15 @@
                     },
                     success: function(response) {
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // console.log('Autosave successful.');
+                        // console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveKRAField') }}');
+                        // console.log('{{ route('autosaveKRAField') }}');
 
                         // Handle errors if any
-                        console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // console.error('Autosave failed:', error);
+                        // console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1250,9 +1360,9 @@
                     success: function(response) {
                         response.wpaData.forEach(function(wpa, index) {
                             var wpaID = wpa.performance_plan_id;
-                            console.log(wpaID);
+                            // console.log(wpaID);
                             var closestRow = field.closest('tr');
-                            console.log(closestRow);
+                            // console.log(closestRow);
 
                             closestRow.attr('data-wpa-id', wpaID);
 
@@ -1287,15 +1397,15 @@
                         });
 
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // console.log('Autosave successful.');
+                        // console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveWPPField') }}');
+                        // console.log('{{ route('autosaveWPPField') }}');
 
-                        // Handle errors if any
-                        console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // // Handle errors if any
+                        // console.error('Autosave failed:', error);
+                        // console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1322,9 +1432,9 @@
                     success: function(response) {
                         response.ldpData.forEach(function(ldp, index) {
                             var ldpID = ldp.development_plan_id;
-                            console.log(ldpID);
+                            // console.log(ldpID);
                             var closestRow = field.closest('tr');
-                            console.log(closestRow);
+                            // console.log(closestRow);
 
                             closestRow.attr('data-ldp-id', ldpID);
 
@@ -1351,15 +1461,15 @@
                         });
 
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // console.log('Autosave successful.');
+                        // console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveLDPField') }}');
+                        // console.log('{{ route('autosaveLDPField') }}');
 
-                        // Handle errors if any
-                        console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // // Handle errors if any
+                        // console.error('Autosave failed:', error);
+                        // console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1387,15 +1497,15 @@
                     },
                     success: function(response) {
                         // Handle the success response if needed
-                        console.log('Autosave successful.');
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // console.log('Autosave successful.');
+                        // console.log('FieldName Acquired: ' + fieldName);
                     },
                     error: function(xhr, status, error) {
-                        console.log('{{ route('autosaveLDPField') }}');
+                        // console.log('{{ route('autosaveLDPField') }}');
 
-                        // Handle errors if any
-                        console.error('Autosave failed:', error);
-                        console.log('FieldName Acquired: ' + fieldName);
+                        // // Handle errors if any
+                        // console.error('Autosave failed:', error);
+                        // console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -1403,7 +1513,7 @@
             $('#submit-btn-confirm').on('click', function() {
                 var fileInput = $('#uploadsign_1')[0];
 
-                if (fileInput.files.length === 0) {
+                if (fileInput && fileInput.files.length === 0) {
                     $('#uploadsign_1').addClass('is-invalid');
                     return;
                 } else {
@@ -1425,10 +1535,10 @@
                             success: function(response) {
                                 if (response.success) {
                                     loadSignature();
-                                    console.log('Esignature Updated.');
+                                    // console.log('Esignature Updated.');
                                     formChecker();
                                 } else {
-                                    console.log('Esignature Updated bot else');
+                                    // console.log('Esignature Updated bot else');
                                 }
                             },
                             error: function(xhr, status, error) {}
@@ -1536,16 +1646,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1630,16 +1740,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1709,7 +1819,7 @@
 
                                 $(this).removeClass(
                                     'is-invalid'
-                                ); // Also remove is-invalid class from the input
+                                ); 
 
                                 $.ajax({
                                     headers: {
@@ -1724,16 +1834,16 @@
                                         appraisalId: {{ $appraisalId }}
                                     },
                                     success: function(response) {
-                                        console.log(
-                                            'Score saved for question ID:',
-                                            questionId);
+                                        // console.log(
+                                        //     'Score saved for question ID:',
+                                        //     questionId);
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
-                                            console.log('Error: ' + xhr
-                                                .responseText);
+                                            // console.log('Error: ' + xhr
+                                            //     .responseText);
                                         } else {
-                                            console.log('An error occurred.');
+                                            // console.log('An error occurred.');
                                         }
                                     }
                                 });
@@ -1912,7 +2022,7 @@
                         if (wparowCount === 1) {
                             $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
                         }
-                        console.log(wparowCount);
+                        // console.log(wparowCount);
                     } else {
                         data.wpaData.forEach(function(wpa, index) {
                             var wpaID = wpa.performance_plan_id;
@@ -2023,52 +2133,56 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        jicID = parseInt(jic.question_order)-1;
                         
-                        if (row) {
-                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                    1) +
-                                '][{{ $appraisalId }}][answer]"][value="1"]');
-                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                    1) +
-                                '][{{ $appraisalId }}][answer]"][value="0"]');
+                        var row = document.querySelectorAll('#jic_table_body tr')[jicID];
 
+                        var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                        var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
+
+                        var commentTextarea = $('.jicTA');
+
+                        if (row) {
                             if (jic.answer === 1) {
                                 answerRadioYes.checked = true;
                             } else if (jic.answer === 0) {
                                 answerRadioNo.checked = true;
                             }
 
-                            $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
+                            // $(answerRadioYes).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
-                            $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
+                            // $(answerRadioNo).on('invalid', function() {
+                            //     $(this).addClass('is-invalid');
+                            //     $(this).siblings('span').addClass('text-danger');
+                            // });
 
                             $(answerRadioYes).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                // Handle the change event for "Yes" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
 
                             $(answerRadioNo).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
+                                // Handle the change event for "No" radio button
+                                var $closestTD = $(this).closest('td');
+                                $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                $closestTD.removeClass('border border-danger');
+                                $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
                             });
+                            console.log(commentTextarea);
+                            console.log(commentTextarea.value);
+                            console.log(jic.comments);
 
-                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                                index +
-                                1) + '][{{ $appraisalId }}][comments]"]');
-                            commentTextarea.value = jic.comments;
+                            if (jic.comments) {
+                                commentTextarea.val(jic.comments || '');
+                            }
 
                             // Attach input event handlers for validation
                             $(commentTextarea).on('input', function() {
@@ -2077,15 +2191,25 @@
                             }).on('invalid', function() {
                                 $(this).addClass('is-invalid');
                                 $(this).attr('placeholder', 'Please provide a valid input');
+                            }).on('change', function() {
+                                if ($(this).val().trim() === '') {
+                                    $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
+                                }
                             }).on('blur', function() {
                                 if ($(this).val().trim() === '') {
                                     $(this).addClass('is-invalid');
+                                    $(this).closest('td').addClass(
+                                        'border border-danger');
                                 }
                             });
-
+                        } else {
+                            commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;
-                            commentTextarea.required = true;
+                            
+                            // console.log('Row not found for index ' + index);
                         }
                     });
 
@@ -2118,7 +2242,14 @@
                                 // Validation for date data
                                 const date = new Date(sign.updated_at);
 
-                                const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                                const formattedDate = date.toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
 
                                 dateCell.textContent = formattedDate;
                             } else {
@@ -2157,6 +2288,12 @@
                     $(this).closest('div').addClass('border border-danger');
                     $(this).attr('placeholder', 'Please provide a valid input');
                 }).on('change', function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        $(this).closest('td').addClass(
+                            'border border-danger');
+                    }
+                }).on('blur', function() {
                     if ($(this).val().trim() === '') {
                         $(this).addClass('is-invalid');
                         $(this).closest('td').addClass(
@@ -2278,29 +2415,37 @@
             });
 
             // Calculate the next available wpaID
-            var nextWpaID = 0;
+            var wpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
+            
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
-                    false)
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][continue_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
-                    false)
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][stop_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea form-control border-0 autosave-field').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
-                    false)
+                createTextArea(
+                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                    '][start_doing]',
+                    null,
+                    false
+                )
             ).appendTo(wparow);
+
 
             $('<td>').addClass('td-action').append(
                 $('<button>').addClass('btn btn-danger wpa-delete-btn align-middle')
@@ -2317,36 +2462,29 @@
         }
 
         function addNewLDPRow(ldptbody) {
-            var highestLDPID = 0;
-            ldptbody.find('[name^="LDP["]').each(function() {
-                var nameAttr = $(this).attr('name');
-                var matches = nameAttr.match(/\[([0-9]+)\]/);
-                if (matches && matches.length > 1) {
-                    var ldpID = parseInt(matches[1]);
-                    if (ldpID > highestLDPID) {
-                        highestLDPID = ldpID;
-                    }
-                }
-            });
-
             // Calculate the next available lpaID
-            var nextLDPID = 0;
+            var ldpID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
+            
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
-                    'readonly',
-                    false)
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][learning_need]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea autosave-field').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][methodology]').prop(
-                    'readonly',
-                    false)
+                createTextArea(
+                    'LDP[' +
+                    ldpID +
+                    '][' + {{ $appraisalId }} + '][methodology]',
+                    null,
+                    false
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-action').append(
@@ -2415,7 +2553,7 @@
         }
 
         function updateWeightedTotal() {
-            console.log("updateWeightedTotal() called");
+            // console.log("updateWeightedTotal() called");
 
             var totalWeight = 0;
             var totalWeighted = 0;
@@ -2471,8 +2609,8 @@
                     appraisalId: {{ $appraisalId }}
                 },
                 success: function(response) {
-                    console.log("PHASE");
-                    console.log(response.phaseData);
+                    // console.log("PHASE");
+                    // console.log(response.phaseData);
 
                     if (response.submitionChecker && Object.values(response.locks).every(lock => !lock)) {
                         $('select').prop('disabled', true);
@@ -2544,8 +2682,8 @@
                         }
                     }
 
-                    console.log("LOCK");
-                    console.log(response.locks);
+                    // console.log("LOCK");
+                    // console.log(response.locks);
 
                     if (response.locks.kra) {
                         $('#KRA_table_body select').prop('disabled', true);
@@ -2628,7 +2766,7 @@
                         // Append the error div to a specific element (e.g., the body)
                         errorDiv.appendTo('.content-section');
                     } else {
-                        console.log('An error occurred.');
+                        // console.log('An error occurred.');
                     }
                 }
             });

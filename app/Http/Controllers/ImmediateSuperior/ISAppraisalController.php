@@ -140,13 +140,19 @@ class ISAppraisalController extends Controller
 
       if ($allSubmitted) {
         $finalScore = $this->calculateFinalScore($appraisalData);
-        FinalScores::updateOrCreate(
-          [
-            'employee_id' => $employee_id,
-            'department_id' => $departmentId,
-          ],
-          ['final_score' => $finalScore[0]]
-        );
+        try {
+          FinalScores::updateOrCreate(
+            [
+              'employee_id' => $employee_id,
+              'department_id' => $departmentId,
+            ],
+            ['final_score' => $finalScore[0]]
+          );
+
+          Log::info('Record updated successfully.');
+        } catch (\Exception $e) {
+          Log::error('Error while updating the record: ' . $e->getMessage());
+        }
       }
       DB::commit();
       return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
@@ -158,7 +164,6 @@ class ISAppraisalController extends Controller
 
       // return redirect()->back()->with('error', 'An error occurred while saving data.');
     }
-
   }
 
   protected function validateISAppraisal(Request $request)
@@ -208,7 +213,7 @@ class ISAppraisalController extends Controller
       'feedback.*' => 'required|array',
       'feedback.*.*.question' => 'required|string',
       'feedback.*.*.answer' => 'required|numeric',
-      'feedback.*.*.comments' => 'required|string',
+      // 'feedback.*.*.comments' => 'required|string',
     ], [
       // Custom error messages
     ]);
@@ -379,7 +384,6 @@ class ISAppraisalController extends Controller
       // If the record exists, update the specific field value; otherwise, create a new record
       if ($jic) {
         $jic->$fieldName = $fieldValue;
-        $jic->job_incumbent_question = $fieldQuestion;
         $jic->save();
       } else {
         // Create a new record with the criteria and the specific field value
@@ -505,6 +509,15 @@ class ISAppraisalController extends Controller
         ->where('kra_id', $kraID)
         ->first();
 
+      $kraWeight = $kraData[$request->input('appraisalID')]['KRA_kra_weight'] / 100; // Convert percentage to decimal
+      $performanceLevel = $kraData[$request->input('appraisalID')]['KRA_performance_level'];
+      Log::info('WEIGHT: ' . $kraWeight);
+      Log::info('performanceLevel: ' . $performanceLevel);
+
+      // Calculate the weighted total
+      $weightedTotal = $kraWeight * $performanceLevel;
+      Log::info('weightedTotal: ' . $weightedTotal);
+
       if ($existingKRA) {
         Log::info('IS KRA ID: ' . ($kraID)); // Use parentheses for subtraction
         Log::info('IS Appraisal ID: ' . $request->input('appraisalID')); // Use parentheses for subtraction
@@ -513,13 +526,17 @@ class ISAppraisalController extends Controller
           $existingKRA->kra !== $kraData[$request->input('appraisalID')]['KRA_kra'] ||
           $existingKRA->kra_weight !== $kraData[$request->input('appraisalID')]['KRA_kra_weight'] ||
           $existingKRA->objective !== $kraData[$request->input('appraisalID')]['KRA_objective'] ||
-          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator']
+          $existingKRA->performance_indicator !== $kraData[$request->input('appraisalID')]['KRA_performance_indicator'] ||
+          $existingKRA->performance_level !== $kraData[$request->input('appraisalID')]['KRA_performance_level'] ||
+          $existingKRA->weighted_total !== $weightedTotal
         ) {
           $existingKRA->update([
             'kra' => $kraData[$request->input('appraisalID')]['KRA_kra'],
             'kra_weight' => $kraData[$request->input('appraisalID')]['KRA_kra_weight'],
             'objective' => $kraData[$request->input('appraisalID')]['KRA_objective'],
             'performance_indicator' => $kraData[$request->input('appraisalID')]['KRA_performance_indicator'],
+            'performance_level' => $kraData[$request->input('appraisalID')]['KRA_performance_level'],
+            'weighted_total' => $weightedTotal,
           ]);
         }
       } else {
@@ -768,8 +785,8 @@ class ISAppraisalController extends Controller
     }
 
     $kraID = $request->input('kraID');
-    $selfEvalkraID = $kraID-1;
-    
+    $selfEvalkraID = $kraID - 1;
+
     // Perform the actual deletion of the KRA record from the database
     try {
       KRA::where('kra_id', $kraID)->delete();
@@ -886,21 +903,17 @@ class ISAppraisalController extends Controller
               if ($evaluationType === 'self evaluation') {
                 $weightedTotals['self evaluation'] += ($bhScore * $selfEvalWeight);
                 $behavioralCompetenciesWeightedTotal += $weightedTotals['self evaluation'];
-
               } elseif ($evaluationType === 'is evaluation') {
                 $weightedTotals['is evaluation'] += ($bhScore * $isWeight);
                 $behavioralCompetenciesWeightedTotal += $weightedTotals['is evaluation'];
-
               }
             } elseif ($evaluationType === 'internal customer 1') {
               $weightedTotals['internal customer 1'] += ($icScore * $ic1Weight);
               $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 1'];
-
             } elseif ($evaluationType === 'internal customer 2') {
               $weightedTotals['internal customer 2'] += ($icScore * $ic2Weight);
               $behavioralCompetenciesWeightedTotal += $weightedTotals['internal customer 2'];
             }
-
           } else {
             Log::error('Final Grade calculation skipped due to scoreWeights being null for an appraisal.');
           }
@@ -967,4 +980,3 @@ class ISAppraisalController extends Controller
     return $status;
   }
 }
-?>

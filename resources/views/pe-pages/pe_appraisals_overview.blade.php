@@ -43,6 +43,7 @@
         </div>
     </div>
     <div class="content-container">
+        <div class="table-responsive">
         <table class='table'>
             <thead>
                 <tr>
@@ -58,6 +59,7 @@
 
             </tbody>
         </table>
+        </div>
     </div>
     <script>
         $(document).ready(function() {
@@ -97,10 +99,10 @@
                             var hasSelfEvaluation = false; // Flag to track if self-evaluation is found
 
                             employeeAppraisals.forEach(function(appraisal) {
-                                console.log(appraisal);
+                                // console.log(appraisal);
                                 var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
 
-                                console.log(appraisal.date_submitted)
+                                // console.log(appraisal.date_submitted)
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     hasSelfEvaluation = true; 
                                     if (appraisal.date_submitted !== null) {
@@ -204,7 +206,7 @@
                                 }
                             });
 
-                            console.log(response.status);
+                            // console.log(response.status);
 
                             if (response.status === 'Complete') {
                                 newRow.append($('<td>').text(response.status));
@@ -213,16 +215,16 @@
                             } 
 
                            // Check if the user has submitted the self-evaluation
-                           console.log(hasSelfEvaluation);
-                           console.log(response.final_score);
+                        //    console.log(hasSelfEvaluation);
+                        //    console.log(response.final_score);
 
                             if (hasSelfEvaluation) {
                                 if (response.final_score.length !== 0) {
                                     // If the self-evaluation is submitted and final score is available, append the final score
                                     // var finalScore = parseFloat(response.final_score).toFixed(2);
                                     var finalScore = (response.final_score * 100) / 100;
-                                    console.log(finalScore);
-                                    console.log(finalScore.toFixed(2));
+                                    // console.log(finalScore);
+                                    // console.log(finalScore.toFixed(2));
 
                                     newRow.append($('<td>').text(finalScore.toFixed(2)));
                                 } else{ 
@@ -238,11 +240,11 @@
                             $('#PE_appraisals_table_body').append(newRow);
                         });
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }

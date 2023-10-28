@@ -119,26 +119,26 @@ class EmployeeController extends Controller
 
       $account_id = $account->account_id;
 
-      $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
+      // $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
 
       $employee = Employees::create([
         'account_id' => $account_id,
         'employee_number' => $request->input('employee_number'),
         'first_name' => $request->input('first_name'),
         'last_name' => $request->input('last_name'),
-        'department_id' => $department_id
+        'department_id' => $request->input('department')
       ]);
 
       $activeYear = EvalYear::where('status', 'active')->first();
-      if ($activeYear && !in_array($account->type, ['AD', 'CE'])) {
+      if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
         $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
         foreach ($evaluationTypes as $evaluationType) {
           $evaluatorId = null;
+          $departmentId = $employee->department_id;
 
           if ($evaluationType === 'self evaluation') {
             $evaluatorId = $employee->employee_id;
           } elseif ($evaluationType === 'is evaluation') {
-            $departmentId = $employee->department_id;
             $isAccount = Accounts::where('type', 'IS')
               ->whereHas('employee', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
@@ -153,6 +153,7 @@ class EmployeeController extends Controller
             'evaluation_type' => $evaluationType,
             'employee_id' => $employee->employee_id,
             'evaluator_id' => $evaluatorId,
+            'department_id' => $departmentId
           ]);
         }
       }

@@ -83,7 +83,7 @@ class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
             // Handle the rest of your logic here, using $employee
             $activeYear = EvalYear::where('status', 'active')->first();
 
-            if ($activeYear && !in_array($account->type, ['AD', 'CE'])) {
+            if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
                 $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
 
                 // Check if the employee has existing appraisal records
@@ -125,8 +125,6 @@ class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
             Log::error('Error importing employee: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
             Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-
         }
     }
     public function uniqueBy()

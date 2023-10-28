@@ -99,17 +99,22 @@ class ISDashboardController extends Controller
       $immediateSuperiorId = Employees::whereHas('account', function ($query) use ($immediateSuperiorAccountId) {
         $query->where('account_id', $immediateSuperiorAccountId);
       })->value('employee_id');
+      
 
       $immediateSuperiorDepartmentId = Employees::where('employee_id', $immediateSuperiorId)->value('department_id');
       $departmentAppraisals = Appraisals::whereHas('employee', function ($query) use ($immediateSuperiorDepartmentId) {
-        $query->where('department_id', $immediateSuperiorDepartmentId);
+        $query->where('department_id', $immediateSuperiorDepartmentId)->whereIn('evaluation_type', ['is evaluation']);
+      })->get();
+
+      $departmentAppraisalsIC = Appraisals::whereHas('employee', function ($query) use ($immediateSuperiorDepartmentId) {
+        $query->where('department_id', $immediateSuperiorDepartmentId)->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2']);
       })->get();
 
       $completedKRACount = 0;
       $assignedICCount = 0;
       $totalICCount = 0;
 
-      foreach ($departmentAppraisals as $appraisal) {
+      foreach ($departmentAppraisalsIC as $appraisal) {
         $appraisalID = $appraisal->appraisal_id;
         $ICCount = Appraisals::where('appraisal_id', $appraisalID)
           ->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
@@ -121,7 +126,7 @@ class ISDashboardController extends Controller
         }
       }
 
-      foreach ($departmentAppraisals as $appraisal) {
+      foreach ($departmentAppraisalsIC as $appraisal) {
         $ICCount = Appraisals::where('appraisal_id', $appraisal->appraisal_id)
           ->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
           ->whereNotNull('evaluator_id')
@@ -138,7 +143,6 @@ class ISDashboardController extends Controller
           ->whereNotNull('kra_weight')
           ->whereNotNull('objective')
           ->count();
-
         if ($kraCount > 0) {
           $completedKRACount++;
         }
@@ -159,7 +163,7 @@ class ISDashboardController extends Controller
         $notifications[] = "The KRA encoding has started. Please insert KRAs for your employees.";
       }
       if ($currentDate >= $fiveDaysAfterKraEnd) {
-        $notifications[] = "The KRA encoding has ended. Check your self-evaluation on the appraisal page to view your KRAs.";
+        $notifications[] = "The KRA encoding has ended. Check your immediate superior evaluation form on the appraisal page to view your KRAs.";
       }
 
       // Performance Review

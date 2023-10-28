@@ -27,46 +27,57 @@
         <!-- Point System -->
         <div class="content-container">
             <h2>Point System:</h2>
-            <h4>Oustanding Employees:</h4>
+            <h4>Outstanding Employees:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="outstanding_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="outstanding_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <div class="table-wrapper">
-                <h4>Very Satisfactory:</h4>
-                <table class="table table-sm" id="verySatisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <h4>Very Satisfactory:</h4>
+                    <table class="table table-sm" id="verySatisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Satisfactory:</h4>
-            <table class="table table-sm" id="satisfactory_table">
-                <thead>
-                    <th>Name</th>
-                    <th>Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-wrapper">
+                <div class="table-responsive">
+                    <table class="table table-sm" id="satisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
             <h4>Fair:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="fair_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="fair_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Poor:</h4>
             <div class="table-wrapper">
+                <div class="table-responsive">
                 <table class="table table-sm" id="poor_table">
                     <thead>
                         <th>Name</th>
@@ -74,6 +85,7 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+                </div>
             </div>
         </div>
         <div class="content-container">
@@ -87,6 +99,7 @@
         <div class="content-container">
             <h2>Behavioral Competencies:</h2>
             <h4>Sustained Integral Development:</h4>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="sid_table">
                 <thead>
                     <th>#</th>
@@ -95,6 +108,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -104,6 +118,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Social Responsibility:</h4>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="sr_table">
                 <thead>
                     <th>#</th>
@@ -112,6 +127,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -121,6 +137,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Solidarity</h4>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="s_table">
                 <thead>
                     <th>#</th>
@@ -129,6 +146,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -139,6 +157,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Internal Customers:</h2>
+            <div class="table-responsive">
             <table class="table table-sm mb-3" id="ic_table">
                 <thead>
                     <th>#</th>
@@ -147,6 +166,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -171,8 +191,8 @@
             const departmentID = new URLSearchParams(window.location.search).get('department_id');
             const selectedYear = new URLSearchParams(window.location.search).get('sy');
 
-            console.log('Selected Year: ' + selectedYear);
-            console.log('Department ID: ' + departmentID);
+            // console.log('Selected Year: ' + selectedYear);
+            // console.log('Department ID: ' + departmentID);
 
             if (departmentName) {
                 $('#department-heading').text(departmentName);
@@ -203,35 +223,29 @@
                         var data = {
                             labels: Object.keys(scoresByDepartment),
                             datasets: [{
-                            label: 'Average Scores',
-                            data: Object.values(scoresByDepartment).map((scores) => scores[0] ? scores[0].total_score : 0),
-                            fill: false,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1,
+                                label: 'Average Scores',
+                                data: Object.values(scoresByDepartment).map((scores) => scores[0] ?
+                                    scores[0].total_score : 0),
+                                fill: false,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1,
                             }]
                         };
-
                         var config = {
                             type: 'line',
                             data: data,
                             options: {
                                 scales: {
                                     y: {
-                                    beginAtZero: true,
+                                        beginAtZero: true,
                                     }
                                 }
                             }
                         };
-
-                        
-                        // const ctx = document.getElementById('line-chart').getContext('2d');
                         new Chart(ctx, config);
-
-                        
                     }
                 },
                 error: function(xhr, status, error) {
-                    // Handle any errors here
                     console.error(error);
                 }
             });
@@ -259,7 +273,7 @@
                         $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
                             .totalAppraisals + '</p>');
                     } else {
-                        console.log('Load Cards failed.');
+                        // console.log('Load Cards failed.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -348,17 +362,18 @@
                         categories.forEach(category => {
                             const table = $(category.tableId);
                             table.empty();
-                            const row = $("<tr class='text-center'>");
 
                             if (response[category.key].length > 0) {
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
+                                    const row = $("<tr class='text-center'>");
                                     row.append($("<td>").text(fullName));
                                     row.append($("<td>").text(item.final_score));
-                                    table.append(row.clone());
+                                    table.append(row);
                                 });
                             } else {
+                                const row = $("<tr class='text-center'>");
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }
@@ -440,7 +455,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.ic) {
                             var icTable = $('#ic_table tbody');
                             icTable.empty();

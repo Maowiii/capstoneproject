@@ -6,7 +6,9 @@
 
 @section('content')
     @if ($errors->any())
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible fade show">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
             <ul>
                 <!-- Display each error message -->
                 @foreach ($errors->all() as $error)
@@ -14,8 +16,19 @@
                 @endforeach
             </ul>
         </div>
+        
+        <script>
+            // Automatically close the alert after a specified duration (e.g., 5 seconds)
+            $(document).ready(function() {
+                $(".alert").delay(5000).slideUp(200, function() {
+                    $(this).alert('close');
+                });
+            });
+        </script>
     @endif
+
     <div class="content-container">
+        <div class="table-responsive">
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
             <input type="text" class="form-control" placeholder="Name" id="search">
@@ -23,6 +36,7 @@
                 <i class='bx bx-search'></i>
             </button>
         </div>
+
         <table class="table" id="employee_table">
             <thead>
                 <tr>
@@ -39,6 +53,7 @@
             <tbody id="employee_table_body">
             </tbody>
         </table>
+        </div>
         <nav id="accounts_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="accounts_pagination"></ul>
         </nav>
@@ -295,11 +310,11 @@
                             $('#resetPasswordModal').modal('hide');
                         });
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -316,7 +331,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log('Password reset successfully.');
+                        // console.log('Password reset successfully.');
                         var toast = $('<div>').addClass(
                                 'toast align-items-center text-bg-primary border-0')
                             .attr('role', 'alert').attr('aria-live', 'assertive').attr(
@@ -333,11 +348,11 @@
                         var toastInstance = new bootstrap.Toast(toast[0]);
                         toastInstance.show();
                     } else {
-                        console.log('Password reset failed.');
+                        // console.log('Password reset failed.');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log('Error:', error);
+                    // console.log('Error:', error);
                 }
             });
         }
@@ -366,11 +381,11 @@
                         }
                         loadTableData();
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -381,7 +396,7 @@
             $(document).on('click', '.edit-btn', function() {
                 var employeeId = $(this).attr('employee-id');
                 selectedEmployeeId = employeeId;
-                console.log('Employee ID: ' + employeeId);
+                // console.log('Employee ID: ' + employeeId);
                 $('#addUserModal').modal('show');
                 $('#save-user-btn').removeClass('d-none');
                 $('#add-user-btn').addClass('d-none');
@@ -409,11 +424,11 @@
                             }
                             $('#department').val(response.employee.department_id);
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('Error: ' + error);
+                        // console.log('Error: ' + error);
                     }
                 });
             });
@@ -454,20 +469,20 @@
                         department: department
                     },
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.success) {
                             $('#addUserModalTitle').text('Add New User')
                             $('#addUserModal').modal('hide');
                             $('#addUserModal').hide();
                             loadTableData();
                         } else {
-                            console.log('Error: ' + response.error);
+                            // console.log('Error: ' + response.error);
 
                             $('#add-user-btn').removeClass('d-none');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log('Error: ' + error);
+                        // console.log('Error: ' + error);
                     }
                 });
             });

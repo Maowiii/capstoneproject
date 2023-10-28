@@ -301,19 +301,20 @@ class SelfEvaluationController extends Controller
 
       if ($allSubmitted) {
         $finalScore = $this->calculateFinalScore($appraisalData);
-        $roundedFinalScore = round($finalScore[0], 2); // Round to 2 decimal places
 
         // Log some information for debugging
         Log::info('Trying to update the record.');
         Log::info('Table Name: ' . (new FinalScores)->getTable());
         Log::info('Employee ID: ' . $employee_id);
         Log::info('Final Score: ' . $finalScore[0]);
-        Log::info('rounded Final Score: ' . $roundedFinalScore);
 
         // Attempt to update the record
         try {
           FinalScores::updateOrCreate(
-            ['employee_id' => $employee_id],
+            [
+              'employee_id' => $employee_id,
+              'department_id' => $departmentId,
+            ],
             ['final_score' => $finalScore[0]]
           );
 
@@ -389,7 +390,7 @@ class SelfEvaluationController extends Controller
       'feedback.*' => 'required|array',
       'feedback.*.*.question' => 'required|string',
       'feedback.*.*.answer' => 'required|numeric',
-      'feedback.*.*.comments' => 'required|string',
+      // 'feedback.*.*.comments' => 'required|string',
     ], [
       // Custom error messages
     ]);
@@ -968,14 +969,14 @@ class SelfEvaluationController extends Controller
     if (!empty($signatureData)) {
       // Try to find an existing signature
       $existingSignature = Signature::where('appraisal_id', $appraisalId)
-        ->where('sign_type', 'IS')
+        ->where('sign_type', 'SE')
         ->first();
 
       if ($existingSignature) {
         // Update the existing signature data
         $existingSignature->update([
           'sign_data' => $signatureData,
-          'sign_type' => 'IS',
+          'sign_type' => 'SE',
         ]);
       } else {
         // Create a new signature if it doesn't exist
@@ -984,7 +985,7 @@ class SelfEvaluationController extends Controller
           $newSignature = Signature::create([
             'appraisal_id' => $appraisalId,
             'sign_data' => $signatureData,
-            'sign_type' => 'IS',
+            'sign_type' => 'SE',
           ]);
 
           // Get the ID of the newly created signature
@@ -1015,6 +1016,8 @@ class SelfEvaluationController extends Controller
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
 
+    $userEmployeeId = Employees::where('account_id', $account_id)->pluck('employee_id')->first();
+
     if ($appraisal) {
       ////////////PERMISSION/////////////
       $employeeId = $appraisal->employee_id;
@@ -1029,8 +1032,8 @@ class SelfEvaluationController extends Controller
             })
             ->exists();
 
-      $isEvaluator = ($account_id == $evaluatorId);
-      $isEmployee = ($account_id == $employeeId);
+      $isEvaluator = ($userEmployeeId == $evaluatorId);
+      $isEmployee = ($userEmployeeId == $employeeId);
 
       // Check permissions for viewing the form
       if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {

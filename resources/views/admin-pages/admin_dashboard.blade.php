@@ -45,21 +45,23 @@
 
     <!-- Departments Table -->
     <div class="content-container">
-        <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Department" id="search">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
+        <div class="table-responsive">
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Department" id="search">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
+            <table class='table table-bordered table-sm align-middle' id="departments_table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Average Score</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-        <table class='table table-bordered table-sm align-middle' id="departments_table">
-            <thead>
-                <tr>
-                    <th>Department</th>
-                    <th>Average Score</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
         <nav id="department_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="department_pagination"></ul>
         </nav>
@@ -67,22 +69,24 @@
 
     <!-- Employees Table -->
     <div class="content-container">
-        <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Name" id="namesearch">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
+        <div class="table-responsive">
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Name" id="namesearch">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
+            <table class='table table-bordered table-sm align-middle' id="employees_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Trends</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-        <table class='table table-bordered table-sm align-middle' id="employees_table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Trends</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
         <nav id="employee_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="employee_pagination"></ul>
         </nav>
@@ -92,55 +96,65 @@
         <!-- Point System -->
         <div class="content-container">
             <h2>Point System:</h2>
-            <h4>Oustanding:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="outstanding_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <h4>Outstanding:</h4>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="outstanding_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Very Satisfactory:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="verySatisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="verySatisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Satisfactory:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="satisfactory_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="satisfactory_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Fair:</h4>
             <div class="table-wrapper">
-                <table class="table table-sm" id="fair_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm" id="fair_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <h4>Poor:</h4>
-            <div class="table-wrapper">
-                <table class="table table-sm" id="poor_table">
-                    <thead>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <table class="table table-sm" id="poor_table">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="content-container">
@@ -172,14 +186,16 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Spirit of St. Vincent de Paul and Social Responsibility:</h4>
-            <table class="table table-sm mb-3" id="sr_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm mb-3" id="sr_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -190,14 +206,16 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h4>Solidarity</h4>
-            <table class="table table-sm mb-3" id="s_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm mb-3" id="s_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -208,14 +226,16 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Internal Customers:</h2>
-            <table class="table table-sm mb-3" id="ic_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm mb-3" id="ic_table">
+                    <thead>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th class="medium-column">Average Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="content-container">
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
@@ -265,7 +285,7 @@
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
-                console.log('Selected Year: ' + selectedYear);
+                // console.log('Selected Year: ' + selectedYear);
                 loadDepartmentTable(selectedYear, null);
                 loadICQuestions(selectedYear);
                 loadBCQuestions(selectedYear);
@@ -275,14 +295,14 @@
 
             $('#search').on('input', function() {
                 var query = $(this).val();
-                console.log('Query: ' + query);
+                // console.log('Query: ' + query);
                 loadDepartmentTable(globalSelectedYear, query);
             });
 
             // Employee Trends
             $(document).on('click', '.view-employee-btn', function() {
                 var employeeID = $(this).data('employee-id');
-                console.log('Employee ID: ' + employeeID);
+                // console.log('Employee ID: ' + employeeID);
                 $('#employeeTrendsModal').modal('show');
 
                 $.ajax({
@@ -296,7 +316,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log(response);
+                            // console.log(response);
                             const employee = response.employee;
                             $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
                                 employee.last_name);
@@ -462,7 +482,7 @@
 
             $('#namesearch').on('input', function() {
                 var query = $(this).val();
-                console.log('Name Query: ' + query);
+                // console.log('Name Query: ' + query);
                 loadEmployeesTable(query);
             });
 
@@ -495,7 +515,7 @@
                         $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
                             .totalAppraisals + '</p>');
                     } else {
-                        console.log('Load Cards failed.');
+                        // console.log('Load Cards failed.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -577,7 +597,7 @@
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    console.log(errorMessage);
+                    // console.log(errorMessage);
                 }
             });
         }
@@ -1013,6 +1033,7 @@
                     selectedYear: selectedYear,
                 },
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
                         const categories = [{
                                 label: 'Outstanding',
@@ -1081,21 +1102,23 @@
                         categories.forEach(category => {
                             const table = $(category.tableId);
                             table.empty();
-                            const row = $("<tr class='text-center'>");
 
                             if (response[category.key].length > 0) {
                                 $.each(response[category.key], function(index, item) {
                                     const fullName =
                                         `${item.employee.first_name} ${item.employee.last_name}`;
+                                    const row = $("<tr class='text-center'>");
                                     row.append($("<td>").text(fullName));
                                     row.append($("<td>").text(item.final_score));
-                                    table.append(row.clone());
+                                    table.append(row);
                                 });
                             } else {
+                                const row = $("<tr class='text-center'>");
                                 row.append($("<td colspan='2'>").text("-"));
                                 table.append(row);
                             }
                         });
+
                     } else {
                         var outstandingTable = $('#outstanding_table tbody');
                         var verySatisfactoryTable = $('#verySatisfactory_table tbody');
@@ -1221,7 +1244,7 @@
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
                         'An error occurred.';
-                    console.log(errorMessage);
+                    // console.log(errorMessage);
                 }
             });
         }

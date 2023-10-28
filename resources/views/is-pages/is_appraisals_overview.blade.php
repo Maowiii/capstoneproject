@@ -43,6 +43,7 @@
         </div>
     </div>
     <div class="content-container">
+        <div class="table-responsive">
         <table class='table' id="IS_appraisals_table">
             <thead>
                 <tr>
@@ -59,6 +60,7 @@
 
             </tbody>
         </table>
+        </div>
         <nav id="is_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="is_pagination"></ul>
         </nav>
@@ -151,6 +153,7 @@
                     <div>
                         <div id="SummaryModalBody">
                             <h5>Behavioral Competencies</h5>
+                            <div class="table-responsive">
                             <table class='table table-bordered'>
                                 <thead>
                                     <tr>
@@ -194,7 +197,9 @@
                                 </tfoot>
                                 </tbody>
                             </table>
+                            </div>
                                 <h5>Final Ratings</h5>
+                                <div class="table-responsive">
                                 <table class='table table-bordered'>
                                     <thead>
                                         <tr>
@@ -229,6 +234,7 @@
                                         </tr>
                                     </tfoot>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,7 +302,7 @@
                                             .text('View'); 
                                     }
                                 } else if (appraisal.evaluation_type === 'internal customer 1') {
-                                    if (appraisal.evaluator_id === null) {
+                                    if (appraisal.evaluator_id === null || appraisal.evaluator_id === 0) {
                                         ic1Link = $('<a>').addClass(
                                                 'btn ic1 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal1')
@@ -344,7 +350,7 @@
                                         }  
                                     }
                                 } else if (appraisal.evaluation_type === 'internal customer 2') {
-                                    if (appraisal.evaluator_id === null) {
+                                    if (appraisal.evaluator_id === null || appraisal.evaluator_id === 0) {
                                         ic2Link = $('<a>').addClass(
                                                 'btn ic2 btn-outline-primary')
                                             .attr('data-bs-target', '#ISModal2')
@@ -354,19 +360,19 @@
                                                 .employee_id)
                                             // Include the appraisal ID here
                                             .text('Choose IC2').on('click', function() {
-                                                console.log('waz clicked');
+                                                // console.log('waz clicked');
                                                 // Get the appraisal_id from the clicked link
                                                 var appraisalId = $(this).data(
                                                     'appraisal-id');
 
                                                 var employeeId = $(this).data(
                                                     'employee-id');
-                                                console.log(appraisalId);
+                                                // console.log(appraisalId);
 
                                                 // Set the data attribute for the modal
                                                 $('#ISModal2').attr('data-appraisal-id',
                                                     appraisalId);
-                                                console.log(appraisalId);
+                                                // console.log(appraisalId);
                                                 loadEmployeeData(employeeId);
                                             });
                                     } else {
@@ -434,7 +440,7 @@
                                                 $('#SummaryModalBody').show();
 
                                                 if (response.success) {
-                                                    console.log(response);
+                                                    // console.log(response);
                                                     $('#SummaryModal').find('#SE_perc')
                                                         .text(response
                                                             .appraiseeFinalScores
@@ -646,7 +652,7 @@
                                             },
                                             error: function(xhr, status, error) {
                                                 $('#loading').hide();
-                                                console.log(error);
+                                                // console.log(error);
                                             }
                                         });
                                     } else {
@@ -721,12 +727,12 @@
                             })(totalPageCounter);
                         }
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
 
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -760,7 +766,7 @@
                         $('.emp_modal').empty();
 
                         var employees = response.employees.data;
-                        console.log(response);
+                        // console.log(response);
                         for (var i = 0; i < employees.length; i++) {
                             var employee = employees[i];
                             // Check if the employee_id matches the excludedEmployeeId and is not the current appraisee
@@ -843,11 +849,11 @@
                         }
 
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -911,7 +917,7 @@
                 success: function(response) {
                     if (response.success) {
                         // Assignment successful, you can display a success message if needed
-                        console.log('Internal Customer(s) assigned successfully.');
+                        // console.log('Internal Customer(s) assigned successfully.');
 
                         // Check if the active modal is ISModal1 and two names are selected
                         if (activeModal.attr('id') === 'ISModal1' && selectedEmployees.length === 2) {
@@ -930,12 +936,12 @@
                         refreshPage();
                     } else {
                         // Handle errors, e.g., display an error message
-                        console.log('Error: ' + response.error);
+                        // console.log('Error: ' + response.error);
                     }
                 },
                 error: function(xhr, status, error) {
                     // Handle AJAX errors
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         });

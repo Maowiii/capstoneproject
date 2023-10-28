@@ -7,6 +7,7 @@
 
 @section('content')
     <div class="content-container">
+        <div class="table-responsive">
         <table class="table table-bordered" id="evalyear_table">
             <thead>
                 <tr>
@@ -23,6 +24,7 @@
 
             </tbody>
         </table>
+        </div>
         <nav id="evalyear_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
         </nav>
@@ -192,6 +194,7 @@
                         <!-- SCORE WEIGHTS -->
                         <div class="mx-3 mb-3">
                             <h5>Behavioral Competencies</h5>
+                            <div class="table-responsive">
                             <table class='table table-bordered'>
                                 <thead>
                                     <th>Components</th>
@@ -249,6 +252,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                             <span class="text-danger error-message" id="bhTotal_error">
                                 @error('bhTotal')
                                     {{ $message }}
@@ -258,6 +262,7 @@
 
                         <div class="mx-3">
                             <h5>Final Ratings</h5>
+                            <div class="table-responsive">
                             <table class='table table-bordered'>
                                 <thead>
                                     <th>Components</th>
@@ -296,6 +301,7 @@
                                     </tr>
                                 </tfoot>
                             </table>
+                            </div>
                             <span class="text-danger error-message" id="finalTotal_error">
                                 @error('finalTotal')
                                     {{ $message }}
@@ -346,6 +352,7 @@
                     </div>
                     <div class="modal-body">
                         <h5>Behavioral Competencies</h5>
+                        <div class="table-responsive">
                         <table class='table table-bordered'>
                             <thead>
                                 <th>Components</th>
@@ -391,8 +398,9 @@
                                 </tr>
                             </tfoot>
                         </table>
-
+                        </div>
                         <h5>Final Ratings</h5>
+                        <div class="table-responsive">
                         <table class='table table-bordered'>
                             <thead>
                                 <th>Components</th>
@@ -424,6 +432,7 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -439,19 +448,19 @@
         sy_end.value = sy_start_value + 1;
 
         function updateBehavioralTotal() {
-            console.log('updateBehavioralTotal');
+            // console.log('updateBehavioralTotal');
             var selfEvalWeight = parseInt($('#self_eval_weight').val());
             var ic1Weight = parseInt($('#ic1_weight').val());
             var ic2Weight = parseInt($('#ic2_weight').val());
             var isWeight = parseInt($('#is_weight').val());
 
-            console.log(selfEvalWeight);
-            console.log(ic1Weight);
-            console.log(ic2Weight);
-            console.log(isWeight);
+            // console.log(selfEvalWeight);
+            // console.log(ic1Weight);
+            // console.log(ic2Weight);
+            // console.log(isWeight);
 
             var bhTotal = selfEvalWeight + ic1Weight + ic2Weight + isWeight;
-            console.log(bhTotal);
+            // console.log(bhTotal);
             $('#bh_total').val(bhTotal);
 
             if (bhTotal > 100) {
@@ -485,7 +494,7 @@
 
         $(document).on('click', '#confirm-delete-btn', function() {
             var evalID = $(this).data('eval-id');
-            console.log('Confirm Eval Year ID: ' + evalID);
+            // console.log('Confirm Eval Year ID: ' + evalID);
 
             $.ajax({
                 headers: {
@@ -498,7 +507,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
+                        // console.log(response);
                         loadEvaluationYearTable(page = 1);
                         $('#deleteConfirmationModal').modal('hide');
                     }
@@ -508,7 +517,7 @@
 
         $(document).on('click', '.btn-weights', function() {
             var evalID = $(this).data('eval-id');
-            console.log('Eval ID: ' + evalID);
+            // console.log('Eval ID: ' + evalID);
             $('#weightsModal').modal('show');
 
             $.ajax({
@@ -519,7 +528,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        console.log(response);
+                        // console.log(response);
                         $('#weightsModalTitle').text('School Year: ' + response.sy);
 
                         $('#view_self_eval_weight').val(response.weights[0].self_eval_weight);
@@ -642,7 +651,7 @@
                         var tbody = $('#evalyear_table tbody');
                         tbody.empty();
 
-                        console.log(response.evalyears);
+                        // console.log(response.evalyears);
 
                         $.each(response.evalyears.data, function(index, evalyear) {
                             var row = $('<tr>');
@@ -659,7 +668,7 @@
 
                             var eval_id = evalyear.eval_id;
                             var school_year = evalyear.sy_start + ' - ' + evalyear.sy_end;
-                            console.log(school_year);
+                            // console.log(school_year);
                             var buttonGroup = $('<div>').addClass('btn-group').attr('role', 'group');
 
                             if (evalyear.status == 'inactive') {
@@ -713,11 +722,11 @@
 
 
                     } else {
-                        console.log(response.error);
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             });
         }
@@ -734,12 +743,12 @@
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    console.log('AJAX Success Response:', response);
+                    // console.log('AJAX Success Response:', response);
 
                     if (response.success) {
                         $('#evalYearForm input, #evalYearForm select').addClass('is-grayed').prop('readonly',
                             true);
-                        console.log('success');
+                        // console.log('success');
                         $('#submitbtn').text('Confirm');
                         $('#confirmationAlert').removeClass('d-none');
                         $('#backbtn').show();
@@ -748,7 +757,7 @@
                             confirmEvalYear(confirmEvent, formData);
                         });
                     } else {
-                        console.log('fail');
+                        // console.log('fail');
                         $('.text-danger').hide();
                         $('.error-message').text('');
 
@@ -791,7 +800,7 @@
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    console.log('AJAX Confirm Response:', response);
+                    // console.log('AJAX Confirm Response:', response);
 
                     if (response.success) {
                         location.reload();
@@ -820,9 +829,9 @@
                 success: function(response) {
                     if (response.success) {
                         loadEvaluationYearTable();
-                        console.log('Successfully toggled');
+                        // console.log('Successfully toggled');
                     } else {
-                        console.log('Error: ' + reponse.error);
+                        // console.log('Error: ' + reponse.error);
                     }
                 },
                 error: function(xhr) {
@@ -851,7 +860,7 @@
             var evalId = $(this).data('eval-id');
             var schoolYear = $(this).data('school-year');
 
-            console.log('Eval Year ID: ' + evalId);
+            // console.log('Eval Year ID: ' + evalId);
 
             $('#deleteConfirmationModal').modal('show');
             $('#confirm-delete-btn').data('eval-id', evalId);

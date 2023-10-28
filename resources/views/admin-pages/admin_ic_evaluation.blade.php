@@ -27,7 +27,7 @@
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
            <b><i>5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever </b></i></p>
-
+           <div class="table-responsive">
         <table class="table table-bordered" id="IC_table">
             <thead>
                 <tr>
@@ -51,6 +51,7 @@
                 </tr>
             </tfoot>
         </table>
+           </div>
 
         <p>What did you like best about his/her customer service?</p>
         <textarea class="form-control" id="service_area" disabled></textarea>
@@ -70,6 +71,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="table-responsive">
                     <table class="table" id="signtable">
                         <thead>
                             <tr>
@@ -82,6 +84,7 @@
                         <tbody>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -158,11 +161,11 @@
 
                             $('#signtable tbody').append(newRow);
                         } else {
-                            console.log('fail');
+                            // console.log('fail');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }
@@ -200,14 +203,14 @@
                             $('#service_area').val(response.customerService);
                             $('#comments_area').val(response.suggestion);
                         } else {
-                            console.log('Comments not found or an error occurred.');
+                            // console.log('Comments not found or an error occurred.');
                         }
                     },
                     error: function(xhr) {
                         if (xhr.responseText) {
-                            console.log('Error: ' + xhr.responseText);
+                            // console.log('Error: ' + xhr.responseText);
                         } else {
-                            console.log('An error occurred.');
+                            // console.log('An error occurred.');
                         }
                     }
                 });
@@ -270,11 +273,11 @@
                             });
 
                         } else {
-                            console.log('Error:' + response.error);
+                            // console.log('Error:' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }
@@ -303,12 +306,12 @@
                                     'checked', true);
                             }
                         } else {
-                            console.log('Failed');
+                            // console.log('Failed');
                         }
                         totalScore();
                     },
                     error: function(xhr, status, error) {
-                        console.log(error);
+                        // console.log(error);
                     }
                 });
             }

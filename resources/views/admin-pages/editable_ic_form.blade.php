@@ -18,7 +18,7 @@
         <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
             5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
-
+            <div class="table-responsive">
         <table class="table table-bordered" id="IC_table">
             <thead>
                 <tr>
@@ -31,6 +31,7 @@
                 <!-- Data ng Editable Internal Customer Form -->
             </tbody>
         </table>
+            </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-primary" id="addQuestionBtn">Add Question</button>
         </div>
@@ -58,7 +59,7 @@
                     url: '{{ route('ad.formChecker') }}',
                     type: 'GET',
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.formLocked == true) {
                             $('.content-container button').prop('disabled', true);
                         }
@@ -66,7 +67,7 @@
                     error: function(xhr, status, error) {
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                             .responseJSON.error : 'An error occurred.';
-                        console.log(errorMessage);
+                        // console.log(errorMessage);
                     }
                 });
             }
@@ -99,11 +100,11 @@
                                 tbody.append(row); // Append new row to tbody
                             });
                         } else {
-                            console.log(response.error); // Handle error response
+                            // console.log(response.error); // Handle error response
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(error); // Handle Ajax error
+                        // console.log(error); // Handle Ajax error
                     }
                 });
             }
@@ -134,12 +135,12 @@
                         type: 'POST',
                         data: data,
                         success: function(response) {
-                            console.log(response); // Handle success response
+                            // console.log(response); // Handle success response
                         },
                         error: function(xhr, status, error) {
                             var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                                 .responseJSON.error : 'An error occurred.';
-                            console.log(errorMessage);
+                            // console.log(errorMessage);
                         }
                     });
                 }
@@ -171,9 +172,9 @@
                         success: function(response) {
                             if (response.success) {
                                 row.remove();
-                                console.log(response.message);
+                                // console.log(response.message);
                             } else {
-                                console.error(response.error);
+                                // console.error(response.error);
                             }
                         },
                         error: function(xhr, status, error) {
@@ -218,12 +219,12 @@
                                 },
                                 success: function(response) {
                                     if (response.success) {
-                                        console.log(response.message);
+                                        // console.log(response.message);
                                         questionId = response
                                             .question_id; // Assign the questionId globally
                                         newCell.dataset.questionid = questionId;
                                     } else {
-                                        console.error(response.error);
+                                        // console.error(response.error);
                                     }
                                 },
                                 error: function(xhr, status, error) {

@@ -120,7 +120,7 @@
 
         <script>
             function fetchEmployeeInfo() {
-                console.log('Fetching employee information...');
+                // console.log('Fetching employee information...');
                 $.ajax({
                     url: '{{ route('employeeInfo') }}',
                     type: 'GET',
