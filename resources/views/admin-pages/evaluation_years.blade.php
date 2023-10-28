@@ -641,7 +641,7 @@
 
         function loadEvaluationYearTable(page = 1) {
             $.ajax({
-                url: '/evaluation-year/displayEvaluationYear',
+                url: '{{ route("displayEvaluationYear") }}',
                 type: 'GET',
                 data: {
                     page: page
@@ -654,17 +654,17 @@
                         // console.log(response.evalyears);
 
                         $.each(response.evalyears.data, function(index, evalyear) {
-                            var row = $('<tr>');
-                            row.append($('<td>').addClass('align-middle').text(evalyear.eval_id));
-                            row.append($('<td>').addClass('align-middle').text(evalyear.sy_start +
+                            var row = $('<tr>').addClass('align-middle');
+                            row.append($('<td>').text(index + 1));
+                            row.append($('<td>').text(evalyear.sy_start +
                                 ' - ' + evalyear.sy_end));
-                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                            row.append($('<td>').text(formatDate(evalyear
                                 .kra_start) + ' - ' + formatDate(evalyear.kra_end)));
-                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                            row.append($('<td>').text(formatDate(evalyear
                                 .pr_start) + ' - ' + formatDate(evalyear.pr_end)));
-                            row.append($('<td>').addClass('align-middle').text(formatDate(evalyear
+                            row.append($('<td>').text(formatDate(evalyear
                                 .eval_start) + ' - ' + formatDate(evalyear.eval_end)));
-                            row.append($('<td>').addClass('align-middle').text(evalyear.status));
+                            row.append($('<td>').text(evalyear.status));
 
                             var eval_id = evalyear.eval_id;
                             var school_year = evalyear.sy_start + ' - ' + evalyear.sy_end;

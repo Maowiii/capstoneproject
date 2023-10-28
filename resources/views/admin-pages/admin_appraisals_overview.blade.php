@@ -33,13 +33,13 @@
 
     <div class="content-container">
         <div class="table-responsive">
-        <div class="input-group mb-2 search-box">
-            <input type="text" class="form-control" placeholder="Search" id="search">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
-        </div>
-  
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Search" id="search">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
+
             <table class="table table-bordered" id="admin_appraisals_table">
                 <thead class="align-middle">
                     <tr>
@@ -459,7 +459,6 @@
 
                                 row.append($(
                                     "<td><button type='button' class='btn btn-outline-primary view-btn'>View</button></td>"
-
                                 ));
 
                                 var summaryButton = $('<button>').addClass(
@@ -932,6 +931,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            console.log(response);
                             $('#signtable tbody').empty();
 
                             const appraisalTypeMap = {
@@ -977,47 +977,67 @@
                                     row.append($('<td>').text('-'));
                                 }
 
-                                var kraToggleButton = $('<button>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-outline-primary kra-toggle-btn',
+                                var kraToggleButton = $('<div>', {
+                                    'class': 'form-check form-switch',
+                                    'style': 'display: flex; justify-content: center;',
+                                });
+
+                                var prToggleButton = $('<div>', {
+                                    'class': 'form-check form-switch',
+                                    'style': 'display: flex; justify-content: center;',
+                                });
+
+                                var evalToggleButton = $('<div>', {
+                                    'class': 'form-check form-switch',
+                                    'style': 'display: flex; justify-content: center;',
+                                });
+
+                                var formLockToggleButton = $('<div>', {
+                                    'class': 'form-check form-switch',
+                                    'style': 'display: flex; justify-content: center;',
+                                });
+
+                                var kraInput = $('<input>', {
+                                    'class': 'form-check-input kra-toggle-btn',
+                                    'type': 'checkbox',
                                     'appraisal-id': appraisalId,
                                     'employee-id': appraisal.employee_id,
                                 });
+                                kraToggleButton.append(kraInput);
 
-                                var formLockToggleButton = $('<button>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-outline-primary form-toggle-btn',
+                                var prInput = $('<input>', {
+                                    'class': 'form-check-input pr-toggle-btn',
+                                    'type': 'checkbox',
                                     'appraisal-id': appraisalId,
                                     'employee-id': appraisal.employee_id,
                                 });
+                                prToggleButton.append(prInput);
 
-                                var prToggleButton = $('<button>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-outline-primary pr-toggle-btn',
+                                var evalInput = $('<input>', {
+                                    'class': 'form-check-input eval-toggle-btn',
+                                    'type': 'checkbox',
                                     'appraisal-id': appraisalId,
                                     'employee-id': appraisal.employee_id,
                                 });
+                                evalToggleButton.append(evalInput);
 
-                                var evalToggleButton = $('<button>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-outline-primary eval-toggle-btn',
+                                var formLockInput = $('<input>', {
+                                    'class': 'form-check-input form-toggle-btn',
+                                    'type': 'checkbox',
                                     'appraisal-id': appraisalId,
                                     'employee-id': appraisal.employee_id,
                                 });
-
-                                kraToggleButton.text(appraisal.kra_locked === 1 ? 'Unlock' :
-                                    'Lock');
-                                prToggleButton.text(appraisal.pr_locked === 1 ? 'Unlock' :
-                                    'Lock');
-                                evalToggleButton.text(appraisal.eval_locked === 1 ? 'Unlock' :
-                                    'Lock');
-                                formLockToggleButton.text(appraisal.locked === 1 ? 'Unlock' :
-                                    'Lock');
+                                formLockToggleButton.append(formLockInput);
 
                                 row.append($('<td>').html(kraToggleButton));
                                 row.append($('<td>').html(prToggleButton));
                                 row.append($('<td>').html(evalToggleButton));
                                 row.append($('<td>').html(formLockToggleButton));
+
+                                kraInput.prop('checked', appraisal.kra_locked === 1);
+                                prInput.prop('checked', appraisal.pr_locked === 1);
+                                evalInput.prop('checked', appraisal.eval_locked === 1);
+                                formLockInput.prop('checked', appraisal.locked === 1);
 
                                 $('#signtable tbody').append(row);
                             });
@@ -1067,11 +1087,11 @@
                 $('#imageModal').modal('show');
             }
 
-            $(document).on('click', '.form-toggle-btn', function() {
+            $(document).on('change', '.form-toggle-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this);
-                // console.log('Appraisal ID for Form Toggle: ' + appraisalID);
+                console.log('Appraisal ID for Form Toggle: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1100,13 +1120,13 @@
 
             });
 
-            $(document).on('click', '.kra-toggle-btn', function() {
+            $(document).on('change', '.kra-toggle-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                // console.log('Appraisal ID KRA: ' + appraisalID);
+                console.log('Appraisal ID KRA: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1139,13 +1159,13 @@
                 });
             });
 
-            $(document).on('click', '.pr-toggle-btn', function() {
+            $(document).on('change', '.pr-toggle-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                // console.log('Appraisal ID PR: ' + appraisalID);
+                console.log('Appraisal ID PR: ' + appraisalID);
 
                 $.ajax({
                     headers: {
@@ -1179,13 +1199,13 @@
                 });
             });
 
-            $(document).on('click', '.eval-toggle-btn', function() {
+            $(document).on('change', '.eval-toggle-btn', function() {
                 var appraisalID = $(this).attr('appraisal-id');
                 var employeeID = $(this).attr('employee-id');
                 var $button = $(this); // Store the clicked button element
                 var buttonText = $button.text(); // Get the text content of the button
 
-                // console.log('Appraisal ID EVAL: ' + appraisalID);
+                console.log('Appraisal ID EVAL: ' + appraisalID);
 
                 $.ajax({
                     headers: {

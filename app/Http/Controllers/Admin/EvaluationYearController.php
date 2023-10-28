@@ -19,22 +19,34 @@ class EvaluationYearController extends Controller
 {
   public function viewEvaluationYears()
   {
-    if (session()->has('account_id')) {
-      return view('admin-pages.evaluation_years');
-    } else {
+    if (!session()->has('account_id')) {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
+
+    return view('admin-pages.evaluation_years');
   }
 
   public function displayEvaluationYear()
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    $evalyears = EvalYear::paginate(10); // Use paginate() on the query builder
+    $activeYear = EvalYear::where('status', 'active')->first();
+
+    if ($activeYear) {
+      $evalyears = EvalYear::where('eval_id', '!=', $activeYear->eval_id)
+        ->orderBy('sy_start', 'asc')
+        ->paginate(10);
+
+      $evalyears->prepend($activeYear);
+    } else {
+      $evalyears = EvalYear::orderBy('sy_start', 'asc')->paginate(10);
+    }
+
     return response()->json(['success' => true, 'evalyears' => $evalyears]);
   }
+
 
   public function addEvalYear(Request $request)
   {
