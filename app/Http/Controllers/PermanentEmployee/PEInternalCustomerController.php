@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\ScoreWeights;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
@@ -213,6 +214,7 @@ class PEInternalCustomerController extends Controller
     $evaluator = $appraisal->evaluator;
     $full_name = $evaluator->first_name . ' ' . $evaluator->last_name;
     $date_submitted = $appraisal->date_submitted;
+    $form_locked = $appraisal->locked;
 
     $sign_data = null;
 
@@ -225,6 +227,7 @@ class PEInternalCustomerController extends Controller
       'full_name' => $full_name,
       'date_submitted' => $date_submitted,
       'sign_data' => $sign_data,
+      'form_locked' => $form_locked
     ]);
   }
 
@@ -240,10 +243,42 @@ class PEInternalCustomerController extends Controller
 
     $employeeId = Appraisals::where('appraisal_id', $appraisalId)->value('employee_id');
 
-    Signature::updateOrCreate(
-      ['appraisal_id' => $appraisalId],
-      ['sign_data' => $esignature, 'sign_type' => 'IC']
-    );
+    try {
+      $maxAllowedSizeBytes = 25 * 1024 * 1024; // 25MB
+      $dataSize = strlen($esignature);
+
+      if ($dataSize > $maxAllowedSizeBytes) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Maximum allowed file size is 25MB.'
+        ]);
+      }
+
+      Signature::updateOrCreate(
+        ['appraisal_id' => $appraisalId],
+        ['sign_data' => $esignature, 'sign_type' => 'IC']
+      );
+    } catch (QueryException $e) {
+      $errorCode = $e->getCode();
+      $errorMessage = $e->getMessage();
+
+      if ($errorCode === '22001') {
+        return response()->json([
+          'success' => false,
+          'message' => 'The uploaded esignature is too large. Please upload a smaller image.'
+        ]);
+      } elseif ($errorCode === '23000') {
+        return response()->json([
+          'success' => false,
+          'message' => 'Database error: Duplicate entry.'
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,
+          'message' => 'Database error: ' . $errorMessage
+        ]);
+      }
+    }
 
     $appraisal = Appraisals::where('appraisal_id', $appraisalId)->first();
 

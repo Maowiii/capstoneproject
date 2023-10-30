@@ -56,7 +56,7 @@
 
         <p class="mt-3">Other comments and suggestions:</p>
         <textarea class="form-control" id="comments_area"></textarea>
-        
+
     </div>
     <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-primary medium-column" id="submit-btn">Submit</button>
@@ -82,10 +82,8 @@
                         <tbody>
                         </tbody>
                     </table>
-
                 </div>
                 <div class="modal-footer">
-                    
                     <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="esig-submit-btn" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
@@ -150,6 +148,8 @@
                                     loadSignature();
                                     console.log('Esignature Updated.');
                                     formChecker();
+                                } else {
+
                                 }
                             },
                             error: function(xhr, status, error) {}
@@ -405,7 +405,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            console.log('success');
+                            console.log(response);
                             $('#signtable tbody').empty();
                             var newRow = $('<tr>').addClass('align-middle');
                             newRow.append($('<td>').text('Internal Customer'));
@@ -463,6 +463,7 @@
                         appraisalId: appraisalId,
                     },
                     success: function(response) {
+                        console.log(response);
                         if (response.form_submitted) {
                             $('input[type="radio"]').prop('disabled', true);
                             $('textarea').prop('disabled', true);
@@ -501,6 +502,7 @@
             }
 
             $('#submit-btn').on('click', function() {
+              console.log('Confirming...');
                 $('#IC_table td').removeClass('is-invalid');
                 $('#service_area, #comments_area').removeClass(
                     'is-invalid');

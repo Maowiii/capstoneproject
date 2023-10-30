@@ -232,6 +232,14 @@ class AdminAppraisalsOverviewController extends Controller
 
       $appraisal->update(['locked' => !$locked]);
 
+      if ($appraisal->locked == 1) {
+        Log::debug('Appraisal is locked');
+        $appraisal->update(['date_submitted' => null]);
+
+        $signature = Signature::where('appraisal_id', $appraisalID);
+        $signature->delete();
+      }
+
       return response()->json(['success' => true, 'locked' => !$locked]);
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);

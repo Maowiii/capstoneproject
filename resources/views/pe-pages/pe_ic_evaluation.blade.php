@@ -81,6 +81,8 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                        <div class="alert alert-danger d-none" role="alert" id="error-alert">
+                        </div>
                         <div class="alert alert-warning" role="alert" id="confirmation-alert">
                             Once you have submitted the form, you cannot alter any values.
                         </div>
@@ -164,6 +166,19 @@
                     } else {
                         var selectedFile = fileInput.files[0];
 
+                        if (!isImageFile(selectedFile)) {
+                            $('#esig').addClass('is-invalid');
+
+                            $('#error-alert').removeClass('d-none').text(
+                                'Please select a valid image file. Supported formats: JPEG, PNG, GIF.');
+
+                            setTimeout(function() {
+                                $('#error-alert').addClass('d-none');
+                            }, 5000);
+
+                            return;
+                        }
+
                         var reader = new FileReader();
                         reader.onload = function(event) {
                             var fileData = event.target.result;
@@ -184,7 +199,14 @@
                                         // console.log('Esignature Updated.');
                                         formChecker();
                                     } else {
-                                        // console.log('Esignature Updated bot else');
+                                        var errorMessage = response.message;
+
+                                        $('#error-alert').removeClass('d-none').text(
+                                            errorMessage);
+
+                                        setTimeout(function() {
+                                            $('#error-alert').addClass('d-none');
+                                        }, 5000);
                                     }
                                 },
                                 error: function(xhr, status, error) {}
@@ -194,6 +216,10 @@
                         reader.readAsDataURL(selectedFile);
                     }
                 });
+
+                function isImageFile(file) {
+                    return file.type.startsWith('image/');
+                }
 
                 function updateSuggestion(value) {
                     var urlParams = new URLSearchParams(window.location.search);
