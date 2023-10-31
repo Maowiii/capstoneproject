@@ -36,5 +36,9 @@ class FormQuestions extends BaseModel
     }
   }
 
-  
+  public function appraisalAnswers()
+  {
+    return $this->hasMany(AppraisalAnswers::class, 'question_id', 'question_id');
+  }
+
 }

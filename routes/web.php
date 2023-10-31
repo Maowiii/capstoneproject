@@ -70,6 +70,8 @@ Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 
 Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
 Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
 
+Route::get('/dashboard-admin/load-ic-chart', [AdminDashboardController::class, 'loadICChart'])->name('ad.loadICChart');
+
 
 // Departmental Analytics
 Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
