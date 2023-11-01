@@ -239,7 +239,7 @@
             </div>
         </div>
         <div class="content-container">
-            <h3 class="text-center">Internal Customers average score per question:</h3>
+            <h4 class="text-center">Internal Customer average score per question:</h4>
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
         <div class="floating-container">
@@ -768,8 +768,8 @@
 
 
         function getRandomColor() {
-            var randomColor = '#' + (Math.random().toString(16) + '000000').slice(2, 8);
-            return randomColor + '80';
+            var randomBlue = Math.floor(Math.random() * 32).toString(16);
+            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
         }
 
 
