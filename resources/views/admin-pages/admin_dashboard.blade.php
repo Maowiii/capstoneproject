@@ -226,6 +226,7 @@
     <div class="d-flex gap-3">
         <div class="content-container">
             <h2>Internal Customers:</h2>
+            <h4 id="ic-school-year">School Year:</h4>
             <h4 id ="ic-total-avg-score">Total Average Score:</h4>
             <div class="table-responsive">
                 <table class="table table-sm mb-3" id="ic_table">
@@ -239,7 +240,9 @@
             </div>
         </div>
         <div class="content-container">
-            <h4 class="text-center">Internal Customer average score per question:</h4>
+            <h4 class="text-center">Internal Customer performance over the years:</h4>
+            <canvas id="ic_trend_chart" aria-label="chart" height="350" width="580"></canvas>
+            <h4 class="text-center mt-3">Internal Customer average score per question:</h4>
             <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
         </div>
         <div class="floating-container">
@@ -269,6 +272,33 @@
                     <canvas id="employee_bh_trend" height="350" width="580"></canvas>
                     <h4>KRA Score Trend:</h4>
                     <canvas id="employee_kra_trend" height="350" width="580"></canvas>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="scoreModalTitle">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="scoreModalQuestion">Text</h4>
+                    <table class="table table-sm mb-3" id="scoreModalTable">
+                        <thead>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <nav id="score_pagination_container">
+                        <ul class="pagination pagination-sm justify-content-end" id="score_pagination"></ul>
+                    </nav>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -615,11 +645,12 @@
                     selectedYear: selectedYear,
                 },
                 success: function(response) {
+                    //console.log(response);
                     if (response.success) {
                         if (response.ic) {
                             var totalAvgScore = response.total_avg_score;
                             $('#ic-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            console.log('Total Average IC Score: ' + totalAvgScore);
+                            $('#ic-school-year').text('School Year: ' + response.school_year);
                             var icTable = $('#ic_table tbody');
                             icTable.empty();
 
@@ -633,14 +664,50 @@
 
                                 if (item.average_score < totalAvgScore) {
                                     var cell = $("<td>");
-                                    var icon = $("<i>").addClass('bx bxs-down-arrow').css('color',
-                                        '#dc3545');
+                                    var container = $("<div>");
 
-                                    cell.append(item.average_score, icon);
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    var icon = $("<i>")
+                                        .addClass('bx bxs-down-arrow')
+                                        .css('color', '#dc3545')
+                                        .attr('data-toggle', 'tooltip')
+                                        .attr('data-placement', 'top')
+                                        .attr('title',
+                                        'This question is below the total average score.');
+
+                                    container.append(anchor, icon);
+                                    cell.append(container);
+
+                                    icon.tooltip();
 
                                     row.append(cell);
                                 } else {
-                                    var cell = $("<td>").text(item.average_score);
+                                    var cell = $("<td>");
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    cell.append(anchor);
                                     row.append(cell);
                                 }
 
@@ -656,6 +723,76 @@
                         icTable.empty();
                         icTable.append(row);
                     }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function viewScoreModal(schoolYear, questionID, page = 1) {
+            console.log('School Year: ' + schoolYear);
+            console.log('Question ID: ' + questionID);
+            $('#scoreModal').modal('show');
+            $('#scoreModalTitle').text(schoolYear + ': ')
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.viewScoreModal') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: schoolYear,
+                    questionID: questionID,
+                    page: page,
+                },
+                success: function(response) {
+
+                    console.log(response);
+                    if (response.success) {
+                        $('#scoreModalQuestion').text('Question: "' + response.question.question + '"');
+
+                        var scoreTable = $('#scoreModalTable tbody');
+                        scoreTable.empty();
+
+                        $.each(response.questionAnswers.data, function(index,
+                            item) {
+                            var row = $("<tr class='text-center'>");
+
+                            var fullName = item.first_name + ' ' + item.last_name;
+
+                            row.append($("<td>").text(fullName));
+                            row.append($("<td>").text(item.score));
+
+                            scoreTable.append(row);
+                        });
+
+                        totalPage = response.questionAnswers.last_page;
+                        currentPage = response.questionAnswers.current_page;
+                        $('#score_pagination').empty();
+                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    viewScoreModal(schoolYear, questionID, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#score_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
                 }
             });
         }
@@ -670,7 +807,66 @@
                 url: '{{ route('ad.loadICChart') }}',
                 type: 'GET',
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
+                        // IC Trends Chart
+
+                        var icTrendChart = $('#ic_trend_chart');
+                        var canvas = icTrendChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        // Assuming you have the data object you provided
+                        var data = response;
+
+                        var years = Object.keys(data.data);
+                        var scores = years.map(year => parseFloat(data.data[year].total_average_score));
+
+
+                        new Chart(icTrendChart, {
+                            type: 'line',
+                            data: {
+                                labels: years,
+                                datasets: [{
+                                    label: 'Total Average Score',
+                                    data: scores,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }, ],
+                            },
+                            options: {
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = years[index];
+
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        loadICQuestions(clickedYear);
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        // Per Question Chart
                         var icBarChart = $('#ic_bar_chart');
                         var canvas = icBarChart[0];
 
@@ -697,13 +893,13 @@
                                 backgroundColor: getRandomColor(),
                             };
 
-                            var questionIds = Object.keys(yearData);
+                            var ids = Object.keys(yearData);
 
-                            questionIds = questionIds.filter(function(questionId) {
+                            ids = ids.filter(function(questionId) {
                                 return questionId !== 'total_average_score';
                             });
 
-                            questionIds.forEach(function(questionId) {
+                            ids.forEach(function(questionId) {
                                 if (!uniqueIds.includes(questionId)) {
                                     uniqueIds.push(questionId);
                                 }
@@ -713,7 +909,7 @@
                                 return 'Q' + (index + 1);
                             });
 
-                            questionIds.forEach(function(questionId) {
+                            ids.forEach(function(questionId) {
                                 var averageScore = parseFloat(yearData[questionId]
                                     .average_score || 0);
                                 dataset.data.push(averageScore);
@@ -724,27 +920,24 @@
                             data.datasets.push(dataset);
                         });
 
-                        console.log(data.labels);
-
                         new Chart(icBarChart, {
                             type: 'bar',
                             data: data,
                             options: {
-                                // plugins: {
-                                //     title: {
-                                //         display: true,
-                                //         text: 'Internal Customer average score per question',
-                                //         color: '#164783',
-                                //     }
-                                // },
                                 onClick: function(event, elements) {
                                     if (elements.length > 0) {
+                                        var clickedElementIndex = elements[0].index;
                                         var clickedDatasetIndex = elements[0].datasetIndex;
                                         var clickedYear = this.data.datasets[clickedDatasetIndex]
                                             .label;
-                                        loadICQuestions(
-                                            clickedYear);
-                                        console.log('Clicked Year:', clickedYear);
+                                        var questionId = uniqueIds[clickedElementIndex];
+
+                                        console.log('Clicked Element Index: ' +
+                                            clickedElementIndex);
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        console.log('Clicked Question ID: ' + questionId);
+                                        viewScoreModal(clickedYear, questionId, page = 1);
+
                                     }
                                 },
                                 scales: {
@@ -752,8 +945,8 @@
                                         stacked: true,
                                     },
                                     y: {
-                                        beginAtZero: true,
-                                        max: 6,
+                                        beginAtZero: false,
+                                        max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
@@ -763,6 +956,11 @@
                         });
                     }
                 },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
             });
         }
 
@@ -1088,7 +1286,6 @@
                     selectedYear: selectedYear,
                 },
                 success: function(response) {
-                    console.log(response);
                     if (response.success) {
                         const categories = [{
                                 label: 'Outstanding',

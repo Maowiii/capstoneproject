@@ -314,10 +314,10 @@ class AdminDashboardController extends Controller
 
       foreach ($icQuestions as $icQuestion) {
         $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
-        ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
-        ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
-        ->where("$appraisalAnswersTable.question_id", $icQuestion->question_id)
-        ->avg("$appraisalAnswersTable.score");
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $icQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
 
         $icQuestion->average_score = number_format($averageScore, 2);
 
@@ -326,8 +326,8 @@ class AdminDashboardController extends Controller
         }
       }
 
+      $schoolYear = $selectedYear;
       $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
-
     } else {
       if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
         $icQuestions = FormQuestions::where('table_initials', 'IC')
@@ -340,9 +340,9 @@ class AdminDashboardController extends Controller
 
         foreach ($icQuestions as $icQuestion) {
           $averageScore = $icQuestion->appraisalAnswers()
-          ->whereHas('appraisal', function ($query) {
-            $query->where('date_submitted', 'IS NOT', null);
-          })
+            ->whereHas('appraisal', function ($query) {
+              $query->where('date_submitted', 'IS NOT', null);
+            })
             ->avg('score');
 
 
@@ -353,8 +353,15 @@ class AdminDashboardController extends Controller
           }
         }
 
-        $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+        $formQuestions = new FormQuestions;
+        $tableName = $formQuestions->getTable();
+        preg_match('/(\d{4})_(\d{4})/', $tableName, $matches);
+        if (isset($matches[1])) {
+          $schoolYear = $matches[1] . '_' . $matches[2];
+        }
 
+        Log::info('Table Name: ' . $tableName);
+        $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
       }
@@ -362,7 +369,8 @@ class AdminDashboardController extends Controller
     return response()->json([
       'success' => true,
       'ic' => $icQuestions,
-      'total_avg_score' => $totalAverageScore
+      'total_avg_score' => $totalAverageScore,
+      'school_year' => $schoolYear
     ]);
   }
 
@@ -615,7 +623,6 @@ class AdminDashboardController extends Controller
   public function loadICChart()
   {
     $schoolYearsData = [];
-
     $schoolYears = EvalYear::all();
 
     foreach ($schoolYears as $evalYear) {
@@ -663,5 +670,54 @@ class AdminDashboardController extends Controller
     return response()->json(['success' => true, 'data' => $schoolYearsData]);
   }
 
+  public function viewScore(Request $request)
+  {
+    $selectedYear = $request->selectedYear;
+    $questionID = $request->questionID;
+    $formQuestionsTable = 'form_questions_' . $selectedYear;
+    $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
+    $appraisalsTable = 'appraisals_' . $selectedYear;
 
+    Log::info('Selected Year: ' . $selectedYear);
+    Log::info('Question ID: ' . $questionID);
+    Log::info('Form Questions Table: ' . $formQuestionsTable);
+    Log::info('Appraisal Answers Table: ' . $appraisalAnswersTable);
+    Log::info('Appraisals Table: ' . $appraisalsTable);
+
+    $page = $request->input('page', 1);
+    $perPage = 10;
+
+    // $question = FormQuestions::from($formQuestionsTable)
+    //   ->find($questionID);
+
+    // $query = AppraisalAnswers::from($appraisalAnswersTable)
+    //   ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+    //   ->join('employees', $appraisalsTable . '.employee_id', '=', 'employees.employee_id')
+    //   ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
+    //   ->where($formQuestionsTable . '.question_id', $question->question_id)
+    //   ->select(
+    //     $appraisalAnswersTable . '.score',
+    //     'employees.first_name',
+    //     'employees.last_name'
+    //   );
+
+    $question = DB::table($formQuestionsTable)
+    ->where('question_id', $questionID)
+    ->first();
+
+    $query = DB::table($appraisalAnswersTable)
+    ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+    ->join('employees', $appraisalsTable . '.employee_id', '=', 'employees.employee_id')
+    ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
+    ->where($appraisalAnswersTable . '.question_id', $question->question_id)
+    ->select(
+      $appraisalAnswersTable . '.score',
+      'employees.first_name',
+      'employees.last_name'
+    );
+
+    $questionAnswers = $query->paginate($perPage, null, 'page', $page);
+
+    return response()->json(['success' => true, 'question' => $question, 'questionAnswers' => $questionAnswers]);
+  }
 }

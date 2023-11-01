@@ -71,6 +71,7 @@ Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::c
 Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
 
 Route::get('/dashboard-admin/load-ic-chart', [AdminDashboardController::class, 'loadICChart'])->name('ad.loadICChart');
+Route::get('/dashboard-admin/view-score', [AdminDashboardController::class,'viewScore'])->name('ad.viewScoreModal');
 
 
 // Departmental Analytics
