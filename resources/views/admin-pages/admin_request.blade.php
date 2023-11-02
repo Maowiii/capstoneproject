@@ -17,11 +17,12 @@
                 </tr>
             </thead>
             <tbody id="request_body">
+                
             </tbody>
         </table>
     </div>
 </div>
 <script>
-    
+
 </script>
 @endsection
