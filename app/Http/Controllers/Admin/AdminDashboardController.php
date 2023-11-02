@@ -376,82 +376,41 @@ class AdminDashboardController extends Controller
 
   public function loadPointsSystem(Request $request)
   {
-    $selectedYear = $request->input('selectedYear');
+    $data = [];
+    $schoolYears = EvalYear::all();
 
-    if ($selectedYear == 'null') {
-      $selectedYear = null;
-    }
-
-    if ($selectedYear) {
-      $table = 'final_scores_' . $selectedYear;
+    foreach ($schoolYears as $evalYear) {
+      $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+      $table = 'final_scores_' . $schoolYear;
 
       $outstanding = FinalScores::from($table)
         ->whereBetween('final_score', [4.85, 5.00])
-        ->with('employee')
-        ->orderByDesc('final_score')
-        ->get();
+        ->count();
 
       $verySatisfactory = FinalScores::from($table)
         ->whereBetween('final_score', [4.25, 4.84])
-        ->with('employee')
-        ->orderByDesc('final_score')
-        ->get();
+        ->count();
 
       $satisfactory = FinalScores::from($table)
         ->whereBetween('final_score', [3.50, 4.24])
-        ->with('employee')
-        ->orderByDesc('final_score')
-        ->get();
+        ->count();
 
       $fair = FinalScores::from($table)
         ->whereBetween('final_score', [2.75, 3.49])
-        ->with('employee')
-        ->orderByDesc('final_score')
-        ->get();
+        ->count();
 
       $poor = FinalScores::from($table)
         ->where('final_score', '<', 2.75)
-        ->with('employee')
-        ->orderByDesc('final_score')
-        ->get();
-    } else {
-      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
-        $outstanding = FinalScores::whereBetween('final_score', [4.85, 5.00])
-          ->with('employee')
-          ->orderByDesc('final_score')
-          ->get();
+        ->count();
 
-        $verySatisfactory = FinalScores::whereBetween('final_score', [4.25, 4.84])
-          ->with('employee')
-          ->orderByDesc('final_score')
-          ->get();
-
-        $satisfactory = FinalScores::whereBetween('final_score', [3.50, 4.24])
-          ->with('employee')
-          ->orderByDesc('final_score')
-          ->get();
-
-        $fair = FinalScores::whereBetween('final_score', [2.75, 3.49])
-          ->with('employee')
-          ->orderByDesc('final_score')
-          ->get();
-
-        $poor = FinalScores::where('final_score', '<', 2.75)
-          ->with('employee')
-          ->orderByDesc('final_score')
-          ->get();
-      } else {
-        return response()->json(['success' => false]);
-      }
+      $data[$schoolYear] = [
+        $outstanding, $verySatisfactory, $satisfactory, $fair, $poor,
+      ];
     }
 
     return response()->json([
       'success' => true,
-      'outstanding' => $outstanding,
-      'verySatisfactory' => $verySatisfactory,
-      'satisfactory' => $satisfactory,
-      'fair' => $fair,
-      'poor' => $poor
+      'data' => $data,
     ]);
   }
 
@@ -670,6 +629,408 @@ class AdminDashboardController extends Controller
     return response()->json(['success' => true, 'data' => $schoolYearsData]);
   }
 
+  public function loadSIDQuestions(Request $request)
+  {
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $formQuestionsTable = 'form_questions_' . $selectedYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+
+      $sidQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SID')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $totalAverageScore = 0;
+      $totalQuestions = count($sidQuestions); // Get the total number of questions
+
+      foreach ($sidQuestions as $sidQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $sidQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+        $sidQuestion->average_score = number_format($averageScore, 2);
+
+        if (!is_null($averageScore)) {
+          $totalAverageScore += $averageScore;
+        }
+      }
+
+      $schoolYear = $selectedYear;
+      $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $sidQuestions = FormQuestions::where('table_initials', 'SID')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        $totalAverageScore = 0;
+        $totalQuestions = count($sidQuestions); // Get the total number of questions
+
+        foreach ($sidQuestions as $sidQuestion) {
+          $averageScore = $sidQuestion->appraisalAnswers()
+            ->whereHas('appraisal', function ($query) {
+              $query->where('date_submitted', 'IS NOT', null);
+            })
+            ->avg('score');
+
+
+          $sidQuestion->average_score = number_format($averageScore, 2);
+
+          if (!is_null($averageScore)) {
+            $totalAverageScore += $averageScore;
+          }
+        }
+
+        $formQuestions = new FormQuestions;
+        $tableName = $formQuestions->getTable();
+        preg_match('/(\d{4})_(\d{4})/', $tableName, $matches);
+        if (isset($matches[1])) {
+          $schoolYear = $matches[1] . '_' . $matches[2];
+        }
+
+        Log::info('Table Name: ' . $tableName);
+        $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+    return response()->json([
+      'success' => true,
+      'sid' => $sidQuestions,
+      'total_avg_score' => $totalAverageScore,
+      'school_year' => $schoolYear
+    ]);
+  }
+
+  public function loadSIDChart()
+  {
+    $schoolYearsData = [];
+    $schoolYears = EvalYear::all();
+
+    foreach ($schoolYears as $evalYear) {
+      $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+      $formQuestionsTable = 'form_questions_' . $schoolYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $schoolYear;
+      $appraisalsTable = 'appraisals_' . $schoolYear;
+
+      $sidQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SID')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $questionsAndScores = [];
+
+      foreach ($sidQuestions as $sidQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $sidQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+
+        $questionsAndScores[$sidQuestion->question_id] = [
+          'question' => $sidQuestion->question,
+          'average_score' => number_format($averageScore, 2),
+        ];
+      }
+
+      $schoolYearsData[$schoolYear] = $questionsAndScores;
+
+      // Calculate the total average score for this year
+      $totalAverageScore = 0;
+      $totalQuestions = count($sidQuestions);
+
+      foreach ($questionsAndScores as $questionData) {
+        $totalAverageScore += floatval($questionData['average_score']);
+      }
+
+      $totalAverageScore = $totalQuestions > 0 ? $totalAverageScore / $totalQuestions : 0;
+      $schoolYearsData[$schoolYear]['total_average_score'] = number_format($totalAverageScore, 2);
+    }
+
+    return response()->json(['success' => true, 'data' => $schoolYearsData]);
+  }
+
+  public function loadSRQuestions(Request $request)
+  {
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $formQuestionsTable = 'form_questions_' . $selectedYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+
+      $srQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SR')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $totalAverageScore = 0;
+      $totalQuestions = count($srQuestions); // Get the total number of questions
+
+      foreach ($srQuestions as $srQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $srQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+        $srQuestion->average_score = number_format($averageScore, 2);
+
+        if (!is_null($averageScore)) {
+          $totalAverageScore += $averageScore;
+        }
+      }
+
+      $schoolYear = $selectedYear;
+      $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $srQuestions = FormQuestions::where('table_initials', 'SR')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        $totalAverageScore = 0;
+        $totalQuestions = count($srQuestions); // Get the total number of questions
+
+        foreach ($srQuestions as $srQuestion) {
+          $averageScore = $srQuestion->appraisalAnswers()
+            ->whereHas('appraisal', function ($query) {
+              $query->where('date_submitted', 'IS NOT', null);
+            })
+            ->avg('score');
+
+
+          $srQuestion->average_score = number_format($averageScore, 2);
+
+          if (!is_null($averageScore)) {
+            $totalAverageScore += $averageScore;
+          }
+        }
+
+        $formQuestions = new FormQuestions;
+        $tableName = $formQuestions->getTable();
+        preg_match('/(\d{4})_(\d{4})/', $tableName, $matches);
+        if (isset($matches[1])) {
+          $schoolYear = $matches[1] . '_' . $matches[2];
+        }
+
+        Log::info('Table Name: ' . $tableName);
+        $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+    return response()->json([
+      'success' => true,
+      'sr' => $srQuestions,
+      'total_avg_score' => $totalAverageScore,
+      'school_year' => $schoolYear
+    ]);
+  }
+
+  public function loadSRChart()
+  {
+    $schoolYearsData = [];
+    $schoolYears = EvalYear::all();
+
+    foreach ($schoolYears as $evalYear) {
+      $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+      $formQuestionsTable = 'form_questions_' . $schoolYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $schoolYear;
+      $appraisalsTable = 'appraisals_' . $schoolYear;
+
+      $srQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'SR')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $questionsAndScores = [];
+
+      foreach ($srQuestions as $srQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $srQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+
+        $questionsAndScores[$srQuestion->question_id] = [
+          'question' => $srQuestion->question,
+          'average_score' => number_format($averageScore, 2),
+        ];
+      }
+
+      $schoolYearsData[$schoolYear] = $questionsAndScores;
+
+      // Calculate the total average score for this year
+      $totalAverageScore = 0;
+      $totalQuestions = count($srQuestions);
+
+      foreach ($questionsAndScores as $questionData) {
+        $totalAverageScore += floatval($questionData['average_score']);
+      }
+
+      $totalAverageScore = $totalQuestions > 0 ? $totalAverageScore / $totalQuestions : 0;
+      $schoolYearsData[$schoolYear]['total_average_score'] = number_format($totalAverageScore, 2);
+    }
+
+    return response()->json(['success' => true, 'data' => $schoolYearsData]);
+  }
+
+  public function loadSQuestions(Request $request)
+  {
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $formQuestionsTable = 'form_questions_' . $selectedYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+
+      $sQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'S')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $totalAverageScore = 0;
+      $totalQuestions = count($sQuestions); // Get the total number of questions
+
+      foreach ($sQuestions as $sQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $sQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+        $sQuestion->average_score = number_format($averageScore, 2);
+
+        if (!is_null($averageScore)) {
+          $totalAverageScore += $averageScore;
+        }
+      }
+
+      $schoolYear = $selectedYear;
+      $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+    } else {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $sQuestions = FormQuestions::where('table_initials', 'S')
+          ->where('status', 'active')
+          ->orderBy('question_order')
+          ->get();
+
+        $totalAverageScore = 0;
+        $totalQuestions = count($sQuestions); // Get the total number of questions
+
+        foreach ($sQuestions as $sQuestion) {
+          $averageScore = $sQuestion->appraisalAnswers()
+            ->whereHas('appraisal', function ($query) {
+              $query->where('date_submitted', 'IS NOT', null);
+            })
+            ->avg('score');
+
+
+          $sQuestion->average_score = number_format($averageScore, 2);
+
+          if (!is_null($averageScore)) {
+            $totalAverageScore += $averageScore;
+          }
+        }
+
+        $formQuestions = new FormQuestions;
+        $tableName = $formQuestions->getTable();
+        preg_match('/(\d{4})_(\d{4})/', $tableName, $matches);
+        if (isset($matches[1])) {
+          $schoolYear = $matches[1] . '_' . $matches[2];
+        }
+
+        Log::info('Table Name: ' . $tableName);
+        $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+    return response()->json([
+      'success' => true,
+      's' => $sQuestions,
+      'total_avg_score' => $totalAverageScore,
+      'school_year' => $schoolYear
+    ]);
+  }
+
+  public function loadSChart()
+  {
+    $schoolYearsData = [];
+    $schoolYears = EvalYear::all();
+
+    foreach ($schoolYears as $evalYear) {
+      $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
+      $formQuestionsTable = 'form_questions_' . $schoolYear;
+      $appraisalAnswersTable = 'appraisal_answers_' . $schoolYear;
+      $appraisalsTable = 'appraisals_' . $schoolYear;
+
+      $sQuestions = FormQuestions::from($formQuestionsTable)
+        ->where('table_initials', 'S')
+        ->where('status', 'active')
+        ->orderBy('question_order')
+        ->get();
+
+      $questionsAndScores = [];
+
+      foreach ($sQuestions as $sQuestion) {
+        $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
+          ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+          ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+          ->where("$appraisalAnswersTable.question_id", $sQuestion->question_id)
+          ->avg("$appraisalAnswersTable.score");
+
+
+        $questionsAndScores[$sQuestion->question_id] = [
+          'question' => $sQuestion->question,
+          'average_score' => number_format($averageScore, 2),
+        ];
+      }
+
+      $schoolYearsData[$schoolYear] = $questionsAndScores;
+
+      // Calculate the total average score for this year
+      $totalAverageScore = 0;
+      $totalQuestions = count($sQuestions);
+
+      foreach ($questionsAndScores as $questionData) {
+        $totalAverageScore += floatval($questionData['average_score']);
+      }
+
+      $totalAverageScore = $totalQuestions > 0 ? $totalAverageScore / $totalQuestions : 0;
+      $schoolYearsData[$schoolYear]['total_average_score'] = number_format($totalAverageScore, 2);
+    }
+
+    return response()->json(['success' => true, 'data' => $schoolYearsData]);
+  }
+
   public function viewScore(Request $request)
   {
     $selectedYear = $request->selectedYear;
@@ -678,46 +1039,89 @@ class AdminDashboardController extends Controller
     $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
     $appraisalsTable = 'appraisals_' . $selectedYear;
 
-    Log::info('Selected Year: ' . $selectedYear);
-    Log::info('Question ID: ' . $questionID);
-    Log::info('Form Questions Table: ' . $formQuestionsTable);
-    Log::info('Appraisal Answers Table: ' . $appraisalAnswersTable);
-    Log::info('Appraisals Table: ' . $appraisalsTable);
-
     $page = $request->input('page', 1);
     $perPage = 10;
 
-    // $question = FormQuestions::from($formQuestionsTable)
-    //   ->find($questionID);
-
-    // $query = AppraisalAnswers::from($appraisalAnswersTable)
-    //   ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
-    //   ->join('employees', $appraisalsTable . '.employee_id', '=', 'employees.employee_id')
-    //   ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
-    //   ->where($formQuestionsTable . '.question_id', $question->question_id)
-    //   ->select(
-    //     $appraisalAnswersTable . '.score',
-    //     'employees.first_name',
-    //     'employees.last_name'
-    //   );
-
     $question = DB::table($formQuestionsTable)
-    ->where('question_id', $questionID)
-    ->first();
+      ->where('question_id', $questionID)
+      ->first();
 
     $query = DB::table($appraisalAnswersTable)
-    ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
-    ->join('employees', $appraisalsTable . '.employee_id', '=', 'employees.employee_id')
-    ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
-    ->where($appraisalAnswersTable . '.question_id', $question->question_id)
-    ->select(
-      $appraisalAnswersTable . '.score',
-      'employees.first_name',
-      'employees.last_name'
-    );
+      ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $appraisalAnswersTable . '.appraisal_id')
+      ->join('employees', $appraisalsTable . '.employee_id', '=', 'employees.employee_id')
+      ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
+      ->where($appraisalAnswersTable . '.question_id', $question->question_id)
+      ->select(
+        $appraisalAnswersTable . '.score',
+        'employees.first_name',
+        'employees.last_name'
+      );
 
     $questionAnswers = $query->paginate($perPage, null, 'page', $page);
 
     return response()->json(['success' => true, 'question' => $question, 'questionAnswers' => $questionAnswers]);
+  }
+
+  public function loadPointCategory(Request $request)
+  {
+    $schoolYear = $request->input('selectedYear');
+    $category = $request->input('category');
+    $page = $request->input('page', 1);
+    $perPage = 10;
+
+    $data = [];
+
+    $table = 'final_scores_' . $schoolYear;
+
+    $categoryData = [];
+
+    switch ($category) {
+      case 'Outstanding':
+        $categoryData = FinalScores::from($table)
+          ->whereBetween('final_score', [4.85, 5.00])
+          ->with('employee')
+          ->select('employee_id', 'final_score')
+          ->paginate($perPage, null, 'page', $page);
+        break;
+      case 'Very Satisfactory':
+        $categoryData = FinalScores::from($table)
+          ->whereBetween('final_score', [4.25, 4.84])
+          ->with('employee')
+          ->select('employee_id', 'final_score')
+          ->paginate($perPage, null, 'page', $page);
+        break;
+      case 'Satisfactory':
+        $categoryData = FinalScores::from($table)
+          ->whereBetween('final_score', [3.50, 4.24])
+          ->with('employee')
+          ->select('employee_id', 'final_score')
+          ->paginate($perPage, null, 'page', $page);
+        break;
+      case 'Fair':
+        $categoryData = FinalScores::from($table)
+          ->whereBetween('final_score', [2.75, 3.49])
+          ->with('employee')
+          ->select('employee_id', 'final_score')
+          ->paginate($perPage, null, 'page', $page);
+        break;
+      case 'Poor':
+        $categoryData = FinalScores::from($table)
+          ->where('final_score', '<', 2.75)
+          ->with('employee')
+          ->select('employee_id', 'final_score')
+          ->paginate($perPage, null, 'page', $page);
+        break;
+      default:
+        // Handle invalid category
+        break;
+    }
+
+
+    $data = $categoryData;
+
+    return response()->json([
+      'success' => true,
+      'data' => $data,
+    ]);
   }
 }

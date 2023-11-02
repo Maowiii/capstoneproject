@@ -62,7 +62,6 @@ Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
-Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::class, 'loadICQuestions'])->name('ad.loadDashboardICQuestions');
 Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::class, 'loadBCQuestions'])->name('ad.loadDashboardBCQuestions');
 Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loadCards'])->name('ad.loadCards');
@@ -70,7 +69,17 @@ Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 
 Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
 Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
 
+Route::get('/dashboard-admin/load-sid-questions', [AdminDashboardController::class, 'loadSIDQuestions'])->name('ad.loadDashboardSIDQuestions');
+Route::get('/dashboard-admin/load-sid-chart', [AdminDashboardController::class, 'loadSIDChart'])->name('ad.loadSIDChart');
+Route::get('/dashboard-admin/load-sr-questions', [AdminDashboardController::class, 'loadSRQuestions'])->name('ad.loadDashboardSRQuestions');
+Route::get('/dashboard-admin/load-sr-chart', [AdminDashboardController::class, 'loadSRChart'])->name('ad.loadSRChart');
+Route::get('/dashboard-admin/load-s-questions', [AdminDashboardController::class, 'loadSQuestions'])->name('ad.loadDashboardSQuestions');
+Route::get('/dashboard-admin/load-s-chart', [AdminDashboardController::class, 'loadSChart'])->name('ad.loadSChart');
+Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::class, 'loadICQuestions'])->name('ad.loadDashboardICQuestions');
 Route::get('/dashboard-admin/load-ic-chart', [AdminDashboardController::class, 'loadICChart'])->name('ad.loadICChart');
+Route::get('/dashboard-admin/load-category', [AdminDashboardController::class, 'loadPointCategory'])->name('ad.viewCategory');
+
+
 Route::get('/dashboard-admin/view-score', [AdminDashboardController::class,'viewScore'])->name('ad.viewScoreModal');
 
 
@@ -80,6 +89,7 @@ Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyti
 Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
 Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadPointsSystem');
 Route::post('/dashboard-admin/department/line-chart', [DepartmentalAnalyticsController::class, 'getFinalScoresPerDepartment'])->name('ad.departmentLineChart');
+
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
 Route::get('/admin-appraisals-overview/load-admin-table', [AdminAppraisalsOverviewController::class, 'loadAdminAppraisals'])->name('loadAdminAppraisals');
