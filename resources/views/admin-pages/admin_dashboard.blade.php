@@ -25,28 +25,37 @@
     </div>
 
     <!-- Cards -->
-    <div class='d-flex gap-3'>
-        <div class="content-container text-middle" id="total-pe-container">
-            <h4>Total Appraisees:</h4>
-            <p>-</p>
+    <div class="row">
+        <div class="col mb-3">
+            <div class="content-container text-center h-100">
+                <h4>Total Appraisees:</h4>
+                <p id="total-pe">-</p>
+            </div>
         </div>
-        <div class="content-container text-middle" id="total-appraisals-container">
-            <h4>Appraisals Completed:</h4>
-            <p>-</p>
+        <div class="col mb-3">
+            <div class="content-container text-center h-100">
+                <h4>Appraisals Completed:</h4>
+                <p id="total-appraisals">-</p>
+            </div>
         </div>
-        <div class="content-container text-middle" id="avg-score-container">
-            <h4>Average Total Score:</h4>
-            <p>-</p>
+        <div class="col mb-3">
+            <div class="content-container text-center h-100">
+                <h4>Average Total Score:</h4>
+                <p id="avg-score">-</p>
+            </div>
         </div>
     </div>
-    <div class="content-container">
-        <canvas id="lineChart" aria-label="chart" height="140" width="580"></canvas>
+
+    <div class="container-fluid content-container d-flex justify-content-center align-items-center">
+        <div class="w-100" style="height: 300px">
+            <canvas id="lineChart" aria-label="chart"></canvas>
+        </div>
     </div>
 
     <!-- Departments Table -->
-    <div class="content-container">
+    <div class="content-container container-fluid">
         <div class="table-responsive">
-            <div class="input-group mb-2 search-box">
+            <div class="input-group mb-2 w-25 float-end">
                 <input type="text" class="form-control" placeholder="Department" id="search">
                 <button class="btn btn-outline-secondary" type="button">
                     <i class='bx bx-search'></i>
@@ -68,7 +77,7 @@
     </div>
 
     <!-- Employees Table -->
-    <div class="content-container">
+    {{-- <div class="content-container container-fluid">
         <div class="table-responsive">
             <div class="input-group mb-2 search-box">
                 <input type="text" class="form-control" placeholder="Name" id="namesearch">
@@ -90,168 +99,144 @@
         <nav id="employee_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="employee_pagination"></ul>
         </nav>
-    </div>
+    </div> --}}
 
-    <div class="d-flex gap-3">
-        <!-- Point System -->
-        <div class="content-container">
-            <h2>Point System:</h2>
-            <h4>Outstanding:</h4>
-            <div class="table-responsive">
-                <div class="table-wrapper">
-                    <table class="table table-sm" id="outstanding_table">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <h4>Very Satisfactory:</h4>
-            <div class="table-responsive">
-                <div class="table-wrapper">
-                    <table class="table table-sm" id="verySatisfactory_table">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <h4>Satisfactory:</h4>
-            <div class="table-wrapper">
-                <div class="table-responsive">
-                    <table class="table table-sm" id="satisfactory_table">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <h4>Fair:</h4>
-            <div class="table-wrapper">
-                <div class="table-responsive">
-                    <table class="table table-sm" id="fair_table">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <h4>Poor:</h4>
-            <div class="table-responsive">
-                <div class="table-wrapper">
-                    <table class="table table-sm" id="poor_table">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="content-container">
-            <canvas id="point_system_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+    <!-- POINT CATEGORIES -->
+    <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
+        <h2>Point Categories:</h2>
+        <div class="w-100" style="height: 300px">
+            <canvas id="point_system_bar_chart" aria-label="chart"></canvas>
         </div>
     </div>
 
     <!-- BEHAVIORAL COMPETENCIES -->
     <!-- Sustained Integral Development -->
-    <div class="d-flex gap-3">
-        <div class="content-container">
-            <h2>Behavioral Competencies:</h2>
-            <h4>Search for Excellence and Sustained Integral Development:</h4>
-            <table class="table table-sm mb-3" id="sid_table">
-                <thead>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th class="medium-column">Average Score</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h2 class="text-center">Behavioral Competencies:</h2>
+                <h4 class="text-center">Search for Excellence and Sustained Integral Development:</h4>
+                <h5 class="text-center" id="sid-school-year">School Year:</h5>
+                <h5 class="text-center" id="sid-total-avg-score">Total Average Score:</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-3" id="sid_table">
+                        <thead>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th class="medium-column">Average Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="content-container">
-            <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Search for Excellence and Sustained Integral Development performance over the
+                    years:</h4>
+                <canvas id="sid_trend_chart" aria-label="chart" height="350" width="580"></canvas>
+                <h4 class="text-center mt-3">Search for Excellence and Sustained Integral Development average score per
+                    question:</h4>
+                <canvas id="sid_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+            </div>
         </div>
     </div>
 
     <!-- Social Responsibility -->
-    <div class="d-flex gap-3">
-        <div class="content-container">
-            <h4>Spirit of St. Vincent de Paul and Social Responsibility:</h4>
-            <div class="table-responsive">
-                <table class="table table-sm mb-3" id="sr_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Spirit of St. Vincent de Paul and Social Responsibility:</h4>
+                <h5 class="text-center" id="sr-school-year">School Year:</h5>
+                <h5 class="text-center" id="sr-total-avg-score">Total Average Score:</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-3" id="sr_table">
+                        <thead>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th class="medium-column">Average Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="content-container">
-            <canvas id="sr_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Spirit of St. Vincent de Paul and Social Responsibility performance over the years:
+                </h4>
+                <canvas id="sr_trend_chart" aria-label="chart"></canvas>
+                <h4 class="text-center mt-3">Spirity of St. Vincent de Paul and Social Responsibility average score per
+                    question:</h4>
+                <canvas id="sr_bar_chart" aria-label="chart"></canvas>
+            </div>
         </div>
     </div>
 
     <!-- Solidarity -->
-    <div class="d-flex gap-3">
-        <div class="content-container">
-            <h4>Solidarity</h4>
-            <div class="table-responsive">
-                <table class="table table-sm mb-3" id="s_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Solidarity</h4>
+                <h5 class="text-center" id="s-school-year">School Year:</h5>
+                <h5 class="text-center" id="s-total-avg-score">Total Average Score:</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-3" id="s_table">
+                        <thead>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th class="medium-column">Average Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="content-container">
-            <canvas id="s_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Solidarity performance over the years:</h4>
+                <canvas id="s_trend_chart" aria-label="chart"></canvas>
+                <h4 class="text-center mt-3">Solidarity average score per question:</h4>
+                <canvas id="s_bar_chart" aria-label="chart"></canvas>
+            </div>
         </div>
     </div>
 
     <!-- Internal Customers -->
-    <div class="d-flex gap-3">
-        <div class="content-container">
-            <h2>Internal Customers:</h2>
-            <h4 id="ic-school-year">School Year:</h4>
-            <h4 id ="ic-total-avg-score">Total Average Score:</h4>
-            <div class="table-responsive">
-                <table class="table table-sm mb-3" id="ic_table">
-                    <thead>
-                        <th>#</th>
-                        <th>Question</th>
-                        <th class="medium-column">Average Score</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h2 class="text-center">Internal Customers:</h2>
+                <h5 class="text-center" id="ic-school-year">School Year:</h5>
+                <h5 class="text-center" id ="ic-total-avg-score">Total Average Score:</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-3" id="ic_table">
+                        <thead>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th class="medium-column">Average Score</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="content-container">
-            <h4 class="text-center">Internal Customer performance over the years:</h4>
-            <canvas id="ic_trend_chart" aria-label="chart" height="350" width="580"></canvas>
-            <h4 class="text-center mt-3">Internal Customer average score per question:</h4>
-            <canvas id="ic_bar_chart" aria-label="chart" height="350" width="580"></canvas>
+        <div class="col-lg-6 mb-3">
+            <div class="content-container h-100">
+                <h4 class="text-center">Internal Customer performance over the years:</h4>
+                <canvas id="ic_trend_chart" aria-label="chart"></canvas>
+                <h4 class="text-center mt-3">Internal Customer average score per question:</h4>
+                <canvas id="ic_bar_chart" aria-label="chart"></canvas>
+            </div>
         </div>
-        <div class="floating-container">
-            <div class="fixed-right p-4">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
-                        <i class='bx bxs-printer'></i>
-                    </button>
-                </div>
+    </div>
+
+    <div class="floating-container">
+        <div class="fixed-right p-4">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                    <i class='bx bxs-printer'></i>
+                </button>
             </div>
         </div>
     </div>
@@ -519,11 +504,19 @@
             });
 
             loadDepartmentTable(globalSelectedYear, null);
+            loadSIDQuestions(globalSelectedYear);
+            loadSRQuestions(globalSelectedYear);
             loadICQuestions(globalSelectedYear);
-            loadBCQuestions(globalSelectedYear);
-            loadPointsSystem(globalSelectedYear);
+            loadSQuestions(globalSelectedYear);
+            //loadBCQuestions(globalSelectedYear);
             loadCards(globalSelectedYear);
-            loadEmployeesTable(null);
+            //loadEmployeesTable(null);
+
+            loadPointsSystem();
+            loadSIDChart();
+            loadSRChart();
+            loadSChart();
+            loadICChart();
         });
 
         function loadCards(selectedYear = null) {
@@ -538,14 +531,12 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#total-pe-container').html('<h4>Total Appraisees:</h4><p>' + response
-                            .totalPermanentEmployees + '</p>');
+                        $('#total-pe').text(response
+                            .totalPermanentEmployees);
 
-                        $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
-                            '</p>');
+                        $('#avg-score').text(response.avgTotalScore);
 
-                        $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
-                            .totalAppraisals + '</p>');
+                        $('#total-appraisals').text(response.totalAppraisals);
                     } else {
                         // console.log('Load Cards failed.');
                     }
@@ -634,6 +625,542 @@
             });
         }
 
+        function loadSIDQuestions(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDashboardSIDQuestions') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        if (response.sid) {
+                            var totalAvgScore = response.total_avg_score;
+                            $('#sid-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                            $('#sid-school-year').text('School Year: ' + response.school_year);
+                            var sidTable = $('#sid_table tbody');
+                            sidTable.empty();
+
+                            $.each(response.sid, function(index,
+                                item) {
+
+                                var row = $("<tr class='text-center'>");
+
+                                row.append($("<td>").text(item.question_order));
+                                row.append($("<td class='text-start'>").text(item.question));
+
+                                if (item.average_score < totalAvgScore) {
+                                    var cell = $("<td>");
+                                    var container = $("<div>");
+
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    var icon = $("<i>")
+                                        .addClass('bx bxs-down-arrow')
+                                        .css('color', '#dc3545')
+                                        .attr('data-toggle', 'tooltip')
+                                        .attr('data-placement', 'top')
+                                        .attr('title',
+                                            'This question is below the total average score.');
+
+                                    container.append(anchor, icon);
+                                    cell.append(container);
+
+                                    icon.tooltip();
+
+                                    row.append(cell);
+                                } else {
+                                    var cell = $("<td>");
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    cell.append(anchor);
+                                    row.append(cell);
+                                }
+
+                                sidTable.append(row);
+                            });
+
+                        }
+                    } else {
+                        var row = $(
+                            '<tr><td colspan="3"><p>-</p></td></tr>'
+                        );
+                        var sidTable = $('#sid_table tbody');
+                        sidTable.empty();
+                        sidTable.append(row);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadSIDChart() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadSIDChart') }}',
+                type: 'GET',
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        // IC Trends Chart
+                        var sidTrendChart = $('#sid_trend_chart');
+                        var canvas = sidTrendChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        // Assuming you have the data object you provided
+                        var data = response;
+
+                        var years = Object.keys(data.data);
+                        var scores = years.map(year => parseFloat(data.data[year].total_average_score));
+
+
+                        new Chart(sidTrendChart, {
+                            type: 'line',
+                            data: {
+                                labels: years,
+                                datasets: [{
+                                    label: 'Total Average Score',
+                                    data: scores,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }, ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = years[index];
+
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        loadSIDQuestions(clickedYear);
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        // Per Question Chart
+                        var sidBarChart = $('#sid_bar_chart');
+                        var canvas = sidBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        var data = {
+                            labels: [],
+                            datasets: []
+                        };
+
+                        var years = Object.keys(response.data);
+                        var uniqueIds = [];
+
+                        years.forEach(function(year) {
+                            var yearData = response.data[year];
+                            var dataset = {
+                                label: year,
+                                data: [],
+                                backgroundColor: getRandomColor(),
+                            };
+
+                            var ids = Object.keys(yearData);
+
+                            ids = ids.filter(function(questionId) {
+                                return questionId !== 'total_average_score';
+                            });
+
+                            ids.forEach(function(questionId) {
+                                if (!uniqueIds.includes(questionId)) {
+                                    uniqueIds.push(questionId);
+                                }
+                            });
+
+                            var mappedQuestionIds = uniqueIds.map(function(questionId, index) {
+                                return 'Q' + (index + 1);
+                            });
+
+                            ids.forEach(function(questionId) {
+                                var averageScore = parseFloat(yearData[questionId]
+                                    .average_score || 0);
+                                dataset.data.push(averageScore);
+                            });
+
+                            data.labels = mappedQuestionIds;
+
+                            data.datasets.push(dataset);
+                        });
+
+                        new Chart(sidBarChart, {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var clickedElementIndex = elements[0].index;
+                                        var clickedDatasetIndex = elements[0].datasetIndex;
+                                        var clickedYear = this.data.datasets[clickedDatasetIndex]
+                                            .label;
+                                        var questionId = uniqueIds[clickedElementIndex];
+
+                                        console.log('Clicked Element Index: ' +
+                                            clickedElementIndex);
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        console.log('Clicked Question ID: ' + questionId);
+                                        viewScoreModal(clickedYear, questionId, page = 1);
+
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                    },
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadSRQuestions(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDashboardSRQuestions') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        if (response.sr) {
+                            var totalAvgScore = response.total_avg_score;
+                            $('#sr-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                            $('#sr-school-year').text('School Year: ' + response.school_year);
+                            var srTable = $('#sr_table tbody');
+                            srTable.empty();
+
+                            $.each(response.sr, function(index,
+                                item) {
+
+                                var row = $("<tr class='text-center'>");
+
+                                row.append($("<td>").text(item.question_order));
+                                row.append($("<td class='text-start'>").text(item.question));
+
+                                if (item.average_score < totalAvgScore) {
+                                    var cell = $("<td>");
+                                    var container = $("<div>");
+
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    var icon = $("<i>")
+                                        .addClass('bx bxs-down-arrow')
+                                        .css('color', '#dc3545')
+                                        .attr('data-toggle', 'tooltip')
+                                        .attr('data-placement', 'top')
+                                        .attr('title',
+                                            'This question is below the total average score.');
+
+                                    container.append(anchor, icon);
+                                    cell.append(container);
+
+                                    icon.tooltip();
+
+                                    row.append(cell);
+                                } else {
+                                    var cell = $("<td>");
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    cell.append(anchor);
+                                    row.append(cell);
+                                }
+
+                                srTable.append(row);
+                            });
+
+                        }
+                    } else {
+                        var row = $(
+                            '<tr><td colspan="3"><p>-</p></td></tr>'
+                        );
+                        var srTable = $('#sr_table tbody');
+                        srTable.empty();
+                        srTable.append(row);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadSRChart() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadSRChart') }}',
+                type: 'GET',
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        // IC Trends Chart
+                        var srTrendChart = $('#sr_trend_chart');
+                        var canvas = srTrendChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        // Assuming you have the data object you provided
+                        var data = response;
+
+                        var years = Object.keys(data.data);
+                        var scores = years.map(year => parseFloat(data.data[year].total_average_score));
+
+
+                        new Chart(srTrendChart, {
+                            type: 'line',
+                            data: {
+                                labels: years,
+                                datasets: [{
+                                    label: 'Total Average Score',
+                                    data: scores,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }, ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = years[index];
+
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        loadSRQuestions(clickedYear);
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        // Per Question Chart
+                        var srBarChart = $('#sr_bar_chart');
+                        var canvas = srBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        var data = {
+                            labels: [],
+                            datasets: []
+                        };
+
+                        var years = Object.keys(response.data);
+                        var uniqueIds = [];
+
+                        years.forEach(function(year) {
+                            var yearData = response.data[year];
+                            var dataset = {
+                                label: year,
+                                data: [],
+                                backgroundColor: getRandomColor(),
+                            };
+
+                            var ids = Object.keys(yearData);
+
+                            ids = ids.filter(function(questionId) {
+                                return questionId !== 'total_average_score';
+                            });
+
+                            ids.forEach(function(questionId) {
+                                if (!uniqueIds.includes(questionId)) {
+                                    uniqueIds.push(questionId);
+                                }
+                            });
+
+                            var mappedQuestionIds = uniqueIds.map(function(questionId, index) {
+                                return 'Q' + (index + 1);
+                            });
+
+                            ids.forEach(function(questionId) {
+                                var averageScore = parseFloat(yearData[questionId]
+                                    .average_score || 0);
+                                dataset.data.push(averageScore);
+                            });
+
+                            data.labels = mappedQuestionIds;
+
+                            data.datasets.push(dataset);
+                        });
+
+                        new Chart(srBarChart, {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var clickedElementIndex = elements[0].index;
+                                        var clickedDatasetIndex = elements[0].datasetIndex;
+                                        var clickedYear = this.data.datasets[clickedDatasetIndex]
+                                            .label;
+                                        var questionId = uniqueIds[clickedElementIndex];
+
+                                        console.log('Clicked Element Index: ' +
+                                            clickedElementIndex);
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        console.log('Clicked Question ID: ' + questionId);
+                                        viewScoreModal(clickedYear, questionId, page = 1);
+
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                    },
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
         function loadICQuestions(selectedYear = null) {
             $.ajax({
                 headers: {
@@ -684,7 +1211,7 @@
                                         .attr('data-toggle', 'tooltip')
                                         .attr('data-placement', 'top')
                                         .attr('title',
-                                        'This question is below the total average score.');
+                                            'This question is below the total average score.');
 
                                     container.append(anchor, icon);
                                     cell.append(container);
@@ -732,73 +1259,6 @@
             });
         }
 
-        function viewScoreModal(schoolYear, questionID, page = 1) {
-            console.log('School Year: ' + schoolYear);
-            console.log('Question ID: ' + questionID);
-            $('#scoreModal').modal('show');
-            $('#scoreModalTitle').text(schoolYear + ': ')
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.viewScoreModal') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: schoolYear,
-                    questionID: questionID,
-                    page: page,
-                },
-                success: function(response) {
-
-                    console.log(response);
-                    if (response.success) {
-                        $('#scoreModalQuestion').text('Question: "' + response.question.question + '"');
-
-                        var scoreTable = $('#scoreModalTable tbody');
-                        scoreTable.empty();
-
-                        $.each(response.questionAnswers.data, function(index,
-                            item) {
-                            var row = $("<tr class='text-center'>");
-
-                            var fullName = item.first_name + ' ' + item.last_name;
-
-                            row.append($("<td>").text(fullName));
-                            row.append($("<td>").text(item.score));
-
-                            scoreTable.append(row);
-                        });
-
-                        totalPage = response.questionAnswers.last_page;
-                        currentPage = response.questionAnswers.current_page;
-                        $('#score_pagination').empty();
-                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
-                            (function(pageCounter) {
-                                var pageItem = $('<li>').addClass('page-item');
-                                if (pageCounter === currentPage) {
-                                    pageItem.addClass('active');
-                                }
-                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
-                                pageButton.click(function() {
-                                    viewScoreModal(schoolYear, questionID, pageCounter);
-                                });
-                                pageItem.append(pageButton);
-                                $('#score_pagination').append(pageItem);
-                            })(totalPageCounter);
-                        }
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
-                }
-            });
-        }
-
-        loadICChart();
-
         function loadICChart() {
             $.ajax({
                 headers: {
@@ -807,7 +1267,7 @@
                 url: '{{ route('ad.loadICChart') }}',
                 type: 'GET',
                 success: function(response) {
-                    console.log(response);
+                    //console.log(response);
                     if (response.success) {
                         // IC Trends Chart
 
@@ -845,6 +1305,9 @@
                                 }, ],
                             },
                             options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
                                 onClick: function(event, elements) {
                                     if (elements.length > 0) {
                                         var index = elements[0].index;
@@ -924,6 +1387,9 @@
                             type: 'bar',
                             data: data,
                             options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
                                 onClick: function(event, elements) {
                                     if (elements.length > 0) {
                                         var clickedElementIndex = elements[0].index;
@@ -964,12 +1430,339 @@
             });
         }
 
+        function loadSChart() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadSChart') }}',
+                type: 'GET',
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        // IC Trends Chart
 
-        function getRandomColor() {
-            var randomBlue = Math.floor(Math.random() * 32).toString(16);
-            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
+                        var sTrendChart = $('#s_trend_chart');
+                        var canvas = sTrendChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        // Assuming you have the data object you provided
+                        var data = response;
+
+                        var years = Object.keys(data.data);
+                        var scores = years.map(year => parseFloat(data.data[year].total_average_score));
+
+
+                        new Chart(sTrendChart, {
+                            type: 'line',
+                            data: {
+                                labels: years,
+                                datasets: [{
+                                    label: 'Total Average Score',
+                                    data: scores,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }, ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = years[index];
+
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        loadSQuestions(clickedYear);
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+
+                        // Per Question Chart
+                        var sBarChart = $('#s_bar_chart');
+                        var canvas = sBarChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        var data = {
+                            labels: [],
+                            datasets: []
+                        };
+
+                        var years = Object.keys(response.data);
+                        var uniqueIds = [];
+
+                        years.forEach(function(year) {
+                            var yearData = response.data[year];
+                            var dataset = {
+                                label: year,
+                                data: [],
+                                backgroundColor: getRandomColor(),
+                            };
+
+                            var ids = Object.keys(yearData);
+
+                            ids = ids.filter(function(questionId) {
+                                return questionId !== 'total_average_score';
+                            });
+
+                            ids.forEach(function(questionId) {
+                                if (!uniqueIds.includes(questionId)) {
+                                    uniqueIds.push(questionId);
+                                }
+                            });
+
+                            var mappedQuestionIds = uniqueIds.map(function(questionId, index) {
+                                return 'Q' + (index + 1);
+                            });
+
+                            ids.forEach(function(questionId) {
+                                var averageScore = parseFloat(yearData[questionId]
+                                    .average_score || 0);
+                                dataset.data.push(averageScore);
+                            });
+
+                            data.labels = mappedQuestionIds;
+
+                            data.datasets.push(dataset);
+                        });
+
+                        new Chart(sBarChart, {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var clickedElementIndex = elements[0].index;
+                                        var clickedDatasetIndex = elements[0].datasetIndex;
+                                        var clickedYear = this.data.datasets[clickedDatasetIndex]
+                                            .label;
+                                        var questionId = uniqueIds[clickedElementIndex];
+
+                                        console.log('Clicked Element Index: ' +
+                                            clickedElementIndex);
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        console.log('Clicked Question ID: ' + questionId);
+                                        viewScoreModal(clickedYear, questionId, page = 1);
+
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                    },
+                                    y: {
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
         }
 
+        function loadSQuestions(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDashboardSQuestions') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        if (response.s) {
+                            var totalAvgScore = response.total_avg_score;
+                            $('#s-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                            $('#s-school-year').text('School Year: ' + response.school_year);
+                            var sTable = $('#s_table tbody');
+                            sTable.empty();
+
+                            $.each(response.s, function(index,
+                                item) {
+
+                                var row = $("<tr class='text-center'>");
+
+                                row.append($("<td>").text(item.question_order));
+                                row.append($("<td class='text-start'>").text(item.question));
+
+                                if (item.average_score < totalAvgScore) {
+                                    var cell = $("<td>");
+                                    var container = $("<div>");
+
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    var icon = $("<i>")
+                                        .addClass('bx bxs-down-arrow')
+                                        .css('color', '#dc3545')
+                                        .attr('data-toggle', 'tooltip')
+                                        .attr('data-placement', 'top')
+                                        .attr('title',
+                                            'This question is below the total average score.');
+
+                                    container.append(anchor, icon);
+                                    cell.append(container);
+
+                                    icon.tooltip();
+
+                                    row.append(cell);
+                                } else {
+                                    var cell = $("<td>");
+                                    var anchor = $("<a href='#'>")
+                                        .text(item.average_score)
+                                        .addClass("view-ic-score")
+                                        .data("schoolYear", response.school_year)
+                                        .data("questionID", item.question_id)
+                                        .on("click", function(e) {
+                                            e.preventDefault();
+                                            var schoolYear = $(this).data("schoolYear");
+                                            var questionID = $(this).data("questionID");
+
+                                            viewScoreModal(schoolYear, questionID);
+                                        });
+
+                                    cell.append(anchor);
+                                    row.append(cell);
+                                }
+
+                                sTable.append(row);
+                            });
+
+                        }
+                    } else {
+                        var row = $(
+                            '<tr><td colspan="3"><p>-</p></td></tr>'
+                        );
+                        var icTable = $('#ic_table tbody');
+                        sTable.empty();
+                        sTable.append(row);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function viewScoreModal(schoolYear, questionID, page = 1) {
+            console.log('School Year: ' + schoolYear);
+            console.log('Question ID: ' + questionID);
+            $('#scoreModal').modal('show');
+            $('#scoreModalTitle').text(schoolYear + ': ')
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.viewScoreModal') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: schoolYear,
+                    questionID: questionID,
+                    page: page,
+                },
+                success: function(response) {
+
+                    console.log(response);
+                    if (response.success) {
+                        $('#scoreModalQuestion').text('Question: "' + response.question.question + '"');
+
+                        var scoreTable = $('#scoreModalTable tbody');
+                        scoreTable.empty();
+
+                        $.each(response.questionAnswers.data, function(index,
+                            item) {
+                            var row = $("<tr class='text-center'>");
+
+                            var fullName = item.first_name + ' ' + item.last_name;
+
+                            row.append($("<td>").text(fullName));
+                            row.append($("<td>").text(item.score));
+
+                            scoreTable.append(row);
+                        });
+
+                        totalPage = response.questionAnswers.last_page;
+                        currentPage = response.questionAnswers.current_page;
+                        $('#score_pagination').empty();
+                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    viewScoreModal(schoolYear, questionID, pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#score_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
 
         function loadBCQuestions(selectedYear = null) {
             $.ajax({
@@ -1275,44 +2068,16 @@
             })
         }
 
-        function loadPointsSystem(selectedYear = null) {
+        function loadPointsSystem() {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('ad.loadDashboardPointsSystem') }}',
                 type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
-                        const categories = [{
-                                label: 'Outstanding',
-                                key: 'outstanding',
-                                tableId: '#outstanding_table tbody'
-                            },
-                            {
-                                label: 'Very Satisfactory',
-                                key: 'verySatisfactory',
-                                tableId: '#verySatisfactory_table tbody'
-                            },
-                            {
-                                label: 'Satisfactory',
-                                key: 'satisfactory',
-                                tableId: '#satisfactory_table tbody'
-                            },
-                            {
-                                label: 'Fair',
-                                key: 'fair',
-                                tableId: '#fair_table tbody'
-                            },
-                            {
-                                label: 'Poor',
-                                key: 'poor',
-                                tableId: '#poor_table tbody'
-                            },
-                        ];
 
                         const pointSystemBarChart = $('#point_system_bar_chart');
                         var canvas = pointSystemBarChart[0];
@@ -1324,102 +2089,53 @@
                             }
                         }
 
+                        var data = {
+                            labels: ['Outstanding', 'Very Satisfactory', 'Satisfactory', 'Fair', 'Poor'],
+                            datasets: []
+                        };
+
+                        var years = Object.keys(response.data);
+
+                        years.forEach(function(year) {
+                            var yearData = response.data[year];
+                            var dataset = {
+                                label: year,
+                                data: yearData,
+                                backgroundColor: getRandomColor(),
+                            };
+
+                            data.datasets.push(dataset);
+                        });
+
                         new Chart(pointSystemBarChart, {
                             type: 'bar',
-                            data: {
-                                labels: categories.map(category => category.label),
-                                datasets: [{
-                                    label: "Number of employee per category",
-                                    data: categories.map(category => response[category.key] ?
-                                        response[category.key].length : 0),
-                                    backgroundColor: '#c3d7f1',
-                                    borderWidth: 1,
-                                }],
-                            },
+                            data: data,
                             options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        max: Math.max(...categories.map(category => response[category
-                                                .key] ? response[category.key].length : 0)) +
-                                            1,
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                    },
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                // aspectRatio: 2,
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var clickedElementIndex = elements[0].index;
+                                        var clickedDatasetIndex = elements[0].datasetIndex;
+                                        var clickedYear = this.data.datasets[clickedDatasetIndex]
+                                            .label;
+                                        var clickedCategory = data.labels[clickedElementIndex];
+
+                                        console.log('Clicked Element Index: ' +
+                                            clickedElementIndex);
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        console.log('Clicked Category: ' + clickedCategory);
+                                        viewCategory(clickedYear, clickedCategory);
+                                    }
                                 },
-                            },
-                        });
-
-                        categories.forEach(category => {
-                            const table = $(category.tableId);
-                            table.empty();
-
-                            if (response[category.key].length > 0) {
-                                $.each(response[category.key], function(index, item) {
-                                    const fullName =
-                                        `${item.employee.first_name} ${item.employee.last_name}`;
-                                    const row = $("<tr class='text-center'>");
-                                    row.append($("<td>").text(fullName));
-                                    row.append($("<td>").text(item.final_score));
-                                    table.append(row);
-                                });
-                            } else {
-                                const row = $("<tr class='text-center'>");
-                                row.append($("<td colspan='2'>").text("-"));
-                                table.append(row);
-                            }
-                        });
-
-                    } else {
-                        var outstandingTable = $('#outstanding_table tbody');
-                        var verySatisfactoryTable = $('#verySatisfactory_table tbody');
-                        var satisfactoryTable = $('#satisfactory_table tbody');
-                        var fairTable = $('#fair_table tbody');
-                        var poorTable = $('#poor_table tbody');
-
-                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
-
-                        outstandingTable.empty();
-                        verySatisfactoryTable.empty();
-                        satisfactoryTable.empty();
-                        fairTable.empty();
-                        poorTable.empty();
-
-                        outstandingTable.append(placeholderRow.clone());
-                        verySatisfactoryTable.append(placeholderRow.clone());
-                        satisfactoryTable.append(placeholderRow.clone());
-                        fairTable.append(placeholderRow.clone());
-                        poorTable.append(placeholderRow.clone());
-
-                        const pointSystemBarChart = $('#point_system_bar_chart');
-                        var canvas = pointSystemBarChart[0];
-
-                        if (canvas) {
-                            var existingChart = Chart.getChart(canvas);
-                            if (existingChart) {
-                                existingChart.destroy();
-                            }
-                        }
-
-                        new Chart(pointSystemBarChart, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Outstanding', 'Very Satisfactory', 'Satisfactory', 'Fair',
-                                    'Poor'
-                                ],
-                                datasets: [{
-                                    label: "Number of employee per category",
-                                    data: [0, 0, 0, 0, 0],
-                                    backgroundColor: '#c3d7f1',
-                                    borderWidth: 1,
-                                }],
-                            },
-                            options: {
                                 scales: {
+                                    x: {
+                                        stacked: true,
+                                    },
                                     y: {
-                                        beginAtZero: true,
-                                        max: 1,
+                                        beginAtZero: false,
+                                        max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
@@ -1435,42 +2151,47 @@
             });
         }
 
-        function loadEmployeesTable(namesearch = null, page = 1) {
+        function viewCategory(schoolYear, category, page = 1) {
+            $('#scoreModal').modal('show');
+            $('#scoreModalTitle').text('School Year: ' + schoolYear);
+            $('#scoreModalQuestion').text('Category: ' + category);
+
+            console.log('School Year: ' + schoolYear);
+            console.log('Category: ' + category);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route('ad.loadEmployees') }}',
+                url: '{{ route('ad.viewCategory') }}',
                 type: 'GET',
                 data: {
-                    search: namesearch,
-                    page: page
+                    selectedYear: schoolYear,
+                    category: category,
+                    page: page,
                 },
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
-                        var employees = response.employees.data;
-                        employees.sort((a, b) => a.employee.first_name.localeCompare(b.employee.first_name));
+                        var modalTable = $('#scoreModalTable tbody');
+                        modalTable.empty();
 
-                        $('#employees_table tbody').empty();
+                        $.each(response.data.data, function(index, item) {
+                            var row = $("<tr class='text-center'>");
 
-                        for (var i = 0; i < employees.length; i++) {
-                            var employee = employees[i].employee;
+                            var fullName = item.employee.first_name + ' ' + item.employee.last_name;
+                            var score = item.final_score;
 
-                            var row = $('<tr class="text-center">');
+                            row.append($("<td>").text(fullName));
+                            row.append($("<td>").text(score));
 
-                            row.append($('<td>').text(employee.first_name + ' ' + employee.last_name));
-                            row.append($('<td>').text(employee.department.department_name));
-                            row.append($('<td>').append($('<button>')
-                                .addClass('btn btn-outline-primary view-employee-btn')
-                                .data('employee-id', employee.employee_id)
-                                .text('View')));
+                            modalTable.append(row);
+                        });
 
-                            $('#employees_table tbody').append(row);
-                        }
 
-                        totalPage = response.employees.last_page;
-                        currentPage = response.employees.current_page;
-                        $('#employee_pagination').empty();
+                        totalPage = response.data.last_page;
+                        currentPage = response.data.current_page;
+                        $('#score_pagination').empty();
                         for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
                             (function(pageCounter) {
                                 var pageItem = $('<li>').addClass('page-item');
@@ -1479,27 +2200,87 @@
                                 }
                                 var pageButton = $('<button>').addClass('page-link').text(pageCounter);
                                 pageButton.click(function() {
-                                    loadEmployeesTable(namesearch, pageCounter);
+                                    viewCategory(schoolYear, category, pageCounter);
                                 });
                                 pageItem.append(pageButton);
-                                $('#employee_pagination').append(pageItem);
+                                $('#score_pagination').append(pageItem);
                             })(totalPageCounter);
                         }
-                    } else {
-                        $('#employees_table tbody').empty();
-                        var row = $(
-                            '<tr><td colspan="2"><p class="text-secondary fst-italic mt-0">No employees found.</p></td></tr>'
-                        );
-                        $('#employees_table tbody').append(row);
                     }
                 },
                 error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
-                        'An error occurred.';
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
                     // console.log(errorMessage);
                 }
             });
         }
+
+        // function loadEmployeesTable(namesearch = null, page = 1) {
+        //     $.ajax({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         url: '{{ route('ad.loadEmployees') }}',
+        //         type: 'GET',
+        //         data: {
+        //             search: namesearch,
+        //             page: page
+        //         },
+        //         success: function(response) {
+        //             if (response.success) {
+        //                 var employees = response.employees.data;
+        //                 employees.sort((a, b) => a.employee.first_name.localeCompare(b.employee.first_name));
+
+        //                 $('#employees_table tbody').empty();
+
+        //                 for (var i = 0; i < employees.length; i++) {
+        //                     var employee = employees[i].employee;
+
+        //                     var row = $('<tr class="text-center">');
+
+        //                     row.append($('<td>').text(employee.first_name + ' ' + employee.last_name));
+        //                     row.append($('<td>').text(employee.department.department_name));
+        //                     row.append($('<td>').append($('<button>')
+        //                         .addClass('btn btn-outline-primary view-employee-btn')
+        //                         .data('employee-id', employee.employee_id)
+        //                         .text('View')));
+
+        //                     $('#employees_table tbody').append(row);
+        //                 }
+
+        //                 totalPage = response.employees.last_page;
+        //                 currentPage = response.employees.current_page;
+        //                 $('#employee_pagination').empty();
+        //                 for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+        //                     (function(pageCounter) {
+        //                         var pageItem = $('<li>').addClass('page-item');
+        //                         if (pageCounter === currentPage) {
+        //                             pageItem.addClass('active');
+        //                         }
+        //                         var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+        //                         pageButton.click(function() {
+        //                             loadEmployeesTable(namesearch, pageCounter);
+        //                         });
+        //                         pageItem.append(pageButton);
+        //                         $('#employee_pagination').append(pageItem);
+        //                     })(totalPageCounter);
+        //                 }
+        //             } else {
+        //                 $('#employees_table tbody').empty();
+        //                 var row = $(
+        //                     '<tr><td colspan="2"><p class="text-secondary fst-italic mt-0">No employees found.</p></td></tr>'
+        //                 );
+        //                 $('#employees_table tbody').append(row);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
+        //                 'An error occurred.';
+        //             // console.log(errorMessage);
+        //         }
+        //     });
+        // }
 
         function fetchAndDisplayLineChart() {
             $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
@@ -1525,12 +2306,18 @@
                             datasets: [{
                                 label: 'Average Score',
                                 data: allData, // Use the concatenated data
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 2,
-                                fill: false,
+                                backgroundColor: '#164783',
+                                borderColor: '#164783',
+                                borderWidth: 1,
+                                pointBackgroundColor: '#164783',
+                                pointBorderColor: '#164783',
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
                             }],
                         },
                         options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
                             scales: {
                                 x: {
                                     display: true,
@@ -1544,13 +2331,23 @@
                                     title: {
                                         display: true,
                                         text: 'Total Final Score'
-                                    }
+                                    },
+                                    beginAtZero: false,
+                                    max: 5,
+                                    ticks: {
+                                        stepSize: 1,
+                                    },
                                 }
                             }
                         }
                     });
                 }
             });
+        }
+
+        function getRandomColor() {
+            var randomBlue = Math.floor(Math.random() * 32).toString(16);
+            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
         }
 
         fetchAndDisplayLineChart();
