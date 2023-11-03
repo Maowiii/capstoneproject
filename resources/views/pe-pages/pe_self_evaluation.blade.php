@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('title')
-    <h1>Appraisal Form</h1>
+    <span class="d-flex align-items-center"><h1 class="ml-auto">Appraisal Form</h1><button class="btn btn-primary mr-auto">Send Request</button></span>
 @endsection
 
 @section('content')
