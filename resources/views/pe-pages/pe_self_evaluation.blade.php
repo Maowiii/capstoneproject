@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('title')
-    <span class="d-flex align-items-center"><h1 class="ml-auto">Appraisal Form</h1><button class="btn btn-primary mr-auto">Send Request</button></span>
+<h1>Appraisal Form</h1>
 @endsection
 
 @section('content')
@@ -211,6 +211,7 @@
                 submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
+                <button class="btn btn-primary"  id="sendreq">Send Request</button>
         </div>
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
