@@ -92,12 +92,12 @@
                     </ul>
                 </li>
                 <li id='requestNav'>
-                    <a href="#">
+                    <a href="{{ route('viewRequestOverview') }}">
                         <i class="bi bi-envelope-paper"></i>
                         <span class="link_name">Request Overview</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="#">Request Overview</a>
+                        <li><a class="link_name" href="{{ route('viewRequestOverview') }}">Request Overview</a>
                         </li>
                     </ul>
                 </li>

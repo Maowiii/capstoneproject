@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminInternalCustomerController;
 use App\Http\Controllers\Admin\DepartmentalAnalyticsController;
 use App\Http\Controllers\Admin\EmployeeAnalyticsController;
+use App\Http\Controllers\Admin\AdminRequestOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -144,6 +145,9 @@ Route::post('/editable-internal-customer-form/updateICQuestions/{questionId}', [
 Route::post('/editable-internal-customer-form/deleteICQuestions/{questionId}', [EditableInternalCustomerFormController::class, 'deleteICQuestions'])->name('deleteICQuestions');
 Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternalCustomerFormController::class, 'addICQuestions'])->name('addICQuestions');
 Route::get('/editable-internal-customer-form/formChecker', [EditableInternalCustomerFormController::class, 'formChecker'])->name('ad.formChecker');
+
+// Request Overview
+Route::get('/admin-request', [AdminRequestOverviewController::class, 'viewRequestOverview'])->name('viewRequestOverview');
 
 /* ----- IMMEDIATE SUPERIOR ----- */
 // Dashboard
