@@ -851,7 +851,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="request-popup-modal" data-bs-backdrop="static">
+            <div class="modal fade modal-lg" id="request-popup-modal" data-bs-backdrop="static">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
