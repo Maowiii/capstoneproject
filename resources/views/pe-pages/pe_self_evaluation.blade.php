@@ -881,21 +881,24 @@
                     <h5 class="modal-title fs-5">REQUEST FORM</h5>
                     <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="validation-results" class="alert alert-danger" style="display: none;">
-                        <ul id="validation-list"></ul>
-                    </div>
-                    <h4>Instructions:</h3>
+                <form action="{{ route('submitRequest') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div id="validation-results" class="alert alert-danger" style="display: none;">
+                            <ul id="validation-list"></ul>
+                        </div>
+                        <h4>Instructions:</h3>
                         <p class='text-justify'>This request form is designed to assist us in better serving your needs and ensuring a smooth process. 
                         Kindly provide the details of your request and any additional notes in the fields provided. Your candid and thoughtful responses 
                         are highly appreciated.</p>
                     <label for="requestText"><h5>Request:</h5></label>
-                    <textarea id="requestText" class="form-control" placeholder="Enter your request here..."></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="request-submit-btn" class="btn btn-primary">Submit</button>
-                </div>
+                        <textarea name="request" id="requestText" class="form-control" placeholder="Enter your request here..." required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1653,6 +1656,33 @@
                 }
 
                 $('#request-popup-modal').modal('show');
+            });
+
+            $('form').on('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect the form data
+                const formData = new FormData(this);
+                formData.append('appraisal_id', {{ $appraisalId }});
+
+                // Send the data to the server using AJAX
+                $.ajax({
+                    url: "{{ route('submitRequest') }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(data) {
+                        // Handle the server response (if needed)
+                        console.log(data);
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
             });
         });
 

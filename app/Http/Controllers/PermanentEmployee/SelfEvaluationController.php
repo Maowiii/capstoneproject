@@ -1253,4 +1253,31 @@ class SelfEvaluationController extends Controller
       return response()->json(['success' => false, 'message' => 'Error updating EULA status.']);
     }
   }
+
+  public function submitRequest(Request $request)
+  {
+      // Check if the user is authenticated
+      if (!session()->has('account_id')) {
+          return view('auth.login');
+      }
+
+      // Validate the form data
+      $request->validate([
+          'request' => 'required',
+      ]);
+
+      try {
+          // Create a new RequestModel instance and populate it with form data
+          $newRequest = new Request;
+          $newRequest->appraisal_id = $request->input('appraisal_id');
+          $newRequest->request = $request->input('request');
+          $newRequest->status = 'Pending'; // Set an initial status
+
+          $newRequest->save();
+
+          return response()->json(['success' => true]);
+      } catch (\Exception $e) {
+          return response()->json(['success' => false, 'message' => 'Error submitting the request.']);
+      }
+  }
 }
