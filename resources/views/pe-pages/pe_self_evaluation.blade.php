@@ -851,6 +851,24 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="request-popup-modal" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5">SEND REQUEST</h5>
+                            <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="requestText">Request:</label>
+                            <textarea id="requestText" class="form-control"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="d-flex justify-content-center gap-3 p-3">
                 <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
