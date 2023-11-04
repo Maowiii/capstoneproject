@@ -860,7 +860,7 @@
                         </div>
                         <div class="modal-body">
                             <label for="requestText">Request:</label>
-                            <textarea id="requestText" class="form-control"></textarea>
+                            <textarea id="requestText" class="form-control" placeholder="Enter your request here..."></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
