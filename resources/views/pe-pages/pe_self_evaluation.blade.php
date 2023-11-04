@@ -855,7 +855,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title fs-5">SEND REQUEST</h5>
+                            <h5 class="modal-title fs-5">REQUEST FORM</h5>
                             <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
