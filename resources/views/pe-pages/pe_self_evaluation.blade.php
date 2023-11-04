@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('title')
-<h1>Appraisal Form</h1>
+    <h1>Appraisal Form</h1>
 @endsection
 
 @section('content')
@@ -79,16 +79,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                            <br>I give consent to the retention of my personal data. (Y/N)<br>
+                                                    <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                            <br>I give consent to the sharing of my data. (Y/N)<br>
+                                                    <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                        Agreement.<br>
-                                        
-                                        <br>By clicking Yes, you consent that you are willing to answer the questions
-                                        in this survey and you answered YES to the three questions above.
-                                        (Y/N) -->
+                                                    <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                                                Agreement.<br>
+                                                
+                                                <br>By clicking Yes, you consent that you are willing to answer the questions
+                                                in this survey and you answered YES to the three questions above.
+                                                (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -211,7 +211,7 @@
                 submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
-                <button class="btn btn-primary"  id="sendreq">Send Request</button>
+            <button class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
         </div>
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
@@ -425,341 +425,350 @@
                                 <div class="d-flex justify-content-center gap-3">
                                     <input id="BHTotal" class="small-column form-control total-frequency text-center"
                                         type="text" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-
-            <div class="content-container">
-                <h2>II. Key Results Areas & Work Objectives</h2>
-                <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
-                    his/her
-                    actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
-                <div class="table-responsive">
-                    <table class='table table-bordered'>
-                        <thead>
-                            <tr>
-                                <th class='large-column'>Accomplishment Level</th>
-                                <th colspan="2">Description</th>
+                                    </div>
+                                </td>
                             </tr>
                         </thead>
-                        <tbody>
+                    </table>
+                </div>
+            </div>
+
+        <div class="content-container">
+            <h2>II. Key Results Areas & Work Objectives</h2>
+            <p>Please review each Key Results Area (KRA) and Work Objectives (WO) of job incumbent and compare such with
+                his/her
+                actual outputs. Finally, indicate the degree of output using the Likert-Scale below.</p>
+            <div class="table-responsive">
+                <table class='table table-bordered'>
+                    <thead>
+                        <tr>
+                            <th class='large-column'>Accomplishment Level</th>
+                            <th colspan="2">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5</td>
+                            <td>Oustanding Performance</td>
+                            <td class='text-justify'>Performance far exceeds the standard expected of a job holder at
+                                this
+                                level.
+                                The review/assessment indicates that the job holder has achieved greater than fully
+                                effective
+                                results against all of the performance criteria and indicators as specified in the
+                                Performance
+                                Agreement and Work plan. Maintained this in all areas of responsibility throughout the
+                                performance
+                                cycle.</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Performance significantly above expectations</td>
+                            <td class='text-justify'>Performance fully meets the standards expected for the job. The
+                                review/assessment indicates that the job holder has achieved better than fully effective
+                                results
+                                against more than half of the performance criteria and indicators as specified in the
+                                Performance
+                                Agreement and Work plan.</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Performance fully effective (and slightly above expectations)</td>
+                            <td class='text-justify'>Performance fully meets the standards expected in all areas of the
+                                job.
+                                The
+                                review/assessment indicates that the job holder has achieved as a minimum effective
+                                results
+                                against
+                                all of the performance criteria and indicators as specified in the Performance Agreement
+                                and
+                                Work
+                                plan.</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Performance not fully effective</td>
+                            <td class='text-justify'>Performance meets some of the standards expected for the job. The
+                                review/assessment indicates that the job holder has achieved less than fully effective
+                                results
+                                against more than half of the performance criteria and indicators as specified in the
+                                Performance
+                                Agreement and Work plan.</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Unacceptable performance</td>
+                            <td class='text-justify'>Performance does not meet the standard expected for the job. The
+                                review/assessment indicates that the job holder has achieved less than fully effective
+                                results
+                                against almost all of the performance criteria and indicators as specified in
+                                Performance
+                                Agreement
+                                and Work plan. </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+                    <div class="table-responsive">
+                        <table class='table table-bordered' id="kra_table">
+                            <thead>
+                                <tr>
+                                    <th class='large-column' id="krainput">KRA</th>
+                                    <th class='xxs-column'>Weight</th>
+                                    <th class='large-column' id="obj">Objectives</th>
+                                    <th class='large-column' id="pi">Performance Indicators</th>
+                                    <th class='large-column' id="ar">Actual Results</th>
+                                    <th class='medium-column'>Performance Level</th>
+                                    <th class="xxs-column" id="wt">Weighted Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="KRA_table_body">
+                                <!-- CONTENT -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class='text-right'>Weight Total:</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <input id="KRA_Weight_Total" class="small-column form-control total-weight"
+                                                type="text" readonly>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class='text-right'>Total:</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <input id="KRA_Total"
+                                                class="small-column form-control total-weighted text-center"
+                                                type="text" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            <div class="content-container">
+                <h2>III. Future Performance Agenda</h2>
+                <h3>Work Performance Plans</h3>
+                <p>Identify work behaviors that the job incumbent needs to:</p>
+                <div class="table-responsive">
+                    <table class='table table-bordered' id='wpa-table'>
+                        <thead>
                             <tr>
-                                <td>5</td>
-                                <td>Oustanding Performance</td>
-                                <td class='text-justify'>Performance far exceeds the standard expected of a job holder at
-                                    this
-                                    level.
-                                    The review/assessment indicates that the job holder has achieved greater than fully
-                                    effective
-                                    results against all of the performance criteria and indicators as specified in the
-                                    Performance
-                                    Agreement and Work plan. Maintained this in all areas of responsibility throughout the
-                                    performance
-                                    cycle.</td>
+                                <th>Continue Doing</th>
+                                <th>Stop Doing</th>
+                                <th>Start Doing</th>
+                                <th class='small-column'>Action</th>
                             </tr>
+                        </thead>
+                        <tbody id='wpa_table_body'>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
+                </div>
+
+                <h3>Learning Development Plans</h3>
+                <p>Identify the learning needs of the job incumbent likewise recommend specific learning
+                    methodologies for
+                    each
+                    need
+                    that you have mentioned.</p>
+                <div class="table-responsive">
+                    <table class='table table-bordered' id='ldp_table'>
+                        <thead>
                             <tr>
-                                <td>4</td>
-                                <td>Performance significantly above expectations</td>
-                                <td class='text-justify'>Performance fully meets the standards expected for the job. The
-                                    review/assessment indicates that the job holder has achieved better than fully effective
-                                    results
-                                    against more than half of the performance criteria and indicators as specified in the
-                                    Performance
-                                    Agreement and Work plan.</td>
+                                <th>Learning Need</th>
+                                <th>Methodology</th>
+                                <th class='small-column'>Action</th>
                             </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Performance fully effective (and slightly above expectations)</td>
-                                <td class='text-justify'>Performance fully meets the standards expected in all areas of the
-                                    job.
-                                    The
-                                    review/assessment indicates that the job holder has achieved as a minimum effective
-                                    results
-                                    against
-                                    all of the performance criteria and indicators as specified in the Performance Agreement
-                                    and
-                                    Work
-                                    plan.</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Performance not fully effective</td>
-                                <td class='text-justify'>Performance meets some of the standards expected for the job. The
-                                    review/assessment indicates that the job holder has achieved less than fully effective
-                                    results
-                                    against more than half of the performance criteria and indicators as specified in the
-                                    Performance
-                                    Agreement and Work plan.</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Unacceptable performance</td>
-                                <td class='text-justify'>Performance does not meet the standard expected for the job. The
-                                    review/assessment indicates that the job holder has achieved less than fully effective
-                                    results
-                                    against almost all of the performance criteria and indicators as specified in
-                                    Performance
-                                    Agreement
-                                    and Work plan. </td>
+                        </thead>
+                        <tbody id='ldp_table_body'>
+                            <tr id="ldp_1">
+                                <td class='td-textarea'>
+                                    <textarea class='textarea' name="learning_need"></textarea>
+                                </td>
+                                <td class='td-textarea'>
+                                    <textarea class='textarea' name="methodology"></textarea>
+                                </td>
+                                <td class='td-action'></td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="table-responsive">
-                        <div class="table-responsive">
-                            <table class='table table-bordered' id="kra_table">
-                                <thead>
-                                    <tr>
-                                        <th class='large-column' id="krainput">KRA</th>
-                                        <th class='xxs-column'>Weight</th>
-                                        <th class='large-column' id="obj">Objectives</th>
-                                        <th class='large-column' id="pi">Performance Indicators</th>
-                                        <th class='large-column' id="ar">Actual Results</th>
-                                        <th class='medium-column'>Performance Level</th>
-                                        <th class="xxs-column" id="wt">Weighted Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="KRA_table_body">
-                                    <!-- CONTENT -->
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td class='text-right'>Weight Total:</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-3">
-                                                <input id="KRA_Weight_Total"
-                                                    class="small-column form-control total-weight" type="text"
-                                                    readonly>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td class='text-right'>Total:</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-3">
-                                                <input id="KRA_Total"
-                                                    class="small-column form-control total-weighted text-center"
-                                                    type="text" readonly>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="content-container">
-                        <h2>III. Future Performance Agenda</h2>
-                        <h3>Work Performance Plans</h3>
-                        <p>Identify work behaviors that the job incumbent needs to:</p>
-                        <div class="table-responsive">
-                            <table class='table table-bordered' id='wpa-table'>
-                                <thead>
-                                    <tr>
-                                        <th>Continue Doing</th>
-                                        <th>Stop Doing</th>
-                                        <th>Start Doing</th>
-                                        <th class='small-column'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='wpa_table_body'>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary" id="add-wpa-btn">Add Row</button>
-                        </div>
-
-                        <h3>Learning Development Plans</h3>
-                        <p>Identify the learning needs of the job incumbent likewise recommend specific learning
-                            methodologies for
-                            each
-                            need
-                            that you have mentioned.</p>
-                        <div class="table-responsive">
-                            <table class='table table-bordered' id='ldp_table'>
-                                <thead>
-                                    <tr>
-                                        <th>Learning Need</th>
-                                        <th>Methodology</th>
-                                        <th class='small-column'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='ldp_table_body'>
-                                    <tr id="ldp_1">
-                                        <td class='td-textarea'>
-                                            <textarea class='textarea' name="learning_need"></textarea>
-                                        </td>
-                                        <td class='td-textarea'>
-                                            <textarea class='textarea' name="methodology"></textarea>
-                                        </td>
-                                        <td class='td-action'></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
-                        </div>
-                    </div>
-
-        <div class="content-container">
-            <h2>IV. Job Incumbent's Comments</h2>
-            <div class="table-responsive">
-            <table class='table table-bordered' id='jic_table'>
-                <thead>
-                    <tr>
-                        <th class='medium-column'>Question</th>
-                        <th class='small-column'>Answer</th>
-                        <th class='large-column'>Comments</th>
-                    </tr>
-                </thead>
-                <tbody id='jic_table_body'>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea border-0' value="I agree with my performance rating."
-                                name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class="td-textarea">
-                            <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea border-0'
-                                value="My future work objectives and learning opportunities have been set for the
-                            next review period."
-                                name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class="td-textarea">
-                            <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
-                                name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class="td-textarea">
-                            <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class='text-justify'>
-                            <textarea class='textarea' value="I am satisfied with the performance review process."
-                                name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
-                        </td>
-                        <td>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1" value="1" required>
-                                <label class="form-check-label" for="inlineRadio1">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input autosave-field" type="radio"
-                                    name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2" value="0" required>
-                                <label class="form-check-label" for="inlineRadio2">No</label>
-                            </div>
-                        </td>
-                        <td class="td-textarea">
-                            <div class="position-relative">
-                                <textarea class="textarea form-control border-0 autosave-field jicTA" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
+                </div>
             </div>
-        </div>
+            <div class="content-container">
+                <h2>IV. Job Incumbent's Comments</h2>
+                <div class="table-responsive">
+                    <table class='table table-bordered' id='jic_table'>
+                        <thead>
+                            <tr>
+                                <th class='medium-column'>Question</th>
+                                <th class='small-column'>Answer</th>
+                                <th class='large-column'>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody id='jic_table_body'>
+                            <tr>
+                                <td class='text-justify'>
+                                    <textarea class='textarea border-0' value="I agree with my performance rating."
+                                        name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
+                                </td>
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1"
+                                            value="1" required>
+                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2"
+                                            value="0" required>
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </td>
+                                <td class="td-textarea">
+                                    <div class="position-relative">
+                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
+                                            name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='text-justify'>
+                                    <textarea class='textarea border-0'
+                                        value="My future work objectives and learning opportunities have been set for the
+                            next review period."
+                                        name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
+                                </td>
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1"
+                                            value="1" required>
+                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2"
+                                            value="0" required>
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </td>
+                                <td class="td-textarea">
+                                    <div class="position-relative">
+                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
+                                            name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='text-justify'>
+                                    <textarea class='textarea border-0' value="I am satisfied with the performance review discussion."
+                                        name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
+                                </td>
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1"
+                                            value="1" required>
+                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2"
+                                            value="0" required>
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </td>
+                                <td class="td-textarea">
+                                    <div class="position-relative">
+                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
+                                            name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='text-justify'>
+                                    <textarea class='textarea' value="I am satisfied with the performance review process."
+                                        name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
+                                </td>
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1"
+                                            value="1" required>
+                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input autosave-field" type="radio"
+                                            name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2"
+                                            value="0" required>
+                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                    </div>
+                                </td>
+                                <td class="td-textarea">
+                                    <div class="position-relative">
+                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
+                                            name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                    <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content" id="signatory">
-                                <div class="modal-header">
-                                    <h5 class="modal-title fs-5">Signatories</h5>
-                                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="container-fluid" id="instructioncon">
-                                        <div class="table-responsive" id="signaturecon">
-                                            <table class="table" id="signtable">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col" style="width:20%" id="partieshead">PARTIES
-                                                        </th>
-                                                        <th scope="col" style="width:20%" id="fullnamehead">FULL NAME
-                                                        </th>
-                                                        <th scope="col" style="width:25%" id="signhead">SIGNATURE
-                                                        </th>
-                                                        <th scope="col" style="width:15%" id="datehead">DATE</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
-                                                        <td id="partiescell">Job Incumbent</td>
-                                                        <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }}
-                                                            {{ $appraisee->last_name ?? '' }}</td>
-                                                        <td id='signcell' class="sign-cell">
-                                                            <input type='file' id="uploadsign"
-                                                                name="SIGN[JI][{{ $appraisalId }}][file]"
-                                                                class="form-control"
-                                                                accept='image/jpeg, image/png, image/jpg'>
+            <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="signatory">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5">Signatories</h5>
+                            <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid" id="instructioncon">
+                                <div class="table-responsive" id="signaturecon">
+                                    <table class="table" id="signtable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="width:20%" id="partieshead">PARTIES
+                                                </th>
+                                                <th scope="col" style="width:20%" id="fullnamehead">FULL NAME
+                                                </th>
+                                                <th scope="col" style="width:25%" id="signhead">SIGNATURE
+                                                </th>
+                                                <th scope="col" style="width:15%" id="datehead">DATE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="signature-row" data-appraisal-id="{{ $appraisalId }}">
+                                                <td id="partiescell">Job Incumbent</td>
+                                                <td id="fullnamecell">{{ $appraisee->first_name ?? 'N/A' }}
+                                                    {{ $appraisee->last_name ?? '' }}</td>
+                                                <td id='signcell' class="sign-cell">
+                                                    <input type='file' id="uploadsign"
+                                                        name="SIGN[JI][{{ $appraisalId }}][file]" class="form-control"
+                                                        accept='image/jpeg, image/png, image/jpg'>
 
-                                                            <input type='hidden' id="uploadsign_1"
-                                                                name="SIGN[JI][{{ $appraisalId }}]">
+                                                    <input type='hidden' id="uploadsign_1"
+                                                        name="SIGN[JI][{{ $appraisalId }}]">
 
-                                                            <img src="" width="100" id="signatureImage" />
-                                                        </td>
-                                                        <td id="datecell" class="date-cell"></td>
-                                                    </tr>
-                                                    {{-- <tr>
+                                                    <img src="" width="100" id="signatureImage" />
+                                                </td>
+                                                <td id="datecell" class="date-cell"></td>
+                                            </tr>
+                                            {{-- <tr>
                                             <td id="partiescell">Immediate Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
@@ -771,10 +780,10 @@
                                             <td id='signcell'></td>
                                             <td id="datecell" style="width:15%"></td>
                                         </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        {{-- <h3>Notation</h3>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{-- <h3>Notation</h3>
                             <div class="table-responsive" id="signaturecon">
                                 <table class="table" id="signtable">
                                     <tbody>
@@ -793,63 +802,59 @@
                                     </tbody>
                                 </table>
                             </div> --}}
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
-                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal fade" id="confirmation-popup-modal" data-bs-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title fs-5">CONFIRMATION MESSAGE</h5>
-                                    <button type="button" class="btn-close common-close-button"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <h6 class="text-dark fs-5" id="confirmation-popup">Would you like to submit the form?
-                                    </h6>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" id="submit-btn-confirm"
-                                        class="btn btn-primary">Confirm</button>
-                                </div>
-                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" id="submit-btn-sign" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
-                        aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
-                                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <h5>Are you sure you want to delete this item?</h5>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Cancel</button>
-                                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                                </div>
-                            </div>
+            <div class="modal fade" id="confirmation-popup-modal" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-5">CONFIRMATION MESSAGE</h5>
+                            <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="text-dark fs-5" id="confirmation-popup">Would you like to submit the form?
+                            </h6>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Confirm</button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="d-flex justify-content-center gap-3 p-3">
-                        <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                            <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Are you sure you want to delete this item?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                aria-label="Close">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 p-3">
+                <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
+            </div>
     </form>
 
     <script>
@@ -1123,7 +1128,7 @@
                 // });
 
                 // Get all required input elements
-                
+
 
                 // if (!valid || !form[0].checkValidity()) {
 
@@ -1137,10 +1142,11 @@
                         // Handle invalid inputs, display error messages, etc.
                         invalidInputs.each(function(index, invalidInput) {
                             // Handle validation messages for invalid inputs
-                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
+                            console.error('Validation failed for', invalidInput.name, ':',
+                                invalidInput.validationMessage);
                             // Focus on the first invalid input
                             invalidInputs.focus();
-                        });   
+                        });
                     }
 
                     var requiredInputs = form.find('input[required]');
@@ -1150,23 +1156,29 @@
                         var $inputElement = $(inputElement);
 
                         // Check if the required input is empty or has a validation error
-                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !
+                            $inputElement[0].checkValidity()) {
                             valid = false;
-                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                            console.error('Validation failed for', inputElement.name, ':',
+                                inputElement
                                 .validationMessage);
 
                             // Use the jQuery object to add the 'is-invalid' class
                             $inputElement.addClass('is-invalid');
                             $inputElement.closest('td').addClass('border border-danger');
-                            $inputElement[0].focus(); 
+                            $inputElement[0].focus();
 
                             // Add an input event handler to remove the 'is-invalid' class
                             $inputElement.on('input', function() {
                                 $inputElement.removeClass('is-invalid');
-                                $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
-                                $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
-                                $inputElement.find('.form-check-input').removeClass('is-invalid');
-                                $inputElement.closest('td').removeClass('border border-danger');
+                                $inputElement.closest('input[type="radio"][value="1"]')
+                                    .removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="0"]')
+                                    .removeClass('is-invalid');
+                                $inputElement.find('.form-check-input').removeClass(
+                                    'is-invalid');
+                                $inputElement.closest('td').removeClass(
+                                    'border border-danger');
                             });
                         }
                     });
@@ -1178,21 +1190,25 @@
                         var $inputElement = $(inputElement);
 
                         // Check if the required input is empty or has a validation error
-                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !
+                            $inputElement[0].checkValidity()) {
                             valid = false;
-                            console.error('Validation failed for', inputElement.name, ':', inputElement
+                            console.error('Validation failed for', inputElement.name, ':',
+                                inputElement
                                 .validationMessage);
 
                             // Use the jQuery object to add the 'is-invalid' class
                             $inputElement.addClass('is-invalid');
                             $inputElement.closest('td').addClass('border border-danger');
-                            $inputElement[0].focus(); 
+                            $inputElement[0].focus();
 
                             // Add an input event handler to remove the 'is-invalid' class
                             $inputElement.on('input', function() {
                                 $inputElement.removeClass('is-invalid');
-                                $inputElement.find('.form-control').removeClass('is-invalid');
-                                $inputElement.closest('td').removeClass('border border-danger');
+                                $inputElement.find('.form-control').removeClass(
+                                    'is-invalid');
+                                $inputElement.closest('td').removeClass(
+                                    'border border-danger');
                             });
                         }
                     });
@@ -1820,7 +1836,7 @@
 
                                 $(this).removeClass(
                                     'is-invalid'
-                                ); 
+                                );
 
                                 $.ajax({
                                     headers: {
@@ -2134,8 +2150,8 @@
 
                     // Loop through the jicData and populate the table rows with data
                     data.jicData.forEach(function(jic, index) {
-                        jicID = parseInt(jic.question_order)-1;
-                        
+                        jicID = parseInt(jic.question_order) - 1;
+
                         var row = document.querySelectorAll('#jic_table_body tr')[jicID];
 
                         var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
@@ -2166,7 +2182,8 @@
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
                                 $closestTD.removeClass('border border-danger');
                                 $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass(
+                                    'is-invalid');
                             });
 
                             $(answerRadioNo).on('input', function() {
@@ -2175,7 +2192,8 @@
                                 $closestTD.find('.is-invalid').removeClass('is-invalid');
                                 $closestTD.removeClass('border border-danger');
                                 $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
+                                $closestTD.closest('.form-check-input').removeClass(
+                                    'is-invalid');
                             });
                             console.log(commentTextarea);
                             console.log(commentTextarea.value);
@@ -2209,7 +2227,7 @@
                             commentTextarea.required = true;
                             answerRadioYes.required = true;
                             answerRadioNo.required = true;
-                            
+
                             // console.log('Row not found for index ' + index);
                         }
                     });
@@ -2419,7 +2437,7 @@
             var wpaID = 0;
 
             var wparow = $('<tr>').addClass('align-middle');
-            
+
             $('<td>').addClass('td-textarea').append(
                 createTextArea(
                     'WPA[' + wpaID + '][' + {{ $appraisalId }} +
@@ -2467,7 +2485,7 @@
             var ldpID = 0;
 
             var ldprow = $('<tr>').addClass('align-middle');
-            
+
             $('<td>').addClass('td-textarea').append(
                 createTextArea(
                     'LDP[' +

@@ -55,7 +55,7 @@
                     readonly>
             </div>
         </div>
-    </div>
+
 
     <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
         id="PEappraisalForm">
@@ -293,6 +293,7 @@
                 </thead>
             </table>
         </div>
+    </div>
 
         <div class="content-container">
             <h2>II. Key Results Areas & Work Objectives</h2>
@@ -405,7 +406,6 @@
                     </tfoot>
                 </table>
             </div>
-
         </div>
         <div class="content-container">
             <h2>III. Future Performance Agenda</h2>
