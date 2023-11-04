@@ -211,29 +211,36 @@
                 submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
-            <button class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
+            <button type="button" class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
         </div>
+
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
-            <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
+            <p>
+                Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
                 Put
                 No. 1 on the number which corresponds to your answer for each item. Please answer each item truthfully.<br>
 
-                5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever</p>
+                5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever
+            </p>
             <h3>Core Values</h3>
             <h4>Search for Excellence</h4>
-            <p>The highest standards of academic excellence and professionalism in service are the hallmarks of our
+            <p>
+                The highest standards of academic excellence and professionalism in service are the hallmarks of our
                 educative
                 endeavors. We regularly assess and transform our programs to make them effective for leaning, discovery of
                 knowledge and community service. Our service ethics manifest strong sense of responsibility, competency,
-                efficiency and professional conduct.</p>
+                efficiency and professional conduct.
+            </p>
             <h4>Sustained Integral Development</h4>
-            <p>Education is a lifelong quest whose primary purpose is the full and integral development of the human person.
+            <p>
+                Education is a lifelong quest whose primary purpose is the full and integral development of the human person.
                 We
                 are committed to provide programs for holistic development and continuous learning. Networking with other
                 educational institutions, government agencies, industries, business and other groups enhances our
                 educational
-                services.</p>
+                services.
+            </p>
             @csrf
             <div class="table-responsive">
                 <table class='table table-bordered' id="SID_table">
@@ -290,16 +297,20 @@
             </div>
 
             <h4>Spirit of St. Vincent de Paul</h4>
-            <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
+            <p>
+                The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
                 in
                 our sensitivity to the presence of God, compassionate service and the building of supportive relationships
-                towards an effective service to persons in need.</p>
+                towards an effective service to persons in need.
+            </p>
             <h4>Social Responsibility</h4>
-            <p>Education at Adamson aims at developing a sense of social responsibility - a mark of an authentic Christian
+            <p>
+                Education at Adamson aims at developing a sense of social responsibility - a mark of an authentic Christian
                 faith. Social responsibility leads us to empower the marginalized sectors of society through the creation of
                 knowledge and human development. We are committed to work for the building of a society based on justice,
                 peace,
-                respect for human dignity and the integrity of creation.</p>
+                respect for human dignity and the integrity of creation.
+            </p>
             <div class="table-responsive">
                 <table class='table table-bordered' id="SR_table">
                     <thead>
@@ -356,11 +367,13 @@
             </div>
 
             <h4>Solidarity</h4>
-            <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
+            <p>
+                Drawn together by a common vision and mission, we believe education is a shared responsibility and a
                 collaborative effort where the gifts of persons are valued. Our learning community is a "family" where
                 participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
                 builds
-                up our community, encouraging us towards excellence and professionalism.</p>
+                up our community, encouraging us towards excellence and professionalism.
+            </p>
             <div class="table-responsive">
                 <table class='table table-bordered' id='S_table'>
                     <thead>
@@ -508,7 +521,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+                <div class="table-responsive">
                     <div class="table-responsive">
                         <table class='table table-bordered' id="kra_table">
                             <thead>
@@ -530,8 +543,9 @@
                                     <td class='text-right'>Weight Total:</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-3">
-                                            <input id="KRA_Weight_Total" class="small-column form-control total-weight"
-                                                type="text" readonly>
+                                            <input id="KRA_Weight_Total"
+                                                class="small-column form-control total-weight" type="text"
+                                                readonly>
                                         </div>
                                     </td>
                                     <td></td>
@@ -550,21 +564,24 @@
                         </table>
                     </div>
                 </div>
-            <div class="content-container">
-                <h2>III. Future Performance Agenda</h2>
-                <h3>Work Performance Plans</h3>
-                <p>Identify work behaviors that the job incumbent needs to:</p>
-                <div class="table-responsive">
-                    <table class='table table-bordered' id='wpa-table'>
-                        <thead>
-                            <tr>
-                                <th>Continue Doing</th>
-                                <th>Stop Doing</th>
-                                <th>Start Doing</th>
-                                <th class='small-column'>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id='wpa_table_body'>
+            </div>
+        </div>
+
+        <div class="content-container">
+            <h2>III. Future Performance Agenda</h2>
+            <h3>Work Performance Plans</h3>
+            <p>Identify work behaviors that the job incumbent needs to:</p>
+            <div class="table-responsive">
+                <table class='table table-bordered' id='wpa-table'>
+                    <thead>
+                        <tr>
+                            <th>Continue Doing</th>
+                            <th>Stop Doing</th>
+                            <th>Start Doing</th>
+                            <th class='small-column'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id='wpa_table_body'>
 
                         </tbody>
                     </table>
@@ -768,40 +785,40 @@
                                                 </td>
                                                 <td id="datecell" class="date-cell"></td>
                                             </tr>
-                                            {{-- <tr>
+                                            <!-- {{-- <tr>
                                             <td id="partiescell">Immediate Superior</td>
                                             <td id="fullnamecell"></td>
                                             <td id='signcell'></td>
                                             <td id="datecell"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="partiescell">Next Higher Superior</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id='signcell'></td>
-                                            <td id="datecell" style="width:15%"></td>
-                                        </tr> --}}
+                                            </tr>
+                                            <tr>
+                                                <td id="partiescell">Next Higher Superior</td>
+                                                <td id="fullnamecell"></td>
+                                                <td id='signcell'></td>
+                                                <td id="datecell" style="width:15%"></td>
+                                            </tr> --}} -->
                                         </tbody>
                                     </table>
                                 </div>
-                                {{-- <h3>Notation</h3>
-                            <div class="table-responsive" id="signaturecon">
-                                <table class="table" id="signtable">
-                                    <tbody>
-                                        <tr>
-                                            <td id="partiescell" style="width:20%">HRMD Director</td>
-                                            <td id="fullnamecell" style="width:20%"></td>
-                                            <td id="signcell" style="width:25%"></td>
-                                            <td id="datecell" style="width:15%"></td>
-                                        </tr>
-                                        <tr>
-                                            <td id="partiescell">VP for Administrative Affairs</td>
-                                            <td id="fullnamecell"></td>
-                                            <td id="signcell" style="width:25%"></td>
-                                            <td id="datecell" style="width:15%"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div> --}}
+                                <!-- {{-- <h3>Notation</h3>
+                                <div class="table-responsive" id="signaturecon">
+                                    <table class="table" id="signtable">
+                                        <tbody>
+                                            <tr>
+                                                <td id="partiescell" style="width:20%">HRMD Director</td>
+                                                <td id="fullnamecell" style="width:20%"></td>
+                                                <td id="signcell" style="width:25%"></td>
+                                                <td id="datecell" style="width:15%"></td>
+                                            </tr>
+                                            <tr>
+                                                <td id="partiescell">VP for Administrative Affairs</td>
+                                                <td id="fullnamecell"></td>
+                                                <td id="signcell" style="width:25%"></td>
+                                                <td id="datecell" style="width:15%"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div> --}} -->
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -831,53 +848,58 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
-                aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
-                            <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <h5>Are you sure you want to delete this item?</h5>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                aria-label="Close">Cancel</button>
-                            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade modal-lg" id="request-popup-modal" data-bs-backdrop="static">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title fs-5">REQUEST FORM</h5>
-                            <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <label for="requestText">Request:</label>
-                            <textarea id="requestText" class="form-control" placeholder="Enter your request here..."></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" id="submit-btn-confirm" class="btn btn-primary">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="d-flex justify-content-center gap-3 p-3">
                 <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">Submit</button>
             </div>
     </form>
 
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+        aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h4>
+                    <button type="button" class="btn-close common-close-button" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Are you sure you want to delete this item?</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-lg" id="request-popup-modal" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">REQUEST FORM</h5>
+                    <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="validation-results" class="alert alert-danger" style="display: none;">
+                        <ul id="validation-list"></ul>
+                    </div>
+                    <label for="requestText">Request:</label>
+                    <textarea id="requestText" class="form-control" placeholder="Enter your request here..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="request-submit-btn" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+        ///////////////////// JIC(MUST EDIT) ///////////////////////////
         // Get the <textarea> elements by their names
         const textareaElement1 = document.querySelector('[name="feedback[1][{{ $appraisalId }}][question]"]');
         const textareaElement2 = document.querySelector('[name="feedback[2][{{ $appraisalId }}][question]"]');
@@ -900,6 +922,8 @@
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
 
+        ////////////////////////// EULA ///////////////////////////////
+        
         let confirmationMode = false;
 
         function confirmClose() {
@@ -995,6 +1019,7 @@
             }
         }
 
+        ////////////////////////// ON LOAD ////////////////////////////////
         $(document).ready(function() {
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
@@ -1151,7 +1176,7 @@
                 // if (!valid || !form[0].checkValidity()) {
 
                 if (!form[0].checkValidity()) {
-                    event.preventDefault(); // Prevent the form from submitting
+                    event.preventDefault(); 
                     event.stopPropagation();
 
                     var invalidInputs = form.find('.is-invalid');
@@ -1588,10 +1613,43 @@
             updateFrequencyCounter('SID_table');
             updateFrequencyCounter('SR_table');
             updateFrequencyCounter('S_table');
-            // formChecker();
 
             updateBHTotal();
             updateWeightedTotal();
+
+            ////////////////////////// SEND REQUEST ////////////////////////////////
+            $('#sendrequest').click(function() {
+                // Check validity and list the results
+                const validationList = $('#validation-list');
+                validationList.empty(); // Clear previous results
+
+                // Check input elements for validity
+                const inputElements = $('input[disabled]');
+                const textarea = $('textarea[required]');
+                let invalidFields = [];
+
+                inputElements.each(function() {
+                    if (!this.checkValidity()) {
+                        invalidFields.push($(this).attr('name'));
+                    }
+                });
+
+                if (!textarea[0].checkValidity()) {
+                    invalidFields.push('Request field');
+                }
+
+                if (invalidFields.length > 0) {
+                    $.each(invalidFields, function(index, fieldName) {
+                        validationList.append('<li>' + fieldName + ' is not answered or invalid.</li>');
+                    });
+
+                    $('#validation-results').show();
+                } else {
+                    $('#validation-results').hide();
+                }
+
+                $('#request-popup-modal').modal('show');
+            });
         });
 
         function loadTableData() {
@@ -2213,9 +2271,6 @@
                                 $closestTD.closest('.form-check-input').removeClass(
                                     'is-invalid');
                             });
-                            console.log(commentTextarea);
-                            console.log(commentTextarea.value);
-                            console.log(jic.comments);
 
                             if (jic.comments) {
                                 commentTextarea.val(jic.comments || '');
@@ -2646,8 +2701,12 @@
                     appraisalId: {{ $appraisalId }}
                 },
                 success: function(response) {
-                    // console.log("PHASE");
-                    // console.log(response.phaseData);
+                    /* 
+                    ENABLING USERS TO VIEW AND ANSWERS CERTAIN PART
+                    OF THE FORM BASED ON THE DATE PHASES SET BY THE ADMIN.
+                    */
+                    console.log("PHASE");
+                    console.log(response.phaseData);
 
                     if (response.submitionChecker && Object.values(response.locks).every(lock => !lock)) {
                         $('select').prop('disabled', true);
@@ -2664,6 +2723,9 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+
+                        $('#sendreq').show();
+                        $('#requestText').prop('disabled', false);
                     } else {
                         if (response.phaseData === "kra") {
                             $('textarea').prop('disabled', true);
@@ -2676,6 +2738,7 @@
                             $('.ldp-delete-btn').prop('disabled', true);
 
                             $('#submit-btn-form').hide();
+                            $('#sendreq').hide();
 
                             if ($('#kra_table').length > 0) {
                                 $('html, body').animate({
@@ -2684,10 +2747,7 @@
                             }
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
-
                             $('textarea').prop('readonly', true);
-
-                            // $('input[type="radio"]').attr("disabled", true);
 
                             $('#KRA_table_body select').prop('disabled', true);
                             $('#KRA_table_body select').attr('disabled', true);
@@ -2698,6 +2758,7 @@
                             $('.ldp-delete-btn').prop('disabled', true);
 
                             $('#submit-btn-form').hide();
+                            $('#sendreq').hide();
 
                             $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
 
@@ -2712,15 +2773,32 @@
 
                             $('#KRA_table_body [name$="[KRA_actual_result]"]').prop('readonly', false);
                             $('#KRA_table_body [name$="[KRA_performance_level]"]').prop('disabled', false);
+
+                            $('#sendreq').hide();
                         } else if (response.phaseData === "lock") {
-                            $('#KRA_table_body select').prop('disabled', true);
-                            $('input[type="radio"]').prop('disabled', true);
+                            $('select').prop('disabled', true);
                             $('textarea').prop('disabled', true);
+
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.btn-danger').prop('disabled', true);
+
+                            $('#lockToast').toast('show');
+                            $('input[type="radio"]').prop('disabled', true);
+
+                            $('#submit-btn-form').text('View Signature');
+                            $('#uploadsign').hide();
+                            $('#submit-btn-sign').hide();
+
+                            $('#sendreq').show();
+                            $('#requestText').prop('disabled', false);
                         }
                     }
-
-                    // console.log("LOCK");
-                    // console.log(response.locks);
+                    
+                    //////////////// FOR UNLOCKING CERTAIN PARTS OF THE FORM /////////////////
+                    console.log("LOCK");
+                    console.log(response.locks);
 
                     if (response.locks.kra) {
                         $('#KRA_table_body select').prop('disabled', true);
@@ -2735,6 +2813,7 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+                        $('#sendreq').hide();
 
                         // $('html, body').animate({
                         //     scrollTop: $('#kra_table').offset().top
@@ -2756,6 +2835,7 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+                        $('#sendreq').hide();
 
                         // $('html, body').animate({
                         //     scrollTop: $('#kra_table').offset().top
@@ -2771,12 +2851,15 @@
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
                         $('#submit-btn-sign').show();
+                        $('#sendreq').hide();
                     }
 
                     if (response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
+                        $('#lockToast').toast('hide');
+                        $('#sendreq').hide();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -2789,6 +2872,7 @@
                         $('.modal').remove();
                         $('.fade').remove();
                         $('#submit-btn-sign').remove();
+                        $('#sendreq').remove();
                         $('#consentform').remove();
                         $('#consentform').modal('hide');
 

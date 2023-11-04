@@ -1047,6 +1047,7 @@ class SelfEvaluationController extends Controller
       $locks['kra'] = $appraisal->kra_locked == 1;
       $locks['pr'] = $appraisal->pr_locked == 1;
       $locks['eval'] = $appraisal->eval_locked == 1;
+      $locks['lock'] = $appraisal->locked !== 1;
 
       ////////////PHASES/////////////
       $activeYear = EvalYear::where('status', 'active')->first();
