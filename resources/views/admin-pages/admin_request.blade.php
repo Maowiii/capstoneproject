@@ -38,9 +38,9 @@
             <div class="form-check form-switch p-0">
                 <label class="form-check-label">KRA Encoding Phase</label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span>On</span>
+                    <span> On </span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA">
-                    <span>Off</span>
+                    <span> Off </span>
                 </label>
             </div>
             
@@ -56,9 +56,9 @@
             <div class="form-check form-switch p-0">
                 <label class="form-check-label">Evaluation Phase</label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span>On</span>
+                    <span> On </span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL">
-                    <span>Off</span>
+                    <span> Off </span>
                 </label>
             </div>
 
@@ -67,16 +67,16 @@
                     <label class="form-check-label">LOCK</label>
                 </div>   
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span>On</span>
+                    <span> On </span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK">
-                    <span>Off</span>
+                    <span> Off </span>
                 </label>
             </div>
         </div>
 
         <!-- Text area -->
         <div class="form-group mt-3">
-          <label for="approveTextarea">Message</label>
+          <label for="approveTextarea"><h5>Message:</h5></label>
           <textarea class="form-control" id="approveTextarea" rows="3"></textarea>
         </div>
       </div>
