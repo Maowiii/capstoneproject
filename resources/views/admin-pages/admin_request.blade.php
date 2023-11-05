@@ -36,7 +36,7 @@
         <!-- Toggle buttons -->
         <div class="btn-group" role="group">
             <div class="form-check form-switch p-0">
-                <label class="form-check-label">KRA</label>
+                <label class="form-check-label">KRA Encoding Phase</label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span>On</span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA">
@@ -45,7 +45,7 @@
             </div>
             
             <div class="form-check form-switch p-0">
-                <label class="form-check-label">PR</label>
+                <label class="form-check-label">Performance Review Phase</label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span>On</span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_PR">
@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-check form-switch p-0">
-                <label class="form-check-label">EVAL</label>
+                <label class="form-check-label">Evaluation Phase</label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span>On</span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL">
