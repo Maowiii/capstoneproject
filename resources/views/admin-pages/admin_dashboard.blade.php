@@ -6,7 +6,8 @@
 
 @section('content')
     <div class="row g-3 align-items-start mb-3">
-        <div class="col-auto">
+        <h2 id="school-year-heading">School Year: -</h2>
+        {{-- <div class="col-auto">
             <h4>School Year:</h4>
         </div>
         <div class="col">
@@ -21,7 +22,7 @@
                     </option>
                 @endforeach
             </select>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Cards -->
@@ -46,7 +47,8 @@
         </div>
     </div>
 
-    <div class="container-fluid content-container d-flex justify-content-center align-items-center">
+    <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
+        <h2 class="text-center">Yearly performance trend:</h2>
         <div class="w-100" style="height: 300px">
             <canvas id="lineChart" aria-label="chart"></canvas>
         </div>
@@ -65,7 +67,6 @@
                 <thead>
                     <tr>
                         <th>Department</th>
-                        <th>Average Score</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -242,29 +243,6 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="employeeTrendsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="employeeTrendsModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h4>Employee Performance Trend Over The School Years:</h4>
-                    <canvas id="employee_final_score_trend" height="350" width="580"></canvas>
-                    <h4>Behavioral Score Trend:</h4>
-                    <canvas id="employee_bh_trend" height="350" width="580"></canvas>
-                    <h4>KRA Score Trend:</h4>
-                    <canvas id="employee_kra_trend" height="350" width="580"></canvas>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -313,189 +291,8 @@
             $('#search').on('input', function() {
                 var query = $(this).val();
                 // console.log('Query: ' + query);
-                loadDepartmentTable(globalSelectedYear, query);
+                loadDepartmentTable(query, null);
             });
-
-            // Employee Trends
-            $(document).on('click', '.view-employee-btn', function() {
-                var employeeID = $(this).data('employee-id');
-                // console.log('Employee ID: ' + employeeID);
-                $('#employeeTrendsModal').modal('show');
-
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: '{{ route('ad.loadEmployeeTrends') }}',
-                    type: 'GET',
-                    data: {
-                        employeeID: employeeID,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // console.log(response);
-                            const employee = response.employee;
-                            $('#employeeTrendsModalLabel').text(employee.first_name + ' ' +
-                                employee.last_name);
-
-                            // Final Scores Trend
-                            var employeeFinalScoreTrend = $('#employee_final_score_trend');
-                            var canvas = employeeFinalScoreTrend[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            var finalScoresData = response
-                                .finalScores;
-                            var labels = Object.keys(finalScoresData);
-                            var scores = Object.values(finalScoresData);
-
-                            new Chart(employeeFinalScoreTrend, {
-                                type: 'line',
-                                data: {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: 'Final Score',
-                                        data: scores,
-                                        fill: false,
-                                        backgroundColor: '#164783',
-                                        borderColor: '#c3d7f1',
-                                        tension: 0,
-                                        pointRadius: 10,
-                                    }, ],
-                                },
-                                options: {
-                                    responsive: true,
-                                    scales: {
-                                        x: {
-                                            display: true,
-                                            title: {
-                                                display: true,
-                                                text: 'School Year',
-                                            },
-                                        },
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-
-                            // Behavioral Scores Trend:
-                            var employeeBHScoreTrend = $('#employee_bh_trend');
-                            var canvas = employeeBHScoreTrend[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            var bhScoresData = response
-                                .bhScores;
-                            var labels = Object.keys(bhScoresData);
-                            var scores = Object.values(bhScoresData);
-
-                            new Chart(employeeBHScoreTrend, {
-                                type: 'line',
-                                data: {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: 'Behavioral Competencies Scores',
-                                        data: scores,
-                                        fill: false,
-                                        backgroundColor: '#164783',
-                                        borderColor: '#c3d7f1',
-                                        tension: 0,
-                                        pointRadius: 10,
-                                    }, ],
-                                },
-                                options: {
-                                    responsive: true,
-                                    scales: {
-                                        x: {
-                                            display: true,
-                                            title: {
-                                                display: true,
-                                                text: 'School Year',
-                                            },
-                                        },
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-
-                            // KRA Scores Trend:
-                            var employeeKRAScoreTrend = $('#employee_kra_trend');
-                            var canvas = employeeKRAScoreTrend[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            var kraScoresData = response
-                                .kraScores;
-                            var labels = Object.keys(kraScoresData);
-                            var scores = Object.values(kraScoresData);
-
-                            new Chart(employeeKRAScoreTrend, {
-                                type: 'line',
-                                data: {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: 'KRA Scores',
-                                        data: scores,
-                                        fill: false,
-                                        backgroundColor: '#164783',
-                                        borderColor: '#c3d7f1',
-                                        tension: 0,
-                                        pointRadius: 10,
-                                    }, ],
-                                },
-                                options: {
-                                    responsive: true,
-                                    scales: {
-                                        x: {
-                                            display: true,
-                                            title: {
-                                                display: true,
-                                                text: 'School Year',
-                                            },
-                                        },
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-
-                        }
-                    }
-                });
-            });
-
 
             $('#namesearch').on('input', function() {
                 var query = $(this).val();
@@ -508,7 +305,6 @@
             loadSRQuestions(globalSelectedYear);
             loadICQuestions(globalSelectedYear);
             loadSQuestions(globalSelectedYear);
-            //loadBCQuestions(globalSelectedYear);
             loadCards(globalSelectedYear);
             //loadEmployeesTable(null);
 
@@ -531,6 +327,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
+                        $('#school-year-heading').text('School Year: ' + response.schoolYear);
                         $('#total-pe').text(response
                             .totalPermanentEmployees);
 
@@ -547,7 +344,7 @@
             });
         }
 
-        function loadDepartmentTable(selectedYear = null, search = null, page = 1) {
+        function loadDepartmentTable(search = null, page = 1) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -555,17 +352,13 @@
                 url: '{{ route('ad.loadDepartmentTable') }}',
                 type: 'GET',
                 data: {
-                    selectedYear: selectedYear,
                     search: search,
                     page: page
                 },
                 success: function(response) {
+                    //console.log(response);
                     if (response.success) {
                         var departments = response.departments.data;
-
-                        departments.sort(function(a, b) {
-                            return a.rank - b.rank;
-                        });
 
                         $('#departments_table tbody').empty();
 
@@ -574,20 +367,13 @@
                             var row = $('<tr class="text-center">');
 
                             var departmentNameLink = $('<a>')
-                                .attr('href', "{{ route('ad.viewDepartment') }}?sy= " + selectedYear +
-                                    "&department_id=" + department.department.department_id +
-                                    '&department_name=' +
-                                    encodeURIComponent(department.department.department_name))
-                                .text(department.department.department_name);
+                                .attr('href', "{{ route('ad.viewDepartment') }}" + '?department_id=' +
+                                    department.department_id +
+                                    '&department_name=' + encodeURIComponent(department.department_name))
+                                .text(department.department_name);
 
                             var td = $('<td>').append(departmentNameLink);
                             row.append(td);
-
-                            if (department.average_score) {
-                                row.append($('<td>').text(department.average_score));
-                            } else {
-                                row.append($('<td>').text('-'));
-                            }
 
                             $('#departments_table tbody').append(row);
                         }
@@ -603,7 +389,7 @@
                                 }
                                 var pageButton = $('<button>').addClass('page-link').text(pageCounter);
                                 pageButton.click(function() {
-                                    loadDepartmentTable(selectedYear, search, pageCounter);
+                                    loadDepartmentTable(search, pageCounter);
                                 });
                                 pageItem.append(pageButton);
                                 $('#department_pagination').append(pageItem);
@@ -641,7 +427,8 @@
                         if (response.sid) {
                             var totalAvgScore = response.total_avg_score;
                             $('#sid-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#sid-school-year').text('School Year: ' + response.school_year);
+                            $('#sid-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                                '-'));
                             var sidTable = $('#sid_table tbody');
                             sidTable.empty();
 
@@ -748,8 +535,12 @@
                         var data = response;
 
                         var years = Object.keys(data.data);
+
                         var scores = years.map(year => parseFloat(data.data[year].total_average_score));
 
+                        for (var i = 0; i < years.length; i++) {
+                            years[i] = years[i].replace(/_/g, '-');
+                        }
 
                         new Chart(sidTrendChart, {
                             type: 'line',
@@ -909,7 +700,9 @@
                         if (response.sr) {
                             var totalAvgScore = response.total_avg_score;
                             $('#sr-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#sr-school-year').text('School Year: ' + response.school_year);
+                            $('#sr-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                                '-'));
+
                             var srTable = $('#sr_table tbody');
                             srTable.empty();
 
@@ -1012,12 +805,14 @@
                             }
                         }
 
-                        // Assuming you have the data object you provided
                         var data = response;
-
                         var years = Object.keys(data.data);
+
                         var scores = years.map(year => parseFloat(data.data[year].total_average_score));
 
+                        for (var i = 0; i < years.length; i++) {
+                            years[i] = years[i].replace(/_/g, '-');
+                        }
 
                         new Chart(srTrendChart, {
                             type: 'line',
@@ -1177,7 +972,9 @@
                         if (response.ic) {
                             var totalAvgScore = response.total_avg_score;
                             $('#ic-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#ic-school-year').text('School Year: ' + response.school_year);
+                            $('#ic-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                                '-'));
+
                             var icTable = $('#ic_table tbody');
                             icTable.empty();
 
@@ -1270,7 +1067,6 @@
                     //console.log(response);
                     if (response.success) {
                         // IC Trends Chart
-
                         var icTrendChart = $('#ic_trend_chart');
                         var canvas = icTrendChart[0];
 
@@ -1281,12 +1077,13 @@
                             }
                         }
 
-                        // Assuming you have the data object you provided
                         var data = response;
 
                         var years = Object.keys(data.data);
                         var scores = years.map(year => parseFloat(data.data[year].total_average_score));
-
+                        for (var i = 0; i < years.length; i++) {
+                            years[i] = years[i].replace(/_/g, '-');
+                        }
 
                         new Chart(icTrendChart, {
                             type: 'line',
@@ -1457,7 +1254,9 @@
 
                         var years = Object.keys(data.data);
                         var scores = years.map(year => parseFloat(data.data[year].total_average_score));
-
+                        for (var i = 0; i < years.length; i++) {
+                            years[i] = years[i].replace(/_/g, '-');
+                        }
 
                         new Chart(sTrendChart, {
                             type: 'line',
@@ -1617,7 +1416,8 @@
                         if (response.s) {
                             var totalAvgScore = response.total_avg_score;
                             $('#s-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#s-school-year').text('School Year: ' + response.school_year);
+                            $('#s-school-year').text('School Year: ' + response.school_year.replace(/_/g, '-'));
+
                             var sTable = $('#s_table tbody');
                             sTable.empty();
 
@@ -1683,10 +1483,11 @@
 
                         }
                     } else {
+                      console.log('Load S Questions: Failed.');
                         var row = $(
                             '<tr><td colspan="3"><p>-</p></td></tr>'
                         );
-                        var icTable = $('#ic_table tbody');
+                        var sTable = $('#s_table tbody');
                         sTable.empty();
                         sTable.append(row);
                     }
@@ -1717,7 +1518,6 @@
                     page: page,
                 },
                 success: function(response) {
-
                     console.log(response);
                     if (response.success) {
                         $('#scoreModalQuestion').text('Question: "' + response.question.question + '"');
@@ -1730,8 +1530,16 @@
                             var row = $("<tr class='text-center'>");
 
                             var fullName = item.first_name + ' ' + item.last_name;
+                            var employeeID = item.employee_id;
 
-                            row.append($("<td>").text(fullName));
+                            var link = $("<a>")
+                                .text(fullName)
+                                .attr("href", "{{ route('ad.viewEmployeeAnalytics') }}?employee_id=" +
+                                    employeeID + "&full_name=" + fullName);
+
+                            var cell = $("<td>").append(link);
+
+                            row.append(cell);
                             row.append($("<td>").text(item.score));
 
                             scoreTable.append(row);
@@ -1764,310 +1572,6 @@
             });
         }
 
-        function loadBCQuestions(selectedYear = null) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadDashboardBCQuestions') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
-                success: function(response) {
-                    if (response.success) {
-                        if (response.sid) {
-                            var sidTable = $('#sid_table tbody');
-                            sidTable.empty();
-
-                            $.each(response.sid, function(index, item) {
-                                var row = $("<tr class='text-center'>");
-                                row.append($("<td>").text(item
-                                    .question_order));
-                                row.append($("<td class='text-start'>").text(item
-                                    .question));
-                                row.append($("<td>").text(item.average_score));
-
-                                sidTable.append(row);
-                            });
-
-                            var averageScores = response.sid.map(function(item) {
-                                return item.average_score;
-                            });
-
-                            var questionLabels = response.sid.map(function(item) {
-                                return 'Q' + item.question_order;
-                            });
-
-                            var sidBarChart = $('#sid_bar_chart');
-                            var canvas = sidBarChart[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            new Chart(sidBarChart, {
-                                type: 'bar',
-                                data: {
-                                    labels: questionLabels,
-                                    datasets: [{
-                                        label: 'Average Score',
-                                        data: averageScores,
-                                        backgroundColor: '#c3d7f1',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-                        }
-
-                        if (response.sr) {
-                            var srTable = $('#sr_table tbody');
-                            srTable.empty();
-
-                            $.each(response.sr, function(index, item) {
-                                var row = $("<tr>");
-                                row.append($("<td>").text(item
-                                    .question_order));
-                                row.append($("<td class='text-start'>").text(item
-                                    .question));
-                                row.append($("<td>").text(item.average_score));
-                                srTable.append(row);
-                            });
-
-                            var averageScores = response.sr.map(function(item) {
-                                return item.average_score;
-                            });
-
-                            var questionLabels = response.sr.map(function(item) {
-                                return 'Q' + item.question_order;
-                            });
-
-                            var srBarChart = $('#sr_bar_chart');
-                            var canvas = srBarChart[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            new Chart(srBarChart, {
-                                type: 'bar',
-                                data: {
-                                    labels: questionLabels,
-                                    datasets: [{
-                                        label: 'Average Score',
-                                        data: averageScores,
-                                        backgroundColor: '#c3d7f1',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-                        }
-
-                        if (response.s) {
-                            var sTable = $('#s_table tbody');
-                            sTable.empty();
-
-                            $.each(response.s, function(index, item) {
-                                var row = $("<tr>");
-                                row.append($("<td>").text(item
-                                    .question_order));
-                                row.append($("<td class='text-start'>").text(item
-                                    .question));
-                                row.append($("<td>").text(item.average_score));
-                                sTable.append(row);
-                            });
-
-                            var averageScores = response.s.map(function(item) {
-                                return item.average_score;
-                            });
-
-                            var questionLabels = response.s.map(function(item) {
-                                return 'Q' + item.question_order;
-                            });
-
-                            var sBarChart = $('#s_bar_chart');
-                            var canvas = sBarChart[0];
-
-                            if (canvas) {
-                                var existingChart = Chart.getChart(canvas);
-                                if (existingChart) {
-                                    existingChart.destroy();
-                                }
-                            }
-
-                            new Chart(sBarChart, {
-                                type: 'bar',
-                                data: {
-                                    labels: questionLabels,
-                                    datasets: [{
-                                        label: 'Average Score',
-                                        data: averageScores,
-                                        backgroundColor: '#c3d7f1',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            max: 6,
-                                            ticks: {
-                                                stepSize: 1,
-                                            },
-                                        },
-                                    },
-                                },
-                            });
-                        }
-                    } else {
-                        var placeholderRow = $('<tr><td colspan="3"><p>-</p></td></tr>');
-
-                        var sidTable = $('#sid_table tbody');
-                        var srTable = $('#sr_table tbody');
-                        var sTable = $('#s_table tbody');
-
-                        sidTable.empty();
-                        srTable.empty();
-                        sTable.empty();
-
-                        sidTable.append(placeholderRow.clone());
-                        srTable.append(placeholderRow.clone());
-                        sTable.append(placeholderRow.clone());
-
-                        const sidBarChart = $('#sid_bar_chart');
-                        var canvas = sidBarChart[0];
-
-                        if (canvas) {
-                            var existingChart = Chart.getChart(canvas);
-                            if (existingChart) {
-                                existingChart.destroy();
-                            }
-                        }
-
-                        new Chart(sidBarChart, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Questions'],
-                                datasets: [{
-                                    label: "Average score per question",
-                                    data: [0, 0, 0, 0, 0],
-                                    backgroundColor: '#c3d7f1',
-                                    borderWidth: 1,
-                                }],
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        max: 1,
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                    },
-                                },
-                            },
-                        });
-
-                        const srBarChart = $('#sr_bar_chart');
-                        var canvas = srBarChart[0];
-
-                        if (canvas) {
-                            var existingChart = Chart.getChart(canvas);
-                            if (existingChart) {
-                                existingChart.destroy();
-                            }
-                        }
-
-                        new Chart(srBarChart, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Questions'],
-                                datasets: [{
-                                    label: "Average score per question",
-                                    data: [0, 0, 0, 0, 0],
-                                    backgroundColor: '#c3d7f1',
-                                    borderWidth: 1,
-                                }],
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        max: 1,
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                    },
-                                },
-                            },
-                        });
-
-                        const sBarChart = $('#s_bar_chart');
-                        var canvas = sBarChart[0];
-
-                        if (canvas) {
-                            var existingChart = Chart.getChart(canvas);
-                            if (existingChart) {
-                                existingChart.destroy();
-                            }
-                        }
-
-                        new Chart(sBarChart, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Questions'],
-                                datasets: [{
-                                    label: "Average score per question",
-                                    data: [0, 0, 0, 0, 0],
-                                    backgroundColor: '#c3d7f1',
-                                    borderWidth: 1,
-                                }],
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        max: 1,
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                    },
-                                },
-                            },
-                        });
-                    }
-                }
-            })
-        }
-
         function loadPointsSystem() {
             $.ajax({
                 headers: {
@@ -2076,7 +1580,7 @@
                 url: '{{ route('ad.loadDashboardPointsSystem') }}',
                 type: 'GET',
                 success: function(response) {
-                    console.log(response);
+                    //console.log(response);
                     if (response.success) {
 
                         const pointSystemBarChart = $('#point_system_bar_chart');
@@ -2181,8 +1685,16 @@
 
                             var fullName = item.employee.first_name + ' ' + item.employee.last_name;
                             var score = item.final_score;
+                            var employeeID = item.employee_id;
 
-                            row.append($("<td>").text(fullName));
+                            var link = $("<a>")
+                                .text(fullName)
+                                .attr("href", "{{ route('ad.viewEmployeeAnalytics') }}?employee_id=" +
+                                    employeeID + "&full_name=" + fullName);
+
+                            var cell = $("<td>").append(link);
+
+                            row.append(cell);
                             row.append($("<td>").text(score));
 
                             modalTable.append(row);
@@ -2221,7 +1733,7 @@
         //         headers: {
         //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         //         },
-        //         url: '{{ route('ad.loadEmployees') }}',
+        //         url: '',
         //         type: 'GET',
         //         data: {
         //             search: namesearch,
@@ -2316,6 +1828,20 @@
                             }],
                         },
                         options: {
+                            onClick: function(event, elements) {
+                                if (elements.length > 0) {
+                                    var index = elements[0].index;
+                                    var clickedYear = labels[index].replace(/-/g,
+                                        '_');
+
+                                    console.log('Clicked Year: ' + clickedYear);
+                                    loadCards(clickedYear);
+                                    loadSIDQuestions(clickedYear);
+                                    loadSRQuestions(clickedYear);
+                                    loadICQuestions(clickedYear);
+                                    loadSQuestions(clickedYear);
+                                }
+                            },
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
@@ -2330,7 +1856,7 @@
                                     display: true,
                                     title: {
                                         display: true,
-                                        text: 'Total Final Score'
+                                        text: 'Average Final Score'
                                     },
                                     beginAtZero: false,
                                     max: 5,
