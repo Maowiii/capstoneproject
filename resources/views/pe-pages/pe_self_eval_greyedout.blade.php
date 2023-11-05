@@ -55,7 +55,7 @@
                     readonly>
             </div>
         </div>
-
+    </div>
 
     <form method="post" action="{{ route('savePEAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
         id="PEappraisalForm">
@@ -148,7 +148,6 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
 
         <h4>Spirit of St. Vincent de Paul</h4>
         <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
