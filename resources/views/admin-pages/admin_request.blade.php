@@ -29,7 +29,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="approvedModalLabel">APPRAISAL CONTROL FORM</h5>
+        <h5 class="modal-title" id="approvedModalLabel">APPRAISAL FORM CONTROL</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -92,7 +92,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="disapprovedModalLabel">FEEDBACK POP-UP</h5>
+        <h5 class="modal-title" id="disapprovedModalLabel">FEEDBACK</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
