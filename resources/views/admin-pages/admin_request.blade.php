@@ -25,59 +25,65 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="approvedModal" tabindex="-1" aria-labelledby="approvedModalLabel" aria-hidden="true">
+<div class="modal fade modal-lg" id="approvedModal" tabindex="-1" aria-labelledby="approvedModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="approvedModalLabel">APPRAISAL FORM CONTROL</h5>
+        <h5 class="modal-title" id="approvedModalLabel">APPROVAL CONTROL</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <h5>Instructions:</h5>
+          <p class='text-justify'>This approval control form is intended for unlocking the appraisal form in response to an employee's request. 
+            To initiate the process, toggle the switch to 'ON' and subsequently click <i>'Save Changes.'</i> The system will promptly apply the adjustments 
+            to the requester's account.<br>If you require additional guidance or wish to provide specific instructions, kindly leave a note before proceeding 
+            with the <i>'Save Changes.'</i> action. Thank you.
+          </p>
         <!-- Toggle buttons -->
         <div class="btn-group" role="group">
-            <div class="form-check form-switch p-0">
-                <label class="form-check-label">KRA Encoding Phase</label>
+            <div class="form-check form-switch p-0" style="margin-left: 30px">
+                <label class="form-check-label"><h6>KRA Encoding</h6></label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span> On </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA">
                     <span> Off </span>
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA">
+                    <span> On </span>
                 </label>
             </div>
             
-            <div class="form-check form-switch p-0">
-                <label class="form-check-label">Performance Review Phase</label>
+            <div class="form-check form-switch p-0"style="margin-left: 50px">
+                <label class="form-check-label"><h6>Performance Review</h6></label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span>On</span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_PR">
-                    <span>Off</span>
-                </label>
-            </div>
-
-            <div class="form-check form-switch p-0">
-                <label class="form-check-label">Evaluation Phase</label>
-                <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span> On </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL">
                     <span> Off </span>
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_PR">
+                    <span> On </span>
                 </label>
             </div>
 
-            <div class="form-check form-switch p-0">
+            <div class="form-check form-switch p-0" style="margin-left: 50px">
+                <label class="form-check-label"><h6>Evaluation Phase</h6></label>
+                <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
+                    <span> Off </span>
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL">
+                    <span> On </span>
+                </label>
+            </div>
+
+            <div class="form-check form-switch p-0" style="margin-left: 50px">
                 <div class="d-flex justify-content-center align-items-center">
-                    <label class="form-check-label">LOCK</label>
+                    <label class="form-check-label"><h6>Appraisal Form</h6></label>
                 </div>   
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
-                    <span> On </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK">
                     <span> Off </span>
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK">
+                    <span> On </span>
                 </label>
             </div>
         </div>
 
         <!-- Text area -->
         <div class="form-group mt-3">
-          <label for="approveTextarea"><h5>Message:</h5></label>
-          <textarea class="form-control" id="approveTextarea" rows="3"></textarea>
+          <label for="approveTextarea"><h5>Note:</h5></label>
+          <textarea class="form-control" id="approveTextarea" placeholder="Enter any further instructions after approval..." rows="3"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -88,7 +94,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="disapprovedModal" tabindex="-1" aria-labelledby="disapprovedModalLabel" aria-hidden="true">
+<div class="modal fade modal-lg" id="disapprovedModal" tabindex="-1" aria-labelledby="disapprovedModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -96,10 +102,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <h5>Instructions:</h5>
+          <p class='text-justify'>This feedback form system is designed to provide a brief explanation to why the request was disapproved. 
+            Kindly fill up the field provided below. Thank you
+          </p>
         <!-- Text area -->
         <div class="form-group">
-          <label for="approveTextarea">Message</label>
-          <textarea class="form-control" id="disapproveTextarea" rows="3" required></textarea>
+          <label for="approveTextarea"><h5>Message</h5></label>
+          <textarea class="form-control" id="disapproveTextarea" placeholder="Enter the reason why the request was disapproved..." rows="3" required></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -151,8 +161,8 @@
                     // row.append(switchCell);
 
                     // Create buttons for "Approve" and "Disapprove"
-                    var approveButton = $('<button>').addClass('btn btn-primary').attr('id', 'approveButton').text('Approve');
-                    var disapproveButton = $('<button>').addClass('btn btn-danger').attr('id', 'disapproveButton').text('Disapprove');
+                    var approveButton = $('<button>').addClass('btn btn-primary').attr('id', 'approveButton').html('<i class="bi bi-check-circle"></i> Approve');
+                    var disapproveButton = $('<button>').addClass('btn btn-danger').attr('id', 'disapproveButton').html('<i class="bi bi-x-circle"></i> Disapprove');
 
                     // Set the initial state
                     var isApproved = false;

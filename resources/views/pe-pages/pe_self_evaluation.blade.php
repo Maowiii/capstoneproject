@@ -887,10 +887,9 @@
                         <div id="validation-results" class="alert alert-danger" style="display: none;">
                             <ul id="validation-list"></ul>
                         </div>
-                        <h4>Instructions:</h3>
-                        <p class='text-justify'>This request form is designed to assist us in better serving your needs and ensuring a smooth process. 
-                        Kindly provide the details of your request and any additional notes in the fields provided. Your candid and thoughtful responses 
-                        are highly appreciated.</p>
+                        <h5>Instructions:</h5>
+                        <p class='text-justify'>This request form is designed to allow send request to have another attempt in accomplishing the appraisal form. 
+                        Kindly provide the details of your request and any additional notes in the field provided.Thank you</p>
                     <label for="requestText"><h5>Request:</h5></label>
                         <textarea name="request" id="requestText" class="form-control" placeholder="Enter your request here..." required></textarea>
                     </div>

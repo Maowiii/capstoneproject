@@ -583,3 +583,6 @@ textarea {
   background-color: #ffeee6;
   border-color: #ffeee6;
 }
+#disapproveButton{
+margin-left: 15px!important;
+}
