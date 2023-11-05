@@ -148,6 +148,7 @@ Route::get('/editable-internal-customer-form/formChecker', [EditableInternalCust
 
 // Request Overview
 Route::get('/admin-request', [AdminRequestOverviewController::class, 'viewRequestOverview'])->name('viewRequestOverview');
+Route::get('/get-user-requests', [AdminRequestOverviewController::class, 'getUserRequests'])->name('getUserRequests');
 
 /* ----- IMMEDIATE SUPERIOR ----- */
 // Dashboard

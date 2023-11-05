@@ -16,6 +16,8 @@ use App\Models\Signature;
 use App\Models\Appraisals;
 use App\Models\Employees;
 use App\Models\FormQuestions;
+use App\Models\Requests;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -1268,7 +1270,7 @@ class SelfEvaluationController extends Controller
 
       try {
           // Create a new RequestModel instance and populate it with form data
-          $newRequest = new Request;
+          $newRequest = new Requests;
           $newRequest->appraisal_id = $request->input('appraisal_id');
           $newRequest->request = $request->input('request');
           $newRequest->status = 'Pending'; // Set an initial status
@@ -1277,6 +1279,9 @@ class SelfEvaluationController extends Controller
 
           return response()->json(['success' => true]);
       } catch (\Exception $e) {
+          Log::error('Exception Message: ' . $e->getMessage());
+          Log::error('Exception Line: ' . $e->getLine());
+          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
           return response()->json(['success' => false, 'message' => 'Error submitting the request.']);
       }
   }

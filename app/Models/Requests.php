@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Request extends BaseModel
+class Requests extends Model
 {
     use HasFactory;
 
@@ -30,7 +30,7 @@ class Request extends BaseModel
 
         $activeEvaluationYear = EvalYear::where('status', 'active')->first();
         if ($activeEvaluationYear) {
-        $activeYear = 'kras_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
+        $activeYear = 'form_request_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
         $this->setTable($activeYear);
         }
     }
