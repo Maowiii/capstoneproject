@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Evaluation Type</th>
                     <th>Request Note</th>
                     <th>Date Sent</th>
                     <th>Status</th>
@@ -21,6 +22,20 @@
                 
             </tbody>
         </table>
+    </div>
+
+    <div class="position-relative">
+        <div id="toastHolder" aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000">
+                <div class="toast-header bg-primary">
+                    <strong class="me-auto">Pop-up Message</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <!-- Message content goes here -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -45,14 +60,14 @@
                 <label class="form-check-label"><h6>KRA Encoding</h6></label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span> Off </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA">
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_KRA" name="kra_Lock">
                     <span> On </span>
                 </label>
             </div>
             
             <div class="form-check form-switch p-0"style="margin-left: 50px">
                 <label class="form-check-label"><h6>Performance Review</h6></label>
-                <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
+                <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_PE" name="pr_Lock">
                     <span> Off </span>
                     <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_PR">
                     <span> On </span>
@@ -63,7 +78,7 @@
                 <label class="form-check-label"><h6>Evaluation Phase</h6></label>
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span> Off </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL">
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_EVAL" name="eval_Lock">
                     <span> On </span>
                 </label>
             </div>
@@ -74,7 +89,7 @@
                 </div>   
                 <label class="form-check-label d-flex justify-content-between align-items-center" for="switchCheckLabel_0">
                     <span> Off </span>
-                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK">
+                    <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK" name="form_Lock">
                     <span> On </span>
                 </label>
             </div>
@@ -85,10 +100,13 @@
           <label for="approveTextarea"><h5>Note:</h5></label>
           <textarea class="form-control" id="approveTextarea" placeholder="Enter any further instructions after approval..." rows="3"></textarea>
         </div>
+
+        <!-- Alert -->
+        <div id="approveAlertHolder"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" id="approveSubmitBtn" class="btn btn-primary">Submit</button>
       </div>
     </div>
   </div>
@@ -114,7 +132,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" id="disapprvSubmitBtn" class="btn btn-primary">Submit</button>
       </div>
     </div>
   </div>
@@ -122,6 +140,8 @@
 
 
 <script>
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     $(document).ready(function() {
         $.ajax({
             url: '{{ route('getUserRequests') }}',
@@ -136,6 +156,7 @@
                     var row = $('<tr>');
 
                     row.append($('<td>').text(request.name)); // Use the evaluator's name from the data
+                    row.append($('<td>').text(request.appraisal_type));
                     row.append($('<td>').text(request.request));
                     row.append($('<td>').text(request.date_sent));
                     row.append($('<td>').text(request.status));
@@ -161,8 +182,13 @@
                     // row.append(switchCell);
 
                     // Create buttons for "Approve" and "Disapprove"
-                    var approveButton = $('<button>').addClass('btn btn-primary').attr('id', 'approveButton').html('<i class="bi bi-check-circle"></i> Approve');
-                    var disapproveButton = $('<button>').addClass('btn btn-danger').attr('id', 'disapproveButton').html('<i class="bi bi-x-circle"></i> Disapprove');
+                    var approveButton = $('<button>').addClass('btn btn-primary').attr('id', 'approveButton')
+                    .html('<i class="bi bi-check-circle"></i> Approve').attr('data-appraisal-id', request.appraisal_id)
+                    .attr('data-request-id', request.request_id);
+
+                    var disapproveButton = $('<button>').addClass('btn btn-danger').attr('id', 'disapproveButton')
+                    .html('<i class="bi bi-x-circle"></i> Disapprove').attr('data-appraisal-id', request.appraisal_id)
+                    .attr('data-request-id', request.request_id);
 
                     // Set the initial state
                     var isApproved = false;
@@ -172,6 +198,18 @@
                         // Handle the "Approve" action
                         isApproved = true;
                         console.log('Approved');
+
+                        var appraisalId = $(this).data('appraisal-id');
+                        var requestId = $(this).data('request-id');
+
+                        // Create the confirmation button
+                        var confirmButton = $('<button>').attr('type', 'submit').attr('id', 'confirmSubmitBtn')
+                        .attr('data-appraisal-id', appraisalId)
+                        .attr('data-request-id', requestId)
+                        .addClass('btn btn-primary').text('Send Approval').hide();
+
+                        // Append the confirmation button to the modal footer
+                        $('.modal-footer').append(confirmButton);  
 
                         // Trigger the modal
                         $('#approvedModal').modal('show');
@@ -199,9 +237,139 @@
             },
             error: function(error) {
                 console.error('Error:', error);
-            }
+            },
+        });
+
+        // Click event for the "Submit" button
+        $('#approveSubmitBtn').click(function() {
+          // Perform validation
+          if (isAtLeastOneCheckboxChecked()) {
+            // Valid switches, create a confirmation alert
+            const confirmationAlert = $('<div>')
+            .addClass('alert alert-warning alert-dismissible fade show mt-3').attr('role', 'alert')
+            .append($('<strong>').text('Confirmation: Are you sure you want to proceed with the approval?'))
+            .append($('<button>').addClass('btn-close').attr('data-bs-dismiss', 'alert').attr('aria-label', 'Close'));
+
+            // Display the confirmation alert
+            $('#approveAlertHolder').html(confirmationAlert);
+
+            // Disable input elements and text area
+            $('input[type="checkbox"]').prop('disabled', true);
+            $('#approveTextarea').prop('disabled', true);
+
+            $(this).hide();
+            $('#confirmSubmitBtn').show();
+          } else {
+            // Invalid switches, show an error message
+            const errorAlert = $('<div>')
+            .addClass('alert alert-danger alert-dismissible fade show mt-3').attr('role', 'alert')
+            .append($('<strong>').text('Warining: Please enable at least one(1) form lock switches before submitting.'))
+            .append($('<button>').addClass('btn-close').attr('data-bs-dismiss', 'alert').attr('aria-label', 'Close'));
+
+            // Display the confirmation alert
+            $('#approveAlertHolder').html(errorAlert);
+          }
         });
     });
+
+    $(document).on('click', '#confirmSubmitBtn', function() {
+        var appraisalId = $(this).data('appraisal-id');
+        var requestId = $(this).data('request-id');
+
+        // Create a new FormData object
+        var formData = new FormData();
+
+        // Append your data to the FormData object
+        formData.append('appraisalId', appraisalId);
+        formData.append('requestId', requestId);
+        formData.append('kra', $('#switchCheckLabel_KRA').is(':checked') ? 1 : 0);
+        formData.append('pr', $('#switchCheckLabel_PR').is(':checked') ? 1 : 0);
+        formData.append('eval', $('#switchCheckLabel_EVAL').is(':checked') ? 1 : 0);
+        formData.append('lock', $('#switchCheckLabel_LOCK').is(':checked') ? 1 : 0);
+        formData.append('note', $('#approveTextarea').val());
+        
+        // Make the AJAX request
+        $.ajax({
+            url: '{{ route('submitRequestApproval') }}', 
+            method: 'POST',
+            data: formData,
+            processData: false,  // Set to false when using FormData
+            contentType: false,  // Set to false when using FormData  
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                // Handle the server response (if needed)
+                
+                if(data.success){
+                  showToast(data.message);
+                }else{
+                  showToast("Error: " + data.message, true);
+                }
+
+                $('#approvedModal').modal('hide');
+                console.log(data);
+            },
+            error: function(error) {
+                showToast("Error: " + error.message, true);
+
+                console.error('Error:', error);
+            }
+        });
+
+        // Close the modal or perform other actions
+        console.log('confirm was clicked');
+    });
+
+    // Function to validate the toggle switches
+    function isAtLeastOneCheckboxChecked() {
+      let isAnyCheckboxChecked = false;
+      
+      // Check each toggle switch
+      $('input[type="checkbox"]').each(function() {
+        if ($(this).is(':checked')) {
+          isAnyCheckboxChecked = true;
+          return false; // Exit the loop if any switch is checked
+        }
+      });
+      return isAnyCheckboxChecked;
+    }
+
+    $('input[type="checkbox"]').click(function() {
+      // Hide or reset alerts when a toggle button is clicked
+      $('#approveAlertHolder').html(''); // Clear the content
+    });
+
+    // Handler for modal hidden event
+    $('#approvedModal').on('hidden.bs.modal', function() {
+      // Enable checkboxes and text area when the modal is closed
+      $('input[type="checkbox"]').prop('checked', false).prop('disabled', false);
+      $('#approveTextarea').prop('disabled', false).val('');
+      $('#approveAlertHolder').html(''); // Clear the content
+      $('#approveSubmitBtn').show(); 
+      $('#confirmSubmitBtn').hide(); 
+    });
+
+    // Function to show a Bootstrap toast
+    function showToast(message, isError = false) {
+      const toastHolder = $("#toastHolder");
+      const toast = toastHolder.find(".toast");
+
+      // Update the toast message content
+      toast.find(".toast-body").text(message);
+
+      // Optionally, you can change toast styles based on whether it's an error message
+      if (isError) {
+        toast.removeClass("text-primary");
+        toast.addClass("text-danger");
+      } else {  
+        toast.removeClass("text-danger");
+        toast.addClass("text-primary");
+      }
+
+      // Show the toast using Bootstrap's toast method
+      toast.toast("show");
+    }
 
 </script>
 @endsection
