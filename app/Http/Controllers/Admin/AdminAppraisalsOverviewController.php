@@ -31,7 +31,7 @@ class AdminAppraisalsOverviewController extends Controller
   public function loadAdminAppraisals(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $selectedYearDates = null;
@@ -65,7 +65,6 @@ class AdminAppraisalsOverviewController extends Controller
             });
         })
         ->paginate(40);
-
     } elseif ($activeEvalYear) {
 
       $sy_start = $activeEvalYear->sy_start;
@@ -81,7 +80,6 @@ class AdminAppraisalsOverviewController extends Controller
           }
         })
         ->paginate(40);
-
     } else {
       return response()->json(['success' => false, 'error' => 'There is no selected nor ongoing year.']);
     }
@@ -127,7 +125,7 @@ class AdminAppraisalsOverviewController extends Controller
       ->with('employee', 'evaluator') // Load the related employee and evaluator information
       ->get();
 
-      
+
 
     $status = $this->calculateStatus($appraisals);
 
