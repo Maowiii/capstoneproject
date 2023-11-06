@@ -148,7 +148,6 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
 
         <h4>Spirit of St. Vincent de Paul</h4>
         <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
@@ -293,6 +292,7 @@
                 </thead>
             </table>
         </div>
+    </div>
 
         <div class="content-container">
             <h2>II. Key Results Areas & Work Objectives</h2>
@@ -405,7 +405,6 @@
                     </tfoot>
                 </table>
             </div>
-
         </div>
         <div class="content-container">
             <h2>III. Future Performance Agenda</h2>

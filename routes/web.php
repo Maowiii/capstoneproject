@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminInternalCustomerController;
 use App\Http\Controllers\Admin\DepartmentalAnalyticsController;
 use App\Http\Controllers\Admin\EmployeeAnalyticsController;
+use App\Http\Controllers\Admin\AdminRequestOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEDashboardController;
 use App\Http\Controllers\ContractualEmployee\CEICOverviewController;
 use App\Http\Controllers\ContractualEmployee\CEInternalCustomerController;
@@ -164,6 +165,11 @@ Route::post('/editable-internal-customer-form/deleteICQuestions/{questionId}', [
 Route::post('/editable-internal-customer-form/addICQuestions', [EditableInternalCustomerFormController::class, 'addICQuestions'])->name('addICQuestions');
 Route::get('/editable-internal-customer-form/formChecker', [EditableInternalCustomerFormController::class, 'formChecker'])->name('ad.formChecker');
 
+// Request Overview
+Route::get('/admin-request', [AdminRequestOverviewController::class, 'viewRequestOverview'])->name('viewRequestOverview');
+Route::get('/get-user-requests', [AdminRequestOverviewController::class, 'getUserRequests'])->name('getUserRequests');
+Route::post('/approve-user-requests', [AdminRequestOverviewController::class, 'submitRequestApproval'])->name('submitRequestApproval');
+
 /* ----- IMMEDIATE SUPERIOR ----- */
 // Dashboard
 Route::get('/dashboard-immediate-superior', [ISDashboardController::class, 'displayISDashboard'])->name('viewISDashboard');
@@ -210,6 +216,7 @@ Route::get('/get-pe-KRA-data', [SelfEvaluationController::class, 'getPEKRA'])->n
 Route::get('/pe-appraisal/{appraisal_id}', [SelfEvaluationController::class, 'viewAppraisal'])->name('viewPEAppraisal');
 Route::post('/save-data-privacy', [SelfEvaluationController::class, 'saveEULA'])->name('saveEULA');
 Route::post('/save-pe-appraisal', [SelfEvaluationController::class, 'savePEAppraisal'])->name('savePEAppraisal');
+Route::post('/submit-request', [SelfEvaluationController::class, 'submitRequest'])->name('submitRequest');
 
 Route::post('/autosave-kra-field', [SelfEvaluationController::class, 'autosaveKRAField'])->name('autosaveKRAField');
 Route::post('/autosave-wpp-field', [SelfEvaluationController::class, 'autosaveWPPField'])->name('autosaveWPPField');

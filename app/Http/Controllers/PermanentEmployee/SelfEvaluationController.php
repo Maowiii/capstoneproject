@@ -16,6 +16,8 @@ use App\Models\Signature;
 use App\Models\Appraisals;
 use App\Models\Employees;
 use App\Models\FormQuestions;
+use App\Models\Requests;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -1047,6 +1049,7 @@ class SelfEvaluationController extends Controller
       $locks['kra'] = $appraisal->kra_locked == 1;
       $locks['pr'] = $appraisal->pr_locked == 1;
       $locks['eval'] = $appraisal->eval_locked == 1;
+      $locks['lock'] = $appraisal->locked !== 1;
 
       ////////////PHASES/////////////
       $activeYear = EvalYear::where('status', 'active')->first();
@@ -1251,5 +1254,35 @@ class SelfEvaluationController extends Controller
     } catch (\Exception $e) {
       return response()->json(['success' => false, 'message' => 'Error updating EULA status.']);
     }
+  }
+
+  public function submitRequest(Request $request)
+  {
+      // Check if the user is authenticated
+      if (!session()->has('account_id')) {
+          return view('auth.login');
+      }
+
+      // Validate the form data
+      $request->validate([
+          'request' => 'required|string',
+      ]);
+
+      try {
+          // Create a new RequestModel instance and populate it with form data
+          $newRequest = new Requests;
+          $newRequest->appraisal_id = $request->input('appraisal_id');
+          $newRequest->request = $request->input('request');
+          $newRequest->status = 'Pending'; // Set an initial status
+
+          $newRequest->save();
+
+          return response()->json(['success' => true]);
+      } catch (\Exception $e) {
+          Log::error('Exception Message: ' . $e->getMessage());
+          Log::error('Exception Line: ' . $e->getLine());
+          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+          return response()->json(['success' => false, 'message' => 'Error submitting the request.']);
+      }
   }
 }

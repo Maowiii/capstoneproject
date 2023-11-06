@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
@@ -16,7 +17,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.0/dist/chart.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
@@ -87,6 +88,16 @@
                     <ul class="sub-menu">
                         <li><a href="{{ route('viewEditableAppraisalForm') }}">Appraisal Form</a></li>
                         <li><a href="{{ route('viewEditableInternalCustomerForm') }}">Internal Customers<br>Form</a>
+                        </li>
+                    </ul>
+                </li>
+                <li id='requestNav'>
+                    <a href="{{ route('viewRequestOverview') }}">
+                        <i class="bi bi-envelope-paper"></i>
+                        <span class="link_name">Request Overview</span>
+                    </a>
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="{{ route('viewRequestOverview') }}">Request Overview</a>
                         </li>
                     </ul>
                 </li>
@@ -261,4 +272,5 @@
         });
     }
 </script>
+
 </html>
