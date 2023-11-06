@@ -62,14 +62,14 @@ Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user
 // Dashboard 
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
-Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
-Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::class, 'loadBCQuestions'])->name('ad.loadDashboardBCQuestions');
+// Route::get('/dashboard-admin/load-bc-questions', [AdminDashboardController::class, 'loadBCQuestions'])->name('ad.loadDashboardBCQuestions');
 Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loadCards'])->name('ad.loadCards');
-Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 'loadEmployees'])->name('ad.loadEmployees');
-Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
+// Route::get('/dashboard-admin/load-employees', [AdminDashboardController::class, 'loadEmployees'])->name('ad.loadEmployees');
+// Route::get('/dashboard-admin/load-employee-trends', [AdminDashboardController::class, 'loadEmployeeTrends'])->name('ad.loadEmployeeTrends');
 Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
 
+// General Analytics
 Route::get('/dashboard-admin/load-sid-questions', [AdminDashboardController::class, 'loadSIDQuestions'])->name('ad.loadDashboardSIDQuestions');
 Route::get('/dashboard-admin/load-sid-chart', [AdminDashboardController::class, 'loadSIDChart'])->name('ad.loadSIDChart');
 Route::get('/dashboard-admin/load-sr-questions', [AdminDashboardController::class, 'loadSRQuestions'])->name('ad.loadDashboardSRQuestions');
@@ -79,17 +79,35 @@ Route::get('/dashboard-admin/load-s-chart', [AdminDashboardController::class, 'l
 Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::class, 'loadICQuestions'])->name('ad.loadDashboardICQuestions');
 Route::get('/dashboard-admin/load-ic-chart', [AdminDashboardController::class, 'loadICChart'])->name('ad.loadICChart');
 Route::get('/dashboard-admin/load-category', [AdminDashboardController::class, 'loadPointCategory'])->name('ad.viewCategory');
-
-
 Route::get('/dashboard-admin/view-score', [AdminDashboardController::class,'viewScore'])->name('ad.viewScoreModal');
 
 
 // Departmental Analytics
-Route::get('/dashboard-admin/department/load-bc-questions', [DepartmentalAnalyticsController::class, 'loadBCQuestions'])->name('ad.loadBCQuestions');
-Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadICQuestions');
-Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
-Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadPointsSystem');
+Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
 Route::post('/dashboard-admin/department/line-chart', [DepartmentalAnalyticsController::class, 'getFinalScoresPerDepartment'])->name('ad.departmentLineChart');
+
+Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
+Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadDepartmentalPointsSystem');
+Route::get('/dashboard-admin/department/view-category', [DepartmentalAnalyticsController::class, 'loadPointCategory'])->name('ad.viewDepartmentalCategory');
+
+Route::get('/dashboard-admin/department/load-sid-questions', [DepartmentalAnalyticsController::class, 'loadSIDQuestions'])->name('ad.loadDepartmentalSIDQuestions');
+Route::get('/dashboard-admin/department/load-sid-chart', [DepartmentalAnalyticsController::class, 'loadSIDChart'])->name('ad.loadDepartmentalSIDChart');
+
+Route::get('/dashboard-admin/department/load-sr-questions', [DepartmentalAnalyticsController::class, 'loadSRQuestions'])->name('ad.loadDepartmentalSRQuestions');
+Route::get('/dashboard-admin/department/load-sr-chart', [DepartmentalAnalyticsController::class, 'loadSRChart'])->name('ad.loadDepartmentalSRChart');
+
+Route::get('/dashboard-admin/department/load-s-questions', [DepartmentalAnalyticsController::class, 'loadSQuestions'])->name('ad.loadDepartmentalSQuestions');
+Route::get('/dashboard-admin/department/load-s-chart', [DepartmentalAnalyticsController::class, 'loadSChart'])->name('ad.loadDepartmentalSChart');
+
+Route::get('/dashboard-admin/department/load-ic-questions', [DepartmentalAnalyticsController::class, 'loadICQuestions'])->name('ad.loadDepartmentalICQuestions');
+Route::get('/dashboard-admin/department/load-ic-chart', [DepartmentalAnalyticsController::class, 'loadICChart'])->name('ad.loadDepartmentalICChart');
+
+Route::get('/dashboard-admin/department/view-score', [DepartmentalAnalyticsController::class, 'viewScore'])->name('ad.viewDepartmentalScoreModal');
+
+
+// Employee Analytics
+Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('ad.viewEmployeeAnalytics');
+
 
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
