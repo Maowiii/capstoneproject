@@ -64,7 +64,7 @@ class DepartmentalAnalyticsController extends Controller
   public function loadPointsSystem(Request $request)
   {
     $data = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
     $department_id = $request->input('departmentID');
 
     foreach ($schoolYears as $evalYear) {
@@ -268,7 +268,7 @@ class DepartmentalAnalyticsController extends Controller
   {
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -406,7 +406,7 @@ class DepartmentalAnalyticsController extends Controller
   {
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -544,7 +544,7 @@ class DepartmentalAnalyticsController extends Controller
   {
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -596,7 +596,7 @@ class DepartmentalAnalyticsController extends Controller
   {
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;

@@ -109,6 +109,17 @@ Route::get('/dashboard-admin/department/view-score', [DepartmentalAnalyticsContr
 Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('ad.viewEmployeeAnalytics');
 Route::get('/dashboard-admin/employee/get-employee-information', [EmployeeAnalyticsController::class, 'getEmployeeInformation'])->name('ad.getEmployeeInformation');
 
+Route::get('/dashboard-admin/employee/load-sid-questions', [EmployeeAnalyticsController::class, 'loadSIDQuestions'])->name('ad.loadEmployeeSIDQuestions');
+Route::get('/dashboard-admin/employee/load-sid-chart', [EmployeeAnalyticsController::class, 'loadSIDChart'])->name('ad.loadEmployeeSIDChart');
+
+Route::get('/dashboard-admin/employee/load-sr-questions', [EmployeeAnalyticsController::class, 'loadSRQuestions'])->name('ad.loadEmployeeSRQuestions');
+Route::get('/dashboard-admin/employee/load-sr-chart', [EmployeeAnalyticsController::class, 'loadSRChart'])->name('ad.loadEmployeeSRChart');
+
+Route::get('/dashboard-admin/employee/load-s-questions', [EmployeeAnalyticsController::class, 'loadSQuestions'])->name('ad.loadEmployeeSQuestions');
+Route::get('/dashboard-admin/employee/load-s-chart', [EmployeeAnalyticsController::class, 'loadSChart'])->name('ad.loadEmployeeSChart');
+
+Route::get('/dashboard-admin/employee/load-ic-questions', [EmployeeAnalyticsController::class, 'loadICQuestions'])->name('ad.loadEmployeeICQuestions');
+Route::get('/dashboard-admin/employee/load-ic-chart', [EmployeeAnalyticsController::class, 'loadICChart'])->name('ad.loadEmployeeICChart');
 
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
