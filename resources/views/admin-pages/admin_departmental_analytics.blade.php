@@ -993,7 +993,8 @@
                                             clickedElementIndex);
                                         console.log('Clicked Year: ' + clickedYear);
                                         console.log('Clicked Question ID: ' + questionId);
-                                        viewScoreModal(departmentID, clickedYear, questionId, page = 1);
+                                        viewScoreModal(departmentID, clickedYear, questionId, page =
+                                            1);
 
                                     }
                                 },
@@ -1169,7 +1170,8 @@
                                             clickedElementIndex);
                                         console.log('Clicked Year: ' + clickedYear);
                                         console.log('Clicked Question ID: ' + questionId);
-                                        viewScoreModal(departmentID, clickedYear, questionId, page = 1);
+                                        viewScoreModal(departmentID, clickedYear, questionId, page =
+                                            1);
 
                                     }
                                 },
@@ -1545,7 +1547,8 @@
                                             clickedElementIndex);
                                         console.log('Clicked Year: ' + clickedYear);
                                         console.log('Clicked Question ID: ' + questionId);
-                                        viewScoreModal(departmentID, clickedYear, questionId, page = 1);
+                                        viewScoreModal(departmentID, clickedYear, questionId, page =
+                                            1);
 
                                     }
                                 },
@@ -1630,7 +1633,8 @@
                                 }
                                 var pageButton = $('<button>').addClass('page-link').text(pageCounter);
                                 pageButton.click(function() {
-                                    viewScoreModal(departmentID, schoolYear, questionID, pageCounter);
+                                    viewScoreModal(departmentID, schoolYear, questionID,
+                                        pageCounter);
                                 });
                                 pageItem.append(pageButton);
                                 $('#score_pagination').append(pageItem);

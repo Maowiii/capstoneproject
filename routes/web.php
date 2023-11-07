@@ -107,6 +107,7 @@ Route::get('/dashboard-admin/department/view-score', [DepartmentalAnalyticsContr
 
 // Employee Analytics
 Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('ad.viewEmployeeAnalytics');
+Route::get('/dashboard-admin/employee/get-employee-information', [EmployeeAnalyticsController::class, 'getEmployeeInformation'])->name('ad.getEmployeeInformation');
 
 
 //Appraisals Overview
