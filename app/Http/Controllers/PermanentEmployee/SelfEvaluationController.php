@@ -1265,7 +1265,7 @@ class SelfEvaluationController extends Controller
 
       // Validate the form data
       $request->validate([
-          'request' => 'required',
+          'request' => 'required|string',
       ]);
 
       try {
