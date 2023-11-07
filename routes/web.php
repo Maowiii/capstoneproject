@@ -169,6 +169,7 @@ Route::get('/editable-internal-customer-form/formChecker', [EditableInternalCust
 Route::get('/admin-request', [AdminRequestOverviewController::class, 'viewRequestOverview'])->name('viewRequestOverview');
 Route::get('/get-user-requests', [AdminRequestOverviewController::class, 'getUserRequests'])->name('getUserRequests');
 Route::post('/approve-user-requests', [AdminRequestOverviewController::class, 'submitRequestApproval'])->name('submitRequestApproval');
+Route::post('/disapprove-user-requests', [AdminRequestOverviewController::class, 'submitRequestDisapproval'])->name('submitRequestDisapproval');
 
 /* ----- IMMEDIATE SUPERIOR ----- */
 // Dashboard

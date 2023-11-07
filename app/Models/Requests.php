@@ -17,6 +17,7 @@ class Requests extends Model
         'request',
         'status',
         'action',
+        'feedback',
     ];
 
     public function appraisal(): BelongsTo

@@ -48,9 +48,11 @@ class AdminRequestOverviewController extends Controller
                 'name' => $request->appraisal->evaluator->first_name . ' ' . $request->appraisal->evaluator->last_name,
                 'appraisal_type' => $appraisal_type,
                 'request' => $request->request,
+                'locks' => $locks, 
                 'date_sent' => $dateSent, 
                 'status' => $request->status,
-                'action' => $request->action,   
+                'action' => $request->action,
+                'feedback' => $request->feedback,   
             ];
         });
 
@@ -83,47 +85,31 @@ class AdminRequestOverviewController extends Controller
             $appraisal = Appraisals::find($appraisalID);
 
             if($appraisal){
-                if($kra){
-                    $locked = $appraisal->kra_locked;
-    
-                    $appraisal->update(['kra_locked' => !$locked]);
-                }
-                
-                if ($pr){
-                    $locked = $appraisal->pr_locked;
-    
-                    $appraisal->update(['pr_locked' => !$locked]);
-                }
-                
-                if ($eval){
-                    $locked = $appraisal->eval_locked;
-    
-                    $appraisal->update(['eval_locked' => !$locked]);
-                }
-                
-                if ($lock){    
-                    $locked = $appraisal->locked;
-    
-                    $appraisal->update(['locked' => !$locked]);
-    
-                    if ($appraisal->locked == 1) {
-                        Log::debug('Appraisal is locked');
-                        $appraisal->update(['date_submitted' => null]);
-    
-                        $signature = Signature::where('appraisal_id', $appraisalID);
-                        $signature->delete();
-                    }
-                }
+                $appraisal->update(['kra_locked' => $kra]);
+            
+                $appraisal->update(['pr_locked' => $pr]);
+            
+                $appraisal->update(['eval_locked' => $eval]);
+            
+                $appraisal->update(['locked' => !$lock]);
 
+                if ($appraisal->locked == 1) {
+                    Log::debug('Appraisal is locked');
+                    $appraisal->update(['date_submitted' => null]);
+
+                    $signature = Signature::where('appraisal_id', $appraisalID);
+                    $signature->delete();
+                }
+            
                 $request = Requests::find($requestId);
 
                 if ($request) {
                     $request->update([
                         'status' => 'Approved',
-                        'action' => "true",
+                        'action' => true,
                         'feedback' => $note
                     ]);
-                    return response()->json(['success' => true, 'message' => 'Request for Approval is successful.']);
+                    return response()->json(['success' => true, 'message' => 'Request for unlocking the form is successfully granted.']);
 
                 }else{
                     return response()->json(['success' => false, 'message' => 'Error updating request.']);
@@ -131,6 +117,47 @@ class AdminRequestOverviewController extends Controller
             }else{
                 return response()->json(['success' => false, 'message' => 'Error updating appraisal form.']);
             }
+        } catch (\Exception $e) {
+            Log::error('Exception Message: ' . $e->getMessage());
+            Log::error('Exception Line: ' . $e->getLine());
+            Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+            return response()->json(['success' => false, 'message' => 'An error occurred while granting approval for the request. Please try again later.']);
+        }
+    }
+
+    public function submitRequestDisapproval(Request $request)
+    {
+        // Validate the input
+        $request->validate([
+            'appraisalId' => 'required|numeric',
+            'requestId' => 'required|numeric',
+            'note' => 'required|string',
+        ]);
+
+        // Sanitize and use the input to build your query using prepared statements
+        $requestId = $request->input('requestId');
+        $appraisalID = $request->input('appraisalId');
+        $note = $request->input('note');
+        
+        try {
+            $appraisal = Appraisals::find($appraisalID);
+
+            if ($appraisal) {
+                $request = Requests::find($requestId);
+
+                if ($request) {
+                    Log::info($note);
+
+                    $request->update([
+                        'status' => 'Disapproved',
+                        'action' => false,
+                        'feedback' => $note
+                    ]);
+                    return response()->json(['success' => true, 'message' => 'Request for unlocking the form is successfully not granted.']);
+                }
+            } else{
+                return response()->json(['success' => false, 'message' => 'Error updating appraisal form.']);
+            }      
         } catch (\Exception $e) {
             Log::error('Exception Message: ' . $e->getMessage());
             Log::error('Exception Line: ' . $e->getLine());
