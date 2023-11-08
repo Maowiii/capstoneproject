@@ -7,7 +7,7 @@
 @section('content')
     <div class="position-relative">
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
-            <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="lockToast" class="toast text-danger" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <strong class="mr-auto">Appraisal Form Locked</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -85,6 +85,7 @@
                 submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
+                <button type="button" class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
         </div>
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
@@ -718,6 +719,34 @@
             <button type="button" class="btn btn-primary medium-column " id="submit-btn-form">Submit</button>
         </div>
     </form>
+
+    <div class="modal fade modal-lg" id="request-popup-modal" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">REQUEST FORM</h5>
+                    <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('submitRequest') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div id="validation-results" class="alert alert-danger" style="display: none;">
+                            <ul id="validation-list"></ul>
+                        </div>
+                        <h5>Instructions:</h5>
+                        <p class='text-justify'>This request form is designed to allow send request to have another attempt in accomplishing the appraisal form. 
+                        Kindly provide the details of your request and any additional notes in the field provided.Thank you</p>
+                    <label for="requestText"><h5>Request:</h5></label>
+                        <textarea name="request" id="requestText" class="form-control" placeholder="Enter your request here..." required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -1359,6 +1388,67 @@
             updateBHTotal();
             updateWeightedTotal();
             formChecker();
+
+            ////////////////////////// SEND REQUEST ////////////////////////////////
+            $('#sendrequest').click(function() {
+                // Check validity and list the results
+                const validationList = $('#validation-list');
+                validationList.empty(); // Clear previous results
+
+                // Check input elements for validity
+                const inputElements = $('input[disabled]');
+                const textarea = $('textarea[required]');
+                let invalidFields = [];
+
+                inputElements.each(function() {
+                    if (!this.checkValidity()) {
+                        invalidFields.push($(this).attr('name'));
+                    }
+                });
+
+                if (!textarea[0].checkValidity()) {
+                    invalidFields.push('Request field');
+                }
+
+                if (invalidFields.length > 0) {
+                    $.each(invalidFields, function(index, fieldName) {
+                        validationList.append('<li>' + fieldName + ' is not answered or invalid.</li>');
+                    });
+
+                    $('#validation-results').show();
+                } else {
+                    $('#validation-results').hide();
+                }
+
+                $('#request-popup-modal').modal('show');
+            });
+
+            $('form').on('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect the form data
+                const formData = new FormData(this);
+                formData.append('appraisal_id', {{ $appraisalId }});
+
+                // Send the data to the server using AJAX
+                $.ajax({
+                    url: "{{ route('submitRequest') }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(data) {
+                        // Handle the server response (if needed)
+                        console.log(data);
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
         });
 
         function loadTableData() {

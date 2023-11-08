@@ -18,11 +18,17 @@ class Requests extends Model
         'status',
         'action',
         'feedback',
+        'approver_id'
     ];
 
     public function appraisal(): BelongsTo
     {
         return $this->belongsTo(Appraisals::class, 'appraisal_id');
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(Employees::class, 'approver_id')->with('department')->from('employees');
     }
 
     public function __construct(array $attributes = [])

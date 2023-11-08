@@ -10,10 +10,12 @@
         <table class='table table-bordered' id="request_table">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Requester</th>
+                    <th>Appraisee</th>
                     <th>Evaluation Type</th>
                     <th>Request Note</th>
                     <th>Date Sent</th>
+                    <th>Approver</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -158,10 +160,12 @@
               $.each(data, function(index, request) {
                   var row = $('<tr>');
 
-                  row.append($('<td>').text(request.name)); // Use the evaluator's name from the data
+                  row.append($('<td>').text(request.requester));
+                  row.append($('<td>').text(request.appraisee)); 
                   row.append($('<td>').text(request.appraisal_type));
                   row.append($('<td>').text(request.request));
                   row.append($('<td>').text(request.date_sent));
+                  row.append($('<td>').text(request.approver));
                   row.append($('<td>').text(request.status));
 
                   // // Create a Bootstrap-styled switch for the "action"

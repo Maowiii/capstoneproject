@@ -132,7 +132,7 @@
 
     <div class="position-relative">
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99;">
-            <div id="lockToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="lockToast" class="toast text-danger" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <h5 class="mr-auto">Appraisal Form Locked</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -208,7 +208,7 @@
                 his/her job performance as well as his/her professional growth and development. Please take time to evaluate
                 the
                 job incumbent by completing this evaluation form. Please be reflective and candid in your responses. Kindly
-                submit the accomplished form to HRMD on or before the deadline. Your cooperation is highly appreciated.
+                submit the accomplished form to HRMD on or before the  deadline. Your cooperation is highly appreciated.
                 Thank
                 you.</p>
             <button type="button" class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>

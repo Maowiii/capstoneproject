@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employees;
 use App\Models\Requests;
 use App\Models\Appraisals;
 
@@ -45,11 +46,13 @@ class AdminRequestOverviewController extends Controller
             return [
                 'request_id' => $request->request_id,
                 'appraisal_id' => $request->appraisal_id,
-                'name' => $request->appraisal->evaluator->first_name . ' ' . $request->appraisal->evaluator->last_name,
+                'requester' => $request->appraisal->evaluator->first_name . ' ' . $request->appraisal->evaluator->last_name,
                 'appraisal_type' => $appraisal_type,
+                'appraisee' => $request->appraisal->employee->first_name . ' ' . $request->appraisal->employee->last_name,
                 'request' => $request->request,
                 'locks' => $locks, 
-                'date_sent' => $dateSent, 
+                'date_sent' => $dateSent,
+                'approver' => $request->approver->first_name . ' ' . $request->approver->last_name, 
                 'status' => $request->status,
                 'action' => $request->action,
                 'feedback' => $request->feedback,   
@@ -82,6 +85,9 @@ class AdminRequestOverviewController extends Controller
         $note = $request->input('note');
         
         try {
+            $account_id = session()->get('account_id');
+            $approverId = Employees::where('account_id', $account_id)->pluck('employee_id')->first();
+
             $appraisal = Appraisals::find($appraisalID);
 
             if($appraisal){
@@ -107,7 +113,8 @@ class AdminRequestOverviewController extends Controller
                     $request->update([
                         'status' => 'Approved',
                         'action' => true,
-                        'feedback' => $note
+                        'feedback' => $note,
+                        'approver_id' => $approverId
                     ]);
                     return response()->json(['success' => true, 'message' => 'Request for unlocking the form is successfully granted.']);
 
@@ -140,18 +147,20 @@ class AdminRequestOverviewController extends Controller
         $note = $request->input('note');
         
         try {
+            $account_id = session()->get('account_id');
+            $approverId = Employees::where('account_id', $account_id)->pluck('employee_id')->first();
+
             $appraisal = Appraisals::find($appraisalID);
 
             if ($appraisal) {
                 $request = Requests::find($requestId);
 
                 if ($request) {
-                    Log::info($note);
-
                     $request->update([
                         'status' => 'Disapproved',
                         'action' => false,
-                        'feedback' => $note
+                        'feedback' => $note,
+                        'approver_id' => $approverId
                     ]);
                     return response()->json(['success' => true, 'message' => 'Request for unlocking the form is successfully not granted.']);
                 }
