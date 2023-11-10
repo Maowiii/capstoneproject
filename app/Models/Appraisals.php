@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\EvalYear;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Schema;
 
 
@@ -68,6 +69,11 @@ class Appraisals extends BaseModel
   public function department(): BelongsTo
   {
     return $this->belongsTo(Departments::class, 'department_id')->withDefault();
+  }
+
+  public function kras(): HasMany
+  {
+    return $this->hasMany(KRA::class, 'appraisal_id');
   }
 }
 

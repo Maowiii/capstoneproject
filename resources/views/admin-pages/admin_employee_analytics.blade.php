@@ -31,10 +31,11 @@
         </div>
     </div>
 
+    <!-- Yearly Performance Trend -->
     <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
-        <h2 class="text-center">Yearly performance trend:</h2>
+        <h2 class="text-center">Employee Performance trend:</h2>
         <div class="w-100" style="height: 300px">
-            <canvas id="lineChart" aria-label="chart"></canvas>
+            <canvas id="yearly_trend" aria-label="chart"></canvas>
         </div>
     </div>
 
@@ -48,10 +49,13 @@
                 <h5 class="text-center" id="immediate-superior">Total Average Score:</h5>
                 <div class="table-responsive">
                     <table class="table table-sm mb-3" id="kra_table">
-                        <thead>
-                            <th>#</th>
-                            <th>Question</th>
-                            <th class="medium-column">Average Score</th>
+                        <thead class="align-middle">
+                            <th>KRA</th>
+                            <th>Objective</th>
+                            <th>Performance Indicator</th>
+                            <th>Actual Result</th>
+                            <th>Self Evaluation Score</th>
+                            <th>Immediate Superior Score</th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -61,7 +65,7 @@
         <div class="col-lg-6 mb-3">
             <div class="content-container h-100">
                 <h4 class="text-center">KRA performance over the years:</h4>
-                <canvas id="kra_trend_chart" aria-label="chart"></canvas>
+                <canvas id="kra_trend" aria-label="chart" height="350" width="580"></canvas>
             </div>
         </div>
     </div>
@@ -208,6 +212,9 @@
             }
 
             getEmployeeInformation(employeeID);
+            loadEmployeeYearlyTrend(employeeID);
+            loadKRATrend(employeeID);
+            loadKRAS(employeeID, null);
             loadSIDChart(employeeID);
             loadSIDQuestions(employeeID, null);
             loadSRChart(employeeID);
@@ -816,7 +823,7 @@
                     employeeID: employeeID,
                 },
                 success: function(response) {
-                    console.log(response);
+                    //console.log(response);
                     if (response.success) {
                         // IC Trends Chart
 
@@ -1358,6 +1365,352 @@
                 }
             });
         }
+
+        function loadEmployeeYearlyTrend(employeeID) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadEmployeeYearlyTrend') }}',
+                type: 'GET',
+                data: {
+                    employeeID: employeeID,
+
+                },
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        var yearlyTrend = $('#yearly_trend');
+                        var canvas = yearlyTrend[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        var data = [];
+
+                        var labels = Object.keys(response.scoresPerYear);
+                        for (var year in response.scoresPerYear) {
+                            var yearScores = response.scoresPerYear[year];
+
+                            for (var i = 0; i < yearScores.length; i++) {
+                                var finalScore = parseFloat(yearScores[i].final_score);
+                                data.push(finalScore);
+                            }
+                        }
+
+                        new Chart(yearlyTrend, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Final Score',
+                                    data: data,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }],
+                            },
+                            options: {
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = labels[index].replace(/-/g,
+                                            '_');
+
+                                        console.log('Clicked Year: ' + clickedYear);
+
+                                    }
+                                },
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function viewScoreModal(departmentID, schoolYear, questionID, page = 1) {
+            console.log('School Year: ' + schoolYear);
+            console.log('Question ID: ' + questionID);
+            $('#scoreModal').modal('show');
+            $('#scoreModalTitle').text(schoolYear + ': ')
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.viewDepartmentalScoreModal') }}',
+                type: 'GET',
+                data: {
+                    departmentID: departmentID,
+                    selectedYear: schoolYear,
+                    questionID: questionID,
+                    page: page,
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#scoreModalQuestion').text('Question: "' + response.question.question + '"');
+
+                        var scoreTable = $('#scoreModalTable tbody');
+                        scoreTable.empty();
+
+                        $.each(response.questionAnswers.data, function(index,
+                            item) {
+                            var row = $("<tr class='text-center'>");
+
+                            var fullName = item.first_name + ' ' + item.last_name;
+                            var employeeID = item.employee_id;
+
+                            var link = $("<a>")
+                                .text(fullName)
+                                .attr("href", "{{ route('ad.viewEmployeeAnalytics') }}?employee_id=" +
+                                    employeeID + "&full_name=" + fullName);
+
+                            var cell = $("<td>").append(link);
+
+                            row.append(cell);
+                            row.append($("<td>").text(item.score));
+
+                            scoreTable.append(row);
+                        });
+
+                        totalPage = response.questionAnswers.last_page;
+                        currentPage = response.questionAnswers.current_page;
+                        $('#score_pagination').empty();
+                        for (totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            (function(pageCounter) {
+                                var pageItem = $('<li>').addClass('page-item');
+                                if (pageCounter === currentPage) {
+                                    pageItem.addClass('active');
+                                }
+                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                pageButton.click(function() {
+                                    viewScoreModal(departmentID, schoolYear, questionID,
+                                        pageCounter);
+                                });
+                                pageItem.append(pageButton);
+                                $('#score_pagination').append(pageItem);
+                            })(totalPageCounter);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadKRATrend(employeeID) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadEmployeeKRATrend') }}',
+                type: 'GET',
+                data: {
+                    employeeID: employeeID,
+                },
+                success: function(response) {
+                    //console.log(response);
+                    if (response.success) {
+                        var kraTrend = $('#kra_trend');
+                        var canvas = kraTrend[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
+                        var data = [];
+
+                        var labels = Object.keys(response.scoresPerYear);
+                        for (var year in response.scoresPerYear) {
+                            var yearScore = response.scoresPerYear[year];
+
+                            var finalScore = parseFloat(yearScore);
+                            if (!isNaN(finalScore)) {
+                                data.push(finalScore);
+                            }
+                        }
+
+                        new Chart(kraTrend, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Final Score',
+                                    data: data,
+                                    backgroundColor: '#164783',
+                                    borderColor: '#164783',
+                                    borderWidth: 1,
+                                    pointBackgroundColor: '#164783',
+                                    pointBorderColor: '#164783',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 8,
+                                }],
+                            },
+                            options: {
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = labels[index].replace(/-/g,
+                                            '_');
+
+                                        console.log('Clicked Year: ' + clickedYear);
+
+                                    }
+                                },
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
+        function loadKRAS(employeeID, selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadEmployeeKRA') }}',
+                type: 'GET',
+                data: {
+                    employeeID: employeeID,
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        var kraTable = $('#kra_table tbody');
+
+                        // Clear existing rows
+                        kraTable.empty();
+
+                        // Create a map to store KRAs and their scores
+                        var kraMap = {};
+
+                        // Loop through each appraisal
+                        $.each(response.appraisals, function(index, appraisal) {
+                            // Loop through each KRA in the appraisal
+                            $.each(appraisal.kras, function(index, kra) {
+                                // Use the KRA name as the unique identifier
+                                var kraKey = kra.kra;
+
+                                // Check if the KRA is already in the map
+                                if (!kraMap[kraKey]) {
+                                    // If not, add it to the map
+                                    kraMap[kraKey] = {
+                                        kra: kra.kra,
+                                        objective: kra.objective,
+                                        performance_indicator: kra.performance_indicator,
+                                        actual_result: kra.actual_result,
+                                        self_evaluation_score: 0,
+                                        superior_evaluation_score: 0,
+                                    };
+                                }
+
+                                // Add the score to the corresponding evaluation type
+                                if (appraisal.evaluation_type === 'self evaluation') {
+                                    kraMap[kraKey].self_evaluation_score += kra
+                                        .performance_level;
+                                } else if (appraisal.evaluation_type === 'is evaluation') {
+                                    kraMap[kraKey].superior_evaluation_score += kra
+                                        .performance_level;
+                                }
+                            });
+                        });
+
+                        // Populate the table with the combined scores
+                        $.each(kraMap, function(kraKey, kraData) {
+                            kraTable.append(
+                                '<tr>' +
+                                '<td>' + kraData.kra + '</td>' +
+                                '<td>' + kraData.objective + '</td>' +
+                                '<td>' + kraData.performance_indicator + '</td>' +
+                                '<td>' + kraData.actual_result + '</td>' +
+                                '<td>' + kraData.self_evaluation_score + '</td>' +
+                                '<td>' + kraData.superior_evaluation_score + '</td>' +
+                                '</tr>'
+                            );
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
+                        'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
 
         function getRandomColor() {
             var randomBlue = Math.floor(Math.random() * 32).toString(16);

@@ -48,7 +48,7 @@
     </div>
 
     <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
-        <h2 class="text-center">Yearly performance trend:</h2>
+        <h2 class="text-center">Overall Performance trend:</h2>
         <div class="w-100" style="height: 300px">
             <canvas id="lineChart" aria-label="chart"></canvas>
         </div>
@@ -283,7 +283,6 @@
                 // console.log('Selected Year: ' + selectedYear);
                 loadDepartmentTable(selectedYear, null);
                 loadICQuestions(selectedYear);
-                loadBCQuestions(selectedYear);
                 loadPointsSystem(selectedYear);
                 loadCards(selectedYear);
             });
@@ -299,16 +298,16 @@
                 // console.log('Name Query: ' + query);
                 loadEmployeesTable(query);
             });
-
+            loadCards(globalSelectedYear);
+            fetchAndDisplayLineChart();
             loadDepartmentTable(globalSelectedYear, null);
+            loadPointsSystem();
             loadSIDQuestions(globalSelectedYear);
             loadSRQuestions(globalSelectedYear);
             loadICQuestions(globalSelectedYear);
             loadSQuestions(globalSelectedYear);
-            loadCards(globalSelectedYear);
             //loadEmployeesTable(null);
 
-            loadPointsSystem();
             loadSIDChart();
             loadSRChart();
             loadSChart();
@@ -1483,7 +1482,7 @@
 
                         }
                     } else {
-                      console.log('Load S Questions: Failed.');
+                        console.log('Load S Questions: Failed.');
                         var row = $(
                             '<tr><td colspan="3"><p>-</p></td></tr>'
                         );
@@ -1797,10 +1796,19 @@
         function fetchAndDisplayLineChart() {
             $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
                 if (data.success) {
-                    var ctx = document.getElementById('lineChart').getContext('2d');
+                    const lineChart = $('#lineChart');
+                    var canvas = lineChart[0];
+
+                    if (canvas) {
+                        var existingChart = Chart.getChart(canvas);
+                        if (existingChart) {
+                            existingChart.destroy();
+                        }
+                    }
+
                     var scoresPerYear = data.scoresPerYear;
                     var labels = [];
-                    var allData = []; // An array to store all data
+                    var allData = [];
 
                     for (var yearRange in scoresPerYear) {
                         if (scoresPerYear.hasOwnProperty(yearRange)) {
@@ -1811,13 +1819,13 @@
                             allData.push(data);
                         }
                     }
-                    var lineChart = new Chart(ctx, {
+                    new Chart(lineChart, {
                         type: 'line',
                         data: {
                             labels: labels,
                             datasets: [{
                                 label: 'Average Score',
-                                data: allData, // Use the concatenated data
+                                data: allData,
                                 backgroundColor: '#164783',
                                 borderColor: '#164783',
                                 borderWidth: 1,
@@ -1875,7 +1883,5 @@
             var randomBlue = Math.floor(Math.random() * 32).toString(16);
             return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
         }
-
-        fetchAndDisplayLineChart();
     </script>
 @endsection

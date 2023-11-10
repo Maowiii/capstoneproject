@@ -27,6 +27,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function getFinalScoresPerDepartment(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     try {
       $departmentID = $request->input('departmentID');
       Log::info('Department ID: ' . $departmentID);
@@ -63,6 +67,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadPointsSystem(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $data = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
     $department_id = $request->input('departmentID');
@@ -109,6 +117,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadPointCategory(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $schoolYear = $request->input('selectedYear');
     $category = $request->input('category');
     $page = $request->input('page', 1);
@@ -177,6 +189,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSIDQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
     $department_id = $request->input('departmentID');
 
@@ -266,6 +282,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSIDChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -318,6 +338,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSRQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $selectedYear = $request->input('selectedYear');
 
@@ -404,6 +428,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSRChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -456,6 +484,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $selectedYear = $request->input('selectedYear');
 
@@ -542,6 +574,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadSChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -594,6 +630,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadICChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -646,6 +686,10 @@ class DepartmentalAnalyticsController extends Controller
 
   public function loadICQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $department_id = $request->input('departmentID');
     $selectedYear = $request->input('selectedYear');
 
@@ -731,6 +775,9 @@ class DepartmentalAnalyticsController extends Controller
 
   public function viewScore(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
     $departmentID = $request->input('departmentID');
     $selectedYear = $request->selectedYear;
     $questionID = $request->questionID;
@@ -752,11 +799,12 @@ class DepartmentalAnalyticsController extends Controller
       ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
       ->where($appraisalAnswersTable . '.question_id', $question->question_id)
       ->select(
-        $appraisalAnswersTable . '.score',
+        DB::raw('ROUND(AVG(' . $appraisalAnswersTable . '.score), 2) as score'),
         'employees.first_name',
         'employees.last_name',
         'employees.employee_id'
-      );
+      )
+      ->groupBy('employees.first_name', 'employees.last_name', 'employees.employee_id');
 
     $questionAnswers = $query->paginate($perPage, null, 'page', $page);
 

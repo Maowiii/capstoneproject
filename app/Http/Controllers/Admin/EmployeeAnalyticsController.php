@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
+use App\Models\Appraisals;
 use App\Models\Employees;
 use App\Models\EvalYear;
+use App\Models\FinalScores;
 use App\Models\FormQuestions;
+use App\Models\KRA;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -49,6 +52,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSIDQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
     $employeeID = $request->input('employeeID');;
 
@@ -136,6 +143,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSIDChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employee_id = $request->input('employeeID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -188,6 +199,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSRQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $selectedYear = $request->input('selectedYear');
 
@@ -276,6 +291,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSRChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -329,6 +348,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadICChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -381,6 +404,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSChart(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $schoolYearsData = [];
     $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
@@ -434,6 +461,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadSQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $selectedYear = $request->input('selectedYear');
 
@@ -522,6 +553,10 @@ class EmployeeAnalyticsController extends Controller
 
   public function loadICQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $employeeID = $request->input('employeeID');
     $selectedYear = $request->input('selectedYear');
 
@@ -606,6 +641,104 @@ class EmployeeAnalyticsController extends Controller
       'ic' => $icQuestions,
       'total_avg_score' => $totalAverageScore,
       'school_year' => $schoolYear
+    ]);
+  }
+
+  public function loadYearlyTrend(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $employeeID = $request->input('employeeID');
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
+
+    $scoresPerYear = [];
+
+    foreach ($schoolYears as $schoolYear) {
+      $table = 'final_scores_' . $schoolYear->sy_start . '_' . $schoolYear->sy_end;
+
+      $scores = FinalScores::from($table)
+        ->where('employee_id', $employeeID)
+        ->select('final_score')
+        ->get();
+
+      $scoresPerYear[$schoolYear->sy_start . '-' . $schoolYear->sy_end] = $scores;
+    }
+
+    return response()->json([
+      'success' => true,
+      'scoresPerYear' => $scoresPerYear,
+    ]);
+  }
+
+  public function loadKRATrend(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $employeeID = $request->input('employeeID');
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
+
+    $scoresPerYear = [];
+
+    foreach ($schoolYears as $schoolYear) {
+      $table = 'appraisals_' . $schoolYear->sy_start . '_' . $schoolYear->sy_end;
+
+      $scores = Appraisals::from($table)
+        ->where('employee_id', $employeeID)
+        ->whereIn('evaluation_type', ['self-evaluation', 'is evaluation'])
+        ->where('date_submitted', 'IS NOT', null)
+        ->avg('kra_score');
+
+      $scores = number_format($scores, 2);
+      $scoresPerYear[$schoolYear->sy_start . '-' . $schoolYear->sy_end] = $scores;
+    }
+
+    return response()->json([
+      'success' => true,
+      'scoresPerYear' => $scoresPerYear,
+    ]);
+  }
+
+  public function loadKRA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $selectedYear = $request->input('selectedYear');
+    $employeeID = $request->input('employeeID');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $kraTable = 'kras_' . $selectedYear;
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+
+      $kraScore = KRA::from($kraTable)
+        ->join($appraisalsTable, $appraisalsTable . '.appraisal_id', '=', $kraTable . '.appraisal_id')
+        ->where("$appraisalsTable.employee_id", $employeeID)
+        ->whereIn("$appraisalsTable.evaluation_type", ['self-evaluation', 'is evaluation'])
+        ->where("$appraisalsTable.date_submitted", 'IS NOT', null)
+        ->get();
+    } else {
+      if (Appraisals::tableExists() && KRA::tableExists()) {
+        $appraisalsWithKRAs = Appraisals::where('employee_id', $employeeID)
+          ->whereIn('evaluation_type', ['self evaluation', 'is evaluation'])
+          ->where('date_submitted', 'IS NOT', null)
+          ->with('kras')
+          ->get();
+      } else {
+        return response()->json(['success' => false]);
+      }
+    }
+    return response()->json([
+      'success' => true,
+      'appraisals' => $appraisalsWithKRAs,
     ]);
   }
 }

@@ -27,7 +27,7 @@
     </div>
 
     <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
-        <h2 class="text-center">Yearly performance trend:</h2>
+        <h2 class="text-center">Department Performance trend:</h2>
         <div class="w-100" style="height: 300px">
             <canvas id="lineChart" aria-label="chart"></canvas>
         </div>
@@ -241,32 +241,79 @@
                 },
                 success: function(data) {
                     if (data.success) {
-                        var ctx = document.getElementById('lineChart').getContext('2d');
+                        const lineChart = $('#lineChart');
+                        var canvas = lineChart[0];
+
+                        if (canvas) {
+                            var existingChart = Chart.getChart(canvas);
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+                        }
+
                         var scoresByDepartment = data.scoresByDepartment;
+                        var labels = Object.keys(scoresByDepartment);
 
                         var data = {
-                            labels: Object.keys(scoresByDepartment),
+                            labels: labels,
                             datasets: [{
                                 label: 'Average Scores',
                                 data: Object.values(scoresByDepartment).map((scores) => scores[0] ?
                                     scores[0].total_score : 0),
                                 fill: false,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1,
+                                backgroundColor: '#164783',
+                                borderColor: '#164783',
+                                borderWidth: 1,
+                                pointBackgroundColor: '#164783',
+                                pointBorderColor: '#164783',
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
                             }]
                         };
-                        var config = {
+
+                        new Chart(lineChart, {
                             type: 'line',
                             data: data,
                             options: {
+                                onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                        var index = elements[0].index;
+                                        var clickedYear = labels[index].replace(/-/g,
+                                            '_');
+
+                                        console.log('Clicked Year: ' + clickedYear);
+                                        loadCards(clickedYear);
+                                        loadSIDQuestions(clickedYear);
+                                        loadSRQuestions(clickedYear);
+                                        loadICQuestions(clickedYear);
+                                        loadSQuestions(clickedYear);
+                                    }
+                                },
+                                responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
                                     y: {
-                                        beginAtZero: true,
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
+                                        beginAtZero: false,
+                                        max: 5,
+                                        ticks: {
+                                            stepSize: 1,
+                                        },
                                     }
                                 }
                             }
-                        };
-                        new Chart(ctx, config);
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
@@ -468,8 +515,6 @@
         }
 
         function loadSIDQuestions(departmentID, selectedYear = null) {
-            console.log('Department ID: ' + departmentID);
-            console.log('Selected Year: ' + selectedYear);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -481,7 +526,7 @@
                     departmentID: departmentID,
                 },
                 success: function(response) {
-                    console.log(response);
+                    //console.log(response);
                     if (response.success) {
                         if (response.sid) {
                             var totalAvgScore = response.total_avg_score;
@@ -577,7 +622,7 @@
                 url: '{{ route('ad.loadDepartmentalSIDChart') }}',
                 type: 'GET',
                 data: {
-                  departmentID: departmentID,
+                    departmentID: departmentID,
                 },
                 success: function(response) {
                     //console.log(response);
@@ -747,8 +792,6 @@
         }
 
         function loadSRQuestions(departmentID, selectedYear = null) {
-            console.log('Department ID: ' + departmentID);
-            console.log('Selected Year: ' + selectedYear);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

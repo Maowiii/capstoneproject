@@ -33,10 +33,15 @@ class AdminDashboardController extends Controller
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
+
   }
 
   public function loadCards(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     Log::debug('Load Cards Called');
     $activeEvalYear = EvalYear::where('status', 'active')->first();
     $selectedYear = $request->input('selectedYear');
@@ -105,117 +110,12 @@ class AdminDashboardController extends Controller
     }
   }
 
-
-  public function loadBCQuestions(Request $request)
-  {
-    $selectedYear = $request->input('selectedYear');
-
-    if ($selectedYear == 'null') {
-      $selectedYear = null;
-    }
-
-    if ($selectedYear) {
-      $sidQuestionsTable = 'form_questions_' . $selectedYear;
-      $sidAnswersTable = 'appraisal_answers_' . $selectedYear;
-
-      $sidQuestions = FormQuestions::from($sidQuestionsTable)
-        ->where('table_initials', 'SID')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-
-      foreach ($sidQuestions as $sidQuestion) {
-        $averageScore = AppraisalAnswers::from($sidAnswersTable)
-          ->where('question_id', $sidQuestion->question_id)
-          ->avg('score');
-
-        $sidQuestion->average_score = number_format($averageScore, 2);
-      }
-
-      $srQuestionsTable = 'form_questions_' . $selectedYear;
-      $srAnswersTable = 'appraisal_answers_' . $selectedYear;
-
-      $srQuestions = FormQuestions::from($srQuestionsTable)
-        ->where('table_initials', 'SR')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-
-      foreach ($srQuestions as $srQuestion) {
-        $averageScore = AppraisalAnswers::from($srAnswersTable)
-          ->where('question_id', $srQuestion->question_id)
-          ->avg('score');
-
-        $srQuestion->average_score = number_format($averageScore, 2);
-      }
-
-      $sQuestionsTable = 'form_questions_' . $selectedYear;
-      $sAnswersTable = 'appraisal_answers_' . $selectedYear;
-
-      $sQuestions = FormQuestions::from($sQuestionsTable)
-        ->where('table_initials', 'S')
-        ->where('status', 'active')
-        ->orderBy('question_order')
-        ->get();
-
-      foreach ($sQuestions as $sQuestion) {
-        $averageScore = AppraisalAnswers::from($sAnswersTable)
-          ->where('question_id', $sQuestion->question_id)
-          ->avg('score');
-
-        $sQuestion->average_score = number_format($averageScore, 2);
-      }
-    } else {
-      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
-        $sidQuestions = FormQuestions::where('table_initials', 'SID')
-          ->where('status', 'active')
-          ->orderBy('question_order')
-          ->get();
-
-        foreach ($sidQuestions as $sidQuestion) {
-          $averageScore = AppraisalAnswers::where('question_id', $sidQuestion->question_id)
-            ->avg('score');
-
-          $sidQuestion->average_score = number_format($averageScore, 2);
-        }
-
-        $srQuestions = FormQuestions::where('table_initials', 'SR')
-          ->where('status', 'active')
-          ->orderBy('question_order')
-          ->get();
-
-        foreach ($srQuestions as $srQuestion) {
-          $averageScore = AppraisalAnswers::where('question_id', $srQuestion->question_id)
-            ->avg('score');
-
-          $srQuestion->average_score = number_format($averageScore, 2);
-        }
-
-        $sQuestions = FormQuestions::where('table_initials', 'S')
-          ->where('status', 'active')
-          ->orderBy('question_order')
-          ->get();
-
-        foreach ($sQuestions as $sQuestion) {
-          $averageScore = AppraisalAnswers::where('question_id', $sQuestion->question_id)
-            ->avg('score');
-
-          $sQuestion->average_score = number_format($averageScore, 2);
-        }
-      } else {
-        return response()->json(['success' => false]);
-      }
-    }
-    return response()->json([
-      'success' => true,
-      'sid' => $sidQuestions,
-      'sr' => $srQuestions,
-      's' => $sQuestions,
-    ]);
-  }
-
   public function loadICQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
 
     if ($selectedYear == 'null') {
@@ -234,7 +134,7 @@ class AdminDashboardController extends Controller
         ->get();
 
       $totalAverageScore = 0;
-      $totalQuestions = count($icQuestions); // Get the total number of questions
+      $totalQuestions = count($icQuestions);
 
       foreach ($icQuestions as $icQuestion) {
         $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
@@ -260,7 +160,7 @@ class AdminDashboardController extends Controller
           ->get();
 
         $totalAverageScore = 0;
-        $totalQuestions = count($icQuestions); // Get the total number of questions
+        $totalQuestions = count($icQuestions);
 
         foreach ($icQuestions as $icQuestion) {
           $averageScore = $icQuestion->appraisalAnswers()
@@ -300,8 +200,12 @@ class AdminDashboardController extends Controller
 
   public function loadPointsSystem(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $data = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -340,8 +244,11 @@ class AdminDashboardController extends Controller
 
   public function getFinalScoresPerYear()
   {
-    // Get all evaluation years, whether active or not
-    $evaluationYears = EvalYear::all();
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $evaluationYears = EvalYear::orderBy('sy_start', 'asc')->get();
     $scoresPerYear = [];
 
     foreach ($evaluationYears as $year) {
@@ -369,8 +276,8 @@ class AdminDashboardController extends Controller
     //   }
     // }
 
-    Log::info('$scoresPerYear');
-    Log::info($scoresPerYear);
+    //Log::info('$scoresPerYear');
+    //Log::info($scoresPerYear);
 
     // Log the result (You can use Laravel's Log::info or write to a log file)
     return response()->json([
@@ -381,6 +288,10 @@ class AdminDashboardController extends Controller
 
   public function loadEmployees(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $perPage = 20;
     $search = $request->input('search');
     $page = $request->input('page', 1);
@@ -396,117 +307,16 @@ class AdminDashboardController extends Controller
     return response()->json(['success' => true, 'employees' => $employees]);
   }
 
-  public function loadEmployeeTrends(Request $request)
-  {
-    $schoolYears = EvalYear::all()
-      ->map(function ($evalYear) {
-        $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
-        $evalId = $evalYear->eval_id;
-        return [
-          'school_year' => $schoolYear,
-          'eval_id' => $evalId,
-        ];
-      })
-      ->toArray();
-
-
-    $employeeID = $request->input('employeeID');
-
-    $employee = Employees::find($employeeID);
-    Log::debug('School Years: ' . json_encode($schoolYears));
-    Log::debug('Employee ID: ' . $employeeID);
-
-    $finalScores = [];
-
-    foreach ($schoolYears as $yearData) {
-      $year = $yearData['school_year'];
-      $tableName = 'final_scores_' . $year;
-      $score = FinalScores::from($tableName)->where('employee_id', $employeeID)->value('final_score');
-
-      if ($score !== null) {
-        $finalScores[$year] = $score;
-      }
-    }
-
-    $bhScores = [];
-
-    foreach ($schoolYears as $yearData) {
-      $year = $yearData['school_year'];
-      $yearID = $yearData['eval_id'];
-      $bhTable = 'appraisals_' . $year;
-
-      $selfEvalScore = Appraisals::from($bhTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'self evaluation')
-        ->value('bh_score');
-
-      $isScore = Appraisals::from($bhTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'is evaluation')
-        ->value('bh_score');
-
-      $ic1Score = Appraisals::from($bhTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'internal customer 1')
-        ->value('ic_score');
-
-      $ic2Score = Appraisals::from($bhTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'internal customer 2')
-        ->value('ic_score');
-
-      if ($selfEvalScore !== null && $isScore !== null && $ic1Score !== null && $ic2Score !== null) {
-        $selfEvalWeight = ScoreWeights::where('eval_id', $yearID)->value('self_eval_weight') / 100;
-        $isWeight = ScoreWeights::where('eval_id', $yearID)->value('is_weight') / 100;
-        $ic1Weight = ScoreWeights::where('eval_id', $yearID)->value('ic1_weight') / 100;
-        $ic2Weight = ScoreWeights::where('eval_id', $yearID)->value('ic2_weight') / 100;
-
-        $selfEvalScore *= $selfEvalWeight;
-        $isScore *= $isWeight;
-        $ic1Score *= $ic1Weight;
-        $ic2Score *= $ic2Weight;
-
-        $totalBHScore = $selfEvalScore + $isScore + $ic1Score + $ic2Score;
-        $bhScores[$year] = $totalBHScore;
-      }
-    }
-
-    $kraScores = [];
-    foreach ($schoolYears as $yearData) {
-      $year = $yearData['school_year'];
-      $yearID = $yearData['eval_id'];
-      $kraTable = 'appraisals_' . $year;
-
-      $selfEvalKRAScore = Appraisals::from($kraTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'self evaluation')
-        ->value('kra_score');
-
-      $isKRAScore = Appraisals::from($kraTable)
-        ->where('employee_id', $employeeID)
-        ->where('evaluation_type', 'is evaluation')
-        ->value('kra_score');
-
-      if ($selfEvalKRAScore !== null && $isKRAScore !== null) {
-
-        $selfEvalKRAScore *= .5;
-        $isKRAScore *= .5;
-
-        $totalKRAScore = $selfEvalKRAScore + $isKRAScore;
-        $kraScores[$year] = $totalKRAScore;
-      }
-    }
-
-    return response()->json(['success' => true, 'employee' => $employee, 'finalScores' => $finalScores, 'bhScores' => $bhScores, 'kraScores' => $kraScores]);
-  }
-
-
   // CHARTS
 
   public function loadICChart()
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -538,7 +348,6 @@ class AdminDashboardController extends Controller
 
       $schoolYearsData[$schoolYear] = $questionsAndScores;
 
-      // Calculate the total average score for this year
       $totalAverageScore = 0;
       $totalQuestions = count($icQuestions);
 
@@ -555,6 +364,10 @@ class AdminDashboardController extends Controller
 
   public function loadSIDQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
 
     if ($selectedYear == 'null') {
@@ -573,7 +386,7 @@ class AdminDashboardController extends Controller
         ->get();
 
       $totalAverageScore = 0;
-      $totalQuestions = count($sidQuestions); // Get the total number of questions
+      $totalQuestions = count($sidQuestions);
 
       foreach ($sidQuestions as $sidQuestion) {
         $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
@@ -599,7 +412,7 @@ class AdminDashboardController extends Controller
           ->get();
 
         $totalAverageScore = 0;
-        $totalQuestions = count($sidQuestions); // Get the total number of questions
+        $totalQuestions = count($sidQuestions);
 
         foreach ($sidQuestions as $sidQuestion) {
           $averageScore = $sidQuestion->appraisalAnswers()
@@ -639,8 +452,12 @@ class AdminDashboardController extends Controller
 
   public function loadSIDChart()
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -672,7 +489,6 @@ class AdminDashboardController extends Controller
 
       $schoolYearsData[$schoolYear] = $questionsAndScores;
 
-      // Calculate the total average score for this year
       $totalAverageScore = 0;
       $totalQuestions = count($sidQuestions);
 
@@ -689,6 +505,10 @@ class AdminDashboardController extends Controller
 
   public function loadSRQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
 
     if ($selectedYear == 'null') {
@@ -707,7 +527,7 @@ class AdminDashboardController extends Controller
         ->get();
 
       $totalAverageScore = 0;
-      $totalQuestions = count($srQuestions); // Get the total number of questions
+      $totalQuestions = count($srQuestions);
 
       foreach ($srQuestions as $srQuestion) {
         $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
@@ -733,7 +553,7 @@ class AdminDashboardController extends Controller
           ->get();
 
         $totalAverageScore = 0;
-        $totalQuestions = count($srQuestions); // Get the total number of questions
+        $totalQuestions = count($srQuestions);
 
         foreach ($srQuestions as $srQuestion) {
           $averageScore = $srQuestion->appraisalAnswers()
@@ -773,8 +593,12 @@ class AdminDashboardController extends Controller
 
   public function loadSRChart()
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -806,7 +630,6 @@ class AdminDashboardController extends Controller
 
       $schoolYearsData[$schoolYear] = $questionsAndScores;
 
-      // Calculate the total average score for this year
       $totalAverageScore = 0;
       $totalQuestions = count($srQuestions);
 
@@ -823,6 +646,10 @@ class AdminDashboardController extends Controller
 
   public function loadSQuestions(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->input('selectedYear');
 
     if ($selectedYear == 'null') {
@@ -841,7 +668,7 @@ class AdminDashboardController extends Controller
         ->get();
 
       $totalAverageScore = 0;
-      $totalQuestions = count($sQuestions); // Get the total number of questions
+      $totalQuestions = count($sQuestions);
 
       foreach ($sQuestions as $sQuestion) {
         $averageScore = AppraisalAnswers::from($appraisalAnswersTable)
@@ -867,7 +694,7 @@ class AdminDashboardController extends Controller
           ->get();
 
         $totalAverageScore = 0;
-        $totalQuestions = count($sQuestions); // Get the total number of questions
+        $totalQuestions = count($sQuestions);
 
         foreach ($sQuestions as $sQuestion) {
           $averageScore = $sQuestion->appraisalAnswers()
@@ -907,8 +734,12 @@ class AdminDashboardController extends Controller
 
   public function loadSChart()
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $schoolYearsData = [];
-    $schoolYears = EvalYear::all();
+    $schoolYears = EvalYear::orderBy('sy_start', 'asc')->get();
 
     foreach ($schoolYears as $evalYear) {
       $schoolYear = $evalYear->sy_start . '_' . $evalYear->sy_end;
@@ -940,7 +771,6 @@ class AdminDashboardController extends Controller
 
       $schoolYearsData[$schoolYear] = $questionsAndScores;
 
-      // Calculate the total average score for this year
       $totalAverageScore = 0;
       $totalQuestions = count($sQuestions);
 
@@ -957,6 +787,10 @@ class AdminDashboardController extends Controller
 
   public function viewScore(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
     $selectedYear = $request->selectedYear;
     $questionID = $request->questionID;
     $formQuestionsTable = 'form_questions_' . $selectedYear;
@@ -976,7 +810,7 @@ class AdminDashboardController extends Controller
       ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
       ->where($appraisalAnswersTable . '.question_id', $question->question_id)
       ->select(
-        $appraisalAnswersTable . '.score',
+        DB::raw('ROUND(' . $appraisalAnswersTable . '.score, 2) as score'),
         'employees.first_name',
         'employees.last_name',
         'employees.employee_id'
@@ -989,6 +823,10 @@ class AdminDashboardController extends Controller
 
   public function loadPointCategory(Request $request)
   {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+    
     $schoolYear = $request->input('selectedYear');
     $category = $request->input('category');
     $page = $request->input('page', 1);
@@ -1037,7 +875,6 @@ class AdminDashboardController extends Controller
           ->paginate($perPage, null, 'page', $page);
         break;
       default:
-        // Handle invalid category
         break;
     }
 
