@@ -252,24 +252,58 @@
 .bx-menu {
     cursor: pointer;
 }
-@media (max-width: 400px) {
-    .sidebar.close .nav-links li .sub-menu {
+
+@media (min-width: 1024px) {
+    .navbar.sticky-top {
         display: none;
     }
+}
+
+@media (max-width: 992px) {
     .sidebar {
-        width: 78px;
+        display: none;
     }
-    .sidebar.close {
-        width: 0;
+
+    .navbar .btn {
+        display: block;
     }
+
+    .navbar .navbar-brand {
+        margin-left: 15px;
+        color: white;
+    }
+
     .content-section {
-        left: 78px;
-        width: calc(100% - 78px);
+        margin-top: 0px; /* Creates a 100px gap below the top navbar */
         z-index: 100;
-    }
-    .sidebar.close ~ .content-section {
         width: 100%;
+        padding: 20px 20px 20px 20px;
+    }
+
+    .sidebar.close ~ .content-section {
         left: 0;
+        width: 100%;
+    }
+
+    .navbar,
+    #navbarMenu,
+    #navbarMenu .list-group,
+    #navbarMenu .list-group-item {
+        background-color: #164783;
+        color: white;
+    }
+
+    #navbarMenu .list-group-item {
+        padding: 0;
+        padding-left: 20px;
+    }
+
+    .modal {
+        z-index: 1050; /* Adjust this value as needed */
+    }
+
+    .modal-backdrop {
+        z-index: 1040; /* Adjust this value to be lower than the modal's z-index */
     }
 }
 
@@ -541,7 +575,7 @@ textarea {
     overflow: auto;
     max-height: 250px;
 }
-#passchange .modal-footer{
+#passchange .modal-footer {
     justify-content: right;
 }
 #consentform {
@@ -564,25 +598,26 @@ textarea {
     padding: 25px !important;
 }
 #SummaryModal .modal-body {
-    max-width: 100%!important;
+    max-width: 100% !important;
 }
-.pagination .active .page-link{
+.pagination .active .page-link {
     background-color: #164783 !important;
     border-color: #164783 !important;
     color: #fff !important;
 }
 .pagination .page-link {
-  color: #164783 !important;
+    color: #164783 !important;
 }
 
-#lockToast{
-    z-index: 99!important;
+#lockToast {
+    z-index: 99 !important;
 }
 
 .below-avg {
-  background-color: #ffeee6;
-  border-color: #ffeee6;
+    background-color: #ffeee6;
+    border-color: #ffeee6;
 }
-#disapproveButton{
-margin-left: 15px!important;
+#disapproveButton {
+    margin-left: 15px !important;
 }
+

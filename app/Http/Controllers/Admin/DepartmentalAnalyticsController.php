@@ -25,6 +25,73 @@ class DepartmentalAnalyticsController extends Controller
     }
   }
 
+  public function loadCards(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    Log::debug('Load Cards Called');
+    $departmentID = $request->input('departmentID');
+    $activeEvalYear = EvalYear::where('status', 'active')->first();
+    $selectedYear = $request->input('selectedYear');
+
+    if ($selectedYear == 'null') {
+      $selectedYear = null;
+    }
+
+    if ($selectedYear) {
+      $schoolYear = str_replace('_', '-', $selectedYear);
+
+      $appraisalsTable = 'appraisals_' . $selectedYear;
+      $finalTable = 'final_scores_' . $selectedYear;
+
+      $totalPermanentEmployees = Appraisals::from($appraisalsTable)
+        ->where('department_id', $departmentID)
+        ->count();
+
+      $totalAppraisals = FinalScores::from($finalTable)
+        ->where('department_id', $departmentID)
+        ->count();
+
+      $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+      $avgTotalScore = FinalScores::from($finalTable)
+        ->where('department_id', $departmentID)
+        ->avg('final_score');
+
+      $avgTotalScore = round($avgTotalScore, 2);
+    } else if ($activeEvalYear) {
+      if (AppraisalAnswers::tableExists() && FormQuestions::tableExists()) {
+        $schoolYear = $activeEvalYear->sy_start . "-" . $activeEvalYear->sy_end;
+        $totalPermanentEmployees = Appraisals::where('department_id', $departmentID)
+          ->count();
+
+        $totalAppraisals = FinalScores::where('department_id', $departmentID)
+          ->count();
+
+        $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
+
+        $avgTotalScore = FinalScores::where('department_id', $departmentID)
+        ->avg('final_score');
+
+        $avgTotalScore = round($avgTotalScore, 2);
+      } else {
+        return response()->json(['success' => false]);
+      }
+    } else {
+      return response()->json(['success' => false]);
+    }
+
+    return response()->json([
+      'success' => true,
+      'schoolYear' => $schoolYear,
+      'totalAppraisals' => $totalAppraisals,
+      'totalPermanentEmployees' => $totalPermanentEmployees,
+      'avgTotalScore' => $avgTotalScore
+    ]);
+  }
+
   public function getFinalScoresPerDepartment(Request $request)
   {
     if (!session()->has('account_id')) {

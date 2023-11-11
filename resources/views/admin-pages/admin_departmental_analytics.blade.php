@@ -5,6 +5,10 @@
 @endsection
 
 @section('content')
+    <div class="row g-3 align-items-start mb-3">
+        <h2 id="school-year-heading">School Year: -</h2>
+    </div>
+
     <div class="row">
         <div class="col mb-3">
             <div class="content-container text-center h-100">
@@ -214,9 +218,7 @@
                 $('#department-heading').text(departmentName);
             }
 
-            //loadBCQuestions(selectedYear, departmentID);
-            //loadICQuestions(selectedYear, departmentID);
-            //loadCards(selectedYear, departmentID);
+            loadCards(departmentID, null);
             loadPointsSystem(departmentID);
             fetchAndDisplayDepartmentLineChart(departmentID);
             loadSIDQuestions(departmentID, null);
@@ -282,11 +284,11 @@
                                             '_');
 
                                         console.log('Clicked Year: ' + clickedYear);
-                                        loadCards(clickedYear);
-                                        loadSIDQuestions(clickedYear);
-                                        loadSRQuestions(clickedYear);
-                                        loadICQuestions(clickedYear);
-                                        loadSQuestions(clickedYear);
+                                        loadCards(departmentID, clickedYear);
+                                        loadSIDQuestions(departmentID, clickedYear);
+                                        loadSRQuestions(departmentID, clickedYear);
+                                        loadICQuestions(departmentID, clickedYear);
+                                        loadSQuestions(departmentID, clickedYear);
                                     }
                                 },
                                 responsive: true,
@@ -322,7 +324,7 @@
             });
         }
 
-        function loadCards(selectedYear = null, departmentID = null) {
+        function loadCards(departmentID, selectedYear = null) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -335,14 +337,13 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#total-pe-container').html('<h4>Total Appraisees:</h4><p>' + response
-                            .totalPermanentEmployees + '</p>');
+                        console.log(response);
+                        $('#school-year-heading').text('School Year: ' + response.schoolYear);
+                        $('#total-pe').text(response.totalPermanentEmployees);
 
-                        $('#avg-score-container').html('<h4>Average Score:</h4><p>' + response.avgTotalScore +
-                            '</p>');
+                        $('#avg-score').text(response.avgTotalScore);
 
-                        $('#total-appraisals-container').html('<h4>Appraisals Completed:</h4><p>' + response
-                            .totalAppraisals + '</p>');
+                        $('#total-appraisals').text(response.totalAppraisals);
                     } else {
                         // console.log('Load Cards failed.');
                     }

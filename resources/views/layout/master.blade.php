@@ -30,6 +30,77 @@
 </head>
 
 <body style='background-color:#F5F6FA'>
+    <nav class="navbar sticky-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="bx bx-menu" id="menuToggle"></i>
+            </button>
+            <a class="navbar-brand" href="#">Adamson University</a>
+            <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#logout-confirmation-modal">
+                <i class="bx bx-log-out"></i>
+            </button>
+        </div>
+    </nav>
+    <div id="navbarMenu" class="d-none">
+        @if (session()->get('user_level') === 'AD')
+            <ul class="list-group">
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewAdminDashboard') }}" class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-grid-alt me-1'></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewAdminAppraisalsOverview') }}"
+                        class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-file me-1'></i>
+                        <span>Appraisal Overview</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewEmployeeTable') }}" class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-user-plus me-1'></i>
+                        <span>Employees</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewEvaluationYears') }}" class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-box me-1'></i>
+                        <span>Evaluation Year</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewEditableAppraisalForm') }}"
+                        class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-book-alt me-1'></i>
+                        <span>Appraisal Form</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewEditableInternalCustomerForm') }}"
+                        class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-book-alt me-1'></i>
+                        <span>Internal Customers Form</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewRequestOverview') }}"
+                        class="btn btn-link text-light text-decoration-none">
+                        <i class="bi bi-envelope-paper me-1"></i>
+                        <span>Request Overview</span>
+                    </a>
+                </li>
+            </ul>
+        @endif
+
+        <li class="list-group-item border-0 mb-3">
+            <a href="{{ route('viewSettings') }}" class="btn btn-link text-light text-decoration-none">
+                <i class='bx bx-cog me-1'></i>
+                <span>Settings</span>
+            </a>
+        </li>
+    </div>
+
     <div class="sidebar close">
         <div class="logo-details">
             <i class='bx bx-menu' id='menuToggle'></i>
@@ -250,6 +321,12 @@
     </script>
 </body>
 <script>
+    $(document).ready(function() {
+        $('#menuToggle').click(function() {
+            $('#navbarMenu').toggleClass('d-none');
+        });
+    });
+
     function toggleSubMenu(arrow) {
         let arrowParent = arrow.parentElement.parentElement;
         arrowParent.classList.toggle("showMenu");

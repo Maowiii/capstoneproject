@@ -7,22 +7,6 @@
 @section('content')
     <div class="row g-3 align-items-start mb-3">
         <h2 id="school-year-heading">School Year: -</h2>
-        {{-- <div class="col-auto">
-            <h4>School Year:</h4>
-        </div>
-        <div class="col">
-            <select class="form-select align-middle" id="evaluation-year-select">
-                @if (!$activeEvalYear)
-                    <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
-                @endif
-                @foreach ($evaluationYears as $year)
-                    <option value="{{ $year->sy_start }}_{{ $year->sy_end }}"
-                        @if ($activeEvalYear && $year->eval_id === $activeEvalYear->eval_id) selected @endif>
-                        {{ $year->sy_start }} - {{ $year->sy_end }}
-                    </option>
-                @endforeach
-            </select>
-        </div> --}}
     </div>
 
     <!-- Cards -->
@@ -47,6 +31,7 @@
         </div>
     </div>
 
+    <!-- Performance Trend -->
     <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
         <h2 class="text-center">Overall Performance trend:</h2>
         <div class="w-100" style="height: 300px">
@@ -57,11 +42,13 @@
     <!-- Departments Table -->
     <div class="content-container container-fluid">
         <div class="table-responsive">
-            <div class="input-group mb-2 w-25 float-end">
-                <input type="text" class="form-control" placeholder="Department" id="search">
-                <button class="btn btn-outline-secondary" type="button">
-                    <i class='bx bx-search'></i>
-                </button>
+            <div class="col-md-6 col-lg-4 float-end mb-3">
+                <div class="d-flex">
+                    <input type="text" class="form-control rounded-0 rounded-start" placeholder="Department" id="search">
+                    <button class="btn btn-outline-secondary rounded-0 rounded-end" type="button">
+                        <i class='bx bx-search'></i>
+                    </button>
+                </div>
             </div>
             <table class='table table-bordered table-sm align-middle' id="departments_table">
                 <thead>
@@ -238,34 +225,6 @@
                 <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
                     <i class='bx bxs-printer'></i>
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="scoreModalTitle">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h4 id="scoreModalQuestion">Text</h4>
-                    <table class="table table-sm mb-3" id="scoreModalTable">
-                        <thead>
-                            <th>Name</th>
-                            <th>Score</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <nav id="score_pagination_container">
-                        <ul class="pagination pagination-sm justify-content-end" id="score_pagination"></ul>
-                    </nav>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
             </div>
         </div>
     </div>
@@ -1885,3 +1844,30 @@
         }
     </script>
 @endsection
+
+<div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg .modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="scoreModalTitle">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4 id="scoreModalQuestion">Text</h4>
+                <table class="table table-sm mb-3" id="scoreModalTable">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <nav id="score_pagination_container">
+                    <ul class="pagination pagination-sm justify-content-end" id="score_pagination"></ul>
+                </nav>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
