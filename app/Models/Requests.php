@@ -36,9 +36,10 @@ class Requests extends Model
         parent::__construct($attributes);
 
         $activeEvaluationYear = EvalYear::where('status', 'active')->first();
+        
         if ($activeEvaluationYear) {
-        $activeYear = 'form_request_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
-        $this->setTable($activeYear);
+            $activeYear = 'form_request_' . $activeEvaluationYear->sy_start . '_' . $activeEvaluationYear->sy_end;
+            $this->setTable($activeYear);
         }
     }
 }

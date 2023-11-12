@@ -881,7 +881,7 @@
                     <h5 class="modal-title fs-5">REQUEST FORM</h5>
                     <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('submitRequest') }}" method="POST">
+                <form action="{{ route('submitRequest') }}" method="POST" id="sendReqForm">
                     @csrf
                     <div class="modal-body">
                         <div id="validation-results" class="alert alert-danger" style="display: none;">
@@ -1657,7 +1657,7 @@
                 $('#request-popup-modal').modal('show');
             });
 
-            $('form').on('submit', function(event) {
+            $('#sendReqForm').on('submit', function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
                 // Collect the form data
@@ -1676,6 +1676,7 @@
                     },
                     success: function(data) {
                         // Handle the server response (if needed)
+                        $('#sendreq').hide();
                         console.log(data);
                     },
                     error: function(error) {

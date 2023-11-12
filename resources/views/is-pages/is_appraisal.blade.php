@@ -72,6 +72,8 @@
 
     <form method="post" action="{{ route('saveISAppraisal') }}" enctype="multipart/form-data" class="needs-validation"
         id="PEappraisalForm">
+        @csrf
+
         <input type="hidden" value="{{ $appraisalId }}" name="appraisalID">
 
         <div class='content-container'>
@@ -87,6 +89,7 @@
                 you.</p>
                 <button type="button" class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
         </div>
+
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
             <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
@@ -108,203 +111,203 @@
                 educational institutions, government agencies, industries, business and other groups enhances our
                 educational
                 services.</p>
-            @csrf
             <div class="table-responsive">
-            <table class='table table-bordered' id="SID_table">
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th>Performance Level</th>
-                    </tr>
-                </thead>
-                <tbody id='SID_table_body'>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                <table class='table table-bordered' id="SID_table">
+                    <thead>
+                        <tr>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th>Performance Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id='SID_table_body'>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input class="small-column form-control total-frequency text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
 
-            <h4>Spirit of St. Vincent de Paul</h4>
-            <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
-                in
-                our sensitivity to the presence of God, compassionate service and the building of supportive relationships
-                towards an effective service to persons in need.</p>
-            <h4>Social Responsibility</h4>
-            <p>Education at Adamson aims at developing a sense of social responsibility - a mark of an authentic Christian
-                faith. Social responsibility leads us to empower the marginalized sectors of society through the creation of
-                knowledge and human development. We are committed to work for the building of a society based on justice,
-                peace,
-                respect for human dignity and the integrity of creation.</p>
-                <div class="table-responsive">
-            <table class='table table-bordered' id="SR_table">
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="SR_table_body">
-                    <!-- CONTENT -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
             <div class="table-responsive">
+                <h4>Spirit of St. Vincent de Paul</h4>
+                <p>The spirit of St. Vincent inspires and permeates our learning community, programs and services. This is shown
+                    in
+                    our sensitivity to the presence of God, compassionate service and the building of supportive relationships
+                    towards an effective service to persons in need.</p>
+                <h4>Social Responsibility</h4>
+                <p>Education at Adamson aims at developing a sense of social responsibility - a mark of an authentic Christian
+                    faith. Social responsibility leads us to empower the marginalized sectors of society through the creation of
+                    knowledge and human development. We are committed to work for the building of a society based on justice,
+                    peace,
+                    respect for human dignity and the integrity of creation.</p>
+                <table class='table table-bordered' id="SR_table">
+                    <thead>
+                        <tr>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th class='small-column'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="SR_table_body">
+                        <!-- CONTENT -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input class="small-column form-control total-frequency text-center" type="text"
+                                        readonly>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>    
+            </div>
 
-            <h4>Solidarity</h4>
-            <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
-                collaborative effort where the gifts of persons are valued. Our learning community is a "family" where
-                participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
-                builds
-                up our community, encouraging us towards excellence and professionalism.</p>
-                <div class="table-responsive">
-            <table class='table table-bordered' id='S_table'>
-                <thead>
-                    <tr>
-                        <th class='extra-small-column'>#</th>
-                        <th>Question</th>
-                        <th class='small-column'>Action</th>
-                    </tr>
-                </thead>
-                <tbody id='S_table_body'>
-                    <!-- CONTENT -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Frequency:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+            <div class="table-responsive">
+                <h4>Solidarity</h4>
+                <p>Drawn together by a common vision and mission, we believe education is a shared responsibility and a
+                    collaborative effort where the gifts of persons are valued. Our learning community is a "family" where
+                    participation, team work, interdependence, communication and dialogue prevail. A culture of appreciation
+                    builds
+                    up our community, encouraging us towards excellence and professionalism.</p>
+                <table class='table table-bordered' id='S_table'>
+                    <thead>
+                        <tr>
+                            <th class='extra-small-column'>#</th>
+                            <th>Question</th>
+                            <th class='small-column'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id='S_table_body'>
+                        <!-- CONTENT -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Frequency:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-5 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input class="small-column form-control total-frequency text-center" type="text"
                                         readonly>
                                 </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-4 text-center" type="text"
-                                        readonly>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="table-responsive">
+                <table class='table table-bordered' id='Overall_table'>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td class='text-right'>Overall Behavioral Competencies Total:</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <input id="BHTotal" class="small-column form-control total-frequency text-center"
+                                        type="text" readonly>
                                 </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-3 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-2 text-center" type="text"
-                                        readonly>
-                                </div>
-                                <div class="col-auto">
-                                    <input class="xxs-column form-control frequency-counter-1 text-center" type="text"
-                                        readonly>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input class="small-column form-control total-frequency text-center" type="text"
-                                    readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-                </div>
-                <div class="table-responsive">
-            <table class='table table-bordered' id='Overall_table'>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td class='text-right'>Overall Behavioral Competencies Total:</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-3">
-                                <input id="BHTotal" class="small-column form-control total-frequency text-center"
-                                    type="text" readonly>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
-                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
 
         <div class="content-container">
@@ -372,48 +375,49 @@
                     </tr>
                 </tbody>
             </table>
-                </div>
-            <div class="table-responsive">
-                <table class='table table-bordered' id="kra_table">
-                    <thead>
-                        <tr>
-                            <th class='large-column' id="krainput">KRA</th>
-                            <th class='xxs-column'>Weight</th>
-                            <th class='large-column' id="obj">Objectives</th>
-                            <th class='large-column' id="pi">Performance Indicators</th>
-                            <th class='large-column' id="ar">Actual Results</th>
-                            <th class='medium-column'>Performance Level</th>
-                            <th class="xxs-column" id="wt">Weighted Total</th>
-                            <th class="xxs-column">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="KRA_table_body">
-                        <!-- CONTENT -->
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td class='text-right'>Weight Total:</td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <input id="KRA_Weight_Total" class="small-column form-control total-weight"
-                                        type="text" readonly>
-                                </div>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class='text-right'>Total:</td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <input id="KRA_Total" class="small-column form-control total-weighted text-center"
-                                        type="text" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class='table table-bordered' id="kra_table">
+                <thead>
+                    <tr>
+                        <th class='large-column' id="krainput">KRA</th>
+                        <th class='xxs-column'>Weight</th>
+                        <th class='large-column' id="obj">Objectives</th>
+                        <th class='large-column' id="pi">Performance Indicators</th>
+                        <th class='large-column' id="ar">Actual Results</th>
+                        <th class='medium-column'>Performance Level</th>
+                        <th class="xxs-column" id="wt">Weighted Total</th>
+                        <th class="xxs-column">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="KRA_table_body">
+                    <!-- CONTENT -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class='text-right'>Weight Total:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input id="KRA_Weight_Total" class="small-column form-control total-weight"
+                                    type="text" readonly>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class='text-right'>Total:</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-3">
+                                <input id="KRA_Total" class="small-column form-control total-weighted text-center"
+                                    type="text" readonly>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-primary" id="add-kra-btn">Add Row</button>
             </div>
@@ -727,7 +731,7 @@
                     <h5 class="modal-title fs-5">REQUEST FORM</h5>
                     <button type="button" class="btn-close common-close-button" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('submitRequest') }}" method="POST">
+                <form action="{{ route('submitRequest') }}" method="POST" id="sendReqForm">
                     @csrf
                     <div class="modal-body">
                         <div id="validation-results" class="alert alert-danger" style="display: none;">
@@ -1423,7 +1427,7 @@
                 $('#request-popup-modal').modal('show');
             });
 
-            $('form').on('submit', function(event) {
+            $('#sendReqForm').on('submit', function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
                 // Collect the form data
@@ -1442,6 +1446,7 @@
                     },
                     success: function(data) {
                         // Handle the server response (if needed)
+                        $('#sendreq').hide();
                         console.log(data);
                     },
                     error: function(error) {
@@ -2376,11 +2381,11 @@
                     appraisalId: {{ $appraisalId }}
                 },
                 success: function(response) {
-                    // console.log("PHASE");
-                    // console.log(response);
+                    console.log("PHASE");
+                    console.log(response);
 
                     // console.log(response.submitionChecker);
-                    // console.log(Object.values(response.locks).every(lock => !lock));
+                    console.log(Object.values(response.locks).every(lock => !lock));
 
                     if (response.submitionChecker && Object.values(response.locks).every(lock => !lock)) {
                         $('select').prop('disabled', true);
@@ -2397,6 +2402,9 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+
+                        $('#sendreq').show();
+                        $('#requestText').prop('disabled', false);
                     } else {
                         if (response.phaseData === "kra") {
                             $('textarea').prop('disabled', true);
@@ -2420,6 +2428,9 @@
                                     scrollTop: $('#kra_table').offset().top
                                 }, 10);
                             }
+
+                            $('#sendreq').show();
+                            $('#requestText').prop('disabled', false);
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
 
@@ -2445,6 +2456,9 @@
                                     scrollTop: $('#kra_table').offset().top
                                 }, 10);
                             }
+
+                            $('#sendreq').show();
+                            $('#requestText').prop('disabled', false);  
                         } else if (response.phaseData === "eval") {
                             $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
                             $('#KRA_table_body [name$="[KRA_kra_weight]"]').addClass('pe-none');
@@ -2453,11 +2467,17 @@
 
                             $('#add-kra-btn').prop('disabled', true);
                             $('.kra-delete-btn').prop('disabled', true);
+
+                            $('#sendreq').show();
+                            $('#requestText').prop('disabled', false);
                         } else if (response.phaseData === "lock") {
                             $('select').prop('disabled', true);
                             $('input[type="radio"]').prop('disabled', true);
                             $('textarea').prop('disabled', true);
                             $('#lockToast').toast('show');
+
+                            $('#sendreq').show();
+                            $('#requestText').prop('disabled', false);
                         }
                     }
 
@@ -2482,6 +2502,8 @@
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
                         }, 100);
+
+                        $('#lockToast').toast('hide');
                     }
 
                     if (response.locks.pr) {
@@ -2489,9 +2511,11 @@
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
                         }, 100);
+
+                        $('#lockToast').toast('hide');
                     }
 
-                    if (response.locks.eval) {
+                    if (response.locks.eval || response.locks.lock) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
@@ -2500,6 +2524,8 @@
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
                         $('#submit-btn-sign').show();
+
+                        $('#lockToast').toast('hide');
                     }
                 },
                 error: function(xhr, status, error) {
