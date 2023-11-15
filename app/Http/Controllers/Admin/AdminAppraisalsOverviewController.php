@@ -105,7 +105,6 @@ class AdminAppraisalsOverviewController extends Controller
     ]);
   }
 
-
   public function loadSelfEvaluationForm()
   {
     if (!session()->has('account_id')) {

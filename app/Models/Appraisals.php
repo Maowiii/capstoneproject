@@ -75,6 +75,12 @@ class Appraisals extends BaseModel
   {
     return $this->hasMany(KRA::class, 'appraisal_id');
   }
+
+  public function request(): HasMany
+  {
+      return $this->hasMany(Requests::class, 'appraisal_id');
+  }
+
 }
 
 ?>

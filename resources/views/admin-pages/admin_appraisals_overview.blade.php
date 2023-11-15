@@ -877,7 +877,7 @@
                         var totalPage = response.appraisals.last_page;
                         var currentPage = response.appraisals.current_page;
                         var paginationLinks = response.appraisals.links;
-
+                        console.log(response);
                         $('#appraisal_pagination').empty();
                         // console.log(response.appraisals);
                         for (var totalPageCounter = 1; totalPageCounter <=

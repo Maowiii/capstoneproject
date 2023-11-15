@@ -52,7 +52,7 @@
             </table>
         </div>
         <nav id="appraisal_pagination_container">
-              <ul class="pagination pagination-sm justify-content-end" id="appraisal_pagination"></ul>
+              <ul class="pagination pagination-sm justify-content-end" id="request_pagination"></ul>
         </nav>
     </div>
 
@@ -181,13 +181,13 @@
       $('#evaluation-year-select').change(function() {
           var selectedYear = $(this).val();
           globalSelectedYear = selectedYear;
-          loadAdminAppraisalsTable(selectedYear, null);
+          loadUserRequestsTable(selectedYear, null);
           // console.log('Selected Year: ' + selectedYear);
       });
 
       $('#search').on('input', function() {
           var query = $(this).val();
-          loadAdminAppraisalsTable(globalSelectedYear, query)
+          loadUserRequestsTable(globalSelectedYear, query)
       });
       
       loadUserRequestsTable();
@@ -277,7 +277,7 @@
               $('#request_body').empty();
               console.log(data);
               // Loop through the retrieved data and populate the table
-              $.each(data, function(index, request) {
+              $.each(data.data, function(index, request) {
                   var row = $('<tr>');
 
                   row.append($('<td>').text(request.requester));
@@ -376,7 +376,7 @@
                   });
 
                   // Determine the action based on the request status
-                  if (request.status  === 'pending') {
+                  if (request.status.toLowerCase() === 'pending') {
                       // Enable both "Approve" and "Disapprove" buttons
                       approveButton.prop('disabled', false);
                       disapproveButton.prop('disabled', false);
@@ -401,32 +401,31 @@
                   $('#request_body').append(row);
               });
 
-              var totalPage = last_page;
-              var currentPage = current_page;
-              var paginationLinks = links;
+              var totalPage = data.pagination.last_page;
+              var currentPage = data.pagination.current_page;
+              var paginationLinks = data.pagination.links;
 
               $('#request_pagination').empty();
 
-              for (var totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) 
-                { 
-                  (function(pageCounter) 
-                    {
+              for (var totalPageCounter = 1; totalPageCounter <=
+                  totalPage; totalPageCounter++) {
+                  (function(pageCounter) {
                       var pageItem = $('<li>').addClass('page-item');
-
                       if (pageCounter === currentPage) {
                           pageItem.addClass('active');
                       }
 
-                      var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                      var pageButton = $('<button>').addClass('page-link').text(
+                          pageCounter);
                       pageButton.click(function() {
                           // Redirect to the selected page
-                          loadUserRequestsTable(selectedYear, search, pageCounter);
+                          loadUserRequestsTable(selectedYear, search,
+                              pageCounter);
                       });
 
                       pageItem.append(pageButton);
                       $('#request_pagination').append(pageItem);
-                  }
-                )(totalPageCounter);
+                  })(totalPageCounter);
               }
           },
           error: function(error) {

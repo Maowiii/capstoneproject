@@ -9,6 +9,7 @@ use App\Models\Requests;
 use App\Models\Appraisals;
 
 use App\Models\Signature;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -37,48 +38,35 @@ class AdminRequestOverviewController extends Controller
         $sy_start = null;
         $sy_end = null; 
 
-        if ($selectedYear) {
-            $parts = explode('_', $selectedYear);
+        // Requests::setSelectedYear($selectedYear);
+        DB::enableQueryLog();
 
-            if (count($parts) >= 2) {
-                $sy_start = $parts[0];
-                $sy_end = $parts[1];
-            }
-
-            $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
-            $table = 'form_request_' . $selectedYear;
-
-            // Retrieve all user requests with related data
-            $userRequests = Requests::from($table)
-                ->with(['appraisal.evaluator'])
-                ->whereExists(function ($query) use ($search, $table) {
-                $query->selectRaw(1)
-                    ->from('employees')
-                    ->whereRaw("$table.employee_id = employees.employee_id")
-                    ->where(function ($innerQuery) use ($search) {
-                    $innerQuery->orWhere('first_name', 'like', '%' . $search . '%')
-                        ->orWhere('last_name', 'like', '%' . $search . '%');
-                    });
-                })
-                ->paginate(10);
-        } elseif ($activeEvalYear) {
-            $sy_start = $activeEvalYear->sy_start;
-            $sy_end = $activeEvalYear->sy_end;
-
-            $selectedYearDates = $activeEvalYear;
-
-            $userRequests = Requests::with(['appraisal.evaluator'])
-                ->whereHas('appraisal.employee', function ($query) use ($search) {
-                    if ($search) {
-                    $query->where('first_name', 'like', '%' . $search . '%')
-                        ->orWhere('last_name', 'like', '%' . $search . '%');
-                    }
-                })    
-              ->paginate(10);
-        }else {
-            return response()->json(['success' => false, 'error' => 'There is no selected nor ongoing year.']);
+        if (!$selectedYear && !$activeEvalYear) {
+            return response()->json(['success' => false, 'error' => 'No selected nor ongoing year.']);
         }
-        
+        $selectedYear = $request->input('selectedYear') ?? $activeEvalYear->sy_start . '_' . $activeEvalYear->sy_end;
+        $formRequestTable = 'form_request_' . $selectedYear;
+        $appraisalTable = 'appraisals_' . $selectedYear;
+        // dd($formRequestTable.' '.$appraisalTable);
+
+        $userRequests = Requests::from($formRequestTable)
+        ->join($appraisalTable, "{$formRequestTable}.appraisal_id", '=', "{$appraisalTable}.appraisal_id")
+        ->leftJoin('employees as evaluator', "{$appraisalTable}.evaluator_id", '=', 'evaluator.employee_id')
+        ->leftJoin('employees as appraisee', "{$appraisalTable}.employee_id", '=', 'appraisee.employee_id')
+        ->leftJoin('employees as approver', "{$formRequestTable}.approver_id", '=', 'approver.employee_id')
+        ->where(function ($query) use ($search, $appraisalTable, $formRequestTable) {
+            $query->whereRaw("CONCAT(evaluator.first_name, ' ', evaluator.last_name) LIKE '%" . $search . "%'")
+                ->orWhereRaw("CONCAT(appraisee.first_name, ' ', appraisee.last_name) LIKE '%" . $search . "%'")
+                ->orWhereRaw("CONCAT(approver.first_name, ' ', approver.last_name) LIKE '%" . $search . "%'")
+                ->orWhere("{$appraisalTable}.evaluation_type", 'like', '%' . $search . '%')
+                ->orWhere("{$formRequestTable}.status", 'like', '%' . $search . '%')
+                ->orWhere("{$formRequestTable}.request", 'like', '%' . $search . '%')
+                ->orWhere("{$formRequestTable}.created_at", 'like', '%' . $search . '%');
+        })
+        ->paginate(10);
+
+        $queries = DB::getQueryLog();
+
         // Map the data for the response
         $formattedRequests = $userRequests->map(function ($request) {
         
@@ -111,11 +99,23 @@ class AdminRequestOverviewController extends Controller
             ];
         });
 
+        $paginationData = [
+            'current_page' => $userRequests->currentPage(),
+            'from' => $userRequests->firstItem(),
+            'last_page' => $userRequests->lastPage(),
+            'last_page_url' => $userRequests->url($userRequests->lastPage()),
+            'next_page_url' => $userRequests->nextPageUrl(),
+            'path' => $userRequests->url(1),
+            'per_page' => $userRequests->perPage(),
+            'prev_page_url' => $userRequests->previousPageUrl(),
+            'to' => $userRequests->lastItem(),
+            'total' => $userRequests->total(),
+        ];
+
         return response()->json([
             'data' => $formattedRequests,
-            'last_page' => $userRequests->lastPage(),
-            'current_page' => $userRequests->currentPage(),
-            'links' => $userRequests->withPath('your_pagination_path')->links(), // Adjust 'your_pagination_path' accordingly
+            'pagination' => $paginationData,
+            'queries' => $queries, // Return the executed queries
         ], 200);
     }
     
