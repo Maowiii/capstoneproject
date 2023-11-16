@@ -1676,7 +1676,7 @@
                     },
                     success: function(data) {
                         // Handle the server response (if needed)
-                        $('#sendreq').hide();
+                        $('#sendrequest').hide();
                         console.log(data);
                     },
                     error: function(error) {

@@ -1446,7 +1446,7 @@
                     },
                     success: function(data) {
                         // Handle the server response (if needed)
-                        $('#sendreq').hide();
+                        $('#sendrequest').hide();
                         console.log(data);
                     },
                     error: function(error) {
@@ -2403,7 +2403,7 @@
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
 
-                        $('#sendreq').show();
+                        $('#sendrequest').show();
                         $('#requestText').prop('disabled', false);
                     } else {
                         if (response.phaseData === "kra") {
@@ -2429,7 +2429,7 @@
                                 }, 10);
                             }
 
-                            $('#sendreq').show();
+                            $('#sendrequest').show();
                             $('#requestText').prop('disabled', false);
                         } else if (response.phaseData === "pr") {
                             $('input[type="radio"]').prop('disabled', true);
@@ -2457,7 +2457,7 @@
                                 }, 10);
                             }
 
-                            $('#sendreq').show();
+                            $('#sendrequest').show();
                             $('#requestText').prop('disabled', false);  
                         } else if (response.phaseData === "eval") {
                             $('#KRA_table_body [name$="[KRA_kra]"]').prop('readonly', true);
@@ -2468,7 +2468,7 @@
                             $('#add-kra-btn').prop('disabled', true);
                             $('.kra-delete-btn').prop('disabled', true);
 
-                            $('#sendreq').show();
+                            $('#sendrequest').show();
                             $('#requestText').prop('disabled', false);
                         } else if (response.phaseData === "lock") {
                             $('select').prop('disabled', true);
@@ -2476,7 +2476,7 @@
                             $('textarea').prop('disabled', true);
                             $('#lockToast').toast('show');
 
-                            $('#sendreq').show();
+                            $('#sendrequest').show();
                             $('#requestText').prop('disabled', false);
                         }
                     }

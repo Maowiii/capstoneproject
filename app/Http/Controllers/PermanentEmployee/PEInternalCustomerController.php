@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\ScoreWeights;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use App\Models\AppraisalAnswers;
 use App\Models\Employees;
 use App\Models\Accounts;
@@ -16,6 +13,10 @@ use App\Models\Appraisals;
 use App\Models\Comments;
 use App\Models\FormQuestions;
 use App\Models\Signature;
+use App\Models\Requests;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -418,11 +419,34 @@ class PEInternalCustomerController extends Controller
       }
     }
 
-    return response()->json([
-      'form_submitted' => $locked,
-      'hideSignatory' => $shouldHideSignatory,
-      'hasPermission' => $hasPermission
-    ]);
+    // $hasRequest = Requests::where('appraisal_id', $appraisalId)->where('status', 'Pending')->exists();
+    $hasRequest = Requests::where('appraisal_id', $appraisalId)
+    ->whereIn('status', ['Pending', 'Approved', 'Disapproved'])
+    ->latest('created_at') // Get the latest entry
+    ->first();
+
+    $response = [
+        'form_submitted' => $locked,
+        'hideSignatory' => $shouldHideSignatory,
+        'hasPermission' => $hasPermission,
+        'hasRequest' => $hasRequest !== null,
+    ];
+    
+    if ($hasRequest) {
+        // Get additional information
+        $approver = Employees::find($hasRequest->approver_id);
+
+        $timestamp = $hasRequest->updated_at;
+        $updated_at = Carbon::parse($timestamp)->format('F j, Y H:i:s');
+
+        // Add information to the response
+        $response['status'] = $hasRequest->status;
+        $response['feedback'] = $hasRequest->feedback;
+        $response['approver_name'] = $approver ? $approver->first_name . ' ' . $approver->last_name : null;
+        $response['approved_at'] = $updated_at;
+    }
+    
+    return response()->json($response);    
   }
 
   function calculateFinalScore($appraisals)

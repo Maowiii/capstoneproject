@@ -50,19 +50,20 @@ class AdminRequestOverviewController extends Controller
         // dd($formRequestTable.' '.$appraisalTable);
 
         $userRequests = Requests::from($formRequestTable)
-        ->join($appraisalTable, "{$formRequestTable}.appraisal_id", '=', "{$appraisalTable}.appraisal_id")
-        ->leftJoin('employees as evaluator', "{$appraisalTable}.evaluator_id", '=', 'evaluator.employee_id')
-        ->leftJoin('employees as appraisee', "{$appraisalTable}.employee_id", '=', 'appraisee.employee_id')
-        ->leftJoin('employees as approver', "{$formRequestTable}.approver_id", '=', 'approver.employee_id')
-        ->where(function ($query) use ($search, $appraisalTable, $formRequestTable) {
-            $query->whereRaw("CONCAT(evaluator.first_name, ' ', evaluator.last_name) LIKE '%" . $search . "%'")
-                ->orWhereRaw("CONCAT(appraisee.first_name, ' ', appraisee.last_name) LIKE '%" . $search . "%'")
-                ->orWhereRaw("CONCAT(approver.first_name, ' ', approver.last_name) LIKE '%" . $search . "%'")
-                ->orWhere("{$appraisalTable}.evaluation_type", 'like', '%' . $search . '%')
-                ->orWhere("{$formRequestTable}.status", 'like', '%' . $search . '%')
-                ->orWhere("{$formRequestTable}.request", 'like', '%' . $search . '%')
-                ->orWhere("{$formRequestTable}.created_at", 'like', '%' . $search . '%');
+            ->join($appraisalTable, "{$formRequestTable}.appraisal_id", '=', "{$appraisalTable}.appraisal_id")
+            ->leftJoin('employees as evaluator', "{$appraisalTable}.evaluator_id", '=', 'evaluator.employee_id')
+            ->leftJoin('employees as appraisee', "{$appraisalTable}.employee_id", '=', 'appraisee.employee_id')
+            ->leftJoin('employees as approver', "{$formRequestTable}.approver_id", '=', 'approver.employee_id')
+            ->where(function ($query) use ($search, $appraisalTable, $formRequestTable) {
+                $query->whereRaw("CONCAT(evaluator.first_name, ' ', evaluator.last_name) LIKE '%" . $search . "%'")
+                    ->orWhereRaw("CONCAT(appraisee.first_name, ' ', appraisee.last_name) LIKE '%" . $search . "%'")
+                    ->orWhereRaw("CONCAT(approver.first_name, ' ', approver.last_name) LIKE '%" . $search . "%'")
+                    ->orWhere("{$appraisalTable}.evaluation_type", 'like', '%' . $search . '%')
+                    ->orWhere("{$formRequestTable}.status", 'like', '%' . $search . '%')
+                    ->orWhere("{$formRequestTable}.request", 'like', '%' . $search . '%')
+                    ->orWhere("{$formRequestTable}.created_at", 'like', '%' . $search . '%');
         })
+        ->orderBy("{$formRequestTable}.created_at", 'desc')
         ->paginate(10);
 
         $queries = DB::getQueryLog();
