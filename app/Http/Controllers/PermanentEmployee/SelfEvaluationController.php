@@ -1083,7 +1083,35 @@ class SelfEvaluationController extends Controller
       $submitionChecker = $appraisal->date_submitted;
       $isSubmissionMade = !is_null($submitionChecker) && $appraisal->locked == 1;
 
-      return response()->json(['success' => true, 'locks' => $locks, 'phaseData' => $phaseData, 'submitionChecker' => $isSubmissionMade]);
+      // $hasRequest = Requests::where('appraisal_id', $appraisalId)->where('status', 'Pending')->exists();
+      $hasRequest = Requests::where('appraisal_id', $appraisalId)
+      ->whereIn('status', ['Pending', 'Approved', 'Disapproved'])
+      ->latest('created_at') // Get the latest entry
+      ->first();
+
+      $response = [
+        'success' => true,
+        'locks' => $locks,
+        'phaseData' => $phaseData,
+        'submitionChecker' => $isSubmissionMade,
+        'hasRequest' => $hasRequest !== null,
+      ];
+
+      if ($hasRequest) {
+          // Get additional information
+          $approver = Employees::find($hasRequest->approver_id);
+
+          $timestamp = $hasRequest->updated_at;
+          $updated_at = Carbon::parse($timestamp)->format('F j, Y H:i:s');
+
+          // Add information to the response
+          $response['status'] = $hasRequest->status;
+          $response['feedback'] = $hasRequest->feedback;
+          $response['approver_name'] = $approver ? $approver->first_name . ' ' . $approver->last_name : null;
+          $response['approved_at'] = $updated_at;
+      }
+
+      return response()->json($response);
     } else {
       return response()->json(['success' => false, 'message' => 'Appraisal not found'], 404);
     }

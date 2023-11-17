@@ -210,8 +210,17 @@
                 job incumbent by completing this evaluation form. Please be reflective and candid in your responses. Kindly
                 submit the accomplished form to HRMD on or before the  deadline. Your cooperation is highly appreciated.
                 Thank
-                you.</p>
-            <button type="button" class="btn btn-primary" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
+                you.
+            </p>
+            <div class="d-grid gap-3">
+                <button type="button" class="btn btn-primary col-3" id="sendrequest"> <i class="bi bi-envelope-paper"></i> Send Request</button>
+                <div id="feedback-container" class="alert alert-info d-none" role="alert">
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>Feedback:</strong> <span id="feedback-text"></span>
+                    <hr>
+                    <div id="additional-info" class="font-italic"></div>
+                </div>
+            </div>
         </div>
 
         <div class="content-container">
@@ -1676,7 +1685,8 @@
                     },
                     success: function(data) {
                         // Handle the server response (if needed)
-                        $('#sendrequest').hide();
+                        $('#request-popup-modal').modal('hide');
+                        refreshPage();
                         console.log(data);
                     },
                     error: function(error) {
@@ -1684,6 +1694,15 @@
                     }
                 });
             });
+
+            $('#request-popup-modal').on('hidden.bs.modal', function() {
+                // Enable checkboxes and text area when the modal is closed
+                $('#requestText').prop('disabled', false).val('');
+            });
+
+            function refreshPage() {
+                location.reload();
+            }   
         });
 
         function loadTableData() {
@@ -2894,6 +2913,25 @@
                         $('textarea').prop('disabled', false);
                         $('#lockToast').toast('hide');
                         $('#sendreq').hide();
+                    }
+
+                    //////////////// SEND REQUEST /////////////////
+                    if (response.hasRequest) {
+                        if (response.status === 'Pending') {
+                            $('#sendrequest').removeClass('btn-primary').text('');
+                            $('#sendrequest').addClass('btn-outline-primary').text('Request Sent').prop('disabled', true).append('<i>').addClass('bi bi-envelope-paper');
+                        } else if (response.status === 'Approved' || response.status === 'Disapproved') {
+                            // Display feedback and appropriate UI for approved or disapproved requests
+                                $('#feedback-text').text(response.feedback);
+
+                            // Check if approver_name and approved_at are available
+                            if (response.approver_name && response.approved_at) {
+                                const approverInfo = `Approved by ${response.approver_name} on ${response.approved_at}`;
+                                $('#additional-info').text(approverInfo).addClass('font-italic');
+                            }
+
+                            $('#feedback-container').removeClass('d-none');
+                        }
                     }
                 },
                 error: function(xhr, status, error) {
