@@ -8,6 +8,7 @@ use App\Models\FormQuestions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class EditableInternalCustomerFormController extends Controller
 {
@@ -51,7 +52,6 @@ class EditableInternalCustomerFormController extends Controller
       $ICques->save();
 
       return response()->json(['success' => true, 'question' => $ICques, 'message' => 'Question updated successfully']);
-
     } catch (\Exception $e) {
       return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
     }
@@ -120,13 +120,26 @@ class EditableInternalCustomerFormController extends Controller
     if (!session()->has('account_id')) {
       return view('auth.login');
     }
-    
-    $active = EvalYear::where('status', 'active')->first();
 
-    if ($active) {
-      return response()->json(['formLocked' => true]);
-    } else {
+    $activeYear = EvalYear::where('status', 'active')->first();
+
+    if (!$activeYear) {
       return response()->json(['formLocked' => false]);
     }
+
+    $currentDate = Carbon::now();
+
+    if (
+      $currentDate->between($activeYear->kra_start, $activeYear->eval_end) ||
+      $currentDate->greaterThanOrEqualTo($activeYear->eval_end)
+    ) {
+      return response()->json([
+        'formLocked' => true,
+        'kra_start' => $activeYear->kra_start,
+        'eval_end' => $activeYear->eval_end,
+      ]);
+    }
+
+    return response()->json(['formLocked' => false]);
   }
 }
