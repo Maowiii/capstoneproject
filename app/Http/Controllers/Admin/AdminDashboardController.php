@@ -33,7 +33,6 @@ class AdminDashboardController extends Controller
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
-
   }
 
   public function loadCards(Request $request)
@@ -42,7 +41,7 @@ class AdminDashboardController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    Log::debug('Load Cards Called');
+    // Log::debug('Load Cards Called');
     $activeEvalYear = EvalYear::where('status', 'active')->first();
     $selectedYear = $request->input('selectedYear');
 
@@ -99,7 +98,7 @@ class AdminDashboardController extends Controller
       $search = $request->input('search');
       $page = $request->input('page');
 
-      $perPage = 20;
+      $perPage = 10;
       $departments = Departments::where('department_name', 'LIKE', '%' . $search . '%')
         ->orderBy('department_name')
         ->paginate($perPage, ['*'], 'page', $page);
@@ -184,7 +183,7 @@ class AdminDashboardController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -242,6 +241,71 @@ class AdminDashboardController extends Controller
     ]);
   }
 
+  public function getDepartmentalTrends()
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $departments = Departments::orderBy('department_name', 'asc')->get();
+    $evaluationYears = EvalYear::orderBy('sy_start', 'asc')->get();
+
+    $chartData = [
+      'labels' => [],     // Evaluation Years
+      'datasets' => [],   // Data points for each department
+    ];
+
+    // Initialize an empty array to store scores for each department
+    $departmentScores = [];
+    foreach ($departments as $department) {
+      $departmentScores[$department->department_name] = [];
+    }
+
+    foreach ($evaluationYears as $year) {
+      $table = 'final_scores_' . $year->sy_start . '_' . $year->sy_end;
+
+      $scoresForYear = [];
+
+      foreach ($departments as $department) {
+        $departmentID = $department->department_id;
+        $departmentName = $department->department_name;
+
+        $finalScore = DB::table($table)
+          ->whereIn('department_id', [$departmentID])
+          ->select(DB::raw('AVG(final_score) as average_score'))
+          ->first();
+
+        // Log::debug(json_encode($finalScore));
+
+        // Check if $finalScore is null, and set it to 0 if it is
+        $score = $finalScore && $finalScore->average_score !== null ? $finalScore->average_score : 0;
+
+        $scoresForYear[$departmentName] = $score;
+        $departmentScores[$departmentName][] = $score;
+      }
+
+      // Store evaluation years as labels
+      $chartData['labels'][] = $year->sy_start . '-' . $year->sy_end;
+
+      // Store average scores for each department in datasets
+      foreach ($departments as $department) {
+        $departmentName = $department->department_name;
+
+        $chartData['datasets'][$departmentName] = [
+          'label' => $departmentName,
+          'data' => $departmentScores[$departmentName],
+          // Additional dataset configurations for line chart (e.g., colors, etc.) can be added here
+        ];
+      }
+    }
+
+    return response()->json([
+      'success' => true,
+      'data' => $chartData,
+    ]);
+  }
+
+
   public function getFinalScoresPerYear()
   {
     if (!session()->has('account_id')) {
@@ -292,7 +356,7 @@ class AdminDashboardController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    $perPage = 20;
+    $perPage = 10;
     $search = $request->input('search');
     $page = $request->input('page', 1);
 
@@ -436,7 +500,7 @@ class AdminDashboardController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -577,7 +641,7 @@ class AdminDashboardController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -718,7 +782,7 @@ class AdminDashboardController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -826,7 +890,7 @@ class AdminDashboardController extends Controller
     if (!session()->has('account_id')) {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
-    
+
     $schoolYear = $request->input('selectedYear');
     $category = $request->input('category');
     $page = $request->input('page', 1);
