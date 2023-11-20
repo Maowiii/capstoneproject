@@ -36,12 +36,12 @@ class EvaluationYearController extends Controller
 
     if ($activeYear) {
       $evalyears = EvalYear::where('eval_id', '!=', $activeYear->eval_id)
-        ->orderBy('sy_start', 'asc')
+        ->orderBy('sy_start', 'desc')
         ->paginate(10);
 
       $evalyears->prepend($activeYear);
     } else {
-      $evalyears = EvalYear::orderBy('sy_start', 'asc')->paginate(10);
+      $evalyears = EvalYear::orderBy('sy_start', 'desc')->paginate(10);
     }
 
     return response()->json(['success' => true, 'evalyears' => $evalyears]);

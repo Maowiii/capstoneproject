@@ -39,18 +39,37 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-8" id="firstColumn">
+            <div class="content-container">
+                <h2 class="text-center">Departmental Performance trend:</h2>
+                <div class="w-100" style="height: 300px">
+                    <canvas id="departmentalTrend" aria-label="chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="content-container" id="secondColumn">
+                <h2>Department List:</h2>
+                <div id="departmentList" class="overflow-y-scroll" style="max-height: 300px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Departments Table -->
     <div class="content-container container-fluid">
         <div class="table-responsive">
             <div class="col-md-6 col-lg-4 float-end mb-3">
                 <div class="d-flex">
-                    <input type="text" class="form-control rounded-0 rounded-start" placeholder="Department" id="search">
+                    <input type="text" class="form-control rounded-0 rounded-start" placeholder="Department"
+                        id="search">
                     <button class="btn btn-outline-secondary rounded-0 rounded-end" type="button">
                         <i class='bx bx-search'></i>
                     </button>
                 </div>
             </div>
-            <table class='table table-bordered table-sm align-middle' id="departments_table">
+            <table class='table table-sm align-middle' id="departments_table">
                 <thead>
                     <tr>
                         <th>Department</th>
@@ -235,6 +254,16 @@
         }
 
         $(document).ready(function() {
+            // var firstColumnHeight = $('#firstColumn').height();
+            // $('#secondColumn').css('height', firstColumnHeight);
+
+            $(document).on('change', '#defaultAll', function() {
+                var isChecked = $(this).prop('checked');
+                console.log('All checked!');
+                $('.department-checkbox').prop('checked', isChecked);
+            });
+
+
             var globalSelectedYear = null;
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
@@ -259,6 +288,7 @@
             });
             loadCards(globalSelectedYear);
             fetchAndDisplayLineChart();
+            getDepartmentalTrends();
             loadDepartmentTable(globalSelectedYear, null);
             loadPointsSystem();
             loadSIDQuestions(globalSelectedYear);
@@ -271,6 +301,8 @@
             loadSRChart();
             loadSChart();
             loadICChart();
+
+            var totalAppraisals;
         });
 
         function loadCards(selectedYear = null) {
@@ -288,6 +320,7 @@
                         $('#school-year-heading').text('School Year: ' + response.schoolYear);
                         $('#total-pe').text(response
                             .totalPermanentEmployees);
+                        totalAppraisals = response.totalPermanentEmployees;
 
                         $('#avg-score').text(response.avgTotalScore);
 
@@ -530,14 +563,26 @@
                                     }
                                 },
                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
-                                },
+                                    }
+                                }
                             },
                         });
 
@@ -623,12 +668,17 @@
                                         stacked: true,
                                     },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
+                                    }
                                 },
                             },
                         });
@@ -802,14 +852,26 @@
                                     }
                                 },
                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
-                                },
+                                    }
+                                }
                             },
                         });
 
@@ -895,12 +957,17 @@
                                         stacked: true,
                                     },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
+                                    }
                                 },
                             },
                         });
@@ -1073,14 +1140,26 @@
                                     }
                                 },
                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
-                                },
+                                    }
+                                }
                             },
                         });
 
@@ -1166,12 +1245,17 @@
                                         stacked: true,
                                     },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
+                                    }
                                 },
                             },
                         });
@@ -1246,14 +1330,26 @@
                                     }
                                 },
                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Evaluation Year'
+                                        }
+                                    },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
-                                },
+                                    }
+                                }
                             },
                         });
 
@@ -1339,12 +1435,17 @@
                                         stacked: true,
                                     },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Average Final Score'
+                                        },
                                         beginAtZero: false,
                                         max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
+                                    }
                                 },
                             },
                         });
@@ -1596,12 +1697,17 @@
                                         stacked: true,
                                     },
                                     y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Number of appraised'
+                                        },
+                                        max: totalAppraisals,
                                         beginAtZero: false,
-                                        max: 5,
                                         ticks: {
                                             stepSize: 1,
                                         },
-                                    },
+                                    }
                                 },
                             },
                         });
@@ -1752,6 +1858,183 @@
         //     });
         // }
 
+        function getDepartmentalTrends() {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.getDepartmentalTrends') }}',
+                type: 'GET',
+                success: function(response) {
+                    console.log(response);
+
+                    // Trend
+                    const departmentalTrend = $('#departmentalTrend');
+                    var canvas = departmentalTrend[0];
+
+                    if (canvas) {
+                        var existingChart = Chart.getChart(canvas);
+                        if (existingChart) {
+                            existingChart.destroy();
+                        }
+                    }
+
+                    var jsonData = response.data;
+                    var labels = jsonData.labels;
+                    var datasets = Object.values(jsonData.datasets);
+
+                    // Modify the data for Chart.js
+                    var chartData = {
+                        labels: labels,
+                        datasets: datasets.map(dataset => {
+                            const color = generateRandomColor();
+                            return {
+                                label: dataset.label,
+                                data: dataset.data,
+                                backgroundColor: color,
+                                borderColor: color,
+                                borderWidth: 1,
+                                pointBackgroundColor: color,
+                                pointBorderColor: color,
+                                pointRadius: 5,
+                                pointHoverRadius: 8,
+                            };
+                        }),
+                    };
+
+                    var chartOptions = {
+                        type: 'line',
+                        data: chartData,
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: false,
+                                    position: 'bottom',
+                                }
+                            },
+                            onClick: function(event, elements) {
+                                if (elements.length > 0) {
+                                    var index = elements[0].index;
+                                    var clickedYear = labels[index].replace(/-/g, '_');
+
+                                    console.log('Clicked Year: ' + clickedYear);
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Evaluation Year'
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Average Final Score'
+                                    },
+                                    beginAtZero: false,
+                                    max: 5,
+                                    ticks: {
+                                        stepSize: 1,
+                                    },
+                                }
+                            }
+                        }
+                    };
+
+                    var chart = new Chart(departmentalTrend, chartOptions);
+
+                    // Check Box
+                    const departmentList = $('#departmentList');
+                    departmentList.empty();
+
+                    const allDepartmentsCheckbox = $('<div>')
+                        .addClass('form-check')
+                        .append(
+                            $('<input>')
+                            .addClass('form-check-input')
+                            .attr({
+                                type: 'checkbox',
+                                value: 'All Departments',
+                                id: 'defaultAll',
+                                checked: true
+                            })
+                            .on('change', function() {
+                                const isChecked = $(this).prop('checked');
+                                if (!isChecked) {
+                                    if (chart && chart.data.datasets) {
+                                        chart.data.datasets.forEach(dataset => {
+                                            dataset.hidden = true;
+                                        });
+                                        chart.update();
+                                    }
+                                } else {
+                                    if (chart && chart.data.datasets) {
+                                        chart.data.datasets.forEach(dataset => {
+                                            dataset.hidden = false;
+                                        });
+                                        chart.update();
+                                    }
+                                }
+                            }),
+                            $('<label>')
+                            .addClass('form-check-label')
+                            .attr('for', 'flexCheckDefaultAll')
+                            .text('All Departments')
+                        );
+
+
+                    departmentList.append(allDepartmentsCheckbox);
+
+                    var chart;
+
+                    $.each(datasets, function(key, department) {
+                        const color = generateRandomColor(); // Generate a random color
+                        const checkbox = $('<input>')
+                            .attr('type', 'checkbox')
+                            .addClass('form-check-input department-checkbox')
+                            .attr('value', department.label)
+                            .prop('checked', true)
+                            .on('change', function() {
+                                const datasetIndex = chart.data.datasets.findIndex(dataset =>
+                                    dataset.label === department.label);
+
+                                if (datasetIndex !== -1) {
+                                    chart.data.datasets[datasetIndex].hidden = !this.checked;
+                                    chart.update();
+                                }
+                            });
+
+                        const label = $('<label>')
+                            .addClass('form-check-label')
+                            .append(
+                                $('<i>').addClass('bx bxs-circle me-1').css('color',
+                                    color), // Use the same color
+                                document.createTextNode(department.label)
+                            );
+
+                        const formCheck = $('<div>')
+                            .addClass('form-check')
+                            .append(checkbox)
+                            .append(label);
+
+                        departmentList.append(formCheck);
+                    });
+
+
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                        .responseJSON.error : 'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
+
         function fetchAndDisplayLineChart() {
             $.get('{{ route('ad.getFinalScoresPerYear') }}', function(data) {
                 if (data.success) {
@@ -1841,6 +2124,15 @@
         function getRandomColor() {
             var randomBlue = Math.floor(Math.random() * 32).toString(16);
             return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
+        }
+
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
     </script>
 @endsection

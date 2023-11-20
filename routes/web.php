@@ -64,6 +64,7 @@ Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user
 Route::get('/dashboard-admin', [AdminDashboardController::class, 'displayAdminDashboard'])->name('viewAdminDashboard');
 Route::get('/dashboard-admin/load-cards', [AdminDashboardController::class, 'loadCards'])->name('ad.loadCards');
 Route::get('/dashboard-admin/get-final-scores-per-year', [AdminDashboardController::class, 'getFinalScoresPerYear'])->name('ad.getFinalScoresPerYear');
+Route::get('/dashboard-admin/get-departmental-trends', [AdminDashboardController::class, 'getDepartmentalTrends'])->name('ad.getDepartmentalTrends');
 Route::get('/dashboard-admin/get-departments-table', [AdminDashboardController::class, 'loadDepartmentTable'])->name('ad.loadDepartmentTable');
 Route::get('/dashboard-admin/load-points-system', [AdminDashboardController::class, 'loadPointsSystem'])->name('ad.loadDashboardPointsSystem');
 
@@ -87,6 +88,7 @@ Route::post('/dashboard-admin/department/line-chart', [DepartmentalAnalyticsCont
 
 Route::get('/dashboard-admin/department/load-cards', [DepartmentalAnalyticsController::class, 'loadCards'])->name('ad.loadDepartmentalCards');
 Route::get('/dashboard-admin/department/load-points-system', [DepartmentalAnalyticsController::class, 'loadPointsSystem'])->name('ad.loadDepartmentalPointsSystem');
+Route::get('/dashboard-admin/department/load-employees', [DepartmentalAnalyticsController::class, 'loadEmployees'])->name('ad.loadDepartmentalEmployees');
 Route::get('/dashboard-admin/department/view-category', [DepartmentalAnalyticsController::class, 'loadPointCategory'])->name('ad.viewDepartmentalCategory');
 
 Route::get('/dashboard-admin/department/load-sid-questions', [DepartmentalAnalyticsController::class, 'loadSIDQuestions'])->name('ad.loadDepartmentalSIDQuestions');

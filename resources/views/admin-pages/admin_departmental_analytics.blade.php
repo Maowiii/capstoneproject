@@ -37,6 +37,29 @@
         </div>
     </div>
 
+    <!-- Employees Table -->
+    <div class="content-container container-fluid">
+        <div class="table-responsive">
+            <div class="input-group mb-2 search-box">
+                <input type="text" class="form-control" placeholder="Name" id="namesearch">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
+            <table class='table table-sm align-middle' id="employees_table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <nav id="employee_pagination_container">
+            <ul class="pagination pagination-sm justify-content-end" id="employee_pagination"></ul>
+        </nav>
+    </div>
+
     <div class="container-fluid content-container d-flex flex-column align-items-center text-center">
         <h2>Point Categories:</h2>
         <div class="w-100" style="height: 300px">
@@ -221,6 +244,7 @@
             loadCards(departmentID, null);
             loadPointsSystem(departmentID);
             fetchAndDisplayDepartmentLineChart(departmentID);
+            loadEmployeesTable(departmentID, null);
             loadSIDQuestions(departmentID, null);
             loadSIDChart(departmentID);
             loadSRQuestions(departmentID, null);
@@ -229,6 +253,13 @@
             loadSChart(departmentID);
             loadICQuestions(departmentID, null);
             loadICChart(departmentID);
+
+             $('#namesearch').on('input', function() {
+                var query = $(this).val();
+                // console.log('Query: ' + query);
+                loadEmployeesTable(departmentID, query);
+            });
+
         });
 
         function fetchAndDisplayDepartmentLineChart(departmentID) {
@@ -1697,6 +1728,81 @@
             });
         }
 
+        function loadEmployeesTable(departmentID, namesearch = null, page = 1) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadDepartmentalEmployees') }}',
+                type: 'GET',
+                data: {
+                    search: namesearch,
+                    page: page,
+                    departmentID: departmentID,
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        var employees = response.employees.data;
+                        employees.sort((a, b) => a.first_name.localeCompare(b.first_name));
+
+                        var tableBody = $('#employees_table tbody');
+                        tableBody.empty();
+
+                        for (var i = 0; i < employees.length; i++) {
+                            var employee = employees[i];
+                            var fullName = employee.first_name + ' ' + employee.last_name;
+                            var employeeID = employee.employee_id;
+
+                            var link = $("<a>")
+                                .text(fullName)
+                                .attr("href", "{{ route('ad.viewEmployeeAnalytics') }}?employee_id=" +
+                                    employeeID + "&full_name=" + fullName);
+
+                            var row = $('<tr class="text-center">');
+                            row.append($('<td>').append(link));
+
+                            tableBody.append(row);
+                        }
+
+
+                        var totalPage = response.employees.last_page;
+                        var currentPage = response.employees.current_page;
+                        var pagination = $('#employee_pagination');
+                        pagination.empty();
+
+                        for (var totalPageCounter = 1; totalPageCounter <= totalPage; totalPageCounter++) {
+                            var pageItem = $('<li>').addClass('page-item');
+                            if (totalPageCounter === currentPage) {
+                                pageItem.addClass('active');
+                            }
+
+                            var pageButton = $('<button>').addClass('page-link').text(totalPageCounter);
+                            pageButton.click(function(pageCounter) {
+                                return function() {
+                                    loadEmployeesTable(departmentID, namesearch, pageCounter);
+                                };
+                            }(totalPageCounter));
+
+                            pageItem.append(pageButton);
+                            pagination.append(pageItem);
+                        }
+
+                    } else {
+                        $('#employees_table tbody').empty();
+                        var row = $(
+                            '<tr><td colspan="2"><p class="text-secondary fst-italic mt-0">No employees found.</p></td></tr>'
+                        );
+                        $('#employees_table tbody').append(row);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
+                        'An error occurred.';
+                    // console.log(errorMessage);
+                }
+            });
+        }
 
         function getRandomColor() {
             var randomBlue = Math.floor(Math.random() * 32).toString(16);

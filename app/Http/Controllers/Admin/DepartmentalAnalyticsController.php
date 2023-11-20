@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\AppraisalAnswers;
 use App\Models\Appraisals;
 use App\Models\Departments;
+use App\Models\Employees;
 use App\Models\EvalYear;
 use App\Models\FinalScores;
 use App\Models\FormQuestions;
@@ -31,7 +33,7 @@ class DepartmentalAnalyticsController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    Log::debug('Load Cards Called');
+    // Log::debug('Load Cards Called');
     $departmentID = $request->input('departmentID');
     $activeEvalYear = EvalYear::where('status', 'active')->first();
     $selectedYear = $request->input('selectedYear');
@@ -73,7 +75,7 @@ class DepartmentalAnalyticsController extends Controller
         $totalPermanentEmployees = ($totalPermanentEmployees > 0) ? ($totalPermanentEmployees / 4) : $totalPermanentEmployees;
 
         $avgTotalScore = FinalScores::where('department_id', $departmentID)
-        ->avg('final_score');
+          ->avg('final_score');
 
         $avgTotalScore = round($avgTotalScore, 2);
       } else {
@@ -92,6 +94,36 @@ class DepartmentalAnalyticsController extends Controller
     ]);
   }
 
+  public function loadEmployees(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $perPage = 10;
+    $search = $request->input('search');
+    $page = $request->input('page', 1);
+    $departmentID = $request->input('departmentID');
+
+    $query = Employees::whereHas('department', function ($query) use ($departmentID) {
+      $query->where('department_id', $departmentID);
+    })->with('department');
+
+    if (!empty($search)) {
+      if (!empty($search)) {
+        $query->where(function ($query) use ($search) {
+          $query->where('first_name', 'LIKE', '%' . $search . '%')
+            ->orWhere('last_name', 'LIKE', '%' . $search . '%');
+        });
+      }
+    }
+
+    $employees = $query->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json(['success' => true, 'employees' => $employees]);
+  }
+
+
   public function getFinalScoresPerDepartment(Request $request)
   {
     if (!session()->has('account_id')) {
@@ -100,7 +132,7 @@ class DepartmentalAnalyticsController extends Controller
 
     try {
       $departmentID = $request->input('departmentID');
-      Log::info('Department ID: ' . $departmentID);
+      // Log::info('Department ID: ' . $departmentID);
 
       $evaluationYears = EvalYear::all();
       $scoresByDepartment = [];
@@ -121,9 +153,9 @@ class DepartmentalAnalyticsController extends Controller
         'scoresByDepartment' => $scoresByDepartment,
       ]);
     } catch (\Exception $e) {
-      Log::error('Error in getFinalScoresPerDepartment: ' . $e->getMessage());
-      Log::info('Department ID: ' . $departmentID);
-      Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
+      // Log::error('Error in getFinalScoresPerDepartment: ' . $e->getMessage());
+      // Log::info('Department ID: ' . $departmentID);
+      // Log::info('Scores by Department: ' . json_encode($scoresByDepartment));
 
       return response()->json([
         'success' => false,
@@ -333,7 +365,7 @@ class DepartmentalAnalyticsController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -479,7 +511,7 @@ class DepartmentalAnalyticsController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
@@ -625,7 +657,7 @@ class DepartmentalAnalyticsController extends Controller
           $schoolYear = $matches[1] . '_' . $matches[2];
         }
 
-        Log::info('Table Name: ' . $tableName);
+        // Log::info('Table Name: ' . $tableName);
         $totalAverageScore = number_format($totalAverageScore / $totalQuestions, 2);
       } else {
         return response()->json(['success' => false]);
