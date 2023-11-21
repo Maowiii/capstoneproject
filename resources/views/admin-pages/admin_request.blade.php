@@ -345,13 +345,14 @@
                       // $('#switchCheckLabel_LOCK').prop('checked', request.locks.lock === true ? true : false);
 
                       if(request.feedback){
-                        $('$approveTextarea').val(request.feedback);
+                        $('#approveTextarea').val(request.feedback);
                       }
 
                       if (selectedYear < activeYear) {
                         $('#approveSubmitBtn, #disapprvSubmitBtn').hide(); 
                         $('input[type="checkbox"]').prop('disabled', true); 
                       }
+
                       // Trigger the modal
                       $('#approvedModal').modal('show');
                   });
@@ -429,7 +430,7 @@
                           pageCounter);
                       pageButton.click(function() {
                           // Redirect to the selected page
-                          loadUserRequestsTable(selectedYear, search,
+                          loadUserRequestsTable(selectedYear, search, activeYear,
                               pageCounter);
                       });
 

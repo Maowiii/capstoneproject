@@ -633,7 +633,7 @@
         </div>
 
         <div class="d-flex justify-content-center gap-3 p-3">
-            <button type="button" class="btn btn-primary medium-column btn-lg " id="submit-btn-form">View
+            <button type="button" class="btn btn-primary medium-column" id="submit-btn-form">View
                 Signature</button>
         </div>
     </form>

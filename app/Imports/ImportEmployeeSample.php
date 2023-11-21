@@ -117,7 +117,7 @@ class ImportEmployeeSample implements ToModel, WithUpserts, WithHeadingRow
                     }
                 }
             }
-
+            
             // Log info message
             Log::info('Employee appraisals created: ' . $employee->employee_id);
         } catch (\Exception $e) {

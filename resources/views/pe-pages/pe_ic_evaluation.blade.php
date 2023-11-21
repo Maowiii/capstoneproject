@@ -585,8 +585,11 @@
                             }
                         }
 
-                        $('#sendrequest').show();
-                        $('#requestText').prop('disabled', false);
+                        if (!response.canRequest) {
+                            $('#sendrequest').hide();
+                            $('#requestText').prop('disabled', true);
+                            $('#feedback-container').addClass('d-none');
+                        }   
                     } else {
                         if (!response.hasPermission) {
                             $('.modal').hide();
@@ -597,7 +600,6 @@
                         $('#requestText').prop('disabled', true);
                         return;
                     }
-
                 },
                 error: function(xhr, status, error) {
                     // console.log(error);

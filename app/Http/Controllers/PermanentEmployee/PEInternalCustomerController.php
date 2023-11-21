@@ -395,6 +395,7 @@ class PEInternalCustomerController extends Controller
     
     $shouldHideSignatory = ($appraiseeId == $accountId);
     $hasPermission = true;
+    $canRequest = true;
 
     if ($appraisal) {
       ////////////PERMISSION/////////////
@@ -417,6 +418,10 @@ class PEInternalCustomerController extends Controller
       if (!($isAdmin || $isEvaluator || $isEmployee || $isImmediateSuperior)) {
         $hasPermission = false;
       }
+
+      if(!$isEmployee){
+        $canRequest = false;
+      }
     }
 
     // $hasRequest = Requests::where('appraisal_id', $appraisalId)->where('status', 'Pending')->exists();
@@ -430,6 +435,7 @@ class PEInternalCustomerController extends Controller
         'hideSignatory' => $shouldHideSignatory,
         'hasPermission' => $hasPermission,
         'hasRequest' => $hasRequest !== null,
+        'canRequest' => $canRequest,
     ];
     
     if ($hasRequest) {

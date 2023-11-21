@@ -126,17 +126,12 @@
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
                                     if (appraisal.date_submitted !== null) {
                                         AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',`{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                            .attr('href',`{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                             .replace(':appraisal_id', appraisal_id)).text('View');
 
                                         newRow.append($('<td>').append($('<div>').append(AppraiseLink)));
                                     } else {
-                                        AppraiseLink = $('<a>').addClass(
-                                                'btn btn-outline-secondary disabled')
-                                            .attr('href',
-                                                `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text('View');
+                                        AppraiseLink = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
 
                                         newRow.append(
                                             $('<td>').append(
@@ -214,12 +209,12 @@
                                 newRow.append($('<td>').text(response.status));
                             } 
 
-                           // Check if the user has submitted the self-evaluation
-                        //    console.log(hasSelfEvaluation);
-                        //    console.log(response.final_score);
+                            // Check if the user has submitted the self-evaluation
+                            // console.log(hasSelfEvaluation);
+                            // console.log(response.final_score);
 
                             if (hasSelfEvaluation) {
-                                if (response.final_score.length !== 0) {
+                                if (response.final_score.length !== 0 && response.status === 'Complete') {
                                     // If the self-evaluation is submitted and final score is available, append the final score
                                     // var finalScore = parseFloat(response.final_score).toFixed(2);
                                     var finalScore = (response.final_score * 100) / 100;
@@ -228,7 +223,6 @@
 
                                     newRow.append($('<td>').text(finalScore.toFixed(2)));
                                 } else{ 
-                                    // If the self-evaluation is submitted but final score is not available, display "Pending"
                                     newRow.append($('<td>').text('-'));
                                 }
                             } else if (!hasSelfEvaluation) {

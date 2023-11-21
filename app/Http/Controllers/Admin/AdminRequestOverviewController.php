@@ -86,7 +86,7 @@ class AdminRequestOverviewController extends Controller
             ]);
 
             $requestsData = Requests::from($formRequestTable)
-            ->where('appraisal_id', $request->request_id)
+            ->where('request_id', $request->request_id)
             ->value('approver_id');
 
             if ($appraisalData || $requestsData) {
@@ -105,8 +105,8 @@ class AdminRequestOverviewController extends Controller
                     ->first(['first_name', 'last_name']);
                 
                 // Concatenate first_name and last_name
-                $requester_full_name = $requester_name;
-                $appraisee_full_name = $appraisee_name;
+                $requester_full_name = $requester_name['first_name'] . ' ' . $requester_name['last_name'];
+                $appraisee_full_name = $appraisee_name['first_name'] . ' ' . $appraisee_name['last_name'];
 
                 if ($requestsData !== null) {
                     // Fetch approver information only if $requestsData is not null
@@ -114,7 +114,7 @@ class AdminRequestOverviewController extends Controller
                         ->first(['first_name', 'last_name']);
 
                     // Concatenate first_name and last_name
-                    $approver_full_name = $approver_name;
+                    $approver_full_name = $approver_name['first_name'] . ' ' . $approver_name['last_name'];
                 } else {
                     // Set default value if $requestsData is null
                     $approver_full_name = "-";
