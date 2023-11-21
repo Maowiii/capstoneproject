@@ -364,10 +364,24 @@
                     type: 'GET',
                     success: function(response) {
                         console.log(response);
-                        if (response.formLocked == true) {
-                            $('.content-container button').prop('disabled', true);
-                            $('.content-container .delete-button').prop('disabled', true);
 
+                        if (response.formLocked == true) {
+                            const currentDate = new Date();
+                            const kraStartDate = new Date(response.kra_start);
+                            const newEvalYearStartDate = new Date(response.new_eval_year_start);
+
+                            // Check if the current date is after new eval year start or before kra_start
+                            if (currentDate > newEvalYearStartDate || currentDate < kraStartDate) {
+                                // Allow editing
+                                $('.editable').prop('contenteditable', true);
+                                $('.content-container button').prop('disabled', false);
+                                $('.content-container .delete-button').prop('disabled', false);
+                            } else {
+                                // Disable editing
+                                $('.editable').prop('contenteditable', false);
+                                $('.content-container button').prop('disabled', true);
+                                $('.content-container .delete-button').prop('disabled', true);
+                            }
                         }
                     },
                     error: function(xhr, status, error) {
@@ -384,18 +398,19 @@
 
                 $.each(questions, function(index, formquestion) {
                     var row = `<tr>
-                            <td class="align-middle">${index + 1}</td>
-                            <td class="align-baseline text-start editable" contenteditable="true" data-questionid="${formquestion.question_id}">
-                                ${formquestion.question}
-                            </td>
-                            <td class="align-middle">
-                                <button type="button" class="btn btn-outline-danger delete-button">Delete</button>
-                            </td>
-                        </tr>`;
+                    <td class="align-middle">${index + 1}</td>
+                    <td class="align-baseline text-start editable" contenteditable="true" data-questionid="${formquestion.question_id}" data-originalvalue="${formquestion.question}">
+                        ${formquestion.question}
+                    </td>
+                    <td class="align-middle">
+                        <button type="button" class="btn btn-outline-danger delete-button">Delete</button>
+                    </td>
+                </tr>`;
 
                     tbody.append(row);
                 });
             }
+
 
             loadAppraisalQuestionTable();
             editableFormChecker();
@@ -405,11 +420,9 @@
                 const originalValue = cell.data('originalvalue');
                 const newValue = cell.text().trim();
                 const row = $(this).closest('tr');
-                const questionId = row.find('.editable').data(
-                    'questionid');
-                const tableId = row.closest('table').attr('id'); // Get the ID of the parent table
+                const questionId = row.find('.editable').data('questionid');
 
-                if (newValue !== originalValue) {
+                if (originalValue !== undefined && newValue !== originalValue) {
                     const url = '/editable-appraisal-form/updateAppraisalQuestions/' + questionId;
 
                     const data = {
@@ -422,16 +435,17 @@
                         type: 'POST',
                         data: data,
                         success: function(response) {
-                            // console.log(response); // Handle success response
+                            // Handle success response
                         },
                         error: function(xhr, status, error) {
                             var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                                 .responseJSON.error : 'An error occurred.';
-                            // console.log(errorMessage);
+                            // Handle error response
                         }
                     });
                 }
             });
+
 
             $('table').on('click', '.delete-button', function(event) {
                 event.stopPropagation();
@@ -546,4 +560,3 @@
         });
     </script>
 @endsection
-

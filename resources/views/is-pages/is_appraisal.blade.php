@@ -11,6 +11,7 @@
                 <div class="toast-header">
                     <strong class="mr-auto">Appraisal Form Locked</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <span aria-hidden="true"></span>
                 </div>
                 <div class="toast-body">
                     The appraisal form is currently locked and cannot be edited.
@@ -2517,6 +2518,9 @@
 
                         $('#add-kra-btn').prop('disabled', false);
                         $('.kra-delete-btn').prop('disabled', false);
+                        $('#submit-btn-form').hide();
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
 
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
@@ -2530,6 +2534,10 @@
                         $('html, body').animate({
                             scrollTop: $('#kra_table').offset().top
                         }, 100);
+
+                        $('#submit-btn-form').hide();
+                        $('#uploadsign').hide();
+                        $('#submit-btn-sign').hide();
 
                         $('#lockToast').toast('hide');
                     }
@@ -2558,7 +2566,7 @@
 
                             // Check if approver_name and approved_at are available
                             if (response.approver_name && response.approved_at) {
-                                const approverInfo = `Approved by ${response.approver_name} on ${response.approved_at}`;
+                                const approverInfo = `Noted by ${response.approver_name} on ${response.approved_at}`;
                                 $('#additional-info').text(approverInfo).addClass('font-italic');
                             }
 

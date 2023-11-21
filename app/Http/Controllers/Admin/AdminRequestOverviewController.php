@@ -66,39 +66,79 @@ class AdminRequestOverviewController extends Controller
         ->orderBy("{$formRequestTable}.created_at", 'desc')
         ->paginate(10);
 
-        $queries = DB::getQueryLog();
-
         // Map the data for the response
-        $formattedRequests = $userRequests->map(function ($request) {
+        $formattedRequests = $userRequests->map(function ($request) use ($appraisalTable, $formRequestTable) {
         
             $timestamp = $request['created_at'];
             $dateSent = date('F j, Y H:i:s', strtotime($timestamp));
-
-            $appraisal_type = $request->appraisal->evaluation_type;
-            $appraisal_type = ucwords($appraisal_type);
             
             $locks = [];
+            $appraisalData = Appraisals::from($appraisalTable)
+            ->where('appraisal_id', $request->appraisal_id)
+            ->first([
+                'kra_locked', 
+                'pr_locked', 
+                'eval_locked', 
+                'locked', 
+                'evaluation_type',
+                'employee_id',
+                'evaluator_id', 
+            ]);
 
-            $locks['kra'] = $request->appraisal->kra_locked == 1;
-            $locks['pr'] = $request->appraisal->pr_locked == 1;
-            $locks['eval'] = $request->appraisal->eval_locked == 1;
-            $locks['lock'] = $request->appraisal->locked !== 1;
+            $requestsData = Requests::from($formRequestTable)
+            ->where('request_id', $request->request_id)
+            ->value('approver_id');
+
+            if ($appraisalData || $requestsData) {
+                $locks['kra'] = $appraisalData->kra_locked == 1;
+                $locks['pr'] = $appraisalData->pr_locked == 1;
+                $locks['eval'] = $appraisalData->eval_locked == 1;
+                // $locks['lock'] = $appraisalData->locked !== 1;
+
+                $appraisal_type = $appraisalData->evaluation_type;
+                $appraisal_type = ucwords($appraisal_type);
+
+                $requester_name = Employees::where('employee_id', $appraisalData->evaluator_id)
+                    ->first(['first_name', 'last_name']);
+                
+                $appraisee_name = Employees::where('employee_id', $appraisalData->employee_id)
+                    ->first(['first_name', 'last_name']);
+                
+                // Concatenate first_name and last_name
+                $requester_full_name = $requester_name['first_name'] . ' ' . $requester_name['last_name'];
+                $appraisee_full_name = $appraisee_name['first_name'] . ' ' . $appraisee_name['last_name'];
+
+                if ($requestsData !== null) {
+                    // Fetch approver information only if $requestsData is not null
+                    $approver_name = Employees::where('employee_id', $requestsData)
+                        ->first(['first_name', 'last_name']);
+
+                    // Concatenate first_name and last_name
+                    $approver_full_name = $approver_name['first_name'] . ' ' . $approver_name['last_name'];
+                } else {
+                    // Set default value if $requestsData is null
+                    $approver_full_name = "-";
+                }
+
+            }
 
             return [
                 'request_id' => $request->request_id,
                 'appraisal_id' => $request->appraisal_id,
-                'requester' => $request->appraisal->evaluator->first_name . ' ' . $request->appraisal->evaluator->last_name,
+                'requester' => $requester_full_name,
                 'appraisal_type' => $appraisal_type,
-                'appraisee' => $request->appraisal->employee->first_name . ' ' . $request->appraisal->employee->last_name,
+                'appraisee' => $appraisee_full_name,
                 'request' => $request->request,
                 'locks' => $locks, 
                 'date_sent' => $dateSent,
-                'approver' => $request->approver ? $request->approver->first_name . ' ' . $request->approver->last_name : '-',
+                'approver' => $approver_full_name ? $approver_full_name : '-',
                 'status' => $request->status,
                 'action' => $request->action,
                 'feedback' => $request->feedback,   
             ];
         });
+
+        $queries = DB::getQueryLog();
 
         $paginationData = [
             'current_page' => $userRequests->currentPage(),
@@ -155,10 +195,9 @@ class AdminRequestOverviewController extends Controller
             
                 $appraisal->update(['eval_locked' => $eval]);
             
-                $appraisal->update(['locked' => !$lock]);
-
-                if ($appraisal->locked == 1) {
+                if ($appraisal->eval_locked) {
                     Log::debug('Appraisal is locked');
+                    $appraisal->update(['locked' => 0]);
                     $appraisal->update(['date_submitted' => null]);
 
                     $signature = Signature::where('appraisal_id', $appraisalID);

@@ -2863,6 +2863,7 @@
                         $('#add-ldp-btn').prop('disabled', true);
                         $('.btn-danger').prop('disabled', true);
 
+                        $('#lockToast').toast('hide');
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
@@ -2884,7 +2885,8 @@
                         $('#add-wpa-btn').prop('disabled', true);
                         $('#add-ldp-btn').prop('disabled', true);
                         $('.btn-danger').prop('disabled', true);
-
+                        
+                        $('#lockToast').toast('hide');
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
@@ -2899,7 +2901,8 @@
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
-
+                        
+                        $('#lockToast').toast('hide');
                         $('#submit-btn-form').text('Submit');
                         $('#submit-btn-form').show();
                         $('#uploadsign').show();
@@ -2926,7 +2929,7 @@
 
                             // Check if approver_name and approved_at are available
                             if (response.approver_name && response.approved_at) {
-                                const approverInfo = `Approved by ${response.approver_name} on ${response.approved_at}`;
+                                const approverInfo = `Noted by ${response.approver_name} on ${response.approved_at}`;
                                 $('#additional-info').text(approverInfo).addClass('font-italic');
                             }
 

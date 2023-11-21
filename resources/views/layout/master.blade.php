@@ -203,7 +203,7 @@
                         <span class="link_name">Evaluation<br>Year</span>
                     </a>
                     <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{{ route('viewEvaluationYears') }}">Evaluation Year</li>
+                        <li><a class="link_name" href="{{ route('viewEvaluationYears') }}">Evaluation Year</a></li>
                     </ul>
                 </li>
                 <li id='editableFormsNav'>

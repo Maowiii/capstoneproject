@@ -114,7 +114,7 @@
                     </label>
                 </div>
 
-                <div class="form-check form-switch p-0" style="margin-left: 50px" id="lockLockHolder">
+                <!-- <div class="form-check form-switch p-0" style="margin-left: 50px" id="lockLockHolder">
                     <div class="d-flex justify-content-center align-items-center">
                         <label class="form-check-label"><h6>Appraisal Form</h6></label>
                     </div>   
@@ -123,7 +123,7 @@
                         <input class="form-check-input ms-0" type="checkbox" role="switch" id="switchCheckLabel_LOCK" name="form_Lock">
                         <span> On </span>
                     </label>
-                </div>
+                </div> -->
             </div>
 
             <!-- Text area -->
@@ -177,19 +177,21 @@
 
     $(document).ready(function() {
       var globalSelectedYear = null;
+      var activeYear = $('#evaluation-year-select').val();
 
       $('#evaluation-year-select').change(function() {
           var selectedYear = $(this).val();
           globalSelectedYear = selectedYear;
-          loadUserRequestsTable(selectedYear, null);
+
+          loadUserRequestsTable(selectedYear, null, activeYear);
           // console.log('Selected Year: ' + selectedYear);
       });
 
       $('#search').on('input', function() {
-          var query = $(this).val();
-          loadUserRequestsTable(globalSelectedYear, query)
+          var search = $(this).val();
+          loadUserRequestsTable(globalSelectedYear, search, activeYear)
       });
-      
+  
       loadUserRequestsTable();
          
       // Click event for the "Submit" button
@@ -259,7 +261,7 @@
       });
     });
 
-    function loadUserRequestsTable(selectedYear = null, search = null, page = 1) {
+    function loadUserRequestsTable(selectedYear = null, search = null, activeYear = null, page = 1) {      
       $.ajax({
           url: '{{ route('getUserRequests') }}',
           method: 'GET',
@@ -289,13 +291,13 @@
                   row.append($('<td>').text(request.status));
 
                   // Create buttons for "Approve" and "Disapprove"
-                  var approveButton = $('<button>').addClass('btn btn-primary').attr('id', 'approveButton')
+                  var approveButton = $('<button>').addClass('btn btn-primary approveButton').attr('id', 'approveButton')
                   .html('<i class="bi bi-check-circle"></i> Approve').attr('data-appraisal-id', request.appraisal_id)
-                  .attr('data-request-id', request.request_id);
+                  .attr('data-request-id', request.request_id).attr('data-eval-year', selectedYear);
 
-                  var disapproveButton = $('<button>').addClass('btn btn-danger').attr('id', 'disapproveButton')
+                  var disapproveButton = $('<button>').addClass('btn btn-danger disapproveButton').attr('id', 'disapproveButton')
                   .html('<i class="bi bi-x-circle"></i> Disapprove').attr('data-appraisal-id', request.appraisal_id)
-                  .attr('data-request-id', request.request_id);
+                  .attr('data-request-id', request.request_id).attr('data-eval-year', selectedYear);
 
                   // Set the initial state
                   var isApproved = false;
@@ -337,13 +339,18 @@
                       // Append the confirmation button to the modal footer
                       $('.modal-footer').append(confirmButton);  
                       
-                      $('#switchCheckLabel_KRA').prop('checked', request.locks.kra);
-                      $('#switchCheckLabel_PR').prop('checked', request.locks.pr);
-                      $('#switchCheckLabel_EVAL').prop('checked', request.locks.eval);
-                      $('#switchCheckLabel_LOCK').prop('checked', request.locks.lock);
+                      $('#switchCheckLabel_KRA').prop('checked', request.locks.kra === true ? true : false);
+                      $('#switchCheckLabel_PR').prop('checked', request.locks.pr === true ? true : false);
+                      $('#switchCheckLabel_EVAL').prop('checked', request.locks.eval === true ? true : false);
+                      // $('#switchCheckLabel_LOCK').prop('checked', request.locks.lock === true ? true : false);
 
                       if(request.feedback){
-                        $('$approveTextarea').val(request.feedback);
+                        $('#approveTextarea').val(request.feedback);
+                      }
+
+                      if (selectedYear < activeYear) {
+                        $('#approveSubmitBtn, #disapprvSubmitBtn').hide(); 
+                        $('input[type="checkbox"]').prop('disabled', true); 
                       }
 
                       // Trigger the modal
@@ -371,6 +378,10 @@
                         $('#disapproveTextarea').val(request.feedback);
                       }
                       
+                      if (selectedYear < activeYear) {
+                        $('#approveSubmitBtn, #disapprvSubmitBtn').hide(); 
+                        $('input[type="checkbox"]').prop('disabled', true); 
+                      }
                       // Trigger the modal
                       $('#disapprovedModal').modal('show');
                   });
@@ -419,7 +430,7 @@
                           pageCounter);
                       pageButton.click(function() {
                           // Redirect to the selected page
-                          loadUserRequestsTable(selectedYear, search,
+                          loadUserRequestsTable(selectedYear, search, activeYear,
                               pageCounter);
                       });
 
@@ -463,7 +474,7 @@
             success: function(data) {
                 // Handle the server response (if needed)
                 if(data.success){
-                  refreshContent();
+                  loadUserRequestsTable();
                   showToast(data.message);
                 }else{
                   showToast("Error: " + data.message, true);
@@ -508,7 +519,7 @@
             success: function(data) {
                 // Handle the server response (if needed)
                 if(data.success){
-                  refreshContent();
+                  loadUserRequestsTable();
                   showToast(data.message);
                 }else{
                   showToast("Error: " + data.message, true);
@@ -600,6 +611,10 @@
 
       // Show the toast using Bootstrap's toast method
       toast.toast("show");
+    }
+
+    function refreshPage() {
+      location.reload();
     }
 
 </script>

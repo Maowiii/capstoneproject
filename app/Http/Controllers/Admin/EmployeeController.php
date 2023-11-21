@@ -69,7 +69,7 @@ class EmployeeController extends Controller
       });
     })->paginate(10);
 
-    Log::debug($accounts);
+    // Log::debug($accounts);
 
     $data = [
       'success' => true,
@@ -183,7 +183,6 @@ class EmployeeController extends Controller
       Log::info('Uploaded File Name: ' . $file->getClientOriginalName());
       Log::info('Uploaded File Size: ' . $file->getSize() . ' bytes');
       Log::info('Uploaded File MIME Type: ' . $file->getMimeType());
-
       // Process the Excel file
       Excel::import(new ImportEmployeeSample, $request->file('file')->store('files'));
 
