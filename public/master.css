@@ -384,7 +384,7 @@ text,
     width: 100%;
 }
 
-thead {
+.table thead th {
     color: #143a67 !important;
     background-color: #c3d7f1 !important;
 }
