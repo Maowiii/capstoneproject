@@ -385,8 +385,8 @@ text,
 }
 
 thead {
-    color: #143a67;
-    background-color: #c3d7f1;
+    color: #143a67 !important;
+    background-color: #c3d7f1 !important;
 }
 
 tbody {
@@ -409,6 +409,7 @@ td {
     vertical-align: middle;
     text-align: center;
 }
+
 .table-bordered {
     border: solid #c3d7f1 1px !important;
 }
