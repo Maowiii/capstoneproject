@@ -24,7 +24,9 @@ use App\Http\Controllers\PermanentEmployee\PEDashboardController;
 use App\Http\Controllers\PermanentEmployee\PEInternalCustomerController;
 use App\Http\Controllers\PermanentEmployee\SelfEvaluationController;
 use App\Http\Controllers\SettingsController;
-use App\Models\EvalYear;
+use App\Models\Employees;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Route;
 
 
@@ -56,6 +58,70 @@ Route::post('/reset-password/verify-code', [AuthController::class, 'step2_Verify
 Route::post('/reset-password/reset', [AuthController::class, 'step3_ResetPassword'])->name('reset-password');
 Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name('resend-code');
 Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user');
+
+Route::get('/employee-list', function () {
+  $employees = Employees::all();
+  $employeeObj = array();
+
+  foreach ($employees as $employee) {
+    $tempArray = array(
+      "id" => $employee->employee_id,
+      "employee_number" => $employee->employee_number,
+      "first_name" => $employee->first_name,
+      "last_name" => $employee->last_name
+    );
+    array_push($employeeObj, $tempArray);
+  }
+
+  $response = (object) [
+    "name" => "Employee List",
+    "data" => $employeeObj
+  ];
+
+  return response()->json($response);
+});
+
+Route::get('/employee/{id}', function ($id) {
+  $employee = Employees::where('employee_id', $id)->first();
+  $employeeObj = array();
+
+  $tempArray = array(
+    "id" => $employee->employee_id,
+    "employee_number" => $employee->employee_number,
+    "first_name" => $employee->first_name,
+    "last_name" => $employee->last_name
+  );
+  array_push($employeeObj, $tempArray);
+
+  $response = (object) [
+    "name" => "Employee List",
+    "data" => $employeeObj
+  ];
+
+  return response()->json($response);
+});
+
+Route::post('/create-employee', function (Request $request) {
+  $validatedData = $request->validate([
+    'employee_number' => 'required',
+    'first_name' => 'required',
+    'last_name' => 'required',
+  ]);
+
+  $employee = Employees::create($validatedData);
+
+  $response = (object) [
+    "name" => "Employee Successfully Created",
+    "data" => [
+      "id" => $employee->employee_id,
+      "employee_number" => $employee->employee_number,
+      "first_name" => $employee->first_name,
+      "last_name" => $employee->last_name,
+    ]
+  ];
+
+  return response()->json($response);
+});
 
 
 /* ----- ADMIN ----- */
