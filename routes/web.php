@@ -289,7 +289,7 @@ Route::get('/TDM/accounts/{id}', function ($id) {
         "status" => $value->status,
       );
     }
-    return response()->json($accountsArr)->with($accounts);
+    return response()->json($accountsArr);
   }else{
     return response()->json(["message" => "User ID not found"], 404);
   }
