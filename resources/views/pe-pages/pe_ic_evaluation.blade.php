@@ -2,10 +2,16 @@
 
 @section('title')
     <h1>Internal Customer Evaluation Form</h1>
+    
 @endsection
 
 @section('content')
 <div class="content-container">
+
+    <div id="progressBarHandler" class="progress" style="height: 10px;">
+        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+    </div>
+
     <h3>Dear Adamson Employee,</h3>
     <p>Each department (co-academic offices) wants to know how well we are serving our employees/internal customers. We
         appreciate if you would take the time to complete this evaluation. This is a feedback mechanism to improve our
@@ -754,6 +760,24 @@
         loadICTable();
         loadTextAreas();
         formChecker();
+
+         // Initialize progress and total fields
+         let progress = 0;
+        let totalFields = $('[required]').length;
+        console.log($('[required]'));
+        // Update progress on field change
+        $('[required]').on('input change', function () {
+            // Increment or decrement progress based on whether the field is filled or has a value
+            progress = ($('[required]').filter(function () {
+                return $(this).val() !== "" || ($(this).is(":checkbox, :radio") && $(this).is(":checked"));
+            }).length / totalFields) * 100;
+
+            // Update the progress bar width
+            $('#progressBar').css('width', progress + '%');
+        });
+
+        // Trigger change event on page load to consider fields with initial values
+        $('[required]').trigger('change');
     });
 </script>
 @endsection

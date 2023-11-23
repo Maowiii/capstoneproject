@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Imports\ImportEmployeeSample;
 use App\Mail\NewPasswordEmail;
 use App\Models\Accounts;
 use App\Models\Appraisals;
@@ -14,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ImportEmployeeSample;
+use App\Imports\ImportEmployee;
+
 
 class EmployeeController extends Controller
 {
@@ -165,29 +166,101 @@ class EmployeeController extends Controller
 
   public function importEmployee(Request $request)
   {
-    try {
-      if (!session()->has('account_id')) {
-        return view('auth.login');
-      }
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
 
+    // Validate the uploaded file
+    $validator = Validator::make($request->all(), [
+      'file' => 'required|mimes:xlsx,xls,csv',
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+      return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    // Get the uploaded file
+    $file = $request->file('file');
+
+    // Process the Excel file
+    $import = new ImportEmployee;
+    $import->import($file);
+    $successCount = $import->getSuccessCount();
+
+    // Fetch all departments (you can use this as needed)
+    $departments = Departments::all();
+
+    if ($import->failures()->isNotEmpty()) {
+      // Filter out rows with all null values
+      $filteredFailures = $import->failures()->reject(function ($failure) {
+        // Check if all values in the row are null
+        return collect($failure->values())->every(function ($value) {
+          return $value === null || trim($value) === '';
+        });
+      });
+
+      // Check if there are still failures after filtering
+      if ($filteredFailures->isNotEmpty()) {
+        return view('admin-pages.employee_table')->with([
+          'departments' => $departments,
+          'failures' => $filteredFailures,
+        ]);
+      }
+    }
+
+    if ($successCount === 1) {
+      $status = $successCount . ' employee was successfully added.';
+    } elseif ($successCount >= 1) {
+      $status = $successCount . ' employees were successfully added.';
+    } else {
+      $status = null;
+    }
+
+    // Log info message
+    Log::info('All departments fetched.');
+
+    return view('admin-pages.employee_table')->with([
+      'departments' => $departments,
+      'success' => $status,
+    ]);
+  }
+
+  public function importEmployeeSample(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    try {
       // Validate the uploaded file
       $request->validate([
         'file' => 'required|mimes:xlsx,xls,csv',
       ]);
 
       // Get the uploaded file
-      $file = $request->file('file');
+      $file = $request->file('file')->store('uploadFiles');
 
-      // Log information about the uploaded file
-      Log::info('Starting Excel file import...');
-      Log::info('Uploaded File Name: ' . $file->getClientOriginalName());
-      Log::info('Uploaded File Size: ' . $file->getSize() . ' bytes');
-      Log::info('Uploaded File MIME Type: ' . $file->getMimeType());
       // Process the Excel file
-      Excel::import(new ImportEmployeeSample, $request->file('file')->store('files'));
+      $import = new ImportEmployeeSample;
+      $import->import($file);
 
-      // Log success message
-      Log::info('Excel file imported successfully');
+      $failures = $import->failures();
+
+      foreach ($failures as $failure) {
+        // Access the row number
+        $row = $failure->row();
+
+        // Access the attribute that failed
+        $attribute = $failure->attribute();
+
+        // Access the errors for this failure
+        $errors = $failure->errors();
+
+        // You can then do something with this information, such as logging or displaying to the user
+        dd("Row: $row, Attribute: $attribute, Errors: " . json_encode($errors));
+      }
+
 
       // Fetch all departments (you can use this as needed)
       $departments = Departments::all();
@@ -196,9 +269,17 @@ class EmployeeController extends Controller
       Log::info('All departments fetched.');
 
       return view('admin-pages.employee_table')->with('departments', $departments);
-    } catch (\Exception $e) {
+    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
       $departments = Departments::all();
-      
+      $failures = $e->failures();
+
+      foreach ($failures as $failure) {
+        $failure->row(); // row that went wrong
+        $failure->attribute(); // either heading key (if using heading row concern) or column index
+        $failure->errors(); // Actual error messages from Laravel validator
+        $failure->values(); // The values of the row that has failed.
+      }
+
       // Log error message
       Log::error('Error importing Excel file: ' . $e->getMessage());
       Log::error('Exception Line: ' . $e->getLine());

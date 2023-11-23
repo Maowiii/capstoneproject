@@ -5,12 +5,11 @@
 @endsection
 
 @section('content')
-    @if ($errors->any())
+    <!-- @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             </button>
             <ul>
-                <!-- Display each error message -->
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -18,17 +17,60 @@
         </div>
         
         <script>
-            // Automatically close the alert after a specified duration (e.g., 5 seconds)
             $(document).ready(function() {
                 $(".alert").delay(5000).slideUp(200, function() {
                     $(this).alert('close');
                 });
             });
         </script>
-    @endif
+    @endif -->
 
     <div class="content-container">
         <div class="table-responsive">
+        @if(isset($success))
+            <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ $success }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(isset($errors) && $errors->any()) || 
+            <div id="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                @foreach ($errors->all() as $error)
+                    {{$error}}            
+                @endforeach    
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (isset($failures) && $failures->count() > 0)
+            <table class="table table-danger">
+                <tr>
+                    <th>Row</th>
+                    <th>Attribute</th>
+                    <th>Errors</th>
+                    <th>Value</th>
+                </tr>
+
+                @foreach ($failures as $validation)
+                    <tr>
+                        <td>{{ $validation->row() }}</td>
+                        <td>{{ $validation->attribute() }}</td>
+                        <td>
+                            <ul>
+                                @foreach ($validation->errors() as $e)
+                                    <li>{{ $e }}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td>
+                            {{ $validation->values()[$validation->attribute()] }}
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        @endif
+
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
             <input type="text" class="form-control" placeholder="Name" id="search">
@@ -37,6 +79,7 @@
             </button>
         </div>
 
+       
         <table class="table" id="employee_table">
             <thead>
                 <tr>
@@ -58,10 +101,10 @@
             <ul class="pagination pagination-sm justify-content-end" id="accounts_pagination"></ul>
         </nav>
         <div class='d-flex justify-content-end gap-3 mt-2'>
-            <form method="post" action="{{ route('import-new-employee') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('import-new-employee') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-2">
-                    <input class="form-control large-column" type="file" name="file">
+                    <input class="form-control large-column" type="file" name="file" accept=".xlsx, .xls, .csv">
                 </div>
                 <button class="btn btn-primary large-column" type="submit">Upload Excel</button>
             </form>
@@ -70,8 +113,9 @@
             <button class="btn btn-primary large-column mt-2" type="button" data-bs-toggle="modal"
                 data-bs-target="#addUserModal" id="add-user-modal-btn">Add User</button>
         </div>
-
     </div>
+
+   
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 
@@ -86,7 +130,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to reset the password for <span id="resetPasswordName"></span>?
-                    <p>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -495,6 +539,10 @@
                     $('#department').prop('disabled', true);
                 }
             });
+
+            setTimeout(function () {
+                $('#successMessage').fadeOut(); // Use jQuery's fadeOut method
+            }, 10000);
         });
     </script>
 @endsection
