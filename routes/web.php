@@ -277,7 +277,7 @@ Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController
 Route::get('/TDM/accounts/{id}', function ($id) {
   $accounts = Accounts::find([$id]);
   
-  if (!empty($accounts)) {
+  if ($accounts != NULL) {
     $accountsArr = array();
     foreach($accounts as $value)
     {
@@ -289,7 +289,7 @@ Route::get('/TDM/accounts/{id}', function ($id) {
         "status" => $value->status,
       );
     }
-    return response()->json($accountsArr);
+    return response()->json($accountsArr)->with($accounts);
   }else{
     return response()->json(["message" => "User ID not found"], 404);
   }
