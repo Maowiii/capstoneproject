@@ -649,7 +649,7 @@
                             if ( response.status === 'Pending' )
                             {
                                 $( '#sendrequest' ).removeClass( 'btn-primary' ).text( '' );
-                                $( '#sendrequest' ).addClass( 'btn-outline-primary' ).text( 'Request Sent' ).prop( 'disabled', true ).append( '<i>' ).addClass( 'bi bi-envelope-paper' );
+                                $( '#sendrequest' ).addClass( 'btn-outline-primary' ).text( 'Request Sent' ).prop( 'disabled', true ).append( '<i>' ).addClass( 'bi bi-envelope-paper' ).show();
                             } else if ( response.status === 'Approved' || response.status === 'Disapproved' )
                             {
                                 // Display feedback and appropriate UI for approved or disapproved requests
