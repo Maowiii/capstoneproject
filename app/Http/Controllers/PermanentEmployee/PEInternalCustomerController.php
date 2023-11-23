@@ -302,8 +302,8 @@ class PEInternalCustomerController extends Controller
 
     $appraisalData = Appraisals::where('employee_id', $employeeId)->get(); // Get all appraisals for the employee
     $allFormsSubmitted = $appraisalData->every(function ($appraisal) {
-        return $appraisal->date_submitted !== null;
-      });
+      return $appraisal->date_submitted !== null;
+    });
 
     if ($allFormsSubmitted) {
       // $selfEvalScore = Appraisals::where('appraisal_id', $appraisalId)
@@ -392,7 +392,7 @@ class PEInternalCustomerController extends Controller
     $accountId = session('account_id');
     Log::info('accountId');
     Log::info($accountId);
-    
+
     $shouldHideSignatory = ($appraiseeId == $accountId);
     $hasPermission = true;
     $canRequest = true;
@@ -405,11 +405,11 @@ class PEInternalCustomerController extends Controller
       $isAdmin = Accounts::where('account_id', $accountId)->where('type', 'AD')->exists();
 
       $isImmediateSuperior = Accounts::where('account_id', $accountId)
-            ->where('type', 'IS')
-            ->whereHas('employee', function ($query) use ($appraisal) {
-                $query->where('department_id', $appraisal->department_id);
-            })
-            ->exists();
+        ->where('type', 'IS')
+        ->whereHas('employee', function ($query) use ($appraisal) {
+          $query->where('department_id', $appraisal->department_id);
+        })
+        ->exists();
 
       $isEvaluator = ($accountId == $evaluatorId);
       $isEmployee = ($accountId == $employeeId);
@@ -419,40 +419,40 @@ class PEInternalCustomerController extends Controller
         $hasPermission = false;
       }
 
-      if(!$isEmployee){
+      if (!$isEvaluator) {
         $canRequest = false;
       }
     }
 
     // $hasRequest = Requests::where('appraisal_id', $appraisalId)->where('status', 'Pending')->exists();
     $hasRequest = Requests::where('appraisal_id', $appraisalId)
-    ->whereIn('status', ['Pending', 'Approved', 'Disapproved'])
-    ->latest('created_at') // Get the latest entry
-    ->first();
+      ->whereIn('status', ['Pending', 'Approved', 'Disapproved'])
+      ->latest('created_at') // Get the latest entry
+      ->first();
 
     $response = [
-        'form_submitted' => $locked,
-        'hideSignatory' => $shouldHideSignatory,
-        'hasPermission' => $hasPermission,
-        'hasRequest' => $hasRequest !== null,
-        'canRequest' => $canRequest,
+      'form_submitted' => $locked,
+      'hideSignatory' => $shouldHideSignatory,
+      'hasPermission' => $hasPermission,
+      'hasRequest' => $hasRequest !== null,
+      'canRequest' => $canRequest,
     ];
-    
+
     if ($hasRequest) {
-        // Get additional information
-        $approver = Employees::find($hasRequest->approver_id);
+      // Get additional information
+      $approver = Employees::find($hasRequest->approver_id);
 
-        $timestamp = $hasRequest->updated_at;
-        $updated_at = Carbon::parse($timestamp)->format('F j, Y H:i:s');
+      $timestamp = $hasRequest->updated_at;
+      $updated_at = Carbon::parse($timestamp)->format('F j, Y H:i:s');
 
-        // Add information to the response
-        $response['status'] = $hasRequest->status;
-        $response['feedback'] = $hasRequest->feedback;
-        $response['approver_name'] = $approver ? $approver->first_name . ' ' . $approver->last_name : null;
-        $response['approved_at'] = $updated_at;
+      // Add information to the response
+      $response['status'] = $hasRequest->status;
+      $response['feedback'] = $hasRequest->feedback;
+      $response['approver_name'] = $approver ? $approver->first_name . ' ' . $approver->last_name : null;
+      $response['approved_at'] = $updated_at;
     }
-    
-    return response()->json($response);    
+
+    return response()->json($response);
   }
 
   function calculateFinalScore($appraisals)
