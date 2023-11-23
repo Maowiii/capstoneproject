@@ -43,33 +43,61 @@
             </div>
         @endif
 
-        @if (isset($failures) && $failures->count() > 0)
-            <table class="table table-danger">
-                <tr>
-                    <th>Row</th>
-                    <th>Attribute</th>
-                    <th>Errors</th>
-                    <th>Value</th>
-                </tr>
+        <button type="button" class="btn btn-primary position-relative m-2" data-bs-toggle="modal" data-bs-target="#failuresModal">
+            View Failures
+            @if (isset($failures) && $failures->count() > 0)
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ $failures->count() }}
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            @endif
+        </button>
 
-                @foreach ($failures as $validation)
-                    <tr>
-                        <td>{{ $validation->row() }}</td>
-                        <td>{{ $validation->attribute() }}</td>
-                        <td>
-                            <ul>
-                                @foreach ($validation->errors() as $e)
-                                    <li>{{ $e }}</li>
-                                @endforeach
-                            </ul>
-                        </td>
-                        <td>
-                            {{ $validation->values()[$validation->attribute()] }}
-                        </td>
-                    </tr>
-                @endforeach
-            </table>
-        @endif
+        <!-- Modal -->
+        <div class="modal modal-lg fade" id="failuresModal" tabindex="-1" role="dialog" aria-labelledby="failuresModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="failuresModalLabel">Validation Failures</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body ">
+                        <div class="table-responsive">
+                            @if (isset($failures) && $failures->count() > 0)
+                                <table class="table table-responsive table-hover">
+                                    <tr>
+                                        <th>Row</th>
+                                        <th>Attribute</th>
+                                        <th>Errors</th>
+                                        <th>Value</th>
+                                    </tr>
+
+                                    @foreach ($failures as $validation)
+                                        <tr>
+                                            <td>{{ $validation->row() }}</td>
+                                            <td>{{ $validation->attribute() }}</td>
+                                            <td>
+                                                <ul>
+                                                    @foreach ($validation->errors() as $e)
+                                                        <li>{{ $e }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                {{ $validation->values()[$validation->attribute()] }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="input-group mb-2 search-box">
             <div id="import-status" class="mt-2"></div>
