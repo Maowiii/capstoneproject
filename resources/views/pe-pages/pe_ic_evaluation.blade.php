@@ -164,89 +164,101 @@
 </div>
 
 <script>
-    $( document ).ready( function ()
+    $(  documen t ).read y( funct io
+     ()
     {
-        $( '#sendrequest' ).hide();
+         $( '#sen drequest' ).hide();
 
-        $( '#service_area' ).on( 'blur', function ()
+         $( '#se rvice _area' ).on( 'bl ur
+        , function ()
         {
-            var newService = $( this ).val();
-            updateService( newService );
+             v ar newService = $( this ).val();
+              updateServic e( newService  );
+        } );
+ 
+         $( '#comment s_
+        rea' ).on( 'blur', function ()
+         { 
+            var newSuggestion = $( th is ).val();
+             u pdateSuggestion( newSuggestion );
         } );
 
-        $( '#comments_area' ).on( 'blur', function ()
-        {
-            var newSuggestion = $( this ).val();
-            updateSuggestion( newSuggestion );
-        } );
-
-        // Function to retrieve URL parameters by name
-        function getUrlParameter ( name )
-        {
-            name = name.replace( /[\[]/, '\\[' ).replace( /[\]]/, '\\]' );
-            var regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' );
-            var results = regex.exec( location.search );
-            return results === null ? '' : decodeURIComponent( results[1].replace( /\+/g, ' ' ) );
+        // Function to retrieve URL paramet e rs b y
+        name
+        function getUrlParame ter ( name )
+         {
+             n ame = name.replace( /[\[]/, '\\[' ).re place( /[\]]/, '\\]' );
+             var regex = new RegExp( '[\\?&]'  + name + '=([^& #]*)' );
+            var results = regex.exec( location.search ); 
+            return  results = = = null ? '' : decodeURIComponent( results[1].replace( /\+/g, ' ' ) );
         }
 
-        // Get the employee's name from the URL
-        var appraiseeName = getUrlParameter( 'appraisee_name' );
+        // Get the employ ee's name from t he URL
+        var appraiseeName = getUrlParameter( 'appraisee_name' ) ;
 
-        // Set the employee's name in the input field
-        if ( appraiseeName )
+        //  
+        et the employee' s name in the in put fi eld
+        i f ( appraiseeName
+        )
         {
-            $( '#appraiseeName' ).val( appraiseeName );
+              $( '#appraiseeName' ).va l( appraiseeNam e );
         } else
-        {
-            $( '.modal' ).hide();
+         {
+            $( ' .modal' ).hide();
             $( '.content-body' ).remove();
-            $( '.content-container' ).remove();
+            $( '.cont ent-container ' ).remove();
 
             // Create a new div element
-            var errorDiv = $( '<div></div>' );
+            var errorDiv = $( '<div></d iv>' );
 
-            // Set the attributes and content for the error div
-            errorDiv.attr( 'id', 'error-message' );
-            errorDiv.addClass( 'alert alert-danger content-container' );
+             // Set the attributes and content  for the error div
+            errorDi v.attr( 'id', 'error-message'  );
+            errorDiv.addClass( 'alert alert-danger content-con tainer' );
             errorDiv.text( 'An error occurred: You do not have permission to view this form.' );
 
-            // Append the error div to a specific element (e.g., the body)
-            errorDiv.appendTo( '.content-section' );
+             // App end the error div to a s pecific element (e .g.,  the body)
+          
+          errorDiv.appendTo( '.content-s ection'  );
         }
 
-        $( '#esig-submit-btn' ).on( 'click', function ()
-        {
-            var fileInput = $( '#esig' )[0];
-            var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
-            var totalWeightedScore = $( '#total-weighted-score' ).val();
-            // console.log('Total Weighted Score: ' + totalWeightedScore);
+        $( '#esig-submit-btn' ).on( 'cl ick', function ()
+         {
+            var fileInput = $( '#esig' )[ 0];
+             var urlParams = new URLSearchParams( win dow.location.search );
+             var appraisalId = urlParams.get( 'appraisal_id' );
+            var totalWeightedScore = $ ( '#total-weighted-score' ). v
+            l();
+            //  console .log('Total  Weighted Sc ore: ' + totalWeightedScore);
 
-            if ( fileInput.files.length === 0 )
+            if
+            ( fileInput.files.length === 0 )
             {
-                $( '#esig' ).addClass( 'is-invalid' );
-                return;
-            } else
-            {
-                var selectedFile = fileInput.files[0];
-
-                if ( !isImageFile( selectedFile ) )
+                $( '#esig' ).ad dClass( 'is-i nvalid' );
+     
+                            return;
+              } else
+             {
+                 var selecte dFile = fileIn put.files[0];
+ 
+                 if ( !isImageFile( selectedFile ) )
                 {
-                    $( '#esig' ).addClass( 'is-invalid' );
+                    $( '#esig' ).addCla ss( 'is-invalid' );
 
-                    $( '#error-alert' ).removeClass( 'd-none' ).text(
-                        'Please select a valid image file. Supported formats: JPEG, PNG, GIF.' );
+                     $(  '
+                    error-alert' ).removeClass(  'd-none' ).tex t(
+                          'Please select a valid  image file. Supported formats: JPEG, PNG, GIF.' );
 
                     setTimeout( function ()
                     {
-                        $( '#error-alert' ).addClass( 'd-none' );
+                          $ (
+                '#error-alert' ).addClass( 'd-none' );
                     }, 5000 );
 
-                    return;
+                     return;
                 }
 
                 var reader = new FileReader();
-                reader.onload = function ( event )
+                 reader.onloa d = fun ction ( e vent )
                 {
                     var fileData = event.target.result;
                     $.ajax( {
@@ -256,39 +268,45 @@
                         url: '{{ route('pe.submitICSignature') }}',
                         type: 'POST',
                         data: {
-                            appraisalId: appraisalId,
-                            esignature: fileData,
+               
+                                       appraisalId: apprai salId,
+           
+                                             esignature: fileData,
                             totalWeightedScore: totalWeightedScore
                         },
                         success: function ( response )
-                        {
+               
+                                    {
                             if ( response.success )
                             {
-                                loadSignature();
-                                // console.log('Esignature Updated.');
-                                formChecker();
+                                  loadSignat ure();
+                                 // console.log('Esignatur e Updated.');
+                                f ormCheck er
+                                );
                             } else
-                            {
-                                var errorMessage = response.message;
+                               {
+                                 var errorMessag e = response.message;
 
-                                $( '#error-alert' ).removeClass( 'd-none' ).text(
-                                    errorMessage );
+                                $( '#error-alert' ).removeClass( 'd-none' ). t ext(
+                                      err orMessage );
 
-                                setTimeout( function ()
-                                {
-                                    $( '#error-alert' ).addClass( 'd-none' );
-                                }, 5000 );
-                            }
+                                setTimeout( fu nction ()
+                                  {
+                                   
+           $( '#error-alert' ).addClass( 'd-none'  );
+                                 }, 5000 );
+                   
+                   }
                         },
-                        error: function ( xhr, status, error ) { }
-                    } );
-                };
+                         error: f unction ( xhr, status, error ) { }
+                     } );
+                 };
 
-                reader.readAsDataURL( selectedFile );
+                 reader.readAsDataURL( selectedFile );
             }
-        } );
+         } );
 
-        function isImageFile ( file )
+        functi on isIm ageFile (  file )
         {
             return file.type.startsWith( 'image/' );
         }
@@ -296,29 +314,34 @@
         function updateSuggestion ( value )
         {
             var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
+            var appraisalId = urlParams.get( 'appraisal_id'   );
 
-            $.ajax( {
+      
+                      $.ajax( {
                 headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                },
-                url: '{{ route('updateSuggestion') }}',
-                type: 'POST',
-                data: {
+                    'X-CSRF-TOKEN': $( 'meta[name= "csrf-token"]' ) .attr( 'conten t' )
+                 },
+                url: '{{ route('updateSug g est i
+                n') }}',
+                t ype: 'POST',
+     
+                               data: {
                     newSuggestion: value,
-                    appraisalId: appraisalId
+                    appraisalId: appr
+                    isalId
                 },
                 success: function ( response )
                 {
-                    // console.log('Backend updated successfully.');
-                    $( '#comments_area' ).removeClass( 'is-invalid' );
+                    // con sole.log('Backend updated successfully.');
+           
+                   $( '#comments_area' ).removeClass( 'is-invalid' );
                 },
-                error: function ( xhr )
+                 error: fun ction ( xhr )
                 {
-                    if ( xhr.responseText )
-                    {
-                        // console.log('Error: ' + xhr.responseText);
-                    } else
+                     if ( xhr. responseText )
+                     {
+                        // console.log('Error: ' + xh r.responseText);
+                      } el se
                     {
                         // console.log('An error occurred.');
                     }
@@ -329,81 +352,95 @@
         function updateService ( value )
         {
             // console.log(value);
-            var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
+            var urlPara m s = new  U
+                LSearchParams( window.location.search );
+            var appraisalId = urlParams.get( 'apprai sal_id' );
 
-            $.ajax( {
-                headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+             $.aja x( {
+                 headers: {
+                    'X-CSRF-TOKEN ' : $ (
+                'meta[name="csrf-token"]'  ).attr( 'content '
+                    )
                 },
                 url: '{{ route('updateService') }}',
-                type: 'POST',
+                type: 'P
+                    ST',
                 data: {
                     newService: value,
                     appraisalId: appraisalId
-                },
-                success: function ( response )
+                 },
+                success: f un
+        tion ( response )
                 {
-                    // console.log('Backend updated successfully.');
-                    $( '#service_area' ).removeClass( 'is-invalid' );
+                     // console.log('Backend updated success fully.' );
+        
+                        $( '#service_area' ).remove Cl ass(  'is-in valid' );
                 },
-                error: function ( xhr )
-                {
-                    if ( xhr.responseText )
+                err or: function ( xhr )
+                 {
+                     if ( xhr.responseText )
                     {
-                        // console.log('Error: ' + xhr.responseText);
-                    } else
+                        / / console.log('Error: '  + xhr .responseText);
+                       } else
                     {
-                        // console.log('An error occurred.');
-                    }
+     
+                           // console.log('An error occurr ed.');
+                     }
                 }
             } );
-        }
+         }
 
-        function totalScore ()
+         function totalScore () 
         {
             var total = 0;
 
-            $( '#IC_table .form-check-input[type="radio"]:checked' ).each( function ()
+            $( '#IC_table .f orm-check-input[type="rad io"]:ch ecked' ). each( function ()
             {
                 var score = parseInt( $( this ).val() );
                 total += score;
             } );
 
             numQuestions = $( '#IC_table tbody tr' ).length;
-            var averageScore = total / numQuestions;
-            $( '#total-weighted-score' ).val( averageScore.toFixed( 2 ) );
-        }
+            var averageScore = total  /  numQues t
+                ons;
+            $( '#tota l-weighted-score '
+                    ).val( averageScore.toFixed(  2 ) );
+         }
 
-        function loadTextAreas ()
+         function loadTextA reas ()
         {
-            var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
+             var urlParams =  new U RLSearchParams( win dow.location.search );
+      
+                         var appraisalId = urlParams.get( 'appraisal_id' );
             $.ajax( {
                 headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                },
+                    'X-CSRF-TOKEN': $( 'meta[name="cs r f-t o
+                en"]' ).attr( 'content' )
+                  }
+                    
                 url: '{{ route('getCommentsAndSuggestions') }}',
                 type: 'POST',
-                data: {
+  
+                                 data: {
                     appraisalId: appraisalId
                 },
-                success: function ( response )
-                {
-                    if ( response.success )
+                success: functio n ( response )
+                 {
+                      if ( response.success )
+                  
+          {
+                        $( '#se rvic e_area' ).val( response.customerService );
+                         $( '#co mments_area' ).val( response.suggestion );
+                      } else
                     {
-                        $( '#service_area' ).val( response.customerService );
-                        $( '#comments_area' ).val( response.suggestion );
-                    } else
-                    {
-                        // console.log('Comments not found or an error occurred.');
+                         //  console.log('Comments not found or an error occurred .') ;
                     }
                 },
                 error: function ( xhr )
                 {
-                    if ( xhr.responseText )
+                    if ( x hr.responseText )
                     {
-                        // console.log('Error: ' + xhr.responseText);
+                        //  console.log('Error: ' + x hr.resp onseText) ;
                     } else
                     {
                         // console.log('An error occurred.');
@@ -414,42 +451,50 @@
 
         $( '#IC_table' ).on( 'click', '.form-check-input[type="radio"]', function ()
         {
-            var clickedRadio = $( this );
+            var clickedRad i o = $( t h
+                s );
 
             var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
+            var appraisalId = urlParams.ge t( ' appraisal_id' );
 
-            var radioButtonId = clickedRadio.attr( 'id' );
+            var radioButtonId = cli ckedRadio.attr( 'id' );
             var questionId = radioButtonId.split( '_' )[1];
-            var score = clickedRadio.val();
-            // console.log('Question ID: ', questionId);
+           
+                   var score = clickedRadi o.val();
+         
+                       // console.log('Question ID: ', questionId);
 
             $.ajax( {
                 headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+
+                                       'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                 },
-                url: '{{ route('saveICScores') }}',
-                type: 'POST',
-                data: {
-                    questionId: questionId,
-                    score: score,
-                    appraisalId: appraisalId
+                 url: '{{ r oute('saveICScores') }}',
+         
+               type: 'POST',
+                 data: {
+                    questionId: questionId, 
+                    scor e: scor e,
+                     appraisalId: appraisalId
                 },
                 success: function ( response )
                 {
-                    // console.log('Score saved for question ID:', questionId);
-                    clickedRadio.closest( 'tr' ).removeClass(
-                        'table-danger' );
+                    // console.l o g('Score  
+                aved for question ID:', qu estionId);
+       
+                                 clickedRadio.closest( 'tr'  ).removeClass(
+                         'table-danger' );
                     totalScore();
                 },
-                error: function ( xhr )
-                {
-                    if ( xhr.responseText )
+                error: function  ( xhr )
+                 { 
+                     
+                        f ( xhr.responseText )
                     {
                         // console.log('Error: ' + xhr.responseText);
                     } else
                     {
-                        // console.log('An error occurred.');
+                        //  console.log('A n error occurred.');
                     }
                 }
             } );
@@ -457,9 +502,9 @@
 
         function loadICTable ()
         {
-            $.ajax( {
+             $.ajax( { 
                 headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                    'X-CSR F-TOKEN': $( 'meta[nam e="csrf-token"]' ).attr( 'content' )
                 },
                 url: '/editable-internal-customer-form/getICQuestions',
                 type: 'GET',
@@ -470,330 +515,380 @@
                         var tbody = $( '#IC_table tbody' );
                         tbody.empty();
 
-                        var questionCounter = 1;
+                        var quest ionCounter  = 1;
 
-                        $.each( response.ICques, function ( index, formquestions )
+                          $.each( response.ICques, function ( index, formquestions )
                         {
-                            var questionId = formquestions.question_id;
+                            va r question Id = formquestions.question_id;
 
                             var row = `<tr>
                                             <td class="align-middle">${ questionCounter }</td> <!-- Display the counter -->
-                                            <td class="align-baseline text-start editable" data-questionid="${ questionId }">
-                                                ${ formquestions.question }
-                                            </td>
+                                            <td class="align-baseline text -st art editable" data-questionid="${ questionId } ">
+                                                 ${ formquestions.question }
+                                     
+                           </td>
                                             <td class="align-middle likert-column">
-                                                @for ($i = 5; $i >= 1; $i--)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" id="score_${ questionId }" name="ic_${ questionId }" value="{{ $i }}">
-                                                        <label class="form-check-label" for="score_${ questionId }">{{ $i }}</label>
-                                                    </div>
+                                                  @for ($i = 5; $ i
+                >= 1; $i--)
+                                                    <div class=" form-check form-check-inline">
+                             
+                                     <input class="form-ch eck-input" type="radio " id="score_${ questionId }" name="ic_${ questi onId }" value= "{{ $i }}">
+                                                         <label class="form-check-label" for="score_${ questionId }">{{  $i }}</label>
+                                                       </div>
                                                 @endfor
                                             </td>
                                         </tr>`;
                             tbody.append( row );
-                            loadSavedScore( questionId );
-                            questionCounter++;
-                        } );
+                            loadSave d Score( questionId  )
+                
+                             questionCounter++;
+      
+                                      } );
 
                     } else
                     {
-                        // console.log('Error:' + response.error);
-                    }
-                },
-                error: function ( xhr, status, error )
-                {
-                    // console.log(error);
+                         // console.log('Err o
+                        :' + response.error);
+                     }
+                  },
+                 erro r: f unction ( xhr, status, error )
+                 {
+                     // console.log(error);
                 }
             } );
         }
 
         function loadSavedScore ( questionId )
-        {
-            var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
+          {
+            va r
+                urlParams = new URLSearchParams( window.location.search );
+            var a ppraisalId = urlParams.get( 'appraisal_id' ) ;
 
-            // console.log(appraisalId);
-            $.ajax( {
-                headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                    // console.log(appraisalId);
+             $.ajax( {
+                 headers: {
+                    'X-CSRF-T OKEN': $( 'met a[name="csrf-token"]' ) .attr( 'content' )
                 },
-                url: '{{ route('getSavedICScores') }}',
-                type: 'GET',
+                url: '{{ rout e('getSavedICScores') }}' ,
+                  type: 'GET',
                 data: {
                     appraisalId: appraisalId,
                     questionId: questionId
                 },
                 success: function ( savedScoreResponse )
                 {
-                    if ( savedScoreResponse.success )
-                    {
-                        var savedScore = savedScoreResponse.score;
-                        if ( savedScore !== null )
+                    
+                  if ( savedScoreResponse. success )
+        
+                                {
+                         var save dScore = savedScoreResponse.score;
+                          if ( sav edScore !== nu ll )
                         {
-                            $( `input[name="ic_${ questionId }"][value="${ savedScore }"]` )
-                                .prop( 'checked', true );
-                        }
-                    }
-                    totalScore();
-                },
+                                $( `input[name=" i c_${ questionId }"][value="${ savedScore  }" ]` )
+                                    .prop( 'checked', true ); 
+                          }
+                     }
+                    totalSco re();
+              
+                          },
                 error: function ( xhr, status, error )
                 {
-                    // console.log(error);
+                    // c onsole.log(er ror);
                 }
-            } );
+            } ); 
         }
 
-        function loadSignature ()
+         function loadSignature ()
         {
-            var urlParams = new URLSearchParams( window.location.search );
+            va r  urlPar ams = new U RLSearchParams ( window.location.search );
             var appraisalId = urlParams.get( 'appraisal_id' );
 
             $.ajax( {
                 headers: {
                     'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                },
-                url: '{{ route('pe.loadSignatures') }}',
+                 },
+               
+                        url: '{{ route('pe.loadSignatures') }}',
                 type: 'GET',
                 data: {
-                    appraisalId: appraisalId,
-                },
+                    appr ai salId:  appraisalI d,
+                 },
                 success: function ( response )
                 {
                     if ( response.success )
                     {
                         $( '#signtable tbody' ).empty();
                         var newRow = $( '<tr>' ).addClass( 'align-middle' );
-                        newRow.append( $( '<td>' ).text( 'Internal Customer' ) );
-                        newRow.append( $( '<td>' ).text( response.full_name ) );
+                        newRow.append( $( '<td>' ).text(  'Internal Customer' ) );
+                        newRow.ap pend( $( '<td>' ).text(  
+                        esponse.full_name ) );
 
-                        $( '#modalImage' ).attr( 'src', response.sign_data );
+                          $( ' #modalI mage' ).attr( 'src', re s ponse.sign_data );
 
-                        if ( response.sign_data )
-                        {
-                            // console.log('Response Data Received');
-                            $( '#cancel-btn' ).hide();
+             
+                                  if ( response.sign_data )
+                            {
+                              // console.log('Response Data  Received');
+                               $( '#cancel-btn' ).hid
+                    ();
                             $( '#esig-submit-btn' ).hide();
-                            newRow.append( $( '<td>' ).addClass( 'align-middle' ).html(
-                                '<button class="btn btn-outline-primary" id="view-sig-btn">' +
-                                'View Signature' +
-                                '</button>'
+                            newRow.append( $( '<td>' ).add C lass( 'align-middl e
+                 ).html(
+                                '<button class="btn btn-outline-pri mary" id="view-sig-btn">' +
+                 
+                       'View Signature' +
+                                 '</but ton>'
                             ) );
-                        } else
+                          } else
                         {
-                            // console.log('Response data not received');
-                            newRow.append( $( '<td>' ).addClass( 'align-middle' ).html(
-                                '<div>' +
-                                '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
+                             // con sole.log('Response data not received');
+                            newRow.append(  $( '<td>' ).addClass( 'align-middle' ).html(
+                                 '<div>' +
+                                   '<input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg">' +
                                 '<img src="" width="100" id="signatureImage">' +
                                 '</div>'
                             ) );
-                        }
+                         
+                 }
 
-                        if ( response.date_submitted )
-                        {
-                            newRow.append( $( '<td>' ).text( response.date_submitted ) );
-                        } else
-                        {
-                            newRow.append( $( '<td>' ).text( '-' ) );
-                        }
+                        if ( r esponse. date_submitted )
+                         {
+         
+                                       newRow.ap pend( $( '<td>' ).tex t( resp onse.date_submit ted ) );
+                         } else 
+                          {
+                             newRow.append( $(  '<td>' ).te xt( '-'  ) );
+                         }
 
-                        $( '#signtable tbody' ).append( newRow );
+                           $( '#signtable tbody' ).append(  newRow );
 
-                    } else
-                    {
-                        // console.log('fail');
+            
+                                } else
+                     {
+                         // console.log('fail');
                     }
-                },
-                error: function ( xhr, status, error )
-                {
-                    // console.log(error);
-                }
-            } );
-        }
+                 },
+       
+                                 error: function ( xhr, st atus, error )
+                 
+                            
+                    // console.log( error);
+                 }
+             } ) ;
+          }
 
         function formChecker ()
-        {
-            var urlParams = new URLSearchParams( window.location.search );
-            var appraisalId = urlParams.get( 'appraisal_id' );
-            var appraiseeId = urlParams.get( 'appraisee_account_id' );
+         {
+             var  urlParams = new URLSe archPar ams( window.lo cation. search );
+             var  appr aisalId = u rlParams.get( 'apprais al_id' );
+            var appraiseeId = ur lParams.get( 'appraisee_account_id' );
 
-            // console.log('Appraisal ID: ' + appraisalId)
+            // console.log( '
+                            ppraisal ID: ' + appraisalId)
 
             $.ajax( {
                 headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                },
-                url: '{{ route('pe.ICFormChecker') }}',
+                    'X-CSRF-TO                                .a ttr( 'content' ) 
+                 },
+                 url: '{{ route('pe.ICFormChecker') }}',
                 type: 'POST',
                 data: {
-                    appraisalId: appraisalId,
-                    appraiseeId: appraiseeId,
+                    ap praisalId: appraisalId,
+                    ap p
+                                aiseeId: appraiseeId,
                 },
-                success: function ( response )
-                {
-                    console.log( response );
-                    if ( response.form_submitted )
-                    {
-                        $( 'input[type="radio"]' ).prop( 'disabled', true );
-                        $( 'textarea' ).prop( 'disabled', true );
-                        $( '#confirmation-alert' ).addClass( 'd-none' );
-                        $( '#submit-btn' ).text( 'View' );
+                success: function  ( response )
+                  {
+                     console.log( response );
+                     if ( respons e.form_ submitted )
+                      {
+                         $( 'input[type="radio"]' ).prop( 'disabled', true  );
+                         $( 'text area' ). prop( 'disabled', true );
+                        $( '#confirmation-alert' ).addClass( ' d-none' );
+           
+                                     $( '#submit-btn' ). text( 'View' ) ;
 
-                        if ( response.hideSignatory )
-                        {
-                            $( '#submit-btn' ).remove();
-                        }
+                        if ( response .hideSignatory  )
+                          {
+                             $( '#submit-btn' ).r emove();
+                          }
 
-                        if ( response.hasRequest )
-                        {
-                            if ( response.status === 'Pending' )
+                     if ( response.has
+                    equest )
+                         {
+                    
+                                if ( response.status ===  'Pendin g' )
                             {
-                                $( '#sendrequest' ).removeClass( 'btn-primary' ).text( '' );
-                                $( '#sendrequest' ).addClass( 'btn-outline-primary' ).text( 'Request Sent' ).prop( 'disabled', true ).append( '<i>' ).addClass( 'bi bi-envelope-paper' );
-                            } else if ( response.status === 'Approved' || response.status === 'Disapproved' )
+                                  $( '#sendrequest' ).removeClas s( 'btn-primary' ).t ext( '' ).show();
+                                $( '#sendreque st' ).addClass ( 'btn-outline-primary' ).text( 'Req uest Sent' ).p rop( 'd isabled', true ) .append( '<i>' ).addClass( 'bi bi-envelope-paper' );
+                            } else if ( response.statu s  === 'Approved' ||  
+                esponse.status === 'Disapproved' )
                             {
-                                // Display feedback and appropriate UI for approved or disapproved requests
-                                $( '#feedback-text' ).text( response.feedback );
+                                 //  Display  feedb ack and appropriate UI for approve d 
+        r disapproved re quests
+                                   $( '#feedb ack-text' ).t ext( res ponse. feedback );
+ 
+                                   // Check if approver_name and  ap
+        roved_at are ava ilable
+                                   if (  response.approver_ name &&  respon se.approved_ at )
+                                  {
+     
+                                       const  approverInfo  = ` Appr oved by ${ response.approver_name } on ${ resp ons e.approved_ at  }`;
+                                      $( '#additional-i nfo' ).text( appr overInfo ).addClass( 'font-italic' );
+                                   }
 
-                                // Check if approver_name and approved_at are available
-                                if ( response.approver_name && response.approved_at )
-                                {
-                                    const approverInfo = `Approved by ${ response.approver_name } on ${ response.approved_at }`;
-                                    $( '#additional-info' ).text( approverInfo ).addClass( 'font-italic' );
-                                }
-
-                                $( '#feedback-container' ).removeClass( 'd-none' );
+                           
+                 $( '#feedback-container' ).removeClass( 'd- n one' );
                             }
-                        }
+                         }
 
-                        if ( !response.canRequest )
+                        if ( !resp onse.canRequest )
+                           {
+                  
+                  $( '#sendrequest' ).hide();
+                              $( '#requestText' ).prop( 'disabled', true );
+                            $( '#feedback-containe r' ).addClass(  'd-none' );
+                          }
+                     } else
+                     {
+                        if (  !response.hasPermission )
                         {
-                            $( '#sendrequest' ).hide();
-                            $( '#requestText' ).prop( 'disabled', true );
-                            $( '#feedback-container' ).addClass( 'd-none' );
+                              $( '. modal' ) .h
+            de();
+                            $(  '.co ntent-b ody' ).remove();
+                               $( '.content-cont ainer' ).remove();
                         }
-                    } else
-                    {
-                        if ( !response.hasPermission )
-                        {
-                            $( '.modal' ).hide();
-                            $( '.content-body' ).remove();
-                            $( '.content-container' ).remove();
-                        }
-                        $( '#sendrequest' ).hide();
-                        $( '#requestText' ).prop( 'disabled', true );
-                        return;
+                        $ ( '# sendreq uest' ).hide();
+                       
+                   $( '#requestText' ).pro p(  'di sabled' , true ); 
+  
+                                          return;
                     }
                 },
-                error: function ( xhr, status, error )
-                {
+                er ror: function ( xhr, sta tus, error )
+     
+                           {
                     // console.log(error);
-                }
+                 } 
+             } );
+         }
+
+         $(  document ).on( 'click', '#view-sig-btn', function  ()
+        {
+            $( '#sign atory_modal' ).modal( 'hide' );
+             $( '#ima geModal' ).modal( 'show' );
+        } );
+
+         $( document  ).on( 'click', '#esig-close-btn', function ()
+         {
+            $( ' #image Modal' ).modal( 'hide' );
+            $( '#sig natory_modal' ).moda l( 'show' );
+        
             } );
-        }
 
-        $( document ).on( 'click', '#view-sig-btn', function ()
-        {
-            $( '#signatory_modal' ).modal( 'hide' );
-            $( '#imageModal' ).modal( 'show' );
-        } );
-
-        $( document ).on( 'click', '#esig-close-btn', function ()
-        {
-            $( '#imageModal' ).modal( 'hide' );
-            $( '#signatory_modal' ).modal( 'show' );
-        } );
-
-        function dataURItoBlob ( dataURI )
-        {
-            var byteString = atob( dataURI.split( ',' )[1] );
-            var mimeString = dataURI.split( ',' )[0].split( ':' )[1].split( ';' )[0];
-            var ab = new ArrayBuffer( byteString.length );
-            var ia = new Uint8Array( ab );
+        functi on dataURItoBlob ( dataURI )
+         {
+            var byteString = atob( d ataURI.split( ',' )[1] );
+             var mimeString = dataURI.split( ' ,
+             )[0].split( ':' )[1].split( ';' )[0];
+            va r ab = new ArrayBu ffer( by teStri ng.length );
+        
+               var ia = new Uint8Array( ab );
             for ( var i = 0; i < byteString.length; i++ )
             {
-                ia[i] = byteString.charCodeAt( i );
+                 ia[i] = byteString.charCodeAt( i );
             }
             return new Blob( [ab], {
-                type: mimeString
-            } );
-        }
+                 t ype: mim eString
+   
+                 } );
+         }
 
-        $( '#submit-btn' ).on( 'click', function ()
+         $( ' #submit-btn' ).on ( 'click', function ()
         {
-            var totalWeightedScore = $( '#total-weighted-score' ).val();
-            // console.log('Total Weighted Score: ' + totalWeightedScore);
-            $( '#IC_table td' ).removeClass( 'is-invalid' );
-            $( '#service_area, #comments_area' ).removeClass(
-                'is-invalid' );
+            var totalWeightedScore = $( '#total-weighted-sc ore' ).val();
+             // console.log('Total WeightedScore: ' + totalWeightedScore);
+            $( '#IC_table td' ).removeClass( 'is-invali d' );
+             $( '#service_area, #comments_area' ).removeClass(
+                 'is-invalid' );
 
-            var allRadioChecked = true;
+             var allRadioChecked = true;
             $( '#IC_table tbody tr' ).each( function ()
-            {
-                var questionId = $( this ).find( '.form-check-input' ).attr( 'id' ).split(
-                    '_' )[1];
-                var anyRadioChecked = false;
+             {
+        
+                    var questionId  = $( this ).find( '. f
+                rm-check-input' ).attr( 'id' ).split(
+                        '_ '  )[1];
+                var anyRadi oChecked = false;
 
-                $( this ).find( '.form-check-input' ).each( function ()
+                 $( this ).find( '.form-check-input'  )
+            each( function ()
                 {
-                    if ( $( this ).prop( 'checked' ) )
-                    {
-                        anyRadioChecked = true;
-                    }
+                      if ( $( this ).prop( 'checked'  ) )
+                     
+            
+                         anyRadioChecked = true; 
+                   
+                  }
                 } );
 
-                if ( !anyRadioChecked )
+                if  ( !anyRadioChecked )
                 {
-                    allRadioChecked = false;
-                    $( this ).find( '.form-check-input' ).closest( 'tr' ).addClass(
-                        'table-danger' );
-                }
+                     allRadioChecked  = false;
+                     $( this ).find ( '.form-check-input' ).clos
+            st( 'tr' ).addClass( 
+                         'table-danger' );
+                } 
             } );
 
-            var serviceValue = $( '#service_area' ).val();
-            var suggestionValue = $( '#comments_area' ).val();
-            var allTextAreasFilled = ( serviceValue.trim() !== '' ) && ( suggestionValue
-                .trim() !== '' );
+              var s erviceValue  = $( '#service _area' ).val() ;
+             var sugge s tionV a
+        ue = $( '#comments_area' ).val();
+            var  allTextAreasFilled = (  serviceValue.trim() !== '' ) && ( suggestionVa lue
+                 .trim() !== '' );
 
             if ( !allTextAreasFilled )
             {
                 $( '#service_area, #comments_area' ).addClass(
-                    'is-invalid' );
+                     'i s-invalid' );
             }
 
-            if ( allRadioChecked && allTextAreasFilled )
+             if ( allRadioChec ked && allTextAreasFilled )
             {
                 loadSignature();
-                $( '#signatory_modal' ).modal( 'show' );
+                 $( '#signatory_modal' ).modal( 'show' );
             } else
             {
                 // console.log('Please complete all fields and select all radio buttons.');
             }
         } );
 
-        ////////////////////////// SEND REQUEST ////////////////////////////////
-        $( '#sendrequest' ).click( function ()
+        ////////////////////////// SEND REQUEST  ///////////////////////// /////// 
+         $( '#sendrequest' ).click( function ()
         {
-            $( '#requestText' ).prop( 'disabled', false );
+              
+                $( '#requestText' ).prop( 'disabled', false );
 
-            // Check validity and list the results
-            const validationList = $( '#validation-list' );
-            validationList.empty();
+            // Check validity and list  the results
+             const  valid ationList = $( '#validation-list' );
+            validationList.empty( );
 
-            // Check input elements for validity
-            const inputElements = $( 'input[disabled]' ); // Exclude the textarea
-            const textarea = $( 'textarea[required]:not(#requestText)' ); // Exclude the textarea
-            let invalidFields = [];
+             // Check input elements for validity
+              
+                const inputElements = $( 'input[disa bled]' ); // Ex clude the textarea
+            con st textarea  = $( 'textarea [required]:not(#reques tText )' ); // Exclude the textar ea
+                    let invalidFields = [];
 
             inputElements.each( function ()
-            {
-                if ( !this.checkValidity() )
-                {
-                    invalidFields.push( $( this ).attr( 'name' ) );
+             {
+                  if ( !this.chec kValid it y() )
+                 {
+                     in
+        alidFields.push( $( this ).attr( 'name' ) );
                 }
             } );
 
-            if ( textarea.length > 0 && !textarea[0].checkValidity() )
+            if ( textarea.length > tarea[ 0].cy() )
             {
                 invalidFields.push( 'Request field' );
             }
