@@ -289,7 +289,7 @@ Route::get('/TDM/accounts/{id}', function ($id) {
         "status" => $value->status,
       );
     }
-    return response()->json($accountsArr)->with($accounts);
+    return response()->json($accountsArr);
   }else{
     return response()->json(["message" => "User ID not found"], 404);
   }
@@ -342,7 +342,7 @@ Route::post('/TDM/accounts/create', function (Request $request) {
       'first_login' => 'true'
     ]);
 
-    if (empty($accounts)) {
+    if (!empty($accounts)) {
       $accountsArr = array();
 
       foreach ($accounts as $value) {
