@@ -276,11 +276,10 @@ Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController
 //TDM (Testing)
 Route::get('/TDM/accounts/{id}', function ($id) {
   $accounts = Accounts::find([$id]);
-  
+
   if ($accounts != NULL) {
     $accountsArr = array();
-    foreach($accounts as $value)
-    {
+    foreach ($accounts as $value) {
       $accountsArr = array(
         "id" => $value->account_id,
         "email" => $value->email,
@@ -290,19 +289,18 @@ Route::get('/TDM/accounts/{id}', function ($id) {
       );
     }
     return response()->json($accountsArr);
-  }else{
+  } else {
     return response()->json(["message" => "User ID not found"], 404);
   }
 });
 
 Route::get('/TDM/accounts', function () {
   $accounts = Accounts::all();
-  
-  if(!empty($accounts)){
+
+  if (!empty($accounts)) {
     $accountsArr = array();
 
-    foreach($accounts as $value)
-    {
+    foreach ($accounts as $value) {
       $tempArr = array(
         "id" => $value->account_id,
         "email" => $value->email,
@@ -314,52 +312,48 @@ Route::get('/TDM/accounts', function () {
     }
 
     return response()->json($accountsArr);
-  }else{
+  } else {
     return response()->json(["meesage" => "User ID not found"], 404);
   }
 });
 
 Route::post('/TDM/accounts/create', function (Request $request) {
   $validator = Validator::make($request->all(), [
-    'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
-    'type' => 'required',
+      'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
+      'type' => 'required',
   ], [
-    'email.required' => 'Please enter an Adamson email address.',
-    'email.ends_with' => 'Please enter an Adamson email address.',
-    'email.email' => 'Please enter a valid email address.',
-    'email.unique' => 'The email is already in use',
-    'type.required' => 'Please choose a user level.',
+      'email.required' => 'Please enter an Adamson email address.',
+      'email.ends_with' => 'Please enter an Adamson email address.',
+      'email.email' => 'Please enter a valid email address.',
+      'email.unique' => 'The email is already in use',
+      'type.required' => 'Please choose a user level.',
   ]);
 
   if ($validator->fails()) {
-    return response()->json(["meesage" => "User ID not found"], 404);
-  } else {
-    $randomPassword = Str::random(8);
-    $accounts = Accounts::create([
+      return response()->json(["message" => "Validation failed"], 400);
+  }
+
+  $randomPassword = Str::random(8);
+  $account = Accounts::create([
       'email' => $request->input('email'),
       'default_password' => $randomPassword,
       'type' => $request->input('type'),
       'first_login' => 'true'
-    ]);
+  ]);
 
-    if (!empty($accounts)) {
-      $accountsArr = array();
+  if ($account) {
+      $accountArr = [
+          "id" => $account->account_id,
+          "email" => $account->email,
+          "type" => $account->type,
+          "first_login" => $account->first_login,
+          "status" => $account->status,
+      ];
 
-      foreach ($accounts as $value) {
-        $tempArr = array(
-          "id" => $value->account_id,
-          "email" => $value->email,
-          "type" => $value->type,
-          "first_login" => $value->first_login,
-          "status" => $value->status,
-        );
-        array_push($accountsArr, $tempArr);
-      }
-
-      return response()->json($accountsArr);
-    } else {
-      return response()->json(["meesage" => "User ID not found"], 404);
-    }
+      return response()->json(["data" => $accountArr]);
+  } else {
+      return response()->json(["message" => "Error creating account"], 500);
   }
 });
+
 
