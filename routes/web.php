@@ -330,7 +330,7 @@ Route::post('/TDM/accounts/create', function (Request $request) {
   ]);
 
   if ($validator->fails()) {
-      return response()->json(["message" => "Validation failed"], 400);
+      return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
   }
 
   $randomPassword = Str::random(8);
@@ -350,7 +350,7 @@ Route::post('/TDM/accounts/create', function (Request $request) {
           "status" => $account->status,
       ];
 
-      return response()->json(["data" => $accountArr]);
+      return response()->json($accountArr);
   } else {
       return response()->json(["message" => "Error creating account"], 500);
   }
