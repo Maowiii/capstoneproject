@@ -8,9 +8,9 @@
 @section('content')
 <div class="content-container">
 
-    <!-- <div id="progressBarHandler" class="progress" style="height: 10px;">
+    <div id="progressBarHandler" class="progress" style="height: 10px;">
         <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-    </div> -->
+    </div>
 
     <h3>Dear Adamson Employee,</h3>
     <p>Each department (co-academic offices) wants to know how well we are serving our employees/internal customers. We
@@ -172,12 +172,14 @@
         {
             var newService = $( this ).val();
             updateService( newService );
+            updateProgressBar();
         } );
 
         $( '#comments_area' ).on( 'blur', function ()
         {
             var newSuggestion = $( this ).val();
             updateSuggestion( newSuggestion );
+            updateProgressBar();
         } );
 
         // Function to retrieve URL parameters by name
@@ -440,7 +442,10 @@
                     // console.log('Score saved for question ID:', questionId);
                     clickedRadio.closest( 'tr' ).removeClass(
                         'table-danger' );
+                    // calculateRadioProgress(questionId)
+
                     totalScore();
+                    updateProgressBar();
                 },
                 error: function ( xhr )
                 {
@@ -532,9 +537,11 @@
                         {
                             $( `input[name="ic_${ questionId }"][value="${ savedScore }"]` )
                                 .prop( 'checked', true );
+                                calculateRadioProgress(questionId);
                         }
                     }
                     totalScore();
+                    updateProgressBar();
                 },
                 error: function ( xhr, status, error )
                 {
@@ -864,7 +871,63 @@
         loadTextAreas();
         formChecker();
 
+        function calculateProgress1() {
+            // Replace this with your logic to calculate progress for service area
+            // Example: return 100% if there is any input
+            return $('#service_area').val().trim() !== '' ? 100 : 0;
+        }
 
+        // Example function to calculate progress for comments area
+        function calculateProgress2() {
+            // Replace this with your logic to calculate progress for comments area
+            // Example: return 100% if there is any input
+            return $('#comments_area').val().trim() !== '' ? 100 : 0;
+        }
+
+        function calculateTotalProgress() {
+            // Replace this with your logic to calculate the total progress
+            // Example: sum up individual progress from different form elements
+            var progress1 = calculateProgress1();
+            var progress2 = calculateProgress2();
+            var radioProgress = calculateRadioProgress();
+            console.log(progress1);
+            console.log(progress2);
+            console.log(radioProgress);
+
+            // Add more progress calculations if needed
+            // Calculate the total progress based on your criteria
+            var totalProgress = (progress1 + progress2 + radioProgress) / 3; // Adjust the formula as needed
+            return totalProgress;
+        }
+
+        var totalProgressPerRadio = 0;
+
+        function calculateRadioProgress(questionId) {
+            // Get the total count of radio buttons in the specified group
+            var totalRadioCount = $(`input[name="ic_${questionId}"]`).length;
+            console.log("totalRadioCount" + totalRadioCount);
+            // Get the count of checked radio buttons in the specified group
+            var checkedRadioCount = $(`input[name="ic_${questionId}"]:checked`).length;
+            console.log("checkedRadioCount" + checkedRadioCount);
+
+            // Calculate progress per checked radio button
+            var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 100 : 0;
+            console.log("(" + checkedRadioCount + "/" + totalRadioCount + ") x 100");
+
+            totalProgressPerRadio += progressPerRadio;
+
+            return totalProgressPerRadio;
+        }
+
+        function updateProgressBar() {
+            // Calculate the total progress based on your criteria
+            // Replace this with your logic to calculate the progress
+            var totalProgress = calculateTotalProgress();
+            console.log(totalProgress);
+            // Update the width of the progress bar
+            $('#progressBar').css('width', totalProgress + '%');
+        }
+        
     } );
 </script>
 @endsection

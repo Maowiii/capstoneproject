@@ -420,7 +420,7 @@ class PEInternalCustomerController extends Controller
       }
 
       if (!$isEvaluator) {
-        $canRequest = false;
+        $canRequest = "The accID: " . $accountId . "| The evalID: " . $evaluatorId . " = " . $isEvaluator;
       }
     }
 
