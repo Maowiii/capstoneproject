@@ -342,7 +342,7 @@ Route::post('/TDM/accounts/create', function (Request $request) {
       'first_login' => 'true'
     ]);
 
-    if (empty($accounts)) {
+    if (!empty($accounts)) {
       $accountsArr = array();
 
       foreach ($accounts as $value) {
