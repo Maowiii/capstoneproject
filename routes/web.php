@@ -275,19 +275,16 @@ Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController
 
 //TDM (Testing)
 Route::get('/TDM/accounts/{id}', function ($id) {
-  $accounts = Accounts::find([$id]);
+  $accounts = Accounts::find($id);
 
-  if ($accounts != NULL) {
-    $accountsArr = array();
-    foreach ($accounts as $value) {
-      $accountsArr = array(
-        "id" => $value->account_id,
-        "email" => $value->email,
-        "type" => $value->type,
-        "first_login" => $value->first_login,
-        "status" => $value->status,
-      );
-    }
+  if ($accounts) {
+    $accountsArr = [
+      "id" => $accounts->account_id,
+      "email" => $accounts->email,
+      "type" => $accounts->type,
+      "first_login" => $accounts->first_login,
+      "status" => $accounts->status,
+  ];
     return response()->json($accountsArr);
   } else {
     return response()->json(["message" => "User ID not found"], 404);
@@ -297,7 +294,7 @@ Route::get('/TDM/accounts/{id}', function ($id) {
 Route::get('/TDM/accounts', function () {
   $accounts = Accounts::all();
 
-  if (!empty($accounts)) {
+  if ($accounts) {
     $accountsArr = array();
 
     foreach ($accounts as $value) {
@@ -310,10 +307,9 @@ Route::get('/TDM/accounts', function () {
       );
       array_push($accountsArr, $tempArr);
     }
-
     return response()->json($accountsArr);
   } else {
-    return response()->json(["meesage" => "User ID not found"], 404);
+    return response()->json(["meesage" => "Users not found"], 404);
   }
 });
 
@@ -334,25 +330,24 @@ Route::post('/TDM/accounts/create', function (Request $request) {
   }
 
   $randomPassword = Str::random(8);
-  $account = Accounts::create([
+  $accounts = Accounts::create([
       'email' => $request->input('email'),
       'default_password' => $randomPassword,
       'type' => $request->input('type'),
       'first_login' => 'true'
   ]);
 
-  if ($account) {
-      $accountArr = [
-          "id" => $account->account_id,
-          "email" => $account->email,
-          "type" => $account->type,
-          "first_login" => $account->first_login,
-          "status" => $account->status,
-      ];
-
-      return response()->json($accountArr);
+  if ($accounts) {
+    $accountsArr = [
+      "id" => $accounts->account_id,
+      "email" => $accounts->email,
+      "type" => $accounts->type,
+      "first_login" => $accounts->first_login,
+      "status" => $accounts->status,
+  ];
+    return response()->json($accountsArr);
   } else {
-      return response()->json(["message" => "Error creating account"], 500);
+    return response()->json(["message" => "User ID not found"], 404);
   }
 });
 
