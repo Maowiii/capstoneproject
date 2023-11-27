@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Departments;
 use App\Models\EvalYear;
 use App\Models\Accounts;
 use App\Models\Employees;
@@ -51,7 +52,29 @@ class EvaluationYearController extends Controller
   public function addEvalYear(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $departments = Departments::all();
+    $departmentsWithoutSuperiors = [];
+
+    foreach ($departments as $department) {
+      $isAccount = $department->employee()
+        ->whereHas('account', function ($query) {
+          $query->where('type', 'IS');
+        })->exists();
+
+      if (!$isAccount) {
+        $departmentsWithoutSuperiors[] = $department->department_name;
+      }
+    }
+
+    if (!empty($departmentsWithoutSuperiors)) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Please assign superiors to all departments before proceeding.',
+        'errors' => ['departments_without_superiors' => $departmentsWithoutSuperiors]
+      ]);
     }
 
     $validator = Validator::make($request->all(), [
@@ -104,7 +127,7 @@ class EvaluationYearController extends Controller
   public function confirmEvalYear(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     EvalYear::where('status', 'active')->update(['status' => 'inactive']);
@@ -274,7 +297,7 @@ class EvaluationYearController extends Controller
   public function toggleEvalYearStatus(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $evalID = $request->input('eval_id');
