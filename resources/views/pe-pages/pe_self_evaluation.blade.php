@@ -223,12 +223,12 @@
             </div>
         </div>
 
-        <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
+        <!-- <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
             <h5 class="fs-6">Progress Bar</h5>
             <div id="progressBarHandler" class="progress w-75" style="height: 15px;">
                 <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
             </div>
-        </div>
+        </div> -->
 
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
@@ -1578,6 +1578,8 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
+                        //updateProgressBar();
+
                         // Handle the success response if needed
                         // console.log('Autosave successful.');
                         // console.log('FieldName Acquired: ' + fieldName);
@@ -1630,14 +1632,6 @@
                     reader.readAsDataURL(selectedFile);
                 }
             });
-
-            loadTableData();
-            updateFrequencyCounter('SID_table');
-            updateFrequencyCounter('SR_table');
-            updateFrequencyCounter('S_table');
-
-            updateBHTotal();
-            updateWeightedTotal();
 
             ////////////////////////// SEND REQUEST ////////////////////////////////
             $('#sendrequest').click(function() {
@@ -1709,7 +1703,16 @@
 
             function refreshPage() {
                 location.reload();
-            }   
+            } 
+            
+            loadTableData();
+            updateFrequencyCounter('SID_table');
+            updateFrequencyCounter('SR_table');
+            updateFrequencyCounter('S_table');
+
+            updateBHTotal();
+            updateWeightedTotal();
+            //updateProgressBar();
         });
 
         function loadTableData() {
@@ -1771,6 +1774,7 @@
                             input.on('invalid', function() {
                                 $(this).addClass('is-invalid');
                                 $(this).siblings('span').addClass('text-danger');
+                                $( this ).find( '.form-check-input' ).closest( 'tr' ).addClass('table-danger' );
                             });
 
                             input.on('input', function() {
@@ -1802,8 +1806,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
-                                        calculateRadioProgress(questionId);
-                                        updateProgressBar();
+                                        //updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1898,6 +1901,8 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        //updateProgressBar();
+
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1992,6 +1997,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        //updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -2011,418 +2017,422 @@
                         $('#S_table input[type="radio"]').trigger('change');
                     });
                     // formChecker();
+                    //updateProgressBar();
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('getPEKRA') }}',
+                type: 'GET',
+                data: {
+                    appraisal_id: {{ $appraisalId }}
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        if (data.eulaData == 1 || data.eulaData == true) {
+                            $('#consentform').remove();
+                        } else {
+                            $('#consentform').modal('show');
+                        }
+
+                        $('#KRA_table_body').empty();
+                        var tbody = $('#KRA_table_body');
+
+                        if (data.kraData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewKRARow(tbody);
+                            var rowCount = $('#kra_table tbody tr').length;
+
+                            if (rowCount === 1) {
+                                $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.kraData.forEach(function(kra, index) {
+                                var kraID = kra.kra_id;
+
+                                var row = $('<tr>').addClass('align-middle');
+
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][kraID]',
+                                    value: kraID
+                                }).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra]',
+                                        kra.kra,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_kra_weight]',
+                                        kra.kra_weight,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_objective]',
+                                        kra.objective,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_performance_indicator]',
+                                        kra.performance_indicator,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_actual_result]',
+                                        kra.actual_result,
+                                        false
+                                    )
+                                ).appendTo(row);
+
+                                var performanceCell = $('<td>').appendTo(row);
+                                var performanceLevelDiv = $('<div>').addClass(
+                                    'd-flex justify-content-center gap-2'
+                                ).appendTo(performanceCell);
+
+                                for (var i = 5; i >= 1; i--) {
+                                    var label = $('<label>').addClass('form-check-label');
+                                    var input = $('<input>').prop('readonly', false).attr({
+                                        type: 'radio',
+                                        name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_performance_level]',
+                                        class: 'form-check-input autosave-field',
+                                        value: i
+                                    });
+
+                                    input[0].required = true;
+
+                                    var span = $('<span>').addClass('ms-1').text(i);
+                                    label.append(input, span);
+                                    // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                    //     label));
+
+                                    input.on('invalid', function() {
+                                        $(this).addClass('is-invalid text-danger fw-bold');
+                                        $(this).siblings('span').addClass('text-danger');
+                                    });
+
+                                    input.on('input', function() {
+                                        var row = $(this).closest('tr');
+                                        row.find('.is-invalid').removeClass('is-invalid');
+                                        row.find('.text-danger').removeClass(
+                                            'text-danger fw-bold'
+                                        );
+
+                                        $(this).closest('tr').removeClass(
+                                            'text-danger fw-bold'
+                                        );
+
+                                        $(this).removeClass(
+                                            'is-invalid'
+                                        );
+
+                                        //updateProgressBar();
+                                    });
+
+                                    label.append(input, span);
+
+                                    if (kra.performance_level === i) {
+                                        input.prop('checked', true);
+                                    }
+
+                                    $('<div>').addClass('col-auto').append(label).appendTo(
+                                        performanceLevelDiv);
+                                }
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]',
+                                        kra.weighted_total,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                tbody.append(row);
+                            });
+                            updateWeightedTotal();
+                        }
+
+                        $('#wpa_table_body').empty();
+                        var wpatbody = $('#wpa_table_body');
+
+                        if (data.wpaData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewWPARow(wpatbody);
+                            var wparowCount = $('#wpa_table_body tr').length;
+
+                            if (wparowCount === 1) {
+                                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            }
+                            // console.log(wparowCount);
+                        } else {
+                            data.wpaData.forEach(function(wpa, index) {
+                                var wpaID = wpa.performance_plan_id;
+
+                                var wparow = $('<tr>').addClass('align-middle');
+                                wparow.attr('data-wpa-id', wpaID);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][continue_doing]',
+                                        wpa.continue_doing,
+                                        false
+                                    )
+                                ).appendTo(wparow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][stop_doing]',
+                                        wpa.stop_doing,
+                                        false
+                                    )
+                                ).appendTo(wparow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][start_doing]',
+                                        wpa.start_doing,
+                                        false
+                                    )
+                                ).appendTo(wparow);
+
+                                $('<td>').addClass('td-action').append(
+                                    $('<button>').addClass(
+                                        'btn btn-danger wpa-delete-btn align-middle')
+                                    .attr('type', 'button')
+                                    .text('Delete')
+                                ).appendTo(wparow);
+
+                                wpatbody.append(wparow);
+
+                                var wparowCount = $('#wpa_table_body tr').length;
+                                if (wparowCount === 1) {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
+                                }
+                            });
+                        }
+
+                        $('#ldp_table_body').empty();
+                        var ldptbody = $('#ldp_table_body');
+
+                        if (data.ldpData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewLDPRow(ldptbody);
+                            var ldprowCount = $('#ldp_table_body tr').length;
+
+                            if (ldprowCount === 1) {
+                                $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.ldpData.forEach(function(ldp, index) {
+                                var ldpID = ldp.development_plan_id;
+
+                                var ldprow = $('<tr>').addClass('align-middle');
+                                ldprow.attr('data-ldp-id', ldpID);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'LDP[' +
+                                        ldpID +
+                                        '][' + {{ $appraisalId }} + '][learning_need]',
+                                        ldp.learning_need,
+                                        false
+                                    )
+                                ).appendTo(ldprow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'LDP[' +
+                                        ldpID +
+                                        '][' + {{ $appraisalId }} + '][methodology]',
+                                        ldp.methodology,
+                                        false
+                                    )
+                                ).appendTo(ldprow);
+
+                                $('<td>').addClass('td-action').append(
+                                    $('<button>').addClass(
+                                        'btn btn-danger ldp-delete-btn align-middle')
+                                    .attr('type', 'button')
+                                    .text('Delete')
+                                ).appendTo(ldprow);
+
+                                ldptbody.append(ldprow);
+
+                                var ldprowCount = $('#ldp_table_body tr').length;
+                                if (ldprowCount <= 1) {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
+                                }
+                            });
+                        }
+
+                        // Loop through the jicData and populate the table rows with data
+                        data.jicData.forEach(function(jic, index) {
+                            jicID = parseInt(jic.question_order) - 1;
+
+                            var row = document.querySelectorAll('#jic_table_body tr')[jicID];
+
+                            var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                            var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
+
+                            var commentTextarea = $('.jicTA');
+
+                            if (row) {
+                                if (jic.answer === 1) {
+                                    answerRadioYes.checked = true;
+                                } else if (jic.answer === 0) {
+                                    answerRadioNo.checked = true;
+                                }
+
+                                // $(answerRadioYes).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
+
+                                // $(answerRadioNo).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
+
+                                $(answerRadioYes).on('input', function() {
+                                    // Handle the change event for "Yes" radio button
+                                    var $closestTD = $(this).closest('td');
+                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                    $closestTD.removeClass('border border-danger');
+                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                    $closestTD.closest('.form-check-input').removeClass(
+                                        'is-invalid');
+                                });
+
+                                $(answerRadioNo).on('input', function() {
+                                    // Handle the change event for "No" radio button
+                                    var $closestTD = $(this).closest('td');
+                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                    $closestTD.removeClass('border border-danger');
+                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                    $closestTD.closest('.form-check-input').removeClass(
+                                        'is-invalid');
+                                });
+
+                                if (jic.comments) {
+                                    commentTextarea.val(jic.comments || '');
+                                }
+
+                                // Attach input event handlers for validation
+                                $(commentTextarea).on('input', function() {
+                                    $(this).removeClass('border border-danger');
+                                    $(this).removeClass('is-invalid');
+                                }).on('invalid', function() {
+                                    $(this).addClass('is-invalid');
+                                    $(this).attr('placeholder', 'Please provide a valid input');
+                                }).on('change', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                }).on('blur', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                });
+                            } else {
+                                commentTextarea.required = true;
+                                answerRadioYes.required = true;
+                                answerRadioNo.required = true;
+
+                                // console.log('Row not found for index ' + index);
+                            }
+                        });
+
+                        data.signData.forEach(function(sign, index) {
+                            var appraisalId = sign.appraisal_id;
+                            var row = document.querySelector('.signature-row');
+
+                            if (row) {
+                                var signCell = row.querySelector('#signcell');
+                                var signatureImage = document.querySelector('#signatureImage');
+                                var hiddenInput = document.querySelector('#uploadsign_1');
+                                var dateCell = row.querySelector('.date-cell');
+
+                                if (sign.sign_data) {
+                                    // Validation for signature data
+                                    $('#signatureImage').attr('src', sign.sign_data);
+
+                                    signatureImage.width = 100;
+
+                                    // Update the hidden input with the loaded signature data
+                                    hiddenInput.value = sign.sign_data;
+                                } else {
+                                    var errorText = document.createElement('p');
+                                    errorText.textContent = 'Invalid signature data';
+                                    errorText.classList.add('text-danger', 'fw-bold');
+                                    signCell.appendChild(errorText);
+                                }
+
+                                if (sign.updated_at) {
+                                    // Validation for date data
+                                    const date = new Date(sign.updated_at);
+
+                                    const formattedDate = date.toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        second: 'numeric',
+                                    });
+
+                                    dateCell.textContent = formattedDate;
+                                } else {
+                                    // Handle invalid or missing date data
+                                    dateCell.textContent = 'Invalid date';
+                                    dateCell.classList.add('text-danger', 'fw-bold');
+                                }
+                            }
+                        });
+
+                        formChecker();
+                        //updateProgressBar();
+                    } else {
+                        console.error('Data retrieval failed.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                 }
             });
         }
-
-        $.ajax({
-            url: '{{ route('getPEKRA') }}',
-            type: 'GET',
-            data: {
-                appraisal_id: {{ $appraisalId }}
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    if (data.eulaData == 1 || data.eulaData == true) {
-                        $('#consentform').remove();
-                    } else {
-                        $('#consentform').modal('show');
-                    }
-
-                    $('#KRA_table_body').empty();
-                    var tbody = $('#KRA_table_body');
-
-                    if (data.kraData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewKRARow(tbody);
-                        var rowCount = $('#kra_table tbody tr').length;
-
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.kraData.forEach(function(kra, index) {
-                            var kraID = kra.kra_id;
-
-                            var row = $('<tr>').addClass('align-middle');
-
-                            $('<input>').attr({
-                                type: 'hidden',
-                                name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][kraID]',
-                                value: kraID
-                            }).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA_kra]',
-                                    kra.kra,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_kra_weight]',
-                                    kra.kra_weight,
-                                    true
-                                )
-                            ).appendTo(row);
-
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_objective]',
-                                    kra.objective,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_performance_indicator]',
-                                    kra.performance_indicator,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_actual_result]',
-                                    kra.actual_result,
-                                    false
-                                )
-                            ).appendTo(row);
-
-                            var performanceCell = $('<td>').appendTo(row);
-                            var performanceLevelDiv = $('<div>').addClass(
-                                'd-flex justify-content-center gap-2'
-                            ).appendTo(performanceCell);
-
-                            for (var i = 5; i >= 1; i--) {
-                                var label = $('<label>').addClass('form-check-label');
-                                var input = $('<input>').prop('readonly', false).attr({
-                                    type: 'radio',
-                                    name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_performance_level]',
-                                    class: 'form-check-input autosave-field',
-                                    value: i
-                                });
-
-                                input[0].required = true;
-
-                                var span = $('<span>').addClass('ms-1').text(i);
-                                label.append(input, span);
-                                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                                //     label));
-
-                                input.on('invalid', function() {
-                                    $(this).addClass('is-invalid text-danger fw-bold');
-                                    $(this).siblings('span').addClass('text-danger');
-                                });
-
-                                input.on('input', function() {
-                                    var row = $(this).closest('tr');
-                                    row.find('.is-invalid').removeClass('is-invalid');
-                                    row.find('.text-danger').removeClass(
-                                        'text-danger fw-bold'
-                                    );
-
-                                    $(this).closest('tr').removeClass(
-                                        'text-danger fw-bold'
-                                    );
-
-                                    $(this).removeClass(
-                                        'is-invalid'
-                                    );
-                                });
-
-                                label.append(input, span);
-
-                                if (kra.performance_level === i) {
-                                    input.prop('checked', true);
-                                }
-
-                                $('<div>').addClass('col-auto').append(label).appendTo(
-                                    performanceLevelDiv);
-                            }
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_weighted_total]',
-                                    kra.weighted_total,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            tbody.append(row);
-                        });
-                        updateWeightedTotal();
-                    }
-
-                    $('#wpa_table_body').empty();
-                    var wpatbody = $('#wpa_table_body');
-
-                    if (data.wpaData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewWPARow(wpatbody);
-                        var wparowCount = $('#wpa_table_body tr').length;
-
-                        if (wparowCount === 1) {
-                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
-                        }
-                        // console.log(wparowCount);
-                    } else {
-                        data.wpaData.forEach(function(wpa, index) {
-                            var wpaID = wpa.performance_plan_id;
-
-                            var wparow = $('<tr>').addClass('align-middle');
-                            wparow.attr('data-wpa-id', wpaID);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
-                                    '][continue_doing]',
-                                    wpa.continue_doing,
-                                    false
-                                )
-                            ).appendTo(wparow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
-                                    '][stop_doing]',
-                                    wpa.stop_doing,
-                                    false
-                                )
-                            ).appendTo(wparow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
-                                    '][start_doing]',
-                                    wpa.start_doing,
-                                    false
-                                )
-                            ).appendTo(wparow);
-
-                            $('<td>').addClass('td-action').append(
-                                $('<button>').addClass(
-                                    'btn btn-danger wpa-delete-btn align-middle')
-                                .attr('type', 'button')
-                                .text('Delete')
-                            ).appendTo(wparow);
-
-                            wpatbody.append(wparow);
-
-                            var wparowCount = $('#wpa_table_body tr').length;
-                            if (wparowCount === 1) {
-                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
-                            } else {
-                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
-                            }
-                        });
-                    }
-
-                    $('#ldp_table_body').empty();
-                    var ldptbody = $('#ldp_table_body');
-
-                    if (data.ldpData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewLDPRow(ldptbody);
-                        var ldprowCount = $('#ldp_table_body tr').length;
-
-                        if (ldprowCount === 1) {
-                            $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.ldpData.forEach(function(ldp, index) {
-                            var ldpID = ldp.development_plan_id;
-
-                            var ldprow = $('<tr>').addClass('align-middle');
-                            ldprow.attr('data-ldp-id', ldpID);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' +
-                                    ldpID +
-                                    '][' + {{ $appraisalId }} + '][learning_need]',
-                                    ldp.learning_need,
-                                    false
-                                )
-                            ).appendTo(ldprow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' +
-                                    ldpID +
-                                    '][' + {{ $appraisalId }} + '][methodology]',
-                                    ldp.methodology,
-                                    false
-                                )
-                            ).appendTo(ldprow);
-
-                            $('<td>').addClass('td-action').append(
-                                $('<button>').addClass(
-                                    'btn btn-danger ldp-delete-btn align-middle')
-                                .attr('type', 'button')
-                                .text('Delete')
-                            ).appendTo(ldprow);
-
-                            ldptbody.append(ldprow);
-
-                            var ldprowCount = $('#ldp_table_body tr').length;
-                            if (ldprowCount <= 1) {
-                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
-                            } else {
-                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
-                            }
-                        });
-                    }
-
-                    // Loop through the jicData and populate the table rows with data
-                    data.jicData.forEach(function(jic, index) {
-                        jicID = parseInt(jic.question_order) - 1;
-
-                        var row = document.querySelectorAll('#jic_table_body tr')[jicID];
-
-                        var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
-
-                        var commentTextarea = $('.jicTA');
-
-                        if (row) {
-                            if (jic.answer === 1) {
-                                answerRadioYes.checked = true;
-                            } else if (jic.answer === 0) {
-                                answerRadioNo.checked = true;
-                            }
-
-                            // $(answerRadioYes).on('invalid', function() {
-                            //     $(this).addClass('is-invalid');
-                            //     $(this).siblings('span').addClass('text-danger');
-                            // });
-
-                            // $(answerRadioNo).on('invalid', function() {
-                            //     $(this).addClass('is-invalid');
-                            //     $(this).siblings('span').addClass('text-danger');
-                            // });
-
-                            $(answerRadioYes).on('input', function() {
-                                // Handle the change event for "Yes" radio button
-                                var $closestTD = $(this).closest('td');
-                                $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                $closestTD.removeClass('border border-danger');
-                                $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass(
-                                    'is-invalid');
-                            });
-
-                            $(answerRadioNo).on('input', function() {
-                                // Handle the change event for "No" radio button
-                                var $closestTD = $(this).closest('td');
-                                $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                $closestTD.removeClass('border border-danger');
-                                $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass(
-                                    'is-invalid');
-                            });
-
-                            if (jic.comments) {
-                                commentTextarea.val(jic.comments || '');
-                            }
-
-                            // Attach input event handlers for validation
-                            $(commentTextarea).on('input', function() {
-                                $(this).removeClass('border border-danger');
-                                $(this).removeClass('is-invalid');
-                            }).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).attr('placeholder', 'Please provide a valid input');
-                            }).on('change', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            }).on('blur', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            });
-                        } else {
-                            commentTextarea.required = true;
-                            answerRadioYes.required = true;
-                            answerRadioNo.required = true;
-
-                            // console.log('Row not found for index ' + index);
-                        }
-                    });
-
-                    data.signData.forEach(function(sign, index) {
-                        var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('.signature-row');
-
-                        if (row) {
-                            var signCell = row.querySelector('#signcell');
-                            var signatureImage = document.querySelector('#signatureImage');
-                            var hiddenInput = document.querySelector('#uploadsign_1');
-                            var dateCell = row.querySelector('.date-cell');
-
-                            if (sign.sign_data) {
-                                // Validation for signature data
-                                $('#signatureImage').attr('src', sign.sign_data);
-
-                                signatureImage.width = 100;
-
-                                // Update the hidden input with the loaded signature data
-                                hiddenInput.value = sign.sign_data;
-                            } else {
-                                var errorText = document.createElement('p');
-                                errorText.textContent = 'Invalid signature data';
-                                errorText.classList.add('text-danger', 'fw-bold');
-                                signCell.appendChild(errorText);
-                            }
-
-                            if (sign.updated_at) {
-                                // Validation for date data
-                                const date = new Date(sign.updated_at);
-
-                                const formattedDate = date.toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                    second: 'numeric',
-                                });
-
-                                dateCell.textContent = formattedDate;
-                            } else {
-                                // Handle invalid or missing date data
-                                dateCell.textContent = 'Invalid date';
-                                dateCell.classList.add('text-danger', 'fw-bold');
-                            }
-                        }
-                    });
-
-                    formChecker();
-                } else {
-                    console.error('Data retrieval failed.');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
@@ -2849,7 +2859,7 @@
                             $('#lockToast').toast('show');
                             $('input[type="radio"]').prop('disabled', true);
 
-                            $('#submit-btn-form').text('View Signature');
+                            $('#submit-btn-form').hide();
                             $('#uploadsign').hide();
                             $('#submit-btn-sign').hide();
 
@@ -2977,64 +2987,72 @@
             });
         }
 
-        var totalProgress = 0;
+        // var totalProgress = 0;
 
-        function calculateProgress1() {
-            // Replace this with your logic to calculate progress for service area
-            // Example: return 100% if there is any input
-            return $('#service_area').val().trim() !== '' ? 20 : 0;
-        }
+        // function calculateRadioProgress(questionId, questionSection) {
+        //     // Determine the total count of radio buttons based on the pattern in the name attribute
+        //     var isGroupWith5Buttons = $(`input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]:first`).length > 0;
+        //     console.log(`Processing questionId: ${questionId}, questionSection: ${questionSection}, isGroupWith5Buttons: ${isGroupWith5Buttons}`);
 
-        function calculateProgress2() {
-            // Replace this with your logic to calculate progress for comments area
-            // Example: return 100% if there is any input
-            return $('#comments_area').val().trim() !== '' ? 20 : 0;
-        }
+        //     // Get the total count of radio buttons in the specified group
+        //     var totalRadioCount = 0;
+        //     var checkedRadioCount = 0;
 
-        function calculateRadioProgress(questionId) {
-            // Get the total count of radio buttons in the specified group
-            var totalRadioCount = $(`input[name="SID[${questionId}][{{ $appraisalId }}][SIDanswer]"]`).length;
-            // console.log("totalRadioCount" + totalRadioCount);
-            // Get the count of checked radio buttons in the specified group
-            var checkedRadioCount = $(`input[name="SID[${questionId}][{{ $appraisalId }}][SIDanswer]"]:checked`).length;
-            
-            // console.log("checkedRadioCount" + checkedRadioCount);
+        //     if (isGroupWith5Buttons) {
+        //         totalRadioCount = $(`input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]`).length;
+        //         checkedRadioCount = $(`input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]:checked`).length;
+        //     } else {
+        //         if (questionSection === 'feedback') {
+        //             totalRadioCount = $(`input[name="feedback_${questionId}"]`).length;
+        //             checkedRadioCount = $(`input[name="feedback_${questionId}"]:checked`).length;
+        //         }
+        //     }
+        //     console.log("totalRadioCount: " + totalRadioCount);
 
-            // Calculate progress per checked radio button
-            var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 20 : 0;
-            // console.log("(" + checkedRadioCount + "/" + totalRadioCount + ") x 20");
+        //     // Adjusted calculation for totalQuestions and weight
+        //     var totalQuestions = isGroupWith5Buttons ? totalRadioCount / 5 : totalRadioCount / 2;
+        //     console.log("totalQuestions: " + totalQuestions);
+        //     var totalWeights = 100; // Total weight should add up to 100%
+        //     var weight = totalQuestions > 0 ? totalWeights / totalQuestions : 0;
+        //     console.log("weight: " + weight);
 
-            totalProgress += progressPerRadio;
+        //     // Calculate progress per checked radio button
+        //     var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * weight : 0;
+        //     console.log("progressPerRadio: " + progressPerRadio);
 
-            return totalProgress;
-        }
+        //     return progressPerRadio;
+        // }
 
-        function calculateTotalProgress() {
-            // Replace this with your logic to calculate the total progress
-            // Example: sum up individual progress from different form elements
-            // var progress1 = calculateProgress1();
-            // var progress2 = calculateProgress2();
-            var progress1 = 0;
-            var progress2 = 0;
+        // function calculateTotalProgress() {
+        //     var totalRadioProgress = 0;
+        //     var totalRadioCount = 0;
 
-            var radioProgress = calculateRadioProgress();
-            // console.log(progress1);
-            // console.log(progress2);
-            console.log(radioProgress);
+        //     // Iterate over each question
+        //     $('#PEappraisalForm .form-check-input[type="radio"]').each(function () {
+        //         var questionId = $(this).attr('name').match(/\[(\d+)\]/)[1];
+        //         var questionSection = $(this).attr('name').match(/\[([^\]]+)\]$/)[1];
 
-            // Add more progress calculations if needed
-            // Calculate the total progress based on your criteria
-            var totalProgress = progress1 + progress2 + radioProgress; // Adjust the formula as needed
-            return totalProgress;
-        }
+        //         totalRadioProgress += calculateRadioProgress(questionId, questionSection);
+        //         totalRadioCount++; // Count the number of questions
+        //     });
 
-        function updateProgressBar() {
-            // Calculate the total progress based on your criteria
-            // Replace this with your logic to calculate the progress
-            var totalProgress = Math.round(calculateTotalProgress());
+        //     $('#PEappraisalForm [textarea]').each(function () {
+        //         console.log($(this));
+        //     });
+        //     console.log(totalRadioProgress)
+        //     // Calculate the total progress based on your criteria
+        //     var totalProgress = (totalRadioProgress / totalRadioCount); // Adjust the formula as needed
 
-            // Update the width of the progress bar
-            $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
-        }
+        //     return totalProgress;
+        // }
+
+        // function //updateProgressBar();
+ 
+        //     // Calculate the total progress 
+        //     var totalProgress = Math.round(calculateTotalProgress());
+
+        //     // Update the width of the progress bar
+        //     $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
+        // }
     </script>
 @endsection

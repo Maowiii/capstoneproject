@@ -101,7 +101,7 @@
                             employeeAppraisals.forEach(function(appraisal) {
                                 // console.log(appraisal);
                                 var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
-
+                                console.log(employeeAppraisals);
                                 // console.log(appraisal.date_submitted)
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     hasSelfEvaluation = true; 
@@ -149,16 +149,10 @@
                                         if (appraisal.date_submitted !== null) {
                                         var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(
-                                            appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(appraisal
-                                            .employee
-                                            .first_name + ' ' + appraisal.employee.last_name
-                                            );
-                                        url += "&appraisee_department=" + encodeURIComponent(
-                                            appraisal.employee.department.department_name);
+                                        url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                        url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee.first_name + ' ' + appraisal.employee.last_name);
+                                        url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
 
                                         ic1Link = $('<a>').addClass('btn btn-outline-primary')
                                             .attr('href', url.replace(':appraisal_id', appraisal
@@ -181,12 +175,9 @@
                                             var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
                                             url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
-                                            url += "&appraisee_account_id=" + encodeURIComponent(
-                                                appraisal.employee.account_id);
-                                            url += "&appraisee_name=" + encodeURIComponent(appraisal
-                                                .employee.first_name + ' ' + appraisal.employee.last_name);
-                                            url += "&appraisee_department=" + encodeURIComponent(
-                                                appraisal.employee.department.department_name);
+                                            url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
+                                            url += "&appraisee_name=" + encodeURIComponent(appraisal.employee.first_name + ' ' + appraisal.employee.last_name);
+                                            url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
 
                                             ic2Link = $('<a>').addClass('btn btn-outline-primary')
                                                 .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))

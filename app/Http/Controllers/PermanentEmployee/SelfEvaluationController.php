@@ -106,7 +106,7 @@ class SelfEvaluationController extends Controller
     $appraisee = Employees::where('account_id', $account_id)->get();
 
     $appraisals = Appraisals::where('employee_id', $user->employee_id)
-      ->with('employee', 'evaluator') // Load the related employee and evaluator information
+      ->with('evaluator', 'employee')
       ->get();
 
     $status = $this->calculateStatus($appraisals);
