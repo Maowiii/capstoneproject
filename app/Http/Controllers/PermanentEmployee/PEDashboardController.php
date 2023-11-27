@@ -88,6 +88,7 @@ class PEDashboardController extends Controller
         ->whereNull('date_submitted')
         ->whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
         ->count();
+
       $hasPendingSelfEvaluation = Appraisals::where('evaluator_id', $accountId)
         ->whereNull('date_submitted')
         ->where('evaluation_type', 'self evaluation')
@@ -118,16 +119,18 @@ class PEDashboardController extends Controller
         if ($currentDate >= $fiveDaysBeforeEvalEnd) {
           $notifications[] = "Please ensure that all your required appraisals are settled before the evaluation period ends.";
         }
-        if (!$hasPendingSelfEvaluation) {
-          $notifications[] = "Please complete your self-evaluation. See appraisals page.";
-        }
-        
+      }
+
+      if ($hasPendingSelfEvaluation) {
+        $notifications[] = "Please complete your self-evaluation. See appraisals page.";
       }
 
       if ($pendingAppraisalsCount > 0) {
         $notifications[] = "You have $pendingAppraisalsCount pending internal customer appraisals to complete.";
       }
 
+      $pendingAppraisalsCount = $pendingAppraisalsCount + $hasPendingSelfEvaluation;
+      
       // Ending
       if ($currentDate > $dateEnd) {
         if ($pendingAppraisalsCount > 0) {

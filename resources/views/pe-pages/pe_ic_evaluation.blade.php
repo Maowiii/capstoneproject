@@ -8,10 +8,6 @@
 @section('content')
 <div class="content-container">
 
-    <div id="progressBarHandler" class="progress" style="height: 10px;">
-        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-    </div>
-
     <h3>Dear Adamson Employee,</h3>
     <p>Each department (co-academic offices) wants to know how well we are serving our employees/internal customers. We
         appreciate if you would take the time to complete this evaluation. This is a feedback mechanism to improve our
@@ -20,7 +16,7 @@
         option from the provided choices using the radio buttons. This will make us aware of a problem, complaints, or
         an opportunity to make a suggestion, and to recognize or commend for a job well done.</p>
 
-    <div class="row g-3 align-items-center">
+    <div id="ic_form" class="row g-3 align-items-center">
         <div class="col-auto">
             <h5>Name of the staff to be evaluated:</h5>
         </div>
@@ -32,6 +28,13 @@
             Choose each number which corresponds to your answer for each item. Please answer each item truthfully.<br>
             5 - Almost Always 4 - Frequently 3 - Sometimes 2 - Occasionally 1 - Hardly Ever
         </p>
+
+        <div id="progressBarContainer" class="card sticky-top border-0 d-flex flex-column align-items-center">
+            <h5 class="fs-6">Progress Bar</h5>
+            <div id="progressBarHandler" class="progress w-75" style="height: 15px;">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
 
         <div class="d-grid gap-3">
             <button type="button" class="btn btn-primary col-3" id="sendrequest"> <i class="bi bi-envelope-paper"></i>
@@ -443,6 +446,7 @@
                     clickedRadio.closest( 'tr' ).removeClass(
                         'table-danger' );
                     // calculateRadioProgress(questionId)
+                    calculateRadioProgress(questionId);
 
                     totalScore();
                     updateProgressBar();
@@ -645,6 +649,8 @@
                         $( 'textarea' ).prop( 'disabled', true );
                         $( '#confirmation-alert' ).addClass( 'd-none' );
                         $( '#submit-btn' ).text( 'View' );
+                        $( '#progressBarContainer').remove();
+                        $( '#sendrequest' ).show();
 
                         if ( response.hideSignatory )
                         {
@@ -656,7 +662,7 @@
                             if ( response.status === 'Pending' )
                             {
                                 $( '#sendrequest' ).removeClass( 'btn-primary' ).text( '' );
-                                $( '#sendrequest' ).addClass( 'btn-outline-primary' ).text( 'Request Sent' ).prop( 'disabled', true ).append( '<i>' ).addClass( 'bi bi-envelope-paper' ).show();
+                                $( '#sendrequest' ).addClass( 'btn-outline-primary' ).text( 'Request Sent' ).prop( 'disabled', true ).append( '<i>' ).addClass( 'bi bi-envelope-paper' );
                             } else if ( response.status === 'Approved' || response.status === 'Disapproved' )
                             {
                                 // Display feedback and appropriate UI for approved or disapproved requests
@@ -668,7 +674,7 @@
                                     const approverInfo = `Approved by ${ response.approver_name } on ${ response.approved_at }`;
                                     $( '#additional-info' ).text( approverInfo ).addClass( 'font-italic' );
                                 }
-                                $( '#sendrequest' ).show();
+                                $('#sendrequest').show();
                                 $( '#feedback-container' ).removeClass( 'd-none' );
                             }
                         }
@@ -871,61 +877,80 @@
         loadTextAreas();
         formChecker();
 
+        var totalProgress = 0;
+
         function calculateProgress1() {
             // Replace this with your logic to calculate progress for service area
             // Example: return 100% if there is any input
             return $('#service_area').val().trim() !== '' ? 100 : 0;
         }
 
-        // Example function to calculate progress for comments area
         function calculateProgress2() {
             // Replace this with your logic to calculate progress for comments area
             // Example: return 100% if there is any input
             return $('#comments_area').val().trim() !== '' ? 100 : 0;
         }
 
-        function calculateTotalProgress() {
-            // Replace this with your logic to calculate the total progress
-            // Example: sum up individual progress from different form elements
-            var progress1 = calculateProgress1();
-            var progress2 = calculateProgress2();
-            var radioProgress = calculateRadioProgress();
-            console.log(progress1);
-            console.log(progress2);
-            console.log(radioProgress);
-
-            // Add more progress calculations if needed
-            // Calculate the total progress based on your criteria
-            var totalProgress = (progress1 + progress2 + radioProgress) / 3; // Adjust the formula as needed
-            return totalProgress;
-        }
-
-        var totalProgressPerRadio = 0;
-
         function calculateRadioProgress(questionId) {
             // Get the total count of radio buttons in the specified group
             var totalRadioCount = $(`input[name="ic_${questionId}"]`).length;
-            console.log("totalRadioCount" + totalRadioCount);
+            // console.log("totalRadioCount" + totalRadioCount);
             // Get the count of checked radio buttons in the specified group
             var checkedRadioCount = $(`input[name="ic_${questionId}"]:checked`).length;
-            console.log("checkedRadioCount" + checkedRadioCount);
+            // console.log("checkedRadioCount" + checkedRadioCount);
+
+            var totalQuestions = $('.form-check-input[type="radio"]').length / 5; // Assuming 5 radio buttons per question
+            var totalWeights = 100; // Total weight should add up to 100%
+            var weight = totalQuestions > 0 ? totalWeights / totalQuestions : 0;
 
             // Calculate progress per checked radio button
-            var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 100 : 0;
-            console.log("(" + checkedRadioCount + "/" + totalRadioCount + ") x 100");
+            var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * weight : 0;
 
-            totalProgressPerRadio += progressPerRadio;
-
-            return totalProgressPerRadio;
+            return progressPerRadio;
         }
+        
+        function calculateTotalProgress() {
+            var totalRadioProgress = 0;
+
+            // Iterate over each question
+            $('.form-check-input[type="radio"]').each(function () {
+                var questionId = $(this).attr('id').split('_')[1];
+                totalRadioProgress += calculateRadioProgress(questionId);
+            });
+
+            var progress1 = calculateProgress1();
+            var progress2 = calculateProgress2();
+
+            // Add more progress calculations if needed
+            // Calculate the total progress based on your criteria
+            var totalProgress = (totalRadioProgress + progress2 + progress1)/3; // Adjust the formula as needed
+
+            return totalProgress;
+        }
+
+        // function calculateTotalProgress() {
+        //     // Replace this with your logic to calculate the total progress
+        //     // Example: sum up individual progress from different form elements
+        //     var progress1 = calculateProgress1();
+        //     var progress2 = calculateProgress2();
+        //     var radioProgress = calculateRadioProgress();
+        //     // console.log(progress1);
+        //     // console.log(progress2);
+        //     // console.log(radioProgress);
+
+        //     // Add more progress calculations if needed
+        //     // Calculate the total progress based on your criteria
+        //     var totalProgress = progress1 + progress2 + radioProgress; // Adjust the formula as needed
+        //     return totalProgress;
+        // }
 
         function updateProgressBar() {
             // Calculate the total progress based on your criteria
             // Replace this with your logic to calculate the progress
-            var totalProgress = calculateTotalProgress();
-            console.log(totalProgress);
+            var totalProgress = Math.round(calculateTotalProgress());
+
             // Update the width of the progress bar
-            $('#progressBar').css('width', totalProgress + '%');
+            $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
         }
         
     } );

@@ -223,6 +223,13 @@
             </div>
         </div>
 
+        <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
+            <h5 class="fs-6">Progress Bar</h5>
+            <div id="progressBarHandler" class="progress w-75" style="height: 15px;">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
             <p>
@@ -1795,6 +1802,8 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        calculateRadioProgress(questionId);
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -2966,6 +2975,66 @@
                     }
                 }
             });
+        }
+
+        var totalProgress = 0;
+
+        function calculateProgress1() {
+            // Replace this with your logic to calculate progress for service area
+            // Example: return 100% if there is any input
+            return $('#service_area').val().trim() !== '' ? 20 : 0;
+        }
+
+        function calculateProgress2() {
+            // Replace this with your logic to calculate progress for comments area
+            // Example: return 100% if there is any input
+            return $('#comments_area').val().trim() !== '' ? 20 : 0;
+        }
+
+        function calculateRadioProgress(questionId) {
+            // Get the total count of radio buttons in the specified group
+            var totalRadioCount = $(`input[name="SID[${questionId}][{{ $appraisalId }}][SIDanswer]"]`).length;
+            // console.log("totalRadioCount" + totalRadioCount);
+            // Get the count of checked radio buttons in the specified group
+            var checkedRadioCount = $(`input[name="SID[${questionId}][{{ $appraisalId }}][SIDanswer]"]:checked`).length;
+            
+            // console.log("checkedRadioCount" + checkedRadioCount);
+
+            // Calculate progress per checked radio button
+            var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 20 : 0;
+            // console.log("(" + checkedRadioCount + "/" + totalRadioCount + ") x 20");
+
+            totalProgress += progressPerRadio;
+
+            return totalProgress;
+        }
+
+        function calculateTotalProgress() {
+            // Replace this with your logic to calculate the total progress
+            // Example: sum up individual progress from different form elements
+            // var progress1 = calculateProgress1();
+            // var progress2 = calculateProgress2();
+            var progress1 = 0;
+            var progress2 = 0;
+
+            var radioProgress = calculateRadioProgress();
+            // console.log(progress1);
+            // console.log(progress2);
+            console.log(radioProgress);
+
+            // Add more progress calculations if needed
+            // Calculate the total progress based on your criteria
+            var totalProgress = progress1 + progress2 + radioProgress; // Adjust the formula as needed
+            return totalProgress;
+        }
+
+        function updateProgressBar() {
+            // Calculate the total progress based on your criteria
+            // Replace this with your logic to calculate the progress
+            var totalProgress = Math.round(calculateTotalProgress());
+
+            // Update the width of the progress bar
+            $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
         }
     </script>
 @endsection
