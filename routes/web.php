@@ -27,6 +27,10 @@ use App\Http\Controllers\SettingsController;
 use App\Models\EvalYear;
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\Accounts;
 
 /*
 |--------------------------------------------------------------------------
@@ -268,3 +272,83 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 // Internal Customers
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showICForm'])->name('ce.viewICAppraisalForm');
+
+//TDM (Testing)
+Route::get('/TDM/accounts/{id}', function ($id) {
+  $accounts = Accounts::find($id);
+
+  if ($accounts) {
+    $accountsArr = [
+      "id" => $accounts->account_id,
+      "email" => $accounts->email,
+      "type" => $accounts->type,
+      "first_login" => $accounts->first_login,
+      "status" => $accounts->status,
+  ];
+    return response()->json($accountsArr);
+  } else {
+    return response()->json(["message" => "User ID not found"], 404);
+  }
+});
+
+Route::get('/TDM/accounts', function () {
+  $accounts = Accounts::all();
+
+  if ($accounts) {
+    $accountsArr = array();
+
+    foreach ($accounts as $value) {
+      $tempArr = array(
+        "id" => $value->account_id,
+        "email" => $value->email,
+        "type" => $value->type,
+        "first_login" => $value->first_login,
+        "status" => $value->status,
+      );
+      array_push($accountsArr, $tempArr);
+    }
+    return response()->json($accountsArr);
+  } else {
+    return response()->json(["meesage" => "Users not found"], 404);
+  }
+});
+
+Route::post('/TDM/accounts/create', function (Request $request) {
+  $validator = Validator::make($request->all(), [
+      'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
+      'type' => 'required',
+  ], [
+      'email.required' => 'Please enter an Adamson email address.',
+      'email.ends_with' => 'Please enter an Adamson email address.',
+      'email.email' => 'Please enter a valid email address.',
+      'email.unique' => 'The email is already in use',
+      'type.required' => 'Please choose a user level.',
+  ]);
+
+  if ($validator->fails()) {
+      return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
+  }
+
+  $randomPassword = Str::random(8);
+  $accounts = Accounts::create([
+      'email' => $request->input('email'),
+      'default_password' => $randomPassword,
+      'type' => $request->input('type'),
+      'first_login' => 'true'
+  ]);
+
+  if ($accounts) {
+    $accountsArr = [
+      "id" => $accounts->account_id,
+      "email" => $accounts->email,
+      "type" => $accounts->type,
+      "first_login" => $accounts->first_login,
+      "status" => $accounts->status,
+  ];
+    return response()->json($accountsArr);
+  } else {
+    return response()->json(["message" => "User ID not found"], 404);
+  }
+});
+
+

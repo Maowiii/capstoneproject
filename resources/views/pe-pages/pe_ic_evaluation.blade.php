@@ -8,6 +8,10 @@
 @section('content')
 <div class="content-container">
 
+    <!-- <div id="progressBarHandler" class="progress" style="height: 10px;">
+        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+    </div> -->
+
     <h3>Dear Adamson Employee,</h3>
     <p>Each department (co-academic offices) wants to know how well we are serving our employees/internal customers. We
         appreciate if you would take the time to complete this evaluation. This is a feedback mechanism to improve our
