@@ -2496,6 +2496,15 @@
                             $('textarea').prop('disabled', true);
                             $('#lockToast').toast('show');
 
+                            $('#add-kra-btn').prop('disabled', true);
+                            $('#add-wpa-btn').prop('disabled', true);
+                            $('#add-ldp-btn').prop('disabled', true);
+                            $('.btn-danger').prop('disabled', true);
+
+                            $('#submit-btn-form').hide();
+                            $('#uploadsign').hide();
+                            $('#submit-btn-sign').hide();
+
                             $('#sendrequest').show();
                             $('#requestText').prop('disabled', false);
                         }

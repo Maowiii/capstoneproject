@@ -1017,6 +1017,7 @@ class SelfEvaluationController extends Controller
     $account_id = session()->get('account_id');
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
+    $submitionChecker = $appraisal->date_submitted;
 
     $userEmployeeId = Employees::where('account_id', $account_id)->pluck('employee_id')->first();
 
@@ -1078,9 +1079,9 @@ class SelfEvaluationController extends Controller
         $phaseData = "eval";
       } else {
         $phaseData = "lock";
+        $locks['lock'] = false;
       }
 
-      $submitionChecker = $appraisal->date_submitted;
       $isSubmissionMade = !is_null($submitionChecker) && $appraisal->locked == 1;
 
       // $hasRequest = Requests::where('appraisal_id', $appraisalId)->where('status', 'Pending')->exists();
@@ -1098,6 +1099,10 @@ class SelfEvaluationController extends Controller
       ];
 
       if ($hasRequest) {
+          if($appraisal->eval_locked == 1){
+            $locks['lock'] = true;
+          }
+
           // Get additional information
           $approver = Employees::find($hasRequest->approver_id);
 
