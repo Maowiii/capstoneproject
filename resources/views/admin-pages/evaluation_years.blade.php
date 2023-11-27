@@ -317,6 +317,12 @@
                             <ul id="departmentsList"></ul>
                         </div>
 
+                        <div class="alert alert-danger mx-3 d-none" role="alert" id="multiSuperiorsAlert"
+                            style="max-height: 200px; overflow-y: auto;">
+                            Some departments have multiple immediate superiors assigned:
+                            <ul id="multiSuperiorsList"></ul>
+                        </div>
+
                         <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
                             <i class='bx bx-info-circle'></i> Please double-check the inputted values before submitting.
                             Once submitted, they cannot be changed.
@@ -774,6 +780,18 @@
                             $('#departmentsList').empty().append(departmentsList);
                             $('#departmentList').removeClass('d-none');
                         }
+
+                        if (response.errors && response.errors.departments_with_multiple_superiors) {
+                            let multiSuperiorsList = '';
+
+                            response.errors.departments_with_multiple_superiors.forEach(department => {
+                                multiSuperiorsList += `<li>${department}</li>`;
+                            });
+
+                            $('#multiSuperiorsList').empty().append(multiSuperiorsList);
+                            $('#multiSuperiorsAlert').removeClass('d-none');
+                        }
+
 
                         console.log(response);
                         $('.text-danger').hide();

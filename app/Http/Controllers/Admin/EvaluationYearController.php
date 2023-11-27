@@ -57,23 +57,36 @@ class EvaluationYearController extends Controller
 
     $departments = Departments::all();
     $departmentsWithoutSuperiors = [];
+    $departmentsWithMultipleSuperiors = [];
 
     foreach ($departments as $department) {
-      $isAccount = $department->employee()
+      $countSuperiors = $department->employee()
         ->whereHas('account', function ($query) {
           $query->where('type', 'IS');
-        })->exists();
+        })->count();
 
-      if (!$isAccount) {
+      if ($countSuperiors === 0) {
         $departmentsWithoutSuperiors[] = $department->department_name;
+      } elseif ($countSuperiors > 1) {
+        $departmentsWithMultipleSuperiors[] = $department->department_name;
       }
     }
 
-    if (!empty($departmentsWithoutSuperiors)) {
+    if (!empty($departmentsWithoutSuperiors) || !empty($departmentsWithMultipleSuperiors)) {
+      $errors = [];
+
+      if (!empty($departmentsWithoutSuperiors)) {
+        $errors['departments_without_superiors'] = $departmentsWithoutSuperiors;
+      }
+
+      if (!empty($departmentsWithMultipleSuperiors)) {
+        $errors['departments_with_multiple_superiors'] = $departmentsWithMultipleSuperiors;
+      }
+
       return response()->json([
         'success' => false,
-        'message' => 'Please assign superiors to all departments before proceeding.',
-        'errors' => ['departments_without_superiors' => $departmentsWithoutSuperiors]
+        'message' => 'Please check the immediate superiors assigned to departments before proceeding.',
+        'errors' => $errors
       ]);
     }
 
