@@ -68,7 +68,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
                     'email' => $email,
                     'default_password' => $randomPassword,
                     'type' => $accType,
-                    'first_login' => 'false',
+                    'first_login' => 'true',
                 ]
             );
 

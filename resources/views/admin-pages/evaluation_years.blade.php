@@ -8,22 +8,22 @@
 @section('content')
     <div class="content-container">
         <div class="table-responsive">
-        <table class="table table-bordered" id="evalyear_table">
-            <thead>
-                <tr>
-                    <th class='xxs-column align-middle text-center'>#</th>
-                    <th class='small-column align-middle text-center'>School Year</th>
-                    <th class='medium-column align-middle text-center'>KRA Encoding Date</th>
-                    <th class='medium-column align-middle text-center'>Performance Review Date</th>
-                    <th class='medium-column align-middle text-center'>Evaluation Date</th>
-                    <th class='small-column align middle text-center'>Status</th>
-                    <th class='small-column align-middle text-center'>Action</th>
-                </tr>
-            </thead>
-            <tbody>
+            <table class="table table-bordered" id="evalyear_table">
+                <thead>
+                    <tr>
+                        <th class='xxs-column align-middle text-center'>#</th>
+                        <th class='small-column align-middle text-center'>School Year</th>
+                        <th class='medium-column align-middle text-center'>KRA Encoding Date</th>
+                        <th class='medium-column align-middle text-center'>Performance Review Date</th>
+                        <th class='medium-column align-middle text-center'>Evaluation Date</th>
+                        <th class='small-column align middle text-center'>Status</th>
+                        <th class='small-column align-middle text-center'>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         </div>
         <nav id="evalyear_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="evalyear_pagination"></ul>
@@ -195,63 +195,65 @@
                         <div class="mx-3 mb-3">
                             <h5>Behavioral Competencies</h5>
                             <div class="table-responsive">
-                            <table class='table table-bordered'>
-                                <thead>
-                                    <th>Components</th>
-                                    <th>%</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Self-Evaluation:</td>
-                                        <td class="w-25">
-                                            <select class="form-select bc" name="selfEvalWeight" id="self_eval_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 1:</td>
-                                        <td>
-                                            <select class="form-select bc" name="ic1Weight" id="ic1_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internal Customer 2:</td>
-                                        <td>
-                                            <select class="form-select bc" name="ic2Weight" id="ic2_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Immediate Superior:</td>
-                                        <td>
-                                            <select class="form-select bc" name="isWeight" id="is_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td class="text-end">Total:</td>
-                                        <td>
-                                            <input class="form-control @error('bhTotal') is-invalid @enderror"
-                                                name="bhTotal" id="bh_total" type="text" value="0" readonly>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                <table class='table table-bordered'>
+                                    <thead>
+                                        <th>Components</th>
+                                        <th>%</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Self-Evaluation:</td>
+                                            <td class="w-25">
+                                                <select class="form-select bc" name="selfEvalWeight"
+                                                    id="self_eval_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 1:</td>
+                                            <td>
+                                                <select class="form-select bc" name="ic1Weight" id="ic1_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internal Customer 2:</td>
+                                            <td>
+                                                <select class="form-select bc" name="ic2Weight" id="ic2_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Immediate Superior:</td>
+                                            <td>
+                                                <select class="form-select bc" name="isWeight" id="is_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-end">Total:</td>
+                                            <td>
+                                                <input class="form-control @error('bhTotal') is-invalid @enderror"
+                                                    name="bhTotal" id="bh_total" type="text" value="0"
+                                                    readonly>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                             <span class="text-danger error-message" id="bhTotal_error">
                                 @error('bhTotal')
@@ -263,50 +265,62 @@
                         <div class="mx-3">
                             <h5>Final Ratings</h5>
                             <div class="table-responsive">
-                            <table class='table table-bordered'>
-                                <thead>
-                                    <th>Components</th>
-                                    <th>%</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Behavioral Competencies:</td>
-                                        <td>
-                                            <select class="form-select final" name="bhWeight" id="bh_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>KRA/KPI:</td>
-                                        <td class="w-25">
-                                            <select class="form-select final" name="kraWeight" id="kra_weight">
-                                                @for ($i = 1; $i <= 100; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td class="text-end">Final Score:</td>
-                                        <td>
-                                            <input class="form-control @error('finalTotal') is-invalid @enderror"
-                                                name="finalTotal" id="final_total" type="text" value="0"
-                                                readonly>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                <table class='table table-bordered'>
+                                    <thead>
+                                        <th>Components</th>
+                                        <th>%</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Behavioral Competencies:</td>
+                                            <td>
+                                                <select class="form-select final" name="bhWeight" id="bh_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>KRA/KPI:</td>
+                                            <td class="w-25">
+                                                <select class="form-select final" name="kraWeight" id="kra_weight">
+                                                    @for ($i = 1; $i <= 100; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-end">Final Score:</td>
+                                            <td>
+                                                <input class="form-control @error('finalTotal') is-invalid @enderror"
+                                                    name="finalTotal" id="final_total" type="text" value="0"
+                                                    readonly>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                             <span class="text-danger error-message" id="finalTotal_error">
                                 @error('finalTotal')
                                     {{ $message }}
                                 @enderror
                             </span>
+                        </div>
+                        <div class="alert alert-danger mx-3 d-none" role="alert" id="departmentList"
+                            style="max-height: 200px; overflow-y: auto;">
+                            Please assign immediate superiors to all departments before proceeding. The following
+                            departments do not have immediate superiors assigned:
+                            <ul id="departmentsList"></ul>
+                        </div>
+
+                        <div class="alert alert-danger mx-3 d-none" role="alert" id="multiSuperiorsAlert"
+                            style="max-height: 200px; overflow-y: auto;">
+                            Some departments have multiple immediate superiors assigned:
+                            <ul id="multiSuperiorsList"></ul>
                         </div>
 
                         <div class="alert alert-warning mx-3 d-none" role="alert" id="confirmationAlert">
@@ -342,8 +356,7 @@
         </div>
 
         <!-- Weights Modal -->
-        <div class="modal fade" id="weightsModal"
-            aria-hidden="true">
+        <div class="modal fade" id="weightsModal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -353,85 +366,85 @@
                     <div class="modal-body">
                         <h5>Behavioral Competencies</h5>
                         <div class="table-responsive">
-                        <table class='table table-bordered'>
-                            <thead>
-                                <th>Components</th>
-                                <th>%</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Self-Evaluation:</td>
-                                    <td class="w-25">
-                                        <input type="text" class="form-control text-center bc" id="view_self_eval_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Internal Customer 1:</td>
-                                    <td>
-                                        <input type="text" class="form-control text-center bc" id="view_ic1_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Internal Customer 2:</td>
-                                    <td>
-                                        <input type="text" class="form-control text-center bc" id="view_ic2_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Immediate Superior:</td>
-                                    <td>
-                                        <input type="text" class="form-control text-center bc" id="view_is_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td class="text-end">Total:</td>
-                                    <td>
-                                        <input class="form-control text-center" id="view_bh_total" type="text"
-                                            value="0" readonly>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                            <table class='table table-bordered'>
+                                <thead>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Self-Evaluation:</td>
+                                        <td class="w-25">
+                                            <input type="text" class="form-control text-center bc"
+                                                id="view_self_eval_weight" readonly disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Internal Customer 1:</td>
+                                        <td>
+                                            <input type="text" class="form-control text-center bc"
+                                                id="view_ic1_weight" readonly disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Internal Customer 2:</td>
+                                        <td>
+                                            <input type="text" class="form-control text-center bc"
+                                                id="view_ic2_weight" readonly disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Immediate Superior:</td>
+                                        <td>
+                                            <input type="text" class="form-control text-center bc" id="view_is_weight"
+                                                readonly disabled>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-end">Total:</td>
+                                        <td>
+                                            <input class="form-control text-center" id="view_bh_total" type="text"
+                                                value="0" readonly>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                         <h5>Final Ratings</h5>
                         <div class="table-responsive">
-                        <table class='table table-bordered'>
-                            <thead>
-                                <th>Components</th>
-                                <th>%</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Behavioral Competencies:</td>
-                                    <td>
-                                        <input class="form-control text-center final" type="text" id="view_bh_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>KRA/KPI:</td>
-                                    <td class="w-25">
-                                        <input class="form-control text-center final" type="text" id="view_kra_weight"
-                                            readonly disabled>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td class="text-end">Final Score:</td>
-                                    <td>
-                                        <input class="form-control text-center" id="view_final_total" type="text"
-                                            value="0" readonly>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                            <table class='table table-bordered'>
+                                <thead>
+                                    <th>Components</th>
+                                    <th>%</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Behavioral Competencies:</td>
+                                        <td>
+                                            <input class="form-control text-center final" type="text"
+                                                id="view_bh_weight" readonly disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>KRA/KPI:</td>
+                                        <td class="w-25">
+                                            <input class="form-control text-center final" type="text"
+                                                id="view_kra_weight" readonly disabled>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-end">Final Score:</td>
+                                        <td>
+                                            <input class="form-control text-center" id="view_final_total" type="text"
+                                                value="0" readonly>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -641,7 +654,7 @@
 
         function loadEvaluationYearTable(page = 1) {
             $.ajax({
-                url: '{{ route("displayEvaluationYear") }}',
+                url: '{{ route('displayEvaluationYear') }}',
                 type: 'GET',
                 data: {
                     page: page
@@ -757,7 +770,30 @@
                             confirmEvalYear(confirmEvent, formData);
                         });
                     } else {
-                        // console.log('fail');
+                        if (response.errors && response.errors.departments_without_superiors) {
+                            let departmentsList = '';
+
+                            response.errors.departments_without_superiors.forEach(department => {
+                                departmentsList += `<li>${department}</li>`;
+                            });
+
+                            $('#departmentsList').empty().append(departmentsList);
+                            $('#departmentList').removeClass('d-none');
+                        }
+
+                        if (response.errors && response.errors.departments_with_multiple_superiors) {
+                            let multiSuperiorsList = '';
+
+                            response.errors.departments_with_multiple_superiors.forEach(department => {
+                                multiSuperiorsList += `<li>${department}</li>`;
+                            });
+
+                            $('#multiSuperiorsList').empty().append(multiSuperiorsList);
+                            $('#multiSuperiorsAlert').removeClass('d-none');
+                        }
+
+
+                        console.log(response);
                         $('.text-danger').hide();
                         $('.error-message').text('');
 

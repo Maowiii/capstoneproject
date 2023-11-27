@@ -1560,8 +1560,8 @@
         }
 
         function viewScoreModal(schoolYear, questionID, page = 1) {
-            console.log('School Year: ' + schoolYear);
-            console.log('Question ID: ' + questionID);
+            // console.log('School Year: ' + schoolYear);
+            // console.log('Question ID: ' + questionID);
             $('#scoreModal').modal('show');
             $('#scoreModalTitle').text(schoolYear + ': ')
 

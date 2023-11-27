@@ -878,8 +878,8 @@ class DepartmentalAnalyticsController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
     $departmentID = $request->input('departmentID');
-    $selectedYear = $request->selectedYear;
-    $questionID = $request->questionID;
+    $selectedYear = $request->input('selectedYear');
+    $questionID = $request->input('questionID');
     $formQuestionsTable = 'form_questions_' . $selectedYear;
     $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
     $appraisalsTable = 'appraisals_' . $selectedYear;

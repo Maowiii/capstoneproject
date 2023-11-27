@@ -36,17 +36,6 @@
                 <div class="modal-body">
                     <div>
                         <p>You must first choose your immediate superior and input your job title.</p>
-                        <div>
-                            <label>Immediate Superior</label>
-                            <select class="form-control" name="department" id="department">
-                                <option value="" selected>Select Immediate Superior</option>
-                                @foreach ($IS as $is)
-                                    <option value="{{ $is->account_id }}">
-                                        {{ $is->employee->first_name }} {{ $is->employee->last_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="mt-3">
                             <label>Your Job Title:</label>
                             <input type="text" class="form-control" value="{{ old('job_title') }}" id="job_title"
@@ -70,23 +59,16 @@
             $('#job_title').removeClass('is-invalid');
         });
 
-        $('#department').change(function() {
-            $('#department').removeClass('is-invalid');
-        });
-
         $('#submit-btn').click(function() {
             submitPEFirstLogin();
         });
 
         function submitPEFirstLogin() {
-            var department = $('#department').val();
             var job_title = $('#job_title').val();
 
             if (job_title.trim() === '') {
                 $('#job_title').addClass('is-invalid');
                 return;
-            } else if (department.trim() === '') {
-                $('#department').addClass('is-invalid');
             } else {
                 $.ajax({
                     headers: {

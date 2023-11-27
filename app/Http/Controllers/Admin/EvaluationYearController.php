@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Departments;
 use App\Models\EvalYear;
 use App\Models\Accounts;
 use App\Models\Employees;
@@ -51,7 +52,42 @@ class EvaluationYearController extends Controller
   public function addEvalYear(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+
+    $departments = Departments::all();
+    $departmentsWithoutSuperiors = [];
+    $departmentsWithMultipleSuperiors = [];
+
+    foreach ($departments as $department) {
+      $countSuperiors = $department->employee()
+        ->whereHas('account', function ($query) {
+          $query->where('type', 'IS');
+        })->count();
+
+      if ($countSuperiors === 0) {
+        $departmentsWithoutSuperiors[] = $department->department_name;
+      } elseif ($countSuperiors > 1) {
+        $departmentsWithMultipleSuperiors[] = $department->department_name;
+      }
+    }
+
+    if (!empty($departmentsWithoutSuperiors) || !empty($departmentsWithMultipleSuperiors)) {
+      $errors = [];
+
+      if (!empty($departmentsWithoutSuperiors)) {
+        $errors['departments_without_superiors'] = $departmentsWithoutSuperiors;
+      }
+
+      if (!empty($departmentsWithMultipleSuperiors)) {
+        $errors['departments_with_multiple_superiors'] = $departmentsWithMultipleSuperiors;
+      }
+
+      return response()->json([
+        'success' => false,
+        'message' => 'Please check the immediate superiors assigned to departments before proceeding.',
+        'errors' => $errors
+      ]);
     }
 
     $validator = Validator::make($request->all(), [
@@ -104,7 +140,7 @@ class EvaluationYearController extends Controller
   public function confirmEvalYear(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     EvalYear::where('status', 'active')->update(['status' => 'inactive']);
@@ -274,7 +310,7 @@ class EvaluationYearController extends Controller
   public function toggleEvalYearStatus(Request $request)
   {
     if (!session()->has('account_id')) {
-      return view('auth.login');
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
     $evalID = $request->input('eval_id');
