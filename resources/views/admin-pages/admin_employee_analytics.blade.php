@@ -1597,7 +1597,7 @@
                                             '_');
 
                                         console.log('Clicked Year: ' + clickedYear);
-
+                                        loadKRAS(employeeID, clickedYear);
                                     }
                                 },
                                 responsive: true,
@@ -1651,22 +1651,14 @@
                     if (response.success) {
                         var kraTable = $('#kra_table tbody');
 
-                        // Clear existing rows
                         kraTable.empty();
-
-                        // Create a map to store KRAs and their scores
                         var kraMap = {};
 
-                        // Loop through each appraisal
                         $.each(response.appraisals, function(index, appraisal) {
-                            // Loop through each KRA in the appraisal
                             $.each(appraisal.kras, function(index, kra) {
-                                // Use the KRA name as the unique identifier
                                 var kraKey = kra.kra;
 
-                                // Check if the KRA is already in the map
                                 if (!kraMap[kraKey]) {
-                                    // If not, add it to the map
                                     kraMap[kraKey] = {
                                         kra: kra.kra,
                                         objective: kra.objective,
@@ -1677,7 +1669,6 @@
                                     };
                                 }
 
-                                // Add the score to the corresponding evaluation type
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     kraMap[kraKey].self_evaluation_score += kra
                                         .performance_level;
@@ -1688,7 +1679,6 @@
                             });
                         });
 
-                        // Populate the table with the combined scores
                         $.each(kraMap, function(kraKey, kraData) {
                             kraTable.append(
                                 '<tr>' +

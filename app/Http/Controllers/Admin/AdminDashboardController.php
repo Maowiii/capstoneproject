@@ -855,8 +855,8 @@ class AdminDashboardController extends Controller
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
 
-    $selectedYear = $request->selectedYear;
-    $questionID = $request->questionID;
+    $selectedYear = $request->input('selectedYear');
+    $questionID = $request->input('questionID');
     $formQuestionsTable = 'form_questions_' . $selectedYear;
     $appraisalAnswersTable = 'appraisal_answers_' . $selectedYear;
     $appraisalsTable = 'appraisals_' . $selectedYear;
@@ -874,16 +874,18 @@ class AdminDashboardController extends Controller
       ->where($appraisalsTable . '.date_submitted', 'IS NOT', null)
       ->where($appraisalAnswersTable . '.question_id', $question->question_id)
       ->select(
-        DB::raw('ROUND(' . $appraisalAnswersTable . '.score, 2) as score'),
+        DB::raw('ROUND(AVG(' . $appraisalAnswersTable . '.score), 2) as score'),
         'employees.first_name',
         'employees.last_name',
         'employees.employee_id'
-      );
+      )
+      ->groupBy('employees.first_name', 'employees.last_name', 'employees.employee_id');
 
     $questionAnswers = $query->paginate($perPage, null, 'page', $page);
 
     return response()->json(['success' => true, 'question' => $question, 'questionAnswers' => $questionAnswers]);
   }
+
 
   public function loadPointCategory(Request $request)
   {
