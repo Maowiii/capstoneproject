@@ -67,11 +67,6 @@
 
             $('#submit-btn').click(function() {
                 submitPEFirstLogin();
-                var selectedValue = $('#immediate_superior').val();
-                var jobTitle = $('#job_title').val();
-
-                console.log('ID: ' + selectedValue);
-                console.log('Job Title: ' + jobTitle);
             });
         });
 

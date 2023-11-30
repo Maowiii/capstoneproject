@@ -21,7 +21,7 @@
             <h4>Appraisals:</h4>
             <canvas id="donutChart"></canvas>
         </div>
-      </div>
+    </div>
 
     <div class="modal fade" id="firstLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -33,11 +33,22 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <p>You must first input your job title.</p>
+                        <p>You must first choose your immediate superior and input your job title.</p>
                         <div class="mt-3">
-                            <label>Your Job Title:</label>
+                            <label>Job Title:</label>
                             <input type="text" class="form-control" value="{{ old('job_title') }}" id="job_title"
                                 placeholder="Job Title">
+                        </div>
+                        <div class="mt-3">
+                            <label>Immediate Superior:</label>
+                            <select class="form-select" id="immediate_superior" name="immediate_superior" required>
+                                <option value="" selected disabled>Select an immediate superior</option>
+                                @foreach ($IS as $superior)
+                                    <option value="{{ $superior->employee->employee_id }}">
+                                        {{ $superior->employee->first_name }}
+                                        {{ $superior->employee->last_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -52,6 +63,10 @@
         $(document).ready(function() {
             getNotifications();
             loadAppraisalDonut();
+
+            $('#submit-btn').click(function() {
+                submitCEFirstLogin();
+            });
         });
 
         function loadAppraisalDonut() {
@@ -136,15 +151,15 @@
             $('#department').removeClass('is-invalid');
         });
 
-        $('#submit-btn').click(function() {
-            submitCEFirstLogin();
-        });
-
         function submitCEFirstLogin() {
             var job_title = $('#job_title').val();
+            var immediate_superior = $('#immediate_superior').val();
 
             if (job_title.trim() === '') {
                 $('#job_title').addClass('is-invalid');
+                return;
+            } else if (immediate_superior === null || immediate_superior === '') {
+                $('#immediate_superior').addClass('is-invalid');
                 return;
             } else {
                 $.ajax({
@@ -155,6 +170,7 @@
                     type: 'POST',
                     data: {
                         job_title: job_title,
+                        immediate_superior: immediate_superior
                     },
                     success: function(response) {
                         if (response.success) {
