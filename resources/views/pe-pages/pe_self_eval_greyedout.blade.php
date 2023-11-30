@@ -466,7 +466,7 @@
                         </tr>
                     </thead>
                     <tbody id='jic_table_body'>
-                        <tr>
+                        <tr class="align-middle">
                             <td class='text-justify'>
                                 <textarea class='textarea' value="I agree with my performance rating."
                                     name="feedback[1][{{ $appraisalId }}][question]" readonly></textarea>
@@ -491,7 +491,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="align-middle">
                             <td class='text-justify'>
                                 <textarea class='textarea'
                                     value="My future work objectives and learning opportunities have been set for the
@@ -518,7 +518,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="align-middle">
                             <td class='text-justify'>
                                 <textarea class='textarea' value="I am satisfied with the performance review discussion."
                                     name="feedback[3][{{ $appraisalId }}][question]" readonly></textarea>
@@ -543,7 +543,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="align-middle">
                             <td class='text-justify'>
                                 <textarea class='textarea' value="I am satisfied with the performance review process."
                                     name="feedback[4][{{ $appraisalId }}][question]" readonly></textarea>
@@ -753,11 +753,19 @@
 
         function loadTableData() {
             var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.has('sy')) {
+                var sy = urlParams.get('sy');
+            } else {
+                var sy = null;
+            }
 
             $.ajax({
                 url: '{{ route('pe.getAppraisalQuestions') }}',
                 type: 'GET',
                 data: {
+                    sy: sy,
                     appraisal_id: {{ $appraisalId }}
                 },
                 headers: {
@@ -961,381 +969,385 @@
                     });
                 }
             });
-        }
 
-        $.ajax({
-            url: '{{ route('getPEKRA') }}',
-            type: 'GET',
-            data: {
-                appraisal_id: {{ $appraisalId }}
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    $('#KRA_table_body').empty();
-                    var tbody = $('#KRA_table_body');
+            $.ajax({
+                url: '{{ route('getPEKRA') }}',
+                type: 'GET',
+                data: {
+                    sy: sy,
+                    appraisal_id: {{ $appraisalId }}
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        $('#KRA_table_body').empty();
+                        var tbody = $('#KRA_table_body');
 
-                    if (data.kraData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewKRARow(tbody);
-                        var rowCount = $('#kra_table tbody tr').length;
+                        if (data.kraData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewKRARow(tbody);
+                            var rowCount = $('#kra_table tbody tr').length;
 
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        // console.log(data);
-                        data.kraData.forEach(function(kra, index) {
-                            var kraID = kra.kra_id;
+                            if (rowCount === 1) {
+                                $('#kra_table tbody tr .delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            // console.log(data);
+                            data.kraData.forEach(function(kra, index) {
+                                var kraID = kra.kra_id;
 
-                            var row = $('<tr>').addClass('align-middle');
-                            $('<input>').attr({
-                                type: 'hidden',
-                                name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][kraID]',
-                                value: kraID
-                            }).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
-                                    kra.kra,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_weight]',
-                                    kra.kra_weight,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_objective]',
-                                    kra.objective,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_performance_indicator]',
-                                    kra.performance_indicator,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_actual_result]',
-                                    kra.actual_result,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            var performanceCell = $('<td>').appendTo(row);
-                            var performanceLevelDiv = $('<div>').addClass(
-                                'd-flex justify-content-center gap-2').appendTo(performanceCell);
-
-                            for (var i = 5; i >= 1; i--) {
-                                var label = $('<label>').addClass('form-check-label');
-                                var input = $('<input>').prop('disabled', true).attr({
-                                    type: 'radio',
+                                var row = $('<tr>').addClass('align-middle');
+                                $('<input>').attr({
+                                    type: 'hidden',
                                     name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                        '][KRA_performance_level]',
-                                    class: 'form-check-input',
-                                    value: i
-                                });
+                                        '][kraID]',
+                                    value: kraID
+                                }).appendTo(row);
 
-                                input[0].disabled = true;
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} + '][KRA]',
+                                        kra.kra,
+                                        true
+                                    )
+                                ).appendTo(row);
 
-                                // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
-                                //     label));
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weight]',
+                                        kra.kra_weight,
+                                        true
+                                    )
+                                ).appendTo(row);
 
-                                input.on('invalid', function() {
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_objective]',
+                                        kra.objective,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_performance_indicator]',
+                                        kra.performance_indicator,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_actual_result]',
+                                        kra.actual_result,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                var performanceCell = $('<td>').appendTo(row);
+                                var performanceLevelDiv = $('<div>').addClass(
+                                    'd-flex justify-content-center gap-2').appendTo(performanceCell);
+
+                                for (var i = 5; i >= 1; i--) {
+                                    var label = $('<label>').addClass('form-check-label');
+                                    var input = $('<input>').prop('disabled', true).attr({
+                                        type: 'radio',
+                                        name: 'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                            '][KRA_performance_level]',
+                                        class: 'form-check-input',
+                                        value: i
+                                    });
+
+                                    input[0].disabled = true;
+
+                                    // performanceLevelDiv.append($('<div>').addClass('col-auto').append(
+                                    //     label));
+
+                                    input.on('invalid', function() {
+                                        $(this).addClass('is-invalid text-danger fw-bold');
+                                        $(this).siblings('span').addClass('text-danger');
+                                    });
+
+                                    input.on('input', function() {
+                                        var row = $(this).closest('tr');
+                                        row.find('.is-invalid').removeClass('is-invalid');
+                                        row.find('.text-danger').removeClass(
+                                            'text-danger fw-bold'
+                                        );
+
+                                        $(this).closest('tr').removeClass(
+                                            'text-danger fw-bold'
+                                        );
+
+                                        $(this).removeClass(
+                                            'is-invalid'
+                                        );
+                                    });
+
+                                    var span = $('<span>').addClass('ms-1').text(i);
+
+                                    label.append(input, span);
+
+                                    var kraPL = parseFloat(kra.performance_level);
+
+                                    if (Math.abs(kraPL - i) < 0.01) {
+                                        input.prop('checked', true);
+                                    }
+
+                                    $('<div>').addClass('col-auto').append(label).appendTo(
+                                        performanceLevelDiv);
+                                }
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'KRA[' + kraID + '][' + {{ $appraisalId }} +
+                                        '][KRA_weighted_total]',
+                                        kra.weighted_total,
+                                        true
+                                    )
+                                ).appendTo(row);
+
+                                tbody.append(row);
+
+                            });
+                            updateWeightedTotal();
+                        }
+
+                        $('#wpa_table_body').empty();
+                        var wpatbody = $('#wpa_table_body');
+
+                        if (data.wpaData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewWPARow(wpatbody);
+                            var wparowCount = $('#wpa_table_body tr').length;
+
+                            if (wparowCount === 1) {
+                                $('#wpa_table_body tr .delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.wpaData.forEach(function(wpa, index) {
+                                var wpaID = wpa.performance_plan_id;
+
+                                var wparow = $('<tr>').addClass('align-middle');
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} +
+                                        '][continue_doing]',
+                                        wpa.continue_doing,
+                                        false // Set to false to allow user input
+                                    )
+                                ).appendTo(wparow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]',
+                                        wpa.stop_doing,
+                                        false // Set to false to allow user input
+                                    )
+                                ).appendTo(wparow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]',
+                                        wpa.start_doing,
+                                        false // Set to false to allow user input
+                                    )
+                                ).appendTo(wparow);
+
+                                wpatbody.append(wparow);
+                            });
+                            $('#wpa_table_body input[type="text"], #wpa_table_body textarea').trigger(
+                                'input'); // Trigger input event
+                        }
+
+                        $('#ldp_table_body').empty();
+                        var ldptbody = $('#ldp_table_body');
+
+                        if (data.ldpData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewLDPRow(ldptbody);
+                            var ldprowCount = $('#ldp_table_body tr').length;
+
+                            if (ldprowCount === 1) {
+                                $('#ldp_table_body tr .delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.ldpData.forEach(function(ldp, index) {
+                                var ldpID = ldp.development_plan_id;
+
+                                var ldprow = $('<tr>').addClass('align-middle');
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'LDP[' + ldpID + '][' + {{ $appraisalId }} +
+                                        '][learning_need]',
+                                        ldp.learning_need,
+                                        true // Set to false to allow user input
+                                    )
+                                ).appendTo(ldprow);
+
+                                $('<td>').addClass('td-textarea').append(
+                                    createTextArea(
+                                        'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]',
+                                        ldp.methodology,
+                                        true 
+                                    )
+                                ).appendTo(ldprow);
+
+                                ldptbody.append(ldprow);
+                            });
+                            $('#ldp_table_body input[type="text"], #ldp_table_body textarea').trigger(
+                                'input'); // Trigger input event
+                        }
+
+                        // Loop through the jicData and populate the table rows with data
+                        data.jicData.forEach(function(jic, index) {
+                            var row = document.querySelectorAll('#jic_table_body tr')[index];
+
+                            if (row) {
+                                var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
+                                    1) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                                var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
+                                    1) + '][{{ $appraisalId }}][answer]"][value="0"]');
+
+                                if (jic.answer === 1) {
+                                    answerRadioYes.checked = true;
+                                } else if (jic.answer === 0) {
+                                    answerRadioNo.checked = true;
+                                }
+
+                                $(answerRadioYes).on('invalid', function() {
                                     $(this).addClass('is-invalid text-danger fw-bold');
                                     $(this).siblings('span').addClass('text-danger');
                                 });
 
-                                input.on('input', function() {
-                                    var row = $(this).closest('tr');
-                                    row.find('.is-invalid').removeClass('is-invalid');
-                                    row.find('.text-danger').removeClass(
-                                        'text-danger fw-bold'
-                                    );
-
-                                    $(this).closest('tr').removeClass(
-                                        'text-danger fw-bold'
-                                    );
-
-                                    $(this).removeClass(
-                                        'is-invalid'
-                                    );
+                                $(answerRadioNo).on('invalid', function() {
+                                    $(this).addClass('is-invalid text-danger fw-bold');
+                                    $(this).siblings('span').addClass('text-danger');
                                 });
 
-                                var span = $('<span>').addClass('ms-1').text(i);
+                                $(answerRadioYes).on('input', function() {
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
 
-                                label.append(input, span);
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                });
 
-                                var kraPL = parseFloat(kra.performance_level);
+                                $(answerRadioNo).on('input', function() {
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
 
-                                if (Math.abs(kraPL - i) < 0.01) {
-                                    input.prop('checked', true);
-                                }
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                });
 
-                                $('<div>').addClass('col-auto').append(label).appendTo(
-                                    performanceLevelDiv);
-                            }
+                                var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
+                                    index +
+                                    1) + '][{{ $appraisalId }}][comment]"]');
+                                commentTextarea.value = jic.comments;
 
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'KRA[' + kraID + '][' + {{ $appraisalId }} +
-                                    '][KRA_weighted_total]',
-                                    kra.weighted_total,
-                                    true
-                                )
-                            ).appendTo(row);
-
-                            tbody.append(row);
-
-                        });
-                        updateWeightedTotal();
-                    }
-
-                    $('#wpa_table_body').empty();
-                    var wpatbody = $('#wpa_table_body');
-
-                    if (data.wpaData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewWPARow(wpatbody);
-                        var wparowCount = $('#wpa_table_body tr').length;
-
-                        if (wparowCount === 1) {
-                            $('#wpa_table_body tr .delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.wpaData.forEach(function(wpa, index) {
-                            var wpaID = wpa.performance_plan_id;
-
-                            var wparow = $('<tr>').addClass('align-middle');
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} +
-                                    '][continue_doing]',
-                                    wpa.continue_doing,
-                                    false // Set to false to allow user input
-                                )
-                            ).appendTo(wparow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][stop_doing]',
-                                    wpa.stop_doing,
-                                    false // Set to false to allow user input
-                                )
-                            ).appendTo(wparow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'WPA[' + wpaID + '][' + {{ $appraisalId }} + '][start_doing]',
-                                    wpa.start_doing,
-                                    false // Set to false to allow user input
-                                )
-                            ).appendTo(wparow);
-
-                            wpatbody.append(wparow);
-                        });
-                        $('#wpa_table_body input[type="text"], #wpa_table_body textarea').trigger(
-                            'input'); // Trigger input event
-                    }
-
-                    $('#ldp_table_body').empty();
-                    var ldptbody = $('#ldp_table_body');
-
-                    if (data.ldpData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewLDPRow(ldptbody);
-                        var ldprowCount = $('#ldp_table_body tr').length;
-
-                        if (ldprowCount === 1) {
-                            $('#ldp_table_body tr .delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.ldpData.forEach(function(ldp, index) {
-                            var ldpID = ldp.development_plan_id;
-
-                            var ldprow = $('<tr>').addClass('align-middle');
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} +
-                                    '][learning_need]',
-                                    ldp.learning_need,
-                                    false // Set to false to allow user input
-                                )
-                            ).appendTo(ldprow);
-
-                            $('<td>').addClass('td-textarea').append(
-                                createTextArea(
-                                    'LDP[' + ldpID + '][' + {{ $appraisalId }} + '][methodology]',
-                                    ldp.methodology,
-                                    false // Set to false to allow user input
-                                )
-                            ).appendTo(ldprow);
-
-                            ldptbody.append(ldprow);
-                        });
-                        $('#ldp_table_body input[type="text"], #ldp_table_body textarea').trigger(
-                            'input'); // Trigger input event
-                    }
-
-                    // Loop through the jicData and populate the table rows with data
-                    data.jicData.forEach(function(jic, index) {
-                        var row = document.querySelectorAll('#jic_table_body tr')[index];
-
-                        if (row) {
-                            var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                1) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                            var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                1) + '][{{ $appraisalId }}][answer]"][value="0"]');
-
-                            if (jic.answer === 1) {
-                                answerRadioYes.checked = true;
-                            } else if (jic.answer === 0) {
-                                answerRadioNo.checked = true;
-                            }
-
-                            $(answerRadioYes).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
-
-                            $(answerRadioNo).on('invalid', function() {
-                                $(this).addClass('is-invalid text-danger fw-bold');
-                                $(this).siblings('span').addClass('text-danger');
-                            });
-
-                            $(answerRadioYes).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
-                            });
-
-                            $(answerRadioNo).on('input', function() {
-                                var row = $(this).closest('tr');
-                                row.find('.is-invalid').removeClass('is-invalid');
-                                row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                $(this).closest('tr').removeClass('text-danger fw-bold');
-                            });
-
-                            var commentTextarea = row.querySelector('.textarea[name="feedback[' + (
-                                index +
-                                1) + '][{{ $appraisalId }}][comment]"]');
-                            commentTextarea.value = jic.comments;
-
-                            // Attach input event handlers for validation
-                            $(commentTextarea).on('input', function() {
-                                $(this).removeClass('border border-danger');
-                                $(this).removeClass('is-invalid');
-                            }).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).attr('placeholder', 'Please provide a valid input');
-                            }).on('blur', function() {
-                                if ($(this).val().trim() === '') {
+                                // Attach input event handlers for validation
+                                $(commentTextarea).on('input', function() {
+                                    $(this).removeClass('border border-danger');
+                                    $(this).removeClass('is-invalid');
+                                }).on('invalid', function() {
                                     $(this).addClass('is-invalid');
+                                    $(this).attr('placeholder', 'Please provide a valid input');
+                                }).on('blur', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                    }
+                                });
+
+                                answerRadioYes.disabled = true;
+                                answerRadioNo.disabled = true;
+                                commentTextarea.disabled = true;
+                            } else {
+                                // console.log('Row not found for index ' + index);
+                            }
+                        });
+
+                        data.signData.forEach(function(sign, index) {
+                            var appraisalId = sign.appraisal_id;
+                            var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
+
+
+                            if (row) {
+                                var fullnamecell = row.querySelector('#fullnamecell');
+
+                                if (sign.sign_data) {
+                                    var fullnamecell = document.querySelector('#fullnamecell');
+                                    var appraisal = sign.appraisal;
+                                    console.log(appraisal);
+
+                                    var employee = appraisal.evaluator;
+
+                                    if (employee.employee_id) {
+                                        // Check if all properties are defined before accessing them
+                                        fullnamecell.textContent = employee.first_name + ' ' + employee
+                                            .last_name;
+                                    }
                                 }
-                            });
 
-                            answerRadioYes.disabled = true;
-                            answerRadioNo.disabled = true;
-                            commentTextarea.disabled = true;
-                        } else {
-                            // console.log('Row not found for index ' + index);
-                        }
-                    });
+                                var signatureImage = document.createElement('img');
+                                if (sign.sign_data) {
+                                    // Validation for signature data
+                                    $('#signatureImage').attr('src', sign.sign_data);
+                                    signatureImage.width = 100;
+                                } else {
+                                    var errorText = document.createElement('p');
+                                    errorText.textContent = 'Invalid signature data';
+                                    errorText.classList.add('text-danger', 'fw-bold');
+                                    signCell.appendChild(errorText);
+                                }
 
-                    data.signData.forEach(function(sign, index) {
-                        var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('[data-appraisal-id="' + appraisalId + '"]');
+                                var signCell = row.querySelector('.sign-cell');
+                                var signatureImage = document.createElement('img');
+                                if (sign.sign_data) {
+                                    // Validation for signature data
+                                    $('#signatureImage').attr('src', sign.sign_data);
+                                    signatureImage.width = 100;
+                                    signCell.appendChild(signatureImage);
+                                } else {
+                                    var errorText = document.createElement('p');
+                                    errorText.textContent = 'Invalid signature data';
+                                    errorText.classList.add('text-danger', 'fw-bold');
+                                    signCell.appendChild(errorText);
+                                }
 
-                        if (row) {
-                            var fullnamecell = row.querySelector('#fullnamecell');
+                                var dateCell = document.querySelector('.date-cell');
 
-                            if (sign.sign_data) {
-                                var fullnamecell = document.querySelector('#fullnamecell');
-                                var appraisal = sign.appraisal;
-                                var employee = appraisal.employee;
+                                if (sign.updated_at) {
+                                    // Validation for date data
+                                    // Convert the timestamp to a JavaScript Date object
+                                    var timestamp = new Date(sign.updated_at);
 
-                                if (employee.employee_id) {
-                                    // Check if all properties are defined before accessing them
-                                    fullnamecell.textContent = employee.first_name + ' ' + employee
-                                        .last_name;
+                                    // Format the date as a string (e.g., "YYYY-MM-DD HH:MM:SS")
+                                    var formattedDate = timestamp
+                                        .toLocaleString(); // You can customize the format further if needed
+
+                                    dateCell.textContent = formattedDate;
+                                } else {
+                                    // Handle invalid or missing date data
+                                    dateCell.textContent = 'Invalid date';
+                                    dateCell.classList.add('text-danger', 'fw-bold');
                                 }
                             }
-
-                            var signatureImage = document.createElement('img');
-                            if (sign.sign_data) {
-                                // Validation for signature data
-                                $('#signatureImage').attr('src', sign.sign_data);
-                                signatureImage.width = 100;
-                            } else {
-                                var errorText = document.createElement('p');
-                                errorText.textContent = 'Invalid signature data';
-                                errorText.classList.add('text-danger', 'fw-bold');
-                                signCell.appendChild(errorText);
-                            }
-
-                            var signCell = row.querySelector('.sign-cell');
-                            var signatureImage = document.createElement('img');
-                            if (sign.sign_data) {
-                                // Validation for signature data
-                                $('#signatureImage').attr('src', sign.sign_data);
-                                signatureImage.width = 100;
-                                signCell.appendChild(signatureImage);
-                            } else {
-                                var errorText = document.createElement('p');
-                                errorText.textContent = 'Invalid signature data';
-                                errorText.classList.add('text-danger', 'fw-bold');
-                                signCell.appendChild(errorText);
-                            }
-
-                            var dateCell = document.querySelector('.date-cell');
-
-                            if (sign.updated_at) {
-                                // Validation for date data
-                                // Convert the timestamp to a JavaScript Date object
-                                var timestamp = new Date(sign.updated_at);
-
-                                // Format the date as a string (e.g., "YYYY-MM-DD HH:MM:SS")
-                                var formattedDate = timestamp
-                                    .toLocaleString(); // You can customize the format further if needed
-
-                                dateCell.textContent = formattedDate;
-                            } else {
-                                // Handle invalid or missing date data
-                                dateCell.textContent = 'Invalid date';
-                                dateCell.classList.add('text-danger', 'fw-bold');
-                            }
-                        }
-                    });
-                } else {
-                    console.error('Data retrieval failed.');
+                        });
+                    } else {
+                        console.error('Data retrieval failed.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
+            });
+        }
 
         function createTextArea(name, value, isReadonly) {
             return $('<div>').addClass('position-relative').append(
@@ -1377,7 +1389,7 @@
                 $('<textarea>').addClass('textarea').attr('name', 'KRA[' +
                     nextKRAID +
                     '][' + {{ $appraisalId }} + '][KRA]').prop('readonly',
-                    false)
+                    true)
                 .prop('readonly', true)
             ).appendTo(row);
 
@@ -1468,24 +1480,30 @@
 
             var wparow = $('<tr>').addClass('align-middle');
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][continue_doing]').prop('readonly',
-                    false)
+                $('<div>').addClass('position-relative').append(
+                    $('<textarea>').addClass('textarea form-control').attr('name', 'WPA[' +
+                        nextWpaID +
+                        '][' + {{ $appraisalId }} + '][continue_doing]').prop('disabled',
+                        true)
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][stop_doing]').prop('readonly',
-                    false)
+                $('<div>').addClass('position-relative').append(
+                    $('<textarea>').addClass('textarea form-control').attr('name', 'WPA[' +
+                        nextWpaID +
+                        '][' + {{ $appraisalId }} + '][stop_doing]').prop('disabled',
+                        true)
+                )
             ).appendTo(wparow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'WPA[' +
-                    nextWpaID +
-                    '][' + {{ $appraisalId }} + '][start_doing]').prop('readonly',
-                    false)
+                $('<div>').addClass('position-relative').append(
+                    $('<textarea>').addClass('textarea form-control').attr('name', 'WPA[' +
+                        nextWpaID +
+                        '][' + {{ $appraisalId }} + '][start_doing]').prop('disabled',
+                        true)
+                )
             ).appendTo(wparow);
 
             wpatbody.append(wparow);
@@ -1508,20 +1526,21 @@
             var nextLDPID = highestLDPID + 1;
 
             var ldprow = $('<tr>').addClass('align-middle');
+
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][learning_need]').prop(
-                    'readonly',
-                    false)
+                $('<div>').addClass('position-relative').append(
+                    $('<textarea>').addClass('textarea form-control').attr('name', 'LDP[' +
+                        nextLDPID +
+                        '][' + {{ $appraisalId }} + '][learning_need]').prop('disabled', true).attr('disable', true)
+                )
             ).appendTo(ldprow);
 
             $('<td>').addClass('td-textarea').append(
-                $('<textarea>').addClass('textarea').attr('name', 'LDP[' +
-                    nextLDPID +
-                    '][' + {{ $appraisalId }} + '][methodology]').prop(
-                    'readonly',
-                    false)
+                $('<div>').addClass('position-relative').append(
+                    $('<textarea>').addClass('textarea form-control').attr('name', 'LDP[' +
+                        nextLDPID +
+                        '][' + {{ $appraisalId }} + '][methodology]').prop('disabled', true).attr('disable', true)
+                )
             ).appendTo(ldprow);
 
             ldptbody.append(ldprow);

@@ -43,16 +43,31 @@ class SelfEvaluationController extends Controller
     }
 
     $appraisalId = $request->input('appraisal_id');
+    $selectedYear = $request->input('sy');
+    
+    if (is_null($selectedYear) || $selectedYear == null || $selectedYear == "null") {
+      $SID = FormQuestions::where('table_initials', 'SID')->where('status', 'active')->get();
+      $SR = FormQuestions::where('table_initials', 'SR')->where('status', 'active')->get();
+      $S = FormQuestions::where('table_initials', 'S')->where('status', 'active')->get();
 
-    $SID = FormQuestions::where('table_initials', 'SID')->where('status', 'active')->get();
-    $SR = FormQuestions::where('table_initials', 'SR')->where('status', 'active')->get();
-    $S = FormQuestions::where('table_initials', 'S')->where('status', 'active')->get();
+      // Retrieve stored scores for each question ID
+      $storedValues = AppraisalAnswers::where('appraisal_id', $appraisalId)
+        ->pluck('score', 'question_id') 
+        ->toArray();
+    }else{
+      $FormQuestionstable = 'form_questions_' . $selectedYear;
+      $AppraisalAnswerstable = 'appraisal_answers_' . $selectedYear;
 
-    // Retrieve stored scores for each question ID
-    $storedValues = AppraisalAnswers::where('appraisal_id', $appraisalId)
-      ->pluck('score', 'question_id') // Retrieves scores with question IDs as keys
-      ->toArray();
+      $SID = FormQuestions::from($FormQuestionstable)->where('table_initials', 'SID')->where('status', 'active')->get();
+      $SR = FormQuestions::from($FormQuestionstable)->where('table_initials', 'SR')->where('status', 'active')->get();
+      $S = FormQuestions::from($FormQuestionstable)->where('table_initials', 'S')->where('status', 'active')->get();
 
+      // Retrieve stored scores for each question ID
+      $storedValues = AppraisalAnswers::from($AppraisalAnswerstable)->where('appraisal_id', $appraisalId)
+        ->pluck('score', 'question_id') 
+        ->toArray();
+    }
+    
     // Merge stored values with question data
     $SID->each(function ($question) use ($storedValues) {
       $question->score = $storedValues[$question->question_id] ?? null;
@@ -74,6 +89,45 @@ class SelfEvaluationController extends Controller
     ];
 
     return response()->json($data);
+  }
+
+  public function getPEKRA(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return view('auth.login');
+    }
+
+    $appraisalId = $request->input('appraisal_id');
+    $selectedYear = $request->input('sy');
+
+    if (is_null($selectedYear) || $selectedYear == null || $selectedYear == "null") {
+      $eulaData = Appraisals::where('appraisal_id', $appraisalId)->pluck('eula');
+      $kraData = KRA::where('appraisal_id', $appraisalId)->get();
+      $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
+      $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
+      $jicData = JIC::where('appraisal_id', $appraisalId)->get();
+      $signData = Signature::where('appraisal_id', $appraisalId)
+        ->with('appraisal.evaluator:employee_id,first_name,last_name')
+        ->get();
+    }else{
+      $Appraisals_table = 'appraisals_' . $selectedYear;
+      $KRA_table = 'kras_' . $selectedYear;
+      $WPP_table = 'work_performance_plans_' . $selectedYear;
+      $LDP_table = 'learning_development_plans_' . $selectedYear;
+      $JIC_table = 'job_incumbents_' . $selectedYear;
+      $Signature_table = 'signature_' . $selectedYear;
+
+      $eulaData = Appraisals::from($Appraisals_table)->where('appraisal_id', $appraisalId)->pluck('eula');
+      $kraData = KRA::from($KRA_table)->where('appraisal_id', $appraisalId)->get();
+      $wpaData = WPP::from($WPP_table)->where('appraisal_id', $appraisalId)->get();
+      $ldpData = LDP::from($LDP_table)->where('appraisal_id', $appraisalId)->get();
+      $jicData = JIC::from($JIC_table)->where('appraisal_id', $appraisalId)->get();
+      $signData = Signature::from($Signature_table)->where('appraisal_id', $appraisalId)
+        ->with('appraisal.evaluator:employee_id,first_name,last_name')
+        ->get();
+    }
+    
+    return response()->json(['success' => true, 'eulaData' => $eulaData, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
   }
 
   public function showAppraisalForm(Request $request)
@@ -207,24 +261,6 @@ class SelfEvaluationController extends Controller
 
     // Return the view with appraisee, evaluator, and appraisal ID data
     return view('pe-pages.pe_self_eval_greyedout', ['appraisee' => $appraisee, 'evaluator' => $evaluator, 'appraisalId' => $appraisal_Id]);
-  }
-
-  public function getPEKRA(Request $request)
-  {
-    if (!session()->has('account_id')) {
-      return view('auth.login');
-    }
-
-    $appraisalId = $request->input('appraisal_id');
-    $eulaData = Appraisals::where('appraisal_id', $appraisalId)->pluck('eula');
-    $kraData = KRA::where('appraisal_id', $appraisalId)->get();
-    $wpaData = WPP::where('appraisal_id', $appraisalId)->get();
-    $ldpData = LDP::where('appraisal_id', $appraisalId)->get();
-    $jicData = JIC::where('appraisal_id', $appraisalId)->get();
-    $signData = Signature::where('appraisal_id', $appraisalId)
-      ->with('appraisal.employee:employee_id,first_name,last_name')
-      ->get();
-    return response()->json(['success' => true, 'eulaData' => $eulaData, 'kraData' => $kraData, 'wpaData' => $wpaData, 'ldpData' => $ldpData, 'jicData' => $jicData, 'signData' => $signData]);
   }
 
   public function deleteKRA(Request $request)

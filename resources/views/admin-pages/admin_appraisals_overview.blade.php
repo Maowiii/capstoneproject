@@ -275,7 +275,9 @@
                                         if (appraisal.date_submitted !== null) {
                                             var url =
                                                 "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" +
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);
                                             url += "&appraisee_account_id=" +
@@ -301,7 +303,9 @@
                                         } else {
                                             var url =
                                                 "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" +
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);
                                             url += "&appraisee_account_id=" +
@@ -330,7 +334,9 @@
                                         if (appraisal.date_submitted !== null) {
                                             var url =
                                                 "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" +
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);
                                             url += "&appraisee_account_id=" +
@@ -356,7 +362,9 @@
                                         } else {
                                             var url =
                                                 "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" +
+                                            url += "?sy=" + encodeURIComponent(
+                                                selectedYear);
+                                            url += "&appraisal_id=" +
                                                 encodeURIComponent(appraisal
                                                     .appraisal_id);
                                             url += "&appraisee_account_id=" +

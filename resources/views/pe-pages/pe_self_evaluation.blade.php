@@ -79,16 +79,16 @@
 
                         <!-- <br>I give consent to use of my personal data for the said purpose. (Y/N)<br>
 
-                                                    <br>I give consent to the retention of my personal data. (Y/N)<br>
+                            <br>I give consent to the retention of my personal data. (Y/N)<br>
 
-                                                    <br>I give consent to the sharing of my data. (Y/N)<br>
+                            <br>I give consent to the sharing of my data. (Y/N)<br>
 
-                                                    <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
-                                                Agreement.<br>
+                            <br>I confirm that I have read, understand, and agree to the above-mentioned Privacy
+                        Agreement.<br>
                                                 
-                                                <br>By clicking Yes, you consent that you are willing to answer the questions
-                                                in this survey and you answered YES to the three questions above.
-                                                (Y/N) -->
+                        <br>By clicking Yes, you consent that you are willing to answer the questions
+                        in this survey and you answered YES to the three questions above.
+                        (Y/N) -->
 
                     <div class="mb-3">
                         <label class="form-check-label" id="consent1-label">
@@ -223,12 +223,12 @@
             </div>
         </div>
 
-        <!-- <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
+        <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
             <h5 class="fs-6">Progress Bar</h5>
             <div id="progressBarHandler" class="progress w-75" style="height: 15px;">
                 <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
             </div>
-        </div> -->
+        </div>
 
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
@@ -1141,6 +1141,16 @@
                 });
             });
 
+            // Attach change event to Likert-type radio buttons
+            $('#PEappraisalForm input[name^="SID"], #PEappraisalForm input[name^="SR"], #PEappraisalForm input[name^="S"], #PEappraisalForm input[name^="KRA"]').on('change', function () {
+                updateProgressBar();
+            });
+
+            // Attach change event to Yes/No-type radio buttons
+            $('#PEappraisalForm input[name^="feedback"]').on('change', function () {
+                updateProgressBar();
+            });
+
             $(document).on('change', '#SID_table input[type="radio"]', function() {
                 updateFrequencyCounter('SID_table');
                 updateBHTotal();
@@ -1712,7 +1722,6 @@
 
             updateBHTotal();
             updateWeightedTotal();
-            //updateProgressBar();
         });
 
         function loadTableData() {
@@ -2017,7 +2026,7 @@
                         $('#S_table input[type="radio"]').trigger('change');
                     });
                     // formChecker();
-                    //updateProgressBar();
+                    // updateProgressBar();
                 }
             });
 
@@ -2423,7 +2432,7 @@
                         });
 
                         formChecker();
-                        //updateProgressBar();
+                        updateProgressBar();
                     } else {
                         console.error('Data retrieval failed.');
                     }
@@ -2432,6 +2441,49 @@
                     console.error(xhr.responseText);
                 }
             });
+            // Update progress bar on initial page load
+            // updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            // Initialize an object to store progress per question
+            var progressPerQuestion = {};
+
+            // Iterate over each radio button
+            $('#PEappraisalForm .form-check-input[type="radio"]').each(function () {
+                var questionId = $(this).attr('name').match(/\[(\d+)\]/)[1];
+                var questionSection = $(this).attr('name').match(/\[([^\]]+)\]$/)[1];
+
+                // Count the number of checked radio buttons for each question
+                var checkedRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]:checked`).length;
+
+                // Count the total number of radio buttons for each question
+                var totalRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]`).length;
+
+                var weight = totalRadioCount > 0 ? 100 / totalRadioCount : 0;
+
+                // Calculate the progress percentage for each question
+                var progressPercentage = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 100 : 0;
+
+                // Store the progress percentage for each question
+                progressPerQuestion[questionId] = progressPercentage;
+            });
+
+            // Calculate the total progress by averaging the progress percentages for all questions
+            var totalProgress = calculateAverage(Object.values(progressPerQuestion));
+            totalProgress = Math.round(totalProgress);
+
+            // Update the progress bar width
+            $('#progressBar').css('width', totalProgress + '%').text(totalProgress + '%');
+            $('#progressBar').attr('aria-valuenow', totalProgress);
+        }
+
+        function calculateAverage(array) {
+            if (array.length === 0) return 0;
+            var sum = array.reduce(function (acc, val) {
+                return acc + val;
+            }, 0);
+            return sum / array.length;
         }
 
         function createTextArea(name, value, isReadonly) {
@@ -3041,12 +3093,12 @@
         //     });
         //     console.log(totalRadioProgress)
         //     // Calculate the total progress based on your criteria
-        //     var totalProgress = (totalRadioProgress / totalRadioCount); // Adjust the formula as needed
+        //     var totalProgress = (totalRadioProgress); // Adjust the formula as needed
 
         //     return totalProgress;
         // }
 
-        // function //updateProgressBar();
+        // function updateProgressBar(){
  
         //     // Calculate the total progress 
         //     var totalProgress = Math.round(calculateTotalProgress());
