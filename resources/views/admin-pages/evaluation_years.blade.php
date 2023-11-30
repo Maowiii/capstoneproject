@@ -781,18 +781,6 @@
                             $('#departmentList').removeClass('d-none');
                         }
 
-                        if (response.errors && response.errors.departments_with_multiple_superiors) {
-                            let multiSuperiorsList = '';
-
-                            response.errors.departments_with_multiple_superiors.forEach(department => {
-                                multiSuperiorsList += `<li>${department}</li>`;
-                            });
-
-                            $('#multiSuperiorsList').empty().append(multiSuperiorsList);
-                            $('#multiSuperiorsAlert').removeClass('d-none');
-                        }
-
-
                         console.log(response);
                         $('.text-danger').hide();
                         $('.error-message').text('');

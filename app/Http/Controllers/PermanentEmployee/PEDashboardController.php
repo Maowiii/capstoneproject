@@ -9,6 +9,7 @@ use App\Models\Accounts;
 use App\Models\EvalYear;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PEDashboardController extends Controller
 {
@@ -39,12 +40,15 @@ class PEDashboardController extends Controller
     }
 
     $job_title = $request->job_title;
+    $immediate_superior_id = $request->immediate_superior;
     $request->session()->put('title', $job_title);
     $account_id = session()->get('account_id');
     $user = Accounts::where('account_id', $account_id)->with('employee')->first();
+    Log::debug('Immediate Superior ID: ' . $immediate_superior_id);
 
     $user->employee->update([
       'job_title' => $job_title,
+      'immediate_superior_id' => $immediate_superior_id,
     ]);
 
     $user->update([
