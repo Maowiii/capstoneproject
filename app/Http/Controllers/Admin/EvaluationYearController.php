@@ -265,10 +265,10 @@ class EvaluationYearController extends Controller
       $table->string('status');
       $table->tinyInteger('action')->nullable();
       $table->text('feedback')->nullable();
-      $table->timestamps(); 
+      $table->timestamps();
       $table->index('appraisal_id');
       $table->index('approver_id');
-  });
+    });
 
     $originalFormQuestionsTable = 'form_questions';
     $newFormQuestionsTable = 'form_questions' . $sy;
@@ -413,7 +413,10 @@ class EvaluationYearController extends Controller
 
     $esignature = $request->input('esignature');
 
+    $excludedAppraisalIds = [3, 4, 7, 8];
+
     $ICAppraisalIDs = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
+      ->whereNotIn('appraisal_id', $excludedAppraisalIds)
       ->orderBy('appraisal_id', 'asc')
       ->pluck('appraisal_id');
 

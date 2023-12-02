@@ -109,7 +109,8 @@
                         <div class="alert alert-danger d-none" role="alert" id="error-alert">
                         </div>
                         <div class="alert alert-warning" role="alert" id="confirmation-alert">
-                            Once you have submitted the form, you cannot alter any values.
+                                By submitting your signature, you automatically agree to the terms and conditions. And once you have submitted the form, you cannot alter any values.
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -794,61 +795,61 @@
                 formChecker();
             }, 5000);
 
-            // var totalProgress = 0;
+            var totalProgress = 0;
 
-            // function calculateCustomerServiceProgress() {
-            //     return $('#service_area').val().trim() !== '' ? 100 : 0;
-            // }
+            function calculateCustomerServiceProgress() {
+                return $('#service_area').val().trim() !== '' ? 100 : 0;
+            }
 
-            // function calculateCommentsProgress() {
-            //     return $('#comments_area').val().trim() !== '' ? 100 : 0;
-            // }
+            function calculateCommentsProgress() {
+                return $('#comments_area').val().trim() !== '' ? 100 : 0;
+            }
 
-            // function calculateRadioProgress(questionId) {
-            //     // Get the total count of radio buttons in the specified group
-            //     var totalRadioCount = $(`input[name="ic_${questionId}"]`).length;
-            //     // console.log("totalRadioCount" + totalRadioCount);
+            function calculateRadioProgress(questionId) {
+                // Get the total count of radio buttons in the specified group
+                var totalRadioCount = $(`input[name="ic_${questionId}"]`).length;
+                // console.log("totalRadioCount" + totalRadioCount);
 
-            //     // Get the count of checked radio buttons in the specified group
-            //     var checkedRadioCount = $(`input[name="ic_${questionId}"]:checked`).length;
-            //     // console.log("checkedRadioCount" + checkedRadioCount);
+                // Get the count of checked radio buttons in the specified group
+                var checkedRadioCount = $(`input[name="ic_${questionId}"]:checked`).length;
+                // console.log("checkedRadioCount" + checkedRadioCount);
 
-            //     var totalQuestions = $('.form-check-input[type="radio"]').length / 5; // Assuming 5 radio buttons per question
-            //     var totalWeights = 100; // Total weight should add up to 100%
-            //     var weight = totalQuestions > 0 ? totalWeights / totalQuestions : 0;
+                var totalQuestions = $('.form-check-input[type="radio"]').length / 5; // Assuming 5 radio buttons per question
+                var totalWeights = 100; // Total weight should add up to 100%
+                var weight = totalQuestions > 0 ? totalWeights / totalQuestions : 0;
 
-            //     // Calculate progress per checked radio button
-            //     var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * weight : 0;
+                // Calculate progress per checked radio button
+                var progressPerRadio = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * weight : 0;
 
-            //     return progressPerRadio;
-            // }
+                return progressPerRadio;
+            }
 
-            // function calculateTotalProgress() {
-            //     var totalRadioProgress = 0;
+            function calculateTotalProgress() {
+                var totalRadioProgress = 0;
 
-            //     // Iterate over each question
-            //     $('#ic_form .form-check-input[type="radio"]').each(function () {
-            //         var questionId = $(this).attr('id').split('_')[1];
-            //         totalRadioProgress += calculateRadioProgress(questionId);
-            //     });
+                // Iterate over each question
+                $('#ic_form .form-check-input[type="radio"]').each(function () {
+                    var questionId = $(this).attr('id').split('_')[1];
+                    totalRadioProgress += calculateRadioProgress(questionId);
+                });
 
-            //     var customerServiceProgress = calculateCustomerServiceProgress();
-            //     var commentsProgress = calculateCommentsProgress();
+                var customerServiceProgress = calculateCustomerServiceProgress();
+                var commentsProgress = calculateCommentsProgress();
 
-            //     // Add more progress calculations if needed
-            //     // Calculate the total progress based on your criteria
-            //     var totalProgress = (totalRadioProgress + customerServiceProgress + commentsProgress)/3; // Adjust the formula as needed
+                // Add more progress calculations if needed
+                // Calculate the total progress based on your criteria
+                var totalProgress = (totalRadioProgress + customerServiceProgress + commentsProgress)/3; // Adjust the formula as needed
 
-            //     return totalProgress;
-            // }
+                return totalProgress;
+            }
 
-            // function //updateProgressBar() {
-            //     // Calculate the total progress
-            //     var totalProgress = Math.round(calculateTotalProgress());
+            function updateProgressBar() {
+                // Calculate the total progress
+                var totalProgress = Math.round(calculateTotalProgress());
 
-            //     // Update the width of the progress bar
-            //     $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
-            // }
+                // Update the width of the progress bar
+                $('#progressBar').css('width', totalProgress + '%').text(totalProgress + "%");
+            }
 
         });
     </script>
