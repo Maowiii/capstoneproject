@@ -100,6 +100,13 @@
             </div>
         </div>
 
+        <div id="progressBarContainer" class="card sticky-top border-0 d-flex p-3 flex-column align-items-center">
+            <h5 class="fs-6">Progress Bar</h5>
+            <div id="progressBarHandler" class="progress w-75" style="height: 15px;">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+
         <div class="content-container">
             <h2>I. Behavioral Competencies</h2>
             <p>Given the following behavioral competencies, you are to assess the incumbent's performance using the scale.
@@ -890,16 +897,19 @@
             $('#add-wpa-btn').click(function() {
                 addNewWPARow();
                 formChecker();
+                updateProgressBar();
             });
 
             $('#add-ldp-btn').click(function() {
                 addNewLDPRow();
                 formChecker();
+                updateProgressBar();
             });
 
             $('#add-kra-btn').click(function() {
                 addNewKRARow();
                 formChecker();
+                updateProgressBar();
             });
 
             $(document).on('click', '.kra-delete-btn', function() {
@@ -1566,6 +1576,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1660,6 +1671,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1754,6 +1766,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1775,232 +1788,306 @@
                     // formChecker();
                 }
             });
-        }
 
-        $.ajax({
-            url: '{{ route('getPEKRA') }}',
-            type: 'GET',
-            data: {
-                appraisal_id: {{ $appraisalId }}
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    if (data.eulaData == 1 || data.eulaData == true) {
-                        // console.log('HIDE');
-                        $('#consentform').remove();
-                    } else {
-                        $('#consentform').modal('show');
-                    }
-
-                    $('#KRA_table_body').empty();
-                    var tbody = $('#KRA_table_body');
-
-                    if (data.kraData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewKRARow();
-                        var rowCount = $('#kra_table tbody tr').length;
-
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.kraData.forEach(function(kra, index) {
-                            addNewKRARow(kra);
-                        });
-
-                        var rowCount = $('#kra_table tbody tr').length;
-
-                        if (rowCount === 1) {
-                            $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
-                        }
-
-                        updateWeightedTotal();
-                    }
-
-                    $('#wpa_table_body').empty();
-
-                    if (data.wpaData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewWPARow();
-                        var wparowCount = $('#wpa_table_body tr').length;
-
-                        if (wparowCount === 1) {
-                            $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
-                        }
-                        // console.log(wparowCount);
-                    } else {
-                        data.wpaData.forEach(function(wpa, index) {
-                            addNewWPARow(wpa)
-
-                            var wparowCount = $('#wpa_table_body tr').length;
-                            if (wparowCount === 1) {
-                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
-                            } else {
-                                $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
-                            }
-                        });
-                    }
-
-                    $('#ldp_table_body').empty();
-                    var ldptbody = $('#ldp_table_body');
-
-                    if (data.ldpData.length === 0) {
-                        // Add a new empty row if there are no rows
-                        addNewLDPRow(ldptbody);
-                        var ldprowCount = $('#ldp_table_body tr').length;
-
-                        if (ldprowCount === 1) {
-                            $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
-                        }
-                    } else {
-                        data.ldpData.forEach(function(ldp, index) {
-                            addNewLDPRow(ldp);
-
-                            var ldprowCount = $('#ldp_table_body tr').length;
-                            if (ldprowCount <= 1) {
-                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
-                            } else {
-                                $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
-                            }
-                        });
-                    }
-
-                    // Loop through the jicData and populate the table rows with data
-                    data.jicData.forEach(function(jic, index) {
-                        jicID = parseInt(jic.question_order)-1;
-                        
-                        var row = document.querySelectorAll('#jic_table_body tr')[jicID];
-
-                        var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
-                        var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
-
-                        var commentTextarea = row.querySelector('textarea[name^="comments"]');
-
-                        if (row) {
-                            if (jic.answer === 1) {
-                                answerRadioYes.checked = true;
-                            } else if (jic.answer === 0) {
-                                answerRadioNo.checked = true;
-                            }
-
-                            // $(answerRadioYes).on('invalid', function() {
-                            //     $(this).addClass('is-invalid');
-                            //     $(this).siblings('span').addClass('text-danger');
-                            // });
-
-                            // $(answerRadioNo).on('invalid', function() {
-                            //     $(this).addClass('is-invalid');
-                            //     $(this).siblings('span').addClass('text-danger');
-                            // });
-
-                            $(answerRadioYes).on('input', function() {
-                                // Handle the change event for "Yes" radio button
-                                var $closestTD = $(this).closest('td');
-                                $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                $closestTD.removeClass('border border-danger');
-                                $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
-                            });
-
-                            $(answerRadioNo).on('input', function() {
-                                // Handle the change event for "No" radio button
-                                var $closestTD = $(this).closest('td');
-                                $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                $closestTD.removeClass('border border-danger');
-                                $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                $closestTD.closest('.form-check-input').removeClass('is-invalid');
-                            });
-
-                            if (commentTextarea) {
-                                commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
-                            }
-
-                            // Attach input event handlers for validation
-                            $(commentTextarea).on('input', function() {
-                                $(this).removeClass('border border-danger');
-                                $(this).removeClass('is-invalid');
-                            }).on('invalid', function() {
-                                $(this).addClass('is-invalid');
-                                $(this).attr('placeholder', 'Please provide a valid input');
-                            }).on('change', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            }).on('blur', function() {
-                                if ($(this).val().trim() === '') {
-                                    $(this).addClass('is-invalid');
-                                    $(this).closest('td').addClass(
-                                        'border border-danger');
-                                }
-                            });
+            $.ajax({
+                url: '{{ route('getPEKRA') }}',
+                type: 'GET',
+                data: {
+                    appraisal_id: {{ $appraisalId }}
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        if (data.eulaData == 1 || data.eulaData == true) {
+                            // console.log('HIDE');
+                            $('#consentform').remove();
                         } else {
-                            commentTextarea.required = true;
-                            answerRadioYes.required = true;
-                            answerRadioNo.required = true;
-                            
-                            // console.log('Row not found for index ' + index);
+                            $('#consentform').modal('show');
                         }
-                    });
 
-                    data.signData.forEach(function(sign, index) {
-                        var appraisalId = sign.appraisal_id;
-                        var row = document.querySelector('.signature-row');
+                        $('#KRA_table_body').empty();
+                        var tbody = $('#KRA_table_body');
 
-                        if (row) {
-                            var signCell = row.querySelector('#signcell');
-                            var signatureImage = document.querySelector('#signatureImage');
-                            var hiddenInput = document.querySelector('#uploadsign_1');
-                            var dateCell = row.querySelector('.date-cell'); // Define dateCell here
+                        if (data.kraData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewKRARow();
+                            var rowCount = $('#kra_table tbody tr').length;
 
-                            if (sign.sign_data) {
-                                // Validation for signature data
-                                $('#signatureImage').attr('src', sign.sign_data);
+                            if (rowCount === 1) {
+                                $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.kraData.forEach(function(kra, index) {
+                                addNewKRARow(kra);
+                            });
 
-                                signatureImage.width = 100;
+                            var rowCount = $('#kra_table tbody tr').length;
 
-                                // Update the hidden input with the loaded signature data
-                                hiddenInput.value = sign.sign_data;
-                            } else {
-                                var errorText = document.createElement('p');
-                                errorText.textContent = 'Invalid signature data';
-                                errorText.classList.add('text-danger', 'fw-bold');
-                                signCell.appendChild(errorText);
+                            if (rowCount === 1) {
+                                $('#kra_table tbody tr .kra-delete-btn').prop('disabled', true);
                             }
 
-                            if (sign.updated_at) {
-                                // Validation for date data
-                                const date = new Date(sign.updated_at);
+                            updateWeightedTotal();
+                        }
 
-                                const formattedDate = date.toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                    second: 'numeric',
+                        $('#wpa_table_body').empty();
+
+                        if (data.wpaData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewWPARow();
+                            var wparowCount = $('#wpa_table_body tr').length;
+
+                            if (wparowCount === 1) {
+                                $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
+                            }
+                            // console.log(wparowCount);
+                        } else {
+                            data.wpaData.forEach(function(wpa, index) {
+                                addNewWPARow(wpa)
+
+                                var wparowCount = $('#wpa_table_body tr').length;
+                                if (wparowCount === 1) {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#wpa_table_body .wpa-delete-btn').prop('disabled', false);
+                                }
+                            });
+                        }
+
+                        $('#ldp_table_body').empty();
+                        var ldptbody = $('#ldp_table_body');
+
+                        if (data.ldpData.length === 0) {
+                            // Add a new empty row if there are no rows
+                            addNewLDPRow(ldptbody);
+                            var ldprowCount = $('#ldp_table_body tr').length;
+
+                            if (ldprowCount === 1) {
+                                $('#ldp_table_body tr .ldp-delete-btn').prop('disabled', true);
+                            }
+                        } else {
+                            data.ldpData.forEach(function(ldp, index) {
+                                addNewLDPRow(ldp);
+
+                                var ldprowCount = $('#ldp_table_body tr').length;
+                                if (ldprowCount <= 1) {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', true);
+                                } else {
+                                    $('#ldp_table_body .ldp-delete-btn').prop('disabled', false);
+                                }
+                            });
+                        }
+
+                        // Loop through the jicData and populate the table rows with data
+                        data.jicData.forEach(function(jic, index) {
+                            jicID = parseInt(jic.question_order)-1;
+                            
+                            var row = document.querySelectorAll('#jic_table_body tr')[jicID];
+
+                            var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                            var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
+
+                            var commentTextarea = row.querySelector('textarea[name^="comments"]');
+
+                            if (row) {
+                                if (jic.answer === 1) {
+                                    answerRadioYes.checked = true;
+                                } else if (jic.answer === 0) {
+                                    answerRadioNo.checked = true;
+                                }
+
+                                // $(answerRadioYes).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
+
+                                // $(answerRadioNo).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
+
+                                $(answerRadioYes).on('input', function() {
+                                    // Handle the change event for "Yes" radio button
+                                    var $closestTD = $(this).closest('td');
+                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                    $closestTD.removeClass('border border-danger');
+                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                    $closestTD.closest('.form-check-input').removeClass('is-invalid');
+                                    updateProgressBar();
                                 });
 
-                                dateCell.textContent = formattedDate;
-                            } else {
-                                // Handle invalid or missing date data
-                                dateCell.textContent = 'Invalid date';
-                                dateCell.classList.add('text-danger', 'fw-bold');
-                            }
-                        }
-                    });
+                                $(answerRadioNo).on('input', function() {
+                                    // Handle the change event for "No" radio button
+                                    var $closestTD = $(this).closest('td');
+                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
+                                    $closestTD.removeClass('border border-danger');
+                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
+                                    $closestTD.closest('.form-check-input').removeClass('is-invalid');
+                                    updateProgressBar();
+                                });
 
-                    formChecker();
-                } else {
-                    console.error('Data retrieval failed.');
+                                if (commentTextarea) {
+                                    commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                                }
+
+                                // Attach input event handlers for validation
+                                $(commentTextarea).on('input', function() {
+                                    $(this).removeClass('border border-danger');
+                                    $(this).removeClass('is-invalid');
+                                }).on('invalid', function() {
+                                    $(this).addClass('is-invalid');
+                                    $(this).attr('placeholder', 'Please provide a valid input');
+                                }).on('change', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                }).on('blur', function() {
+                                    if ($(this).val().trim() === '') {
+                                        $(this).addClass('is-invalid');
+                                        $(this).closest('td').addClass(
+                                            'border border-danger');
+                                    }
+                                });
+                            } else {
+                                commentTextarea.required = true;
+                                answerRadioYes.required = true;
+                                answerRadioNo.required = true;
+                                
+                                // console.log('Row not found for index ' + index);
+                            }
+                        });
+
+                        data.signData.forEach(function(sign, index) {
+                            var appraisalId = sign.appraisal_id;
+                            var row = document.querySelector('.signature-row');
+
+                            if (row) {
+                                var signCell = row.querySelector('#signcell');
+                                var signatureImage = document.querySelector('#signatureImage');
+                                var hiddenInput = document.querySelector('#uploadsign_1');
+                                var dateCell = row.querySelector('.date-cell'); // Define dateCell here
+
+                                if (sign.sign_data) {
+                                    // Validation for signature data
+                                    $('#signatureImage').attr('src', sign.sign_data);
+
+                                    signatureImage.width = 100;
+
+                                    // Update the hidden input with the loaded signature data
+                                    hiddenInput.value = sign.sign_data;
+                                } else {
+                                    var errorText = document.createElement('p');
+                                    errorText.textContent = 'Invalid signature data';
+                                    errorText.classList.add('text-danger', 'fw-bold');
+                                    signCell.appendChild(errorText);
+                                }
+
+                                if (sign.updated_at) {
+                                    // Validation for date data
+                                    const date = new Date(sign.updated_at);
+
+                                    const formattedDate = date.toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        second: 'numeric',
+                                    });
+
+                                    dateCell.textContent = formattedDate;
+                                } else {
+                                    // Handle invalid or missing date data
+                                    dateCell.textContent = 'Invalid date';
+                                    dateCell.classList.add('text-danger', 'fw-bold');
+                                }
+                            }
+                        });
+
+                        formChecker();
+                        updateProgressBar();
+                    } else {
+                        console.error('Data retrieval failed.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
+            });
+        }
+
+        function updateProgressBar() {
+            // Initialize an object to store progress per question
+            var progressPerQuestion = {};
+
+            // Iterate over each radio button
+            $('#PEappraisalForm .form-check-input[type="radio"]').each(function () {
+                var questionId = $(this).attr('name').match(/\[(\d+)\]/)[1];
+                var questionSection = $(this).attr('name').match(/\[([^\]]+)\]$/)[1];
+
+                // Count the number of checked radio buttons for each question
+                var checkedRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]:checked`).length;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Checked Count: ${checkedRadioCount}`);
+
+                // Count the total number of radio buttons for each question
+                var totalRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]`).length;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Total Count: ${totalRadioCount}`);
+
+                // Calculate the progress percentage for each question
+                var progressPercentage = checkedRadioCount > 0 ? 100 : 0;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Progress Percentage: ${progressPercentage}`);
+
+                // Store the progress percentage for each question
+                progressPerQuestion[`${questionId}_${questionSection}`] = progressPercentage;
+            });
+
+            $('#PEappraisalForm textarea.autosave-field[required]').each(function () {
+                var textareaName = $(this).attr('name');
+                var questionId = textareaName.match(/\[(\d+)\]/)[1];
+                var questionSection = textareaName.match(/\[([^\]]+)\]$/)[1];
+
+                // Check if the textarea has a value
+                var hasValue = $(this).val().trim().length > 0;
+
+                // Calculate the progress percentage for each textarea
+                var progressPercentage = hasValue ? 100 : 0;
+
+                // Store the progress percentage for each textarea
+                progressPerQuestion[`${questionId}_${questionSection}`] = progressPercentage;
+            });
+            console.log(progressPerQuestion)
+
+            // Calculate the total progress by averaging the progress percentages for all questions
+            var totalProgress = calculateAverage(Object.values(progressPerQuestion));
+            totalProgress = Math.round(totalProgress);
+
+            // Update the progress bar width
+            console.log(`Total Progress: ${totalProgress}`);
+            $('#progressBar').css('width', totalProgress + '%').text(totalProgress + '%');
+            $('#progressBar').attr('aria-valuenow', totalProgress);
+        }
+
+
+        function calculateAverage(array) {
+            if (array.length === 0) {
+                console.log('Array is empty. Returning 0.');
+                return 0;
             }
-        });
+
+            var sum = array.reduce(function (acc, val) {
+                return acc + val;
+            }, 0);
+
+            var average = sum / array.length;
+
+            // console.log('Array:', array);
+            // console.log('Sum:', sum);
+            // console.log('Average:', average);
+
+            return average;
+        }
 
         function createTextArea(name, value, fieldID, appraisalId, fieldName) {
             return $('<div>').addClass('position-relative').append(
@@ -2017,6 +2104,7 @@
                     $(this).closest('div').removeClass(
                         'border border-danger');
                     $(this).removeClass('is-invalid');
+                    updateProgressBar();
                 }).on('invalid', function() {
                     $(this).addClass('is-invalid');
                     $(this).closest('div').addClass('border border-danger');
@@ -2027,12 +2115,14 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                    updateProgressBar();
                 }).on('blur', function() {
                     if ($(this).val().trim() === '') {
                         $(this).addClass('is-invalid');
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                    updateProgressBar();
                 })
             );
         }
@@ -2422,6 +2512,7 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+                        $('#progressBarContainer').remove();
 
                         $('#sendrequest').show();
                         $('#requestText').prop('disabled', false);
@@ -2551,10 +2642,16 @@
                         $('#lockToast').toast('hide');
                     }
 
-                    if (response.locks.eval || response.locks.lock) {
+                    if (response.locks.eval) {
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
+
+                        $('#add-wpa-btn').prop('disabled', false);
+                        $('#add-ldp-btn').prop('disabled', false);
+                        $('.wpa-delete-btn').prop('disabled', false);
+                        $('.ldp-delete-btn').prop('disabled', false);
+                        $('.btn-danger').prop('disabled', false);
 
                         $('#submit-btn-form').text('Submit');
                         $('#submit-btn-form').show();
@@ -2562,6 +2659,14 @@
                         $('#submit-btn-sign').show();
 
                         $('#lockToast').toast('hide');
+                    }
+
+                    if (response.locks.lock) {
+                        $('input[type="radio"]').prop('disabled', false);
+                        $('#KRA_table_body select').prop('disabled', false);
+                        $('textarea').prop('disabled', false);
+                        $('#lockToast').toast('hide');
+                        $('#sendreq').hide();
                     }
 
                     //////////////// SEND REQUEST /////////////////

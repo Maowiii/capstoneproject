@@ -352,3 +352,39 @@ Route::post('/TDM/accounts/create', function (Request $request) {
 });
 
 
+Route::post('/user/new', function (Request $request) {
+  $validator = Validator::make($request->all(), [
+  'name' => 'required|name',
+  'email' => 'required|email|ends_with:adamson.edu.ph|unique:user,email',
+  ], 
+      [
+          'email.required' => 'Please enter an Adamson email address.',
+          'email.ends_with' => 'Please enter an Adamson email address.',
+          'email.email' => 'Please enter a valid email address.',
+          'email.unique' => 'The email is already in use',
+      ]);
+  if ($validator->fails()) {
+      return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
+  }
+
+  $randomPassword = Str::random(8);
+
+  $user = Accounts::create([
+      'name' => $request->input('name'),
+      'email' => $request->input('email'),
+      'password' => $randomPassword
+  ]);
+
+  if ($user) {
+      $userArr = [
+          "id" => $user->account_id,
+          "name" => $user->name,
+          "email" => $user->email,
+          "created_at" => $user->created_at,
+          "updated_at" => $user->updated_at,
+      ];
+      return response()->json($userArr);
+  } else {
+      return response()->json(["message" => "User ID not found"], 404);
+  }
+});

@@ -1045,41 +1045,17 @@
         $(document).ready(function() {
             $('#add-wpa-btn').click(function() {
                 addNewWPARow($('#wpa_table_body'));
+                updateProgressBar();
             });
 
             $('#add-ldp-btn').click(function() {
                 var ldptbody = $('#ldp_table_body');
 
                 addNewLDPRow(ldptbody);
+                updateProgressBar();
             });
 
-            ///////////////////////////////////// Delete  code///////////////////////////////////////////////////
-            // $(document).on('click', '.kra-delete-btn', function() {
-            //     var row = $(this).closest('tr');
-            //     var kraID = row.find('input[name$="[kraID]"]').val();
-            //     $.ajax({
-            //         type: 'POST',
-            //         url: '{{ route('deleteKRA') }}',
-            //         data: {
-            //             kraID: kraID
-            //         },
-            //         headers: {
-            //             'X-CSRF-TOKEN': csrfToken
-            //         },
-            //         success: function(response) {
-            //             row.remove();
-            //             updateWeightedTotal();
-            //             var rowCount = $('#kra_table tbody tr').length;
-            //             if (rowCount === 1) {
-            //                 $('#kra_table tbody tr .delete-btn').prop('disabled', true);
-            //             }
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.error(error);
-            //         }
-            //     });
-            // });
-
+            ///////////////////////////////////// ROW DELETION ///////////////////////////////////////////////////
             // For the WPA delete button
             $(document).on('click', '.wpa-delete-btn', function() {
                 var row = $(this).closest('tr');
@@ -1103,6 +1079,7 @@
                         if (rowCount === 1) {
                             $('#wpa_table_body tr .wpa-delete-btn').prop('disabled', true);
                         }
+                        updateProgressBar();
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -1134,21 +1111,12 @@
                         if (rowCount === 1) {
                             $('#ldp_table tbody tr .ldp-delete-btn').prop('disabled', true);
                         }
+                        updateProgressBar();
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
                     }
                 });
-            });
-
-            // Attach change event to Likert-type radio buttons
-            $('#PEappraisalForm input[name^="SID"], #PEappraisalForm input[name^="SR"], #PEappraisalForm input[name^="S"], #PEappraisalForm input[name^="KRA"]').on('change', function () {
-                updateProgressBar();
-            });
-
-            // Attach change event to Yes/No-type radio buttons
-            $('#PEappraisalForm input[name^="feedback"]').on('change', function () {
-                updateProgressBar();
             });
 
             $(document).on('change', '#SID_table input[type="radio"]', function() {
@@ -1815,7 +1783,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
-                                        //updateProgressBar();
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -1910,8 +1878,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
-                                        //updateProgressBar();
-
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -2006,7 +1973,7 @@
                                         // console.log(
                                         //     'Score saved for question ID:',
                                         //     questionId);
-                                        //updateProgressBar();
+                                        updateProgressBar();
                                     },
                                     error: function(xhr) {
                                         if (xhr.responseText) {
@@ -2156,7 +2123,7 @@
                                             'is-invalid'
                                         );
 
-                                        //updateProgressBar();
+                                        updateProgressBar();
                                     });
 
                                     label.append(input, span);
@@ -2302,58 +2269,53 @@
                                 }
                             });
                         }
-
+                        
                         // Loop through the jicData and populate the table rows with data
-                        data.jicData.forEach(function(jic, index) {
-                            jicID = parseInt(jic.question_order) - 1;
-
-                            var row = document.querySelectorAll('#jic_table_body tr')[jicID];
-
-                            var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
-                            var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
-
-                            var commentTextarea = $('.jicTA');
+                        data.jicData.forEach(function(jic, index = 1) {
+                            var row = document.querySelectorAll('#jic_table_body tr')[index];
 
                             if (row) {
+                                var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
+                                    1) + '][{{ $appraisalId }}][answer]"][value="1"]');
+                                var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
+                                    1) + '][{{ $appraisalId }}][answer]"][value="0"]');
+
                                 if (jic.answer === 1) {
                                     answerRadioYes.checked = true;
                                 } else if (jic.answer === 0) {
                                     answerRadioNo.checked = true;
                                 }
 
-                                // $(answerRadioYes).on('invalid', function() {
-                                //     $(this).addClass('is-invalid');
-                                //     $(this).siblings('span').addClass('text-danger');
-                                // });
+                                $(answerRadioYes).on('invalid', function() {
+                                    $(this).addClass('is-invalid text-danger fw-bold');
+                                    $(this).siblings('span').addClass('text-danger');
+                                });
 
-                                // $(answerRadioNo).on('invalid', function() {
-                                //     $(this).addClass('is-invalid');
-                                //     $(this).siblings('span').addClass('text-danger');
-                                // });
+                                $(answerRadioNo).on('invalid', function() {
+                                    $(this).addClass('is-invalid text-danger fw-bold');
+                                    $(this).siblings('span').addClass('text-danger');
+                                });
 
                                 $(answerRadioYes).on('input', function() {
-                                    // Handle the change event for "Yes" radio button
-                                    var $closestTD = $(this).closest('td');
-                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                    $closestTD.removeClass('border border-danger');
-                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                    $closestTD.closest('.form-check-input').removeClass(
-                                        'is-invalid');
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                    updateProgressBar();
                                 });
 
                                 $(answerRadioNo).on('input', function() {
-                                    // Handle the change event for "No" radio button
-                                    var $closestTD = $(this).closest('td');
-                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                    $closestTD.removeClass('border border-danger');
-                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                    $closestTD.closest('.form-check-input').removeClass(
-                                        'is-invalid');
+                                    var row = $(this).closest('tr');
+                                    row.find('.is-invalid').removeClass('is-invalid');
+                                    row.find('.text-danger').removeClass('text-danger fw-bold');
+
+                                    $(this).closest('tr').removeClass('text-danger fw-bold');
+                                    updateProgressBar();
                                 });
 
-                                if (jic.comments) {
-                                    commentTextarea.val(jic.comments || '');
-                                }
+                                var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +1) + '][{{ $appraisalId }}][comments]"]');
+                                commentTextarea.value = jic.comments;
 
                                 // Attach input event handlers for validation
                                 $(commentTextarea).on('input', function() {
@@ -2375,11 +2337,11 @@
                                             'border border-danger');
                                     }
                                 });
-                            } else {
-                                commentTextarea.required = true;
-                                answerRadioYes.required = true;
-                                answerRadioNo.required = true;
 
+                                answerRadioYes.disabled = true;
+                                answerRadioNo.disabled = true;
+                                commentTextarea.disabled = true;
+                            } else {
                                 // console.log('Row not found for index ' + index);
                             }
                         });
@@ -2456,34 +2418,64 @@
 
                 // Count the number of checked radio buttons for each question
                 var checkedRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]:checked`).length;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Checked Count: ${checkedRadioCount}`);
 
                 // Count the total number of radio buttons for each question
                 var totalRadioCount = $(`#PEappraisalForm input[name*="[${questionId}][{{ $appraisalId }}][${questionSection}]"]`).length;
-
-                var weight = totalRadioCount > 0 ? 100 / totalRadioCount : 0;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Total Count: ${totalRadioCount}`);
 
                 // Calculate the progress percentage for each question
-                var progressPercentage = totalRadioCount > 0 ? (checkedRadioCount / totalRadioCount) * 100 : 0;
+                var progressPercentage = checkedRadioCount > 0 ? 100 : 0;
+                // console.log(`Question ID: ${questionId}, Section: ${questionSection}, Progress Percentage: ${progressPercentage}`);
 
                 // Store the progress percentage for each question
-                progressPerQuestion[questionId] = progressPercentage;
+                progressPerQuestion[`${questionId}_${questionSection}`] = progressPercentage;
             });
+
+            $('#PEappraisalForm textarea.autosave-field[required]').each(function () {
+                var textareaName = $(this).attr('name');
+                var questionId = textareaName.match(/\[(\d+)\]/)[1];
+                var questionSection = textareaName.match(/\[([^\]]+)\]$/)[1];
+
+                // Check if the textarea has a value
+                var hasValue = $(this).val().trim().length > 0;
+
+                // Calculate the progress percentage for each textarea
+                var progressPercentage = hasValue ? 100 : 0;
+
+                // Store the progress percentage for each textarea
+                progressPerQuestion[`${questionId}_${questionSection}`] = progressPercentage;
+            });
+            console.log(progressPerQuestion)
 
             // Calculate the total progress by averaging the progress percentages for all questions
             var totalProgress = calculateAverage(Object.values(progressPerQuestion));
             totalProgress = Math.round(totalProgress);
 
             // Update the progress bar width
+            console.log(`Total Progress: ${totalProgress}`);
             $('#progressBar').css('width', totalProgress + '%').text(totalProgress + '%');
             $('#progressBar').attr('aria-valuenow', totalProgress);
         }
 
+
         function calculateAverage(array) {
-            if (array.length === 0) return 0;
+            if (array.length === 0) {
+                console.log('Array is empty. Returning 0.');
+                return 0;
+            }
+
             var sum = array.reduce(function (acc, val) {
                 return acc + val;
             }, 0);
-            return sum / array.length;
+
+            var average = sum / array.length;
+
+            // console.log('Array:', array);
+            // console.log('Sum:', sum);
+            // console.log('Average:', average);
+
+            return average;
         }
 
         function createTextArea(name, value, isReadonly) {
@@ -2499,6 +2491,7 @@
                     $(this).closest('div').removeClass(
                         'border border-danger');
                     $(this).removeClass('is-invalid');
+                    updateProgressBar();
                 }).on('invalid', function() {
                     $(this).addClass('is-invalid');
                     $(this).closest('div').addClass('border border-danger');
@@ -2509,12 +2502,14 @@
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                    updateProgressBar();
                 }).on('blur', function() {
                     if ($(this).val().trim() === '') {
                         $(this).addClass('is-invalid');
                         $(this).closest('td').addClass(
                             'border border-danger');
                     }
+                    updateProgressBar();
                 })
             );
         }
@@ -2847,6 +2842,7 @@
                         $('#submit-btn-form').text('View Signature');
                         $('#uploadsign').hide();
                         $('#submit-btn-sign').hide();
+                        $('#progressBarContainer').remove();
 
                         $('#sendreq').show();
                         $('#requestText').prop('disabled', false);
@@ -2972,6 +2968,11 @@
                         $('input[type="radio"]').prop('disabled', false);
                         $('#KRA_table_body select').prop('disabled', false);
                         $('textarea').prop('disabled', false);
+
+                        $('#add-kra-btn').prop('disabled', false);
+                        $('#add-wpa-btn').prop('disabled', false);
+                        $('#add-ldp-btn').prop('disabled', false);
+                        $('.btn-danger').prop('disabled', false);
                         
                         $('#lockToast').toast('hide');
                         $('#submit-btn-form').text('Submit');
