@@ -425,6 +425,12 @@ class EvaluationYearController extends Controller
       ->orderBy('question_order')
       ->pluck('question_id');
 
+    $employeeIDs = Employees::join('accounts', 'employees.account_id', '=', 'accounts.account_id')
+      ->whereNotIn('accounts.type', ['IS', 'AD'])
+      ->orderBy('employee_id', 'asc')
+      ->pluck('employees.employee_id');
+
+
     try {
       foreach ($ICAppraisalIDs as $appraisalID) {
         $totalScore = 0;
@@ -443,11 +449,19 @@ class EvaluationYearController extends Controller
         $numQuestions = count($ICQuestionIDs);
         $icScore = $numQuestions > 0 ? round($totalScore / $numQuestions, 2) : 0;
 
+        $existingEmployeeId = Appraisals::where('appraisal_id', $appraisalID)
+          ->value('employee_id');
+
+        $filteredEmployeeIDs = array_diff($employeeIDs->toArray(), [$existingEmployeeId]);
+
+        $randomEmployeeId = $filteredEmployeeIDs[array_rand($filteredEmployeeIDs)];
+
         Appraisals::where('appraisal_id', $appraisalID)
           ->update([
             'ic_score' => $icScore,
             'date_submitted' => Carbon::now(),
             'locked' => 1,
+            'evaluator_id' => $randomEmployeeId,
           ]);
 
         Comments::updateOrCreate([
