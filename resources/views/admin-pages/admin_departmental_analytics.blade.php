@@ -254,7 +254,7 @@
             loadICQuestions(departmentID, null);
             loadICChart(departmentID);
 
-             $('#namesearch').on('input', function() {
+            $('#namesearch').on('input', function() {
                 var query = $(this).val();
                 // console.log('Query: ' + query);
                 loadEmployeesTable(departmentID, query);
@@ -1805,8 +1805,10 @@
         }
 
         function getRandomColor() {
-            var randomBlue = Math.floor(Math.random() * 32).toString(16);
-            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
+            var h = 240; // Hue for blue
+            var s = Math.floor(Math.random() * 100);
+            var l = Math.floor(Math.random() * 100);
+            return 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
         }
     </script>
 @endsection

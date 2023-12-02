@@ -1639,7 +1639,7 @@
                 url: '{{ route('ad.loadDashboardPointsSystem') }}',
                 type: 'GET',
                 success: function(response) {
-                    //console.log(response);
+                    console.log(response);
                     if (response.success) {
 
                         const pointSystemBarChart = $('#point_system_bar_chart');
@@ -1669,6 +1669,8 @@
 
                             data.datasets.push(dataset);
                         });
+
+                        var totalAppraisals; // Define totalAppraisals variable
 
                         new Chart(pointSystemBarChart, {
                             type: 'bar',
@@ -1702,7 +1704,7 @@
                                             display: true,
                                             text: 'Number of appraised'
                                         },
-                                        max: totalAppraisals,
+                                        max: totalAppraisals !== undefined ? totalAppraisals : null,
                                         beginAtZero: false,
                                         ticks: {
                                             stepSize: 1,
@@ -2122,8 +2124,10 @@
         }
 
         function getRandomColor() {
-            var randomBlue = Math.floor(Math.random() * 32).toString(16);
-            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
+            var h = 240; // Hue for blue
+            var s = Math.floor(Math.random() * 100);
+            var l = Math.floor(Math.random() * 100);
+            return 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
         }
 
         function generateRandomColor() {

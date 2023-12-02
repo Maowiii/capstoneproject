@@ -723,10 +723,12 @@ class EmployeeAnalyticsController extends Controller
         ->where('employee_id', $employeeID)
         ->whereIn('evaluation_type', ['self evaluation', 'is evaluation'])
         ->where('date_submitted', 'IS NOT', null)
-        ->with(['kras' => function ($query) use ($kraTable) {
-          $query->from($kraTable);
-        }])
+        ->join($kraTable, $appraisalsTable . '.appraisal_id', '=', $kraTable . '.appraisal_id')
         ->get();
+
+      if ($appraisalsWithKRAs->isEmpty()) {
+        return response()->json(['success' => false]);
+      }
     } else {
       if (Appraisals::tableExists() && KRA::tableExists()) {
         $appraisalsWithKRAs = Appraisals::where('employee_id', $employeeID)

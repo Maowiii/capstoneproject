@@ -1691,6 +1691,10 @@
                                 '</tr>'
                             );
                         });
+                    } else {
+                        var kraTable = $('#kra_table tbody');
+                        kraTable.empty();
+                        kraTable.append('<tr><td colspan="6">-</td></tr>');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1703,8 +1707,10 @@
 
 
         function getRandomColor() {
-            var randomBlue = Math.floor(Math.random() * 32).toString(16);
-            return '#0000' + (randomBlue + '0'.repeat(2 - randomBlue.length));
+            var h = 240; // Hue for blue
+            var s = Math.floor(Math.random() * 100);
+            var l = Math.floor(Math.random() * 100);
+            return 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
         }
     </script>
 @endsection
