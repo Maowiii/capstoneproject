@@ -27,103 +27,105 @@
 
     <div class="content-container">
         <div class="table-responsive">
-        @if(isset($success))
-            <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ $success }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(isset($errors) && $errors->any()) || 
-            <div id="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                @foreach ($errors->all() as $error)
-                    {{$error}}            
-                @endforeach    
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        <button type="button" class="btn btn-primary position-relative m-2" data-bs-toggle="modal" data-bs-target="#failuresModal">
-            View Failures
-            @if (isset($failures) && $failures->count() > 0)
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{ $failures->count() }}
-                    <span class="visually-hidden">unread messages</span>
-                </span>
+            @if(isset($success))
+                <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ $success }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @endif
-        </button>
 
-        <!-- Modal -->
-        <div class="modal modal-lg fade" id="failuresModal" tabindex="-1" role="dialog" aria-labelledby="failuresModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="failuresModalLabel">Validation Failures</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body ">
-                        <div class="table-responsive">
-                            @if (isset($failures) && $failures->count() > 0)
-                                <table class="table table-responsive table-hover">
-                                    <tr>
-                                        <th>Row</th>
-                                        <th>Attribute</th>
-                                        <th>Errors</th>
-                                        <th>Value</th>
-                                    </tr>
+            @if(isset($errors) && $errors->any()) 
+                <div id="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @foreach ($errors->all() as $error)
+                        {{$error}}            
+                    @endforeach    
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-                                    @foreach ($failures as $validation)
-                                        <tr>
-                                            <td>{{ $validation->row() }}</td>
-                                            <td>{{ $validation->attribute() }}</td>
-                                            <td>
-                                                <ul>
-                                                    @foreach ($validation->errors() as $e)
-                                                        <li>{{ $e }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                {{ $validation->values()[$validation->attribute()] }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            @endif
+            <button type="button" class="btn btn-primary position-relative m-2" data-bs-toggle="modal" data-bs-target="#failuresModal">
+                View Failures
+                @if (isset($failures) && $failures->count() > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $failures->count() }}
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                @endif
+            </button>
+
+            <!-- Modal -->
+            <div class="modal modal-lg fade" id="failuresModal" tabindex="-1" role="dialog" aria-labelledby="failuresModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="failuresModalLabel">Validation Failures</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="modal-body ">
+                            <div class="table-responsive">
+                                @if (isset($failures) && $failures->count() > 0)
+                                    <table class="table table-responsive table-hover">
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Attribute</th>
+                                            <th>Errors</th>
+                                            <th>Value</th>
+                                        </tr>
+
+                                        @foreach ($failures as $validation)
+                                            <tr>
+                                                <td>{{ $validation->row() }}</td>
+                                                <td>{{ $validation->attribute() }}</td>
+                                                <td>
+                                                    <ul>
+                                                        @foreach ($validation->errors() as $e)
+                                                            <li>{{ $e }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    {{ $validation->values()[$validation->attribute()] }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                @else
+                                    <p>No errors found.</p>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="input-group mb-2 search-box">
-            <div id="import-status" class="mt-2"></div>
-            <input type="text" class="form-control" placeholder="Name" id="search">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class='bx bx-search'></i>
-            </button>
-        </div>
+            <div class="input-group mb-2 search-box">
+                <div id="import-status" class="mt-2"></div>
+                <input type="text" class="form-control" placeholder="Name" id="search">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class='bx bx-search'></i>
+                </button>
+            </div>
 
        
-        <table class="table" id="employee_table">
-            <thead>
-                <tr>
-                    <th scope="col" class="large-column">Email | Employee #</th>
-                    <th scope="col" class="medium-column">First Name</th>
-                    <th scope="col" class="medium-column">Last Name</th>
-                    <th scope="col" class="medium-column">Default Password</th>
-                    <th scope="col" class="small-column">Type</th>
-                    <th scope="col" class="large-column">Department</th>
-                    <th scope="col" class="small-column">Status</th>
-                    <th scope="col" class="medium-column">Action</th>
-                </tr>
-            </thead>
-            <tbody id="employee_table_body">
-            </tbody>
-        </table>
+            <table class="table" id="employee_table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="large-column">Email | Employee #</th>
+                        <th scope="col" class="medium-column">First Name</th>
+                        <th scope="col" class="medium-column">Last Name</th>
+                        <th scope="col" class="medium-column">Default Password</th>
+                        <th scope="col" class="small-column">Type</th>
+                        <th scope="col" class="large-column">Department</th>
+                        <th scope="col" class="small-column">Status</th>
+                        <th scope="col" class="medium-column">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="employee_table_body">
+                </tbody>
+            </table>
         </div>
         <nav id="accounts_pagination_container">
             <ul class="pagination pagination-sm justify-content-end" id="accounts_pagination"></ul>

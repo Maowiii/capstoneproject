@@ -9,12 +9,18 @@ use App\Models\Accounts;
 use App\Models\Employees;
 use App\Models\Appraisals;
 use App\Models\ScoreWeights;
+use App\Models\FormQuestions;
+use App\Models\AppraisalAnswers;
+use App\Models\Comments;
+use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+
 
 class EvaluationYearController extends Controller
 {
@@ -251,6 +257,19 @@ class EvaluationYearController extends Controller
       $table->decimal('final_score')->nullable();
     });
 
+    Schema::connection('mysql')->create('form_request' . $sy, function ($table) {
+      $table->id('request_id');
+      $table->bigInteger('appraisal_id')->unsigned();
+      $table->text('request');
+      $table->integer('approver_id')->nullable();
+      $table->string('status');
+      $table->tinyInteger('action')->nullable();
+      $table->text('feedback')->nullable();
+      $table->timestamps(); 
+      $table->index('appraisal_id');
+      $table->index('approver_id');
+  });
+
     $originalFormQuestionsTable = 'form_questions';
     $newFormQuestionsTable = 'form_questions' . $sy;
 
@@ -258,7 +277,7 @@ class EvaluationYearController extends Controller
                                SELECT question_id, form_type, table_initials, question, question_order, status, created_at, updated_at 
                                FROM $originalFormQuestionsTable");
 
-    Accounts::whereIn('type', ['PE', 'IS', 'CE'])->update(['first_login' => true]);
+    Accounts::whereIn('type', ['PE', 'IS', 'CE'])->update(['first_login' => 'true']);
 
     $employeesWithPEAccounts = Employees::whereHas('account', function ($query) {
       $query->where('type', 'PE');
@@ -384,5 +403,66 @@ class EvaluationYearController extends Controller
     $evalYear->delete();
 
     return response()->json(['success' => true]);
+  }
+
+  public function automateIC(Request $request)
+  {
+    if (!session()->has('account_id')) {
+      return response()->json(['success' => false, 'message' => 'Your session has expired. Please log in again.']);
+    }
+
+    $esignature = $request->input('esignature');
+
+    $ICAppraisalIDs = Appraisals::whereIn('evaluation_type', ['internal customer 1', 'internal customer 2'])
+      ->orderBy('appraisal_id', 'asc')
+      ->pluck('appraisal_id');
+
+    $ICQuestionIDs = FormQuestions::where('table_initials', 'IC')
+      ->where('status', 'active')
+      ->orderBy('question_order')
+      ->pluck('question_id');
+
+    try {
+      foreach ($ICAppraisalIDs as $appraisalID) {
+        $totalScore = 0;
+
+        foreach ($ICQuestionIDs as $questionID) {
+          $randomScore = rand(1, 5);
+          $totalScore += $randomScore;
+
+          AppraisalAnswers::updateOrCreate([
+            'appraisal_id' => $appraisalID,
+            'question_id' => $questionID,
+            'score' => $randomScore,
+          ]);
+        }
+
+        $numQuestions = count($ICQuestionIDs);
+        $icScore = $numQuestions > 0 ? round($totalScore / $numQuestions, 2) : 0;
+
+        Appraisals::where('appraisal_id', $appraisalID)
+          ->update([
+            'ic_score' => $icScore,
+            'date_submitted' => Carbon::now(),
+            'locked' => 1,
+          ]);
+
+        Comments::updateOrCreate([
+          'appraisal_id' => $appraisalID,
+          'customer_service' => 'comment 1',
+          'suggestion' => 'suggestion 1'
+        ]);
+
+        Signature::updateOrCreate([
+          'appraisal_id' => $appraisalID,
+          'sign_data' => $esignature,
+          'sign_type' => 'IC'
+        ]);
+      }
+
+      return response()->json(['success' => true, 'message' => 'IC signature updated']);
+    } catch (\Exception $e) {
+      return response()->json(['success' => false, 'message' => 'Failed to update IC signature: ' . $e->getMessage()]);
+    }
   }
 }

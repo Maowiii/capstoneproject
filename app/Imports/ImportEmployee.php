@@ -74,7 +74,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
             $account_id = $account->account_id;
 
-            $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
+            // $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
 
             // Create an Employees instance
             $employee = Employees::updateOrCreate(
@@ -83,52 +83,66 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
                     'account_id' => $account_id,
                     'first_name' => $firstName, 
                     'last_name' => $lastName,
-                    'email' => $email,
-                    'type' => $accType,
-                    'department_id' => $departmentID,
+                    'department_id' => $deptName,
                 ]
             );
 
+            if(!in_array($account->type, ['AD', 'IS', 'CE'])){
+                $isAccount = Accounts::where('type', 'IS')
+                ->whereHas('employee', function ($query) use ($deptName) {
+                    $query->where('department_id', $deptName);
+                })->first();
+
+                $immediateSuperior = $isAccount->employee->employee_id;
+
+                Employees::where('account_id', $employee->account_id)
+                    ->update([
+                        'immediate_superior_id' => $immediateSuperior,
+                    ]);
+            }
+
             // Handle the rest of your logic here, using $employee
-            $activeYear = EvalYear::where('status', 'active')->first();
+            // $activeYear = EvalYear::where('status', 'active')->first();
 
-            if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
-                $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+            // Log::info($activeYear);
 
-                // Check if the employee has existing appraisal records
-                $existingAppraisals = Appraisals::where('employee_id', $employee->employee_id)->count();
+            // if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
+            //     $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
 
-                // If no existing appraisal records, create new ones
-                if ($existingAppraisals == 0) {
-                    foreach ($evaluationTypes as $evaluationType) {
-                        $evaluatorId = null;
+            //     // Check if the employee has existing appraisal records
+            //     $existingAppraisals = Appraisals::where('employee_id', $employee->employee_id)->count();
 
-                        if ($evaluationType === 'self evaluation') {
-                            $evaluatorId = $employee->employee_id;
-                        } elseif ($evaluationType === 'is evaluation') {
-                            $departmentId = $employee->department_id;
-                            $isAccount = Accounts::where('type', 'IS')
-                                ->whereHas('employee', function ($query) use ($departmentId) {
-                                    $query->where('department_id', $departmentId);
-                                })->first();
+            //     // If no existing appraisal records, create new ones
+            //     if ($existingAppraisals == 0) {
+            //         foreach ($evaluationTypes as $evaluationType) {
+            //             $evaluatorId = null;
 
-                            if ($isAccount) {
-                                $evaluatorId = $isAccount->employee->employee_id;
-                            }
-                        }
+            //             if ($evaluationType === 'self evaluation') {
+            //                 $evaluatorId = $employee->employee_id;
+            //             } elseif ($evaluationType === 'is evaluation') {
+            //                 $departmentId = $employee->department_id;
+            //                 $isAccount = Accounts::where('type', 'IS')
+            //                     ->whereHas('employee', function ($query) use ($departmentId) {
+            //                         $query->where('department_id', $departmentId);
+            //                     })->first();
 
-                        Appraisals::create([
-                            'evaluation_type' => $evaluationType,
-                            'employee_id' => $employee->employee_id,
-                            'evaluator_id' => $evaluatorId,
-                            'department_id' => $departmentID,
-                        ]);
-                    }
-                }
-                $this->successCount++;
-                Log::info('Employee Import was Success!');
-                return;
-            } 
+            //                 if ($isAccount) {
+            //                     $evaluatorId = $isAccount->employee->employee_id;
+            //                 }
+            //             }
+
+            //             Appraisals::create([
+            //                 'evaluation_type' => $evaluationType,
+            //                 'employee_id' => $employee->employee_id,
+            //                 'evaluator_id' => $evaluatorId,
+            //                 'department_id' => $departmentID,
+            //             ]);
+            //         }
+            //     }
+            //     $this->successCount++;
+            //     Log::info('Employee Import was Success!');
+            //     return;
+            // } 
         } else {
             return;
         }
