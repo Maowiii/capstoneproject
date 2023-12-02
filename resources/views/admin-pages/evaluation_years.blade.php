@@ -455,7 +455,73 @@
         </div>
     </div>
 
+    <div class="content-container">
+        <input type="file" id="esig" class="form-control" accept="image/jpeg, image/png, image/jpg"
+            name="esig" required>
+        <img src="" width="100" id="signatureImage">'
+        <button type="button" class="btn btn-primary" id="submitIC">Automate IC</button>
+    </div>
+
     <script>
+        $(document).ready(function() {
+            $('#submitIC').on('click', function() {
+                console.log('Submit Button Clicked!');
+                var fileInput = $('#esig')[0];
+
+                if (fileInput.files.length === 0) {
+                    $('#esig').addClass('is-invalid');
+                    return;
+                }
+
+                var selectedFile = fileInput.files[0];
+
+                if (!isImageFile(selectedFile)) {
+                    $('#esig').addClass('is-invalid');
+
+                    $('#error-alert').removeClass('d-none').text(
+                        'Please select a valid image file. Supported formats: JPEG, PNG, GIF.');
+
+                    setTimeout(function() {
+                        $('#error-alert').addClass('d-none');
+                    }, 5000);
+
+                    return;
+                }
+
+                var reader = new FileReader();
+
+                reader.onload = function(event) {
+                    var fileData = event.target.result;
+
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: '{{ route('automateIC') }}',
+                        type: 'POST',
+                        data: {
+                            esignature: fileData,
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                };
+
+                reader.readAsDataURL(selectedFile);
+            });
+        });
+
+        // Function to check if the selected file is an image
+        function isImageFile(file) {
+            var acceptedFormats = ['image/jpeg', 'image/png', 'image/gif'];
+            return acceptedFormats.includes(file.type);
+        }
+
+
         const sy_start_value = parseInt(document.getElementById('sy_start').value);
         const sy_end = document.getElementById('sy_end');
         sy_end.value = sy_start_value + 1;
@@ -544,7 +610,8 @@
                         // console.log(response);
                         $('#weightsModalTitle').text('School Year: ' + response.sy);
 
-                        $('#view_self_eval_weight').val(response.weights[0].self_eval_weight);
+                        $('#view_self_eval_weight').val(response.weights[0]
+                            .self_eval_weight);
                         $('#view_ic1_weight').val(response.weights[0].ic1_weight);
                         $('#view_ic2_weight').val(response.weights[0].ic2_weight);
                         $('#view_is_weight').val(response.weights[0].is_weight);
@@ -559,7 +626,8 @@
                         $('#view_bh_weight').val(response.weights[0].bh_weight);
                         $('#view_kra_weight').val(response.weights[0].kra_weight);
 
-                        var finalTotal = parseInt(response.weights[0].bh_weight) + parseInt(response
+                        var finalTotal = parseInt(response.weights[0].bh_weight) + parseInt(
+                            response
                             .weights[0].kra_weight);
 
                         $('#view_final_total').val(finalTotal);
@@ -672,17 +740,21 @@
                             row.append($('<td>').text(evalyear.sy_start +
                                 ' - ' + evalyear.sy_end));
                             row.append($('<td>').text(formatDate(evalyear
-                                .kra_start) + ' - ' + formatDate(evalyear.kra_end)));
+                                .kra_start) + ' - ' + formatDate(evalyear
+                                .kra_end)));
                             row.append($('<td>').text(formatDate(evalyear
-                                .pr_start) + ' - ' + formatDate(evalyear.pr_end)));
+                                .pr_start) + ' - ' + formatDate(evalyear
+                                .pr_end)));
                             row.append($('<td>').text(formatDate(evalyear
-                                .eval_start) + ' - ' + formatDate(evalyear.eval_end)));
+                                .eval_start) + ' - ' + formatDate(evalyear
+                                .eval_end)));
                             row.append($('<td>').text(evalyear.status));
 
                             var eval_id = evalyear.eval_id;
                             var school_year = evalyear.sy_start + ' - ' + evalyear.sy_end;
                             // console.log(school_year);
-                            var buttonGroup = $('<div>').addClass('btn-group').attr('role', 'group');
+                            var buttonGroup = $('<div>').addClass('btn-group').attr('role',
+                                'group');
 
                             if (evalyear.status == 'inactive') {
                                 buttonGroup.append($('<button>').addClass(
@@ -708,7 +780,8 @@
                                     'btn btn-outline-danger delete-eval-yr-btn')
                                 .data('eval-id', eval_id)
                                 .text('Delete'));
-                            row.append($('<td>').addClass('align-middle').append(buttonGroup));
+                            row.append($('<td>').addClass('align-middle').append(
+                                buttonGroup));
 
                             tbody.append(row);
                         });
@@ -724,7 +797,8 @@
                                 if (pageCounter === currentPage) {
                                     pageItem.addClass('active');
                                 }
-                                var pageButton = $('<button>').addClass('page-link').text(pageCounter);
+                                var pageButton = $('<button>').addClass('page-link').text(
+                                    pageCounter);
                                 pageButton.click(function() {
                                     loadEvaluationYearTable(pageCounter);
                                 });
@@ -759,7 +833,8 @@
                     // console.log('AJAX Success Response:', response);
 
                     if (response.success) {
-                        $('#evalYearForm input, #evalYearForm select').addClass('is-grayed').prop('readonly',
+                        $('#evalYearForm input, #evalYearForm select').addClass('is-grayed').prop(
+                            'readonly',
                             true);
                         // console.log('success');
                         $('#submitbtn').text('Confirm');
@@ -889,11 +964,13 @@
             $('#deleteConfirmationModal').modal('show');
             $('#confirm-delete-btn').data('eval-id', evalId);
 
-            var message = $('<p>').text('Are you sure you want to delete all of the evaluations of school year ' +
+            var message = $('<p>').text(
+                'Are you sure you want to delete all of the evaluations of school year ' +
                 schoolYear + '?');
 
-            var alertDiv = $('<div>').addClass('alert alert-danger mx-0 my-0').attr('role', 'alert').attr('id',
-                'confirmationAlert');
+            var alertDiv = $('<div>').addClass('alert alert-danger mx-0 my-0').attr('role', 'alert')
+                .attr('id',
+                    'confirmationAlert');
             alertDiv.html(
                 '<i class="bx bx-info-circle me-3"></i>This cannot be undone.'
             );

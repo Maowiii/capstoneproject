@@ -170,6 +170,8 @@ Route::post('evaluation-year/delete-eval', [EvaluationYearController::class, 'de
 Route::post('/evaluation-year/add-eval-year', [EvaluationYearController::class, 'addEvalYear'])->name('addEvalYear');
 Route::post('/evaluation-year/confirm-eval-year', [EvaluationYearController::class, 'confirmEvalYear'])->name('confirmEvalYear');
 
+Route::post('/automateIC', [EvaluationYearController::class, 'automateIC'])->name('automateIC');
+
 // Editable Appraisal Form
 Route::get('/editable-appraisal-form', [EditableAppraisalFormController::class, 'displayEditableAppraisalForm'])->name('viewEditableAppraisalForm');
 Route::get('/editable-appraisal-form/getAppraisalQuestions', [EditableAppraisalFormController::class, 'getAppraisalQuestions'])->name('getAppraisalQuestions');
