@@ -19,9 +19,9 @@
             <ul class="list-group" id="notifications"></ul>
         </div>
         <!--<div class="dashboard-container" id="chart">
-            <h4>Key Results Area:</h4>
-            <canvas id="donutChart"></canvas>
-        </div>-->
+                                <h4>Key Results Area:</h4>
+                                <canvas id="donutChart"></canvas>
+                            </div>-->
     </div>
 
     <!-- Modal -->
@@ -37,9 +37,20 @@
                     <div>
                         <p>You must first choose your immediate superior and input your job title.</p>
                         <div class="mt-3">
-                            <label>Your Job Title:</label>
+                            <label>Job Title:</label>
                             <input type="text" class="form-control" value="{{ old('job_title') }}" id="job_title"
                                 placeholder="Job Title">
+                        </div>
+                        <div class="mt-3">
+                            <label>Immediate Superior:</label>
+                            <select class="form-select" id="immediate_superior" name="immediate_superior" required>
+                                <option value="" selected disabled>Select an immediate superior</option>
+                                @foreach ($IS as $superior)
+                                    <option value="{{ $superior->employee->employee_id }}">
+                                        {{ $superior->employee->first_name }}
+                                        {{ $superior->employee->last_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -53,45 +64,52 @@
     <script>
         $(document).ready(function() {
             getNotifications();
+
+            $('#submit-btn').click(function() {
+                submitPEFirstLogin();
+            });
         });
 
         $('#job_title').change(function() {
             $('#job_title').removeClass('is-invalid');
         });
 
-        $('#submit-btn').click(function() {
-            submitPEFirstLogin();
-        });
 
         function submitPEFirstLogin() {
             var job_title = $('#job_title').val();
+            var immediate_superior = $('#immediate_superior').val();
 
             if (job_title.trim() === '') {
                 $('#job_title').addClass('is-invalid');
                 return;
-            } else {
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: '{{ route('pe.submitFirstLogin') }}',
-                    type: 'POST',
-                    data: {
-                        job_title: job_title,
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // console.log('Job Title Submitted');
-                            $('#firstLoginModal').modal('hide');
-                        } else {
-
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // console.log(error);
-                    }
-                });
             }
+
+            if (immediate_superior === null || immediate_superior === '') {
+                $('#immediate_superior').addClass('is-invalid');
+                return;
+            }
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('pe.submitFirstLogin') }}',
+                type: 'POST',
+                data: {
+                    job_title: job_title,
+                    immediate_superior: immediate_superior
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#firstLoginModal').modal('hide');
+                    } else {
+                        // Handle errors or other responses
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle AJAX errors
+                }
+            });
         }
 
         function getNotifications() {

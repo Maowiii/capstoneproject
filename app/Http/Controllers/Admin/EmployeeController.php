@@ -88,11 +88,11 @@ class EmployeeController extends Controller
 
     $validator = Validator::make($request->all(), [
       'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
-      'employee_number' => 'required|max:9|unique:employees,employee_number',
+      'employee_number' => 'required|max:11|unique:employees,employee_number',
       'first_name' => 'required',
       'last_name' => 'required',
       'type' => 'required',
-      'department' => 'required'
+      'department' => $request->input('type') == 'AD' ? 'nullable' : 'required',
     ], [
       'email.required' => 'Please enter an Adamson email address.',
       'email.ends_with' => 'Please enter an Adamson email address.',
@@ -104,7 +104,7 @@ class EmployeeController extends Controller
       'first_name.required' => 'Please enter the employee\'s first name.',
       'last_name.required' => 'Please enter the employee\'s last name.',
       'type.required' => 'Please choose a user level.',
-      'department.required' => 'Please choose a department.'
+      'department.required' => 'Please choose a department unless user level is "AD".',
     ]);
 
     if ($validator->fails()) {
@@ -130,34 +130,34 @@ class EmployeeController extends Controller
         'department_id' => $request->input('department')
       ]);
 
-      $activeYear = EvalYear::where('status', 'active')->first();
-      if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
-        $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
-        foreach ($evaluationTypes as $evaluationType) {
-          $evaluatorId = null;
-          $departmentId = $employee->department_id;
+      // $activeYear = EvalYear::where('status', 'active')->first();
+      // if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
+      //   $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+      //   foreach ($evaluationTypes as $evaluationType) {
+      //     $evaluatorId = null;
+      //     $departmentId = $employee->department_id;
 
-          if ($evaluationType === 'self evaluation') {
-            $evaluatorId = $employee->employee_id;
-          } elseif ($evaluationType === 'is evaluation') {
-            $isAccount = Accounts::where('type', 'IS')
-              ->whereHas('employee', function ($query) use ($departmentId) {
-                $query->where('department_id', $departmentId);
-              })->first();
+      //     if ($evaluationType === 'self evaluation') {
+      //       $evaluatorId = $employee->employee_id;
+      //     } elseif ($evaluationType === 'is evaluation') {
+      //       $isAccount = Accounts::where('type', 'IS')
+      //         ->whereHas('employee', function ($query) use ($departmentId) {
+      //           $query->where('department_id', $departmentId);
+      //         })->first();
 
-            if ($isAccount) {
-              $evaluatorId = $isAccount->employee->employee_id;
-            }
-          }
+      //       if ($isAccount) {
+      //         $evaluatorId = $isAccount->employee->employee_id;
+      //       }
+      //     }
 
-          Appraisals::create([
-            'evaluation_type' => $evaluationType,
-            'employee_id' => $employee->employee_id,
-            'evaluator_id' => $evaluatorId,
-            'department_id' => $departmentId
-          ]);
-        }
-      }
+      //     Appraisals::create([
+      //       'evaluation_type' => $evaluationType,
+      //       'employee_id' => $employee->employee_id,
+      //       'evaluator_id' => $evaluatorId,
+      //       'department_id' => $departmentId
+      //     ]);
+      //   }
+      // }
 
       $departments = Departments::all();
       return view('admin-pages.employee_table')->with('departments', $departments);

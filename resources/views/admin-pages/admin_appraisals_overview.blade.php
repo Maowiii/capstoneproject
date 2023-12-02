@@ -875,7 +875,7 @@
                             $('#evaluation-container').html('<h4>Evaluation:</h4><p>' + '-' + '</p>');
                             $('#admin_appraisals_table tbody').empty();
                             var row = $("<tr class='middle-align'></tr>").append(
-                                "<td colspan='7'><p class='text-secondary fst-italic mt-0'>There is no ongoing evaluation.</p></td>"
+                                "<td colspan='8'><p class='text-secondary fst-italic mt-0'>There is no ongoing evaluation.</p></td>"
                             );
                             $('#admin_appraisals_table tbody').append(row);
 

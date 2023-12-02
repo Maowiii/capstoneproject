@@ -56,8 +56,7 @@ class EvaluationYearController extends Controller
     }
 
     $departments = Departments::all();
-    $departmentsWithoutSuperiors = [];
-    $departmentsWithMultipleSuperiors = [];
+    $errors = [];
 
     foreach ($departments as $department) {
       $countSuperiors = $department->employee()
@@ -66,23 +65,11 @@ class EvaluationYearController extends Controller
         })->count();
 
       if ($countSuperiors === 0) {
-        $departmentsWithoutSuperiors[] = $department->department_name;
-      } elseif ($countSuperiors > 1) {
-        $departmentsWithMultipleSuperiors[] = $department->department_name;
+        $errors['departments_without_superiors'][] = $department->department_name;
       }
     }
 
-    if (!empty($departmentsWithoutSuperiors) || !empty($departmentsWithMultipleSuperiors)) {
-      $errors = [];
-
-      if (!empty($departmentsWithoutSuperiors)) {
-        $errors['departments_without_superiors'] = $departmentsWithoutSuperiors;
-      }
-
-      if (!empty($departmentsWithMultipleSuperiors)) {
-        $errors['departments_with_multiple_superiors'] = $departmentsWithMultipleSuperiors;
-      }
-
+    if (!empty($errors['departments_without_superiors'])) {
       return response()->json([
         'success' => false,
         'message' => 'Please check the immediate superiors assigned to departments before proceeding.',
@@ -270,6 +257,8 @@ class EvaluationYearController extends Controller
     DB::connection('mysql')->insert("INSERT INTO $newFormQuestionsTable (question_id, form_type, table_initials, question, question_order, status, created_at, updated_at) 
                                SELECT question_id, form_type, table_initials, question, question_order, status, created_at, updated_at 
                                FROM $originalFormQuestionsTable");
+
+    Accounts::whereIn('type', ['PE', 'IS', 'CE'])->update(['first_login' => true]);
 
     $employeesWithPEAccounts = Employees::whereHas('account', function ($query) {
       $query->where('type', 'PE');

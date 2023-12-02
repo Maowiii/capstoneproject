@@ -111,12 +111,15 @@ class CEDashboardController extends Controller
     }
 
     $job_title = $request->job_title;
+    $immediate_superior_id = $request->immediate_superior;
+
     $request->session()->put('title', $job_title);
     $account_id = session()->get('account_id');
     $user = Accounts::where('account_id', $account_id)->with('employee')->first();
 
     $user->employee->update([
       'job_title' => $job_title,
+      'immediate_superior_id' => $immediate_superior_id,
     ]);
 
     $user->update([
@@ -125,5 +128,4 @@ class CEDashboardController extends Controller
 
     return response()->json(['success' => true]);
   }
-
 }
