@@ -178,7 +178,7 @@
     $(document).ready(function() {
       var globalSelectedYear = null;
       var activeYear = $('#evaluation-year-select').val();
-
+      
       $('#evaluation-year-select').change(function() {
           var selectedYear = $(this).val();
           globalSelectedYear = selectedYear;
@@ -277,7 +277,11 @@
           success: function(data) {
               // Clear the table body
               $('#request_body').empty();
-              console.log(data);
+              // console.log(data);
+              if (data.data.length === 0) {
+                  $('#request_body').html('<tr><td colspan="8" class="text-center">No appraisal requests available.</td></tr>');
+                  return;
+              }
               // Loop through the retrieved data and populate the table
               $.each(data.data, function(index, request) {
                   var row = $('<tr>');

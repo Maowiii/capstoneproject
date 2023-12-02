@@ -1621,6 +1621,7 @@
             });
 
             totalWeight = totalWeight * 100; // Convert back to percentage for comparison
+            totalWeight = Math.round(totalWeight);
 
             if (totalWeight > 100) {
                 isTotalWeightInvalid = true;

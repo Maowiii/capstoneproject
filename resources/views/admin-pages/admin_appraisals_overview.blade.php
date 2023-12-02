@@ -215,13 +215,14 @@
 
     <script>
         $(document).ready(function() {
-            loadAdminAppraisalsTable();
+            var globalSelectedYear = $('#evaluation-year-select').val();
 
-            var globalSelectedYear = null;
+            loadAdminAppraisalsTable(globalSelectedYear);
 
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
+
                 loadAdminAppraisalsTable(selectedYear, null);
                 // console.log('Selected Year: ' + selectedYear);
             });
