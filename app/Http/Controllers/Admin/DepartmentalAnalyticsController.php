@@ -105,17 +105,19 @@ class DepartmentalAnalyticsController extends Controller
     $page = $request->input('page', 1);
     $departmentID = $request->input('departmentID');
 
-    $query = Employees::whereHas('department', function ($query) use ($departmentID) {
-      $query->where('department_id', $departmentID);
-    })->with('department');
+    $query = Employees::whereHas('account', function ($query) {
+      $query->where('type', '!=', 'IS');
+    })
+      ->whereHas('department', function ($query) use ($departmentID) {
+        $query->where('department_id', $departmentID);
+      })
+      ->with(['department']);
 
     if (!empty($search)) {
-      if (!empty($search)) {
-        $query->where(function ($query) use ($search) {
-          $query->where('first_name', 'LIKE', '%' . $search . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $search . '%');
-        });
-      }
+      $query->where(function ($query) use ($search) {
+        $query->where('first_name', 'LIKE', '%' . $search . '%')
+          ->orWhere('last_name', 'LIKE', '%' . $search . '%');
+      });
     }
 
     $employees = $query->paginate($perPage, ['*'], 'page', $page);
