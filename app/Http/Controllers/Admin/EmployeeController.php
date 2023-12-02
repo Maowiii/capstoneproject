@@ -111,25 +111,49 @@ class EmployeeController extends Controller
     if ($validator->fails()) {
       return redirect()->back()->withErrors($validator)->withInput()->with('showAddUserModal', true);
     } else {
-      $randomPassword = Str::random(8);
-      $account = Accounts::create([
-        'email' => $request->input('email'),
-        'default_password' => $randomPassword,
-        'type' => $request->input('type'),
-        'first_login' => 'true'
-      ]);
 
-      $account_id = $account->account_id;
+      try{
+        $randomPassword = Str::random(8);
+        $account = Accounts::create([
+          'email' => $request->input('email'),
+          'default_password' => $randomPassword,
+          'type' => $request->input('type'),
+          'first_login' => 'true'
+        ]);
 
-      // $department_id = Departments::where('department_name', $request->input('department'))->pluck('department_id');
+        $account_id = $account->account_id;
 
-      $employee = Employees::create([
-        'account_id' => $account_id,
-        'employee_number' => $request->input('employee_number'),
-        'first_name' => $request->input('first_name'),
-        'last_name' => $request->input('last_name'),
-        'department_id' => $request->input('department')
-      ]);
+        $departmentID = $request->input('department');
+
+        $employee = Employees::create([
+          'account_id' => $account_id,
+          'employee_number' => $request->input('employee_number'),
+          'first_name' => $request->input('first_name'),
+          'last_name' => $request->input('last_name'),
+          'department_id' => $departmentID
+        ]);
+
+        if(!in_array($account->type, ['AD', 'IS', 'CE'])){
+            $isAccount = Accounts::where('type', 'IS')
+            ->whereHas('employee', function ($query) use ($departmentID) {
+                $query->where('department_id', $departmentID);
+            })->first();
+
+            $immediateSuperior = $isAccount->employee->employee_id;
+
+            Employees::where('account_id', $employee->account_id)
+                ->update([
+                    'immediate_superior_id' => $immediateSuperior,
+                ]);
+        }
+
+        $departments = Departments::all();
+        return view('admin-pages.employee_table')->with('departments', $departments)->with('success', 'Accounts successfully created.');
+      }catch (\Exception $e) {
+        Log::error($e);
+        $departments = Departments::all();
+        return view('admin-pages.employee_table')->with('departments', $departments);  
+      }
 
       // $activeYear = EvalYear::where('status', 'active')->first();
       // if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
@@ -160,8 +184,6 @@ class EmployeeController extends Controller
       //   }
       // }
 
-      $departments = Departments::all();
-      return view('admin-pages.employee_table')->with('departments', $departments);
     }
   }
 

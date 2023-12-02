@@ -257,6 +257,19 @@ class EvaluationYearController extends Controller
       $table->decimal('final_score')->nullable();
     });
 
+    Schema::connection('mysql')->create('form_request' . $sy, function ($table) {
+      $table->id('request_id');
+      $table->bigInteger('appraisal_id')->unsigned();
+      $table->text('request');
+      $table->integer('approver_id')->nullable();
+      $table->string('status');
+      $table->tinyInteger('action')->nullable();
+      $table->text('feedback')->nullable();
+      $table->timestamps(); 
+      $table->index('appraisal_id');
+      $table->index('approver_id');
+  });
+
     $originalFormQuestionsTable = 'form_questions';
     $newFormQuestionsTable = 'form_questions' . $sy;
 
