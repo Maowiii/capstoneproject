@@ -54,12 +54,12 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
             // Generate a random password
             $randomPassword = Str::random(8);
 
-            $email = $row['Email'] ?? $row['email'];
-            $accType = $row['Type'] ?? $row['type'];
-            $deptName = $row['Department'] ?? $row['department'];
-            $firstName = $row['First Name'] ?? $row['first Name'] ?? $row['first_name'];
-            $lastName = $row['Last Name'] ?? $row['last Name'] ?? $row['last_name'];
-            $empNum = $row['Employee Number'] ?? $row['employee_number'] ?? $row['employee_number'];
+            $email = trim($row['Email'] ?? $row['email']);
+            $accType = trim($row['Type'] ?? $row['type']);
+            $deptName = trim($row['Department'] ?? $row['department']);
+            $firstName = trim($row['First Name'] ?? $row['first Name'] ?? $row['first_name']);
+            $lastName = trim($row['Last Name'] ?? $row['last Name'] ?? $row['last_name']);
+            $empNum = trim($row['Employee Number'] ?? $row['employee_number'] ?? $row['employee_number']);
 
             // Create an Accounts instance
             $account = Accounts::updateOrCreate(
@@ -74,7 +74,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
             $account_id = $account->account_id;
 
-            // $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
+            $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
 
             // Create an Employees instance
             $employee = Employees::updateOrCreate(
@@ -83,7 +83,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
                     'account_id' => $account_id,
                     'first_name' => $firstName, 
                     'last_name' => $lastName,
-                    'department_id' => $deptName,
+                    'department_id' => $departmentID,
                 ]
             );
 
