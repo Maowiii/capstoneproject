@@ -275,6 +275,8 @@ Route::post('/dashboard-contractual-employee/submit-first-login', [CEDashboardCo
 Route::get('/ce-internal-customers-overview', [CEInternalCustomerController::class, 'displayCEICOverview'])->name('ce.viewICOverview');
 Route::get('/ce-internal-customers/appraisalForm', [PEInternalCustomerController::class, 'showICForm'])->name('ce.viewICAppraisalForm');
 
+Route::get('/calculate-final-scores', [SelfEvaluationController::class, 'calculateAndStoreFinalScoresForAllEmployees']);
+
 //TDM (Testing)
 Route::get('/TDM/accounts/{id}', function ($id) {
   $accounts = Accounts::find($id);

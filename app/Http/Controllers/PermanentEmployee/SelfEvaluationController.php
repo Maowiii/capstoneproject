@@ -116,7 +116,7 @@ class SelfEvaluationController extends Controller
       $LDP_table = 'learning_development_plans_' . $selectedYear;
       $JIC_table = 'job_incumbents_' . $selectedYear;
       $Signature_table = 'signature_' . $selectedYear;
-
+      Log::info($Signature_table);
       $eulaData = Appraisals::from($Appraisals_table)->where('appraisal_id', $appraisalId)->pluck('eula');
       $kraData = KRA::from($KRA_table)->where('appraisal_id', $appraisalId)->get();
       $wpaData = WPP::from($WPP_table)->where('appraisal_id', $appraisalId)->get();
@@ -1354,4 +1354,50 @@ class SelfEvaluationController extends Controller
           return response()->json(['success' => false, 'message' => 'Error submitting the request.']);
       }
   }
+
+  public function calculateAndStoreFinalScoresForAllEmployees()
+    {
+        // Get all distinct employee IDs from the Appraisals table
+        $employeeIds = Appraisals::distinct('employee_id')->pluck('employee_id');
+
+        foreach ($employeeIds as $employee_id) {
+            // Get all appraisals for the current employee
+            $appraisalData = Appraisals::where('employee_id', $employee_id)->get();
+
+            // Check if all appraisals have a non-null date_submitted
+            $allSubmitted = $appraisalData->every(function ($appraisal) {
+                return $appraisal->date_submitted !== null;
+            });
+
+            if ($allSubmitted) {
+                // Get the department ID directly from the Employee model
+                $departmentId = Employees::where('employee_id', $employee_id)->value('department_id');
+
+                // Calculate the final score
+                $finalScore = $this->calculateFinalScore($appraisalData);
+
+                // Log some information for debugging
+                Log::info('Trying to update the record.');
+                Log::info('Table Name: ' . (new FinalScores)->getTable());
+                Log::info('Employee ID: ' . $employee_id);
+                Log::info('Final Score: ' . $finalScore[0]);
+
+                // Attempt to update the record
+                FinalScores::updateOrCreate(
+                    [
+                        'employee_id' => $employee_id,
+                        'department_id' => $departmentId,
+                    ],
+                    ['final_score' => $finalScore[0]]
+                );
+
+                Log::info('Record updated successfully for Employee ID: ' . $employee_id);
+            } else {
+                Log::info('Not all appraisals have been submitted for Employee ID: ' . $employee_id);
+            }
+        }
+
+        // You can return a response or redirect as needed
+        return response()->json(['message' => 'Final scores updated successfully for all employees']);
+    }
 }
