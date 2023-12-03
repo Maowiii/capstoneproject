@@ -74,7 +74,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
             $account_id = $account->account_id;
 
-            $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
+            $departmentID = Departments::like('department_name', $deptName)->pluck('department_id')->first();
 
             // Create an Employees instance
             $employee = Employees::updateOrCreate(
@@ -89,8 +89,8 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
             if(!in_array($account->type, ['AD', 'IS', 'CE'])){
                 $isAccount = Accounts::where('type', 'IS')
-                ->whereHas('employee', function ($query) use ($deptName) {
-                    $query->where('department_id', $deptName);
+                ->whereHas('employee', function ($query) use ($departmentID) {
+                    $query->where('department_id', $departmentID);
                 })->first();
 
                 $immediateSuperior = $isAccount->employee->employee_id;
