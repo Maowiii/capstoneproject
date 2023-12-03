@@ -74,7 +74,7 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
             $account_id = $account->account_id;
 
-            $departmentID = Departments::like('department_name', $deptName)->pluck('department_id')->first();
+            $departmentID = Departments::where('department_name', $deptName)->pluck('department_id')->first();
 
             // Create an Employees instance
             $employee = Employees::updateOrCreate(
