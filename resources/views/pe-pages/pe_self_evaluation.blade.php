@@ -145,6 +145,12 @@
         </div>
     </div>
 
+    @if(session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="content-container">
         <h2>Employee Information</h2>
         <div class="row g-3 align-items-center mb-3">
@@ -1581,6 +1587,12 @@
                 } else {
                     var selectedFile = fileInput.files[0];
 
+                    var maxSizeInBytes = 0.5 * 1024 * 1024; // Example: 5 MB
+                    if (selectedFile.size > maxSizeInBytes) {
+                        alert('The uploaded esignature is too large. Please upload a smaller image.');
+                        return;
+                    }
+
                     var reader = new FileReader();
                     reader.onload = function(event) {
                         var fileData = event.target.result;
@@ -2446,14 +2458,14 @@
                 // Store the progress percentage for each textarea
                 progressPerQuestion[`${questionId}_${questionSection}`] = progressPercentage;
             });
-            console.log(progressPerQuestion)
+            // console.log(progressPerQuestion)
 
             // Calculate the total progress by averaging the progress percentages for all questions
             var totalProgress = calculateAverage(Object.values(progressPerQuestion));
             totalProgress = Math.round(totalProgress);
 
             // Update the progress bar width
-            console.log(`Total Progress: ${totalProgress}`);
+            // console.log(`Total Progress: ${totalProgress}`);
             $('#progressBar').css('width', totalProgress + '%').text(totalProgress + '%');
             $('#progressBar').attr('aria-valuenow', totalProgress);
         }

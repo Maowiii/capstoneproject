@@ -41,7 +41,6 @@ class ImportEmployee implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         if (!array_filter($row)) {
             return;
         }
-        Log::info($row);
 
         if (
             !empty($row['employee_number']) &&

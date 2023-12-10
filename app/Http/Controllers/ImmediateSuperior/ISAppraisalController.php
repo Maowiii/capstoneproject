@@ -157,12 +157,32 @@ class ISAppraisalController extends Controller
       DB::commit();
       return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
     } catch (\Exception $e) {
+      DB::reconnect();
+
       DB::rollBack();
 
-      // Display exception details using dd()
-      dd('An error occurred while saving data. Line: ' . $e->getLine(), $e->getMessage(), $e->getTraceAsString());
+      $errorCode = $e->getCode();
+      $errorMessage = $e->getMessage();
 
-      // return redirect()->back()->with('error', 'An error occurred while saving data.');
+      // Log the exception
+      Log::error('Exception Message: ' . $e->getMessage());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+      if ($errorCode === '22001') {
+          return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+      } elseif ($errorCode === '23000') {
+          return redirect()->back()->with('error', 'Database error: Duplicate entry.');
+      } elseif ($e->getCode() === 'HY000' && strpos($e->getMessage(), 'MySQL server has gone away') !== false) {
+          DB::reconnect();
+
+          Log::error('MySQL server has gone away. Please try again.');
+          return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+      } elseif ($errorCode === '08S01') {
+        return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+      } else {
+        return redirect()->back()->with('error', 'Database error: ' . $errorMessage . "-" . $errorCode);
+      }
     }
   }
 

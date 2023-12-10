@@ -359,24 +359,51 @@ class SelfEvaluationController extends Controller
           Log::info('Record updated successfully.');
         } catch (\Exception $e) {
           Log::error('Error while updating the record: ' . $e->getMessage());
+
+          $errorCode = $e->getCode();
+          $errorMessage = $e->getMessage();
+
+          // Check if it's the MySQL server has gone away error
+          if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
+              DB::reconnect();
+
+              return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+          } else {
+              return redirect()->back()->with('error', 'Error while updating the record: ' . $errorMessage);
+          }
         }
       }
 
       DB::commit();
       return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
-    } catch (\Exception $e) {
-      DB::rollBack();
+      } catch (\Exception $e) {
+        DB::reconnect();
 
-      // Log the exception
-      Log::error('Exception Message: ' . $e->getMessage());
-      Log::error('Exception Line: ' . $e->getLine());
-      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+        DB::rollBack();
 
-      // Display exception details using dd()
-      dd('An error occurred while saving data.', $e->getMessage(), $e->getTraceAsString());
+        $errorCode = $e->getCode();
+        $errorMessage = $e->getMessage();
 
-      return redirect()->back()->with('error', 'An error occurred while saving data.');
-    }
+        // Log the exception
+        Log::error('Exception Message: ' . $e->getMessage());
+        Log::error('Exception Line: ' . $e->getLine());
+        Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+
+        if ($errorCode === '22001') {
+            return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+        } elseif ($errorCode === '23000') {
+            return redirect()->back()->with('error', 'Database error: Duplicate entry.');
+        } elseif ($e->getCode() === 'HY000' && strpos($e->getMessage(), 'MySQL server has gone away') !== false) {
+            DB::reconnect();
+
+            Log::error('MySQL server has gone away. Please try again.');
+            return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+        } elseif ($errorCode === '08S01') {
+          return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+        } else {
+            return redirect()->back()->with('error', 'Database error: ' . $errorMessage . $errorCode);
+        }
+      }
   }
 
   protected function validatePEAppraisal(Request $request)
@@ -1002,6 +1029,13 @@ class SelfEvaluationController extends Controller
 
     $appraisalId = $request->input('appraisalID');
     $signatureData = $request->input('SIGN.JI.' . $appraisalId);
+    
+    $maxAllowedSizeBytes = 25 * 1024 * 1024; // 25MB
+    $dataSize = strlen($signatureData);
+
+    if ($dataSize > $maxAllowedSizeBytes) {
+      redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+    }
 
     // Check if the signature data exists and is not empty
     if (!empty($signatureData)) {
@@ -1029,7 +1063,6 @@ class SelfEvaluationController extends Controller
           // Get the ID of the newly created signature
           $newSignatureId = $newSignature->signature_id;
         } catch (\Exception $e) {
-          // Handle the database connection issue
           // You can log the error or display a user-friendly message
           Log::error('Exception Message: ' . $e->getMessage());
           Log::error('Exception Line: ' . $e->getLine());
@@ -1098,7 +1131,7 @@ class SelfEvaluationController extends Controller
 
       // $currentDate = Carbon::parse("2023-10-31"); //KRA
       // $currentDate = Carbon::parse("2023-11-11"); //PR
-      // $currentDate = Carbon::parse("2023-11-22"); //EVAL
+      $currentDate = Carbon::parse("2023-12-20"); //EVAL
 
       $kraStart = Carbon::parse($activeYear->kra_start);
       $kraEnd = Carbon::parse($activeYear->kra_end);
@@ -1109,8 +1142,10 @@ class SelfEvaluationController extends Controller
 
       if ($currentDate->between($kraStart, $kraEnd)) {
         $phaseData = "kra";
+        $locks['lock'] = false;
       } elseif ($currentDate->between($prStart, $prEnd)) {
         $phaseData = "pr";
+        $locks['lock'] = false;
       } elseif ($currentDate->between($evalStart, $evalEnd)) {
         $phaseData = "eval";
       } else {
