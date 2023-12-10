@@ -300,109 +300,88 @@ class SelfEvaluationController extends Controller
 
     DB::beginTransaction();
     try {
-        $this->createSID($request);
-        $this->createSR($request);
-        $this->createS($request);
-        $this->createKRA($request);
-        $this->createWPA($request);
-        $this->createLDP($request);
-        $this->createJIC($request);
+      $this->createSID($request);
+      $this->createSR($request);
+      $this->createS($request);
+      $this->createKRA($request);
+      $this->createWPA($request);
+      $this->createLDP($request);
+      $this->createJIC($request);
 
-        $this->createSign($request);
+      $this->createSign($request);
 
-        $appraisalID = $request->input('appraisalID');
-        $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
-          ->first();
+      $appraisalID = $request->input('appraisalID');
+      $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
+        ->first();
 
-        $date = Carbon::now();
-        $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
-        $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
+      $date = Carbon::now();
+      $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
+      $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
 
-        $existingRecord->update([
-          'date_submitted' => $date,
-          'bh_score' => $getBHave,
-          'kra_score' => $getKRAave,
-          'kra_locked' => false,
-          'pr_locked' => false,
-          'eval_locked' => false,
-          'locked' => true,
-        ]);
+      $existingRecord->update([
+        'date_submitted' => $date,
+        'bh_score' => $getBHave,
+        'kra_score' => $getKRAave,
+        'kra_locked' => false,
+        'pr_locked' => false,
+        'eval_locked' => false,
+        'locked' => true,
+      ]);
 
-        $employee_id = $existingRecord->employee_id;
-        $departmentId = $existingRecord->department_id;
+      $employee_id = $existingRecord->employee_id;
+      $departmentId = $existingRecord->department_id;
 
-        $appraisalData = Appraisals::where('employee_id', $employee_id)->get(); // Get all appraisals for the employee
-        // Check if all appraisals have a non-null date_submitted
-        $allSubmitted = $appraisalData->every(function ($appraisal) {
-          return $appraisal->date_submitted !== null;
-        });
+      $appraisalData = Appraisals::where('employee_id', $employee_id)->get(); // Get all appraisals for the employee
+      // Check if all appraisals have a non-null date_submitted
+      $allSubmitted = $appraisalData->every(function ($appraisal) {
+        return $appraisal->date_submitted !== null;
+      });
 
-        if ($allSubmitted) {
-          $finalScore = $this->calculateFinalScore($appraisalData);
+      if ($allSubmitted) {
+        $finalScore = $this->calculateFinalScore($appraisalData);
 
-          // Log some information for debugging
-          Log::info('Trying to update the record.');
-          Log::info('Table Name: ' . (new FinalScores)->getTable());
-          Log::info('Employee ID: ' . $employee_id);
-          Log::info('Final Score: ' . $finalScore[0]);
+        FinalScores::updateOrCreate(
+          [
+            'employee_id' => $employee_id,
+            'department_id' => $departmentId,
+          ],
+          ['final_score' => $finalScore[0]]
+        );
 
-          // Attempt to update the record
-          try {
-            FinalScores::updateOrCreate(
-              [
-                'employee_id' => $employee_id,
-                'department_id' => $departmentId,
-              ],
-              ['final_score' => $finalScore[0]]
-            );
-
-            Log::info('Record updated successfully.');
-            DB::commit();
-            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
-          } catch (\Exception $e) {
-            Log::error('Error while updating the record: ' . $e->getMessage());
-
-            $errorCode = $e->getCode();
-            $errorMessage = $e->getMessage();
-
-            // Check if it's the MySQL server has gone away error
-            if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
-                DB::reconnect();
-
-                return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
-            } else {
-                return redirect()->back()->with('error', 'Error while updating the record: ' . $errorMessage);
-            }
-          }
-        }
-      } catch (\Exception $e) {
-        DB::reconnect();
-
-        DB::rollBack();
-
-        $errorCode = $e->getCode();
-        $errorMessage = $e->getMessage();
-
-        // Log the exception
-        Log::error('Exception Message: ' . $e->getMessage());
-        Log::error('Exception Line: ' . $e->getLine());
-        Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-
-        if ($errorCode === '22001') {
-            return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
-        } elseif ($errorCode === '23000') {
-            return redirect()->back()->with('error', 'Database error: Duplicate entry.');
-        } elseif ($e->getCode() === 'HY000' && strpos($e->getMessage(), 'MySQL server has gone away') !== false) {
-            DB::reconnect();
-
-            Log::error('MySQL server has gone away. Please try again.');
-            return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
-        } elseif ($errorCode === '08S01') {
-          return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
-        } else {
-            return redirect()->back()->with('error', 'Database error: ' . $errorMessage . $errorCode);
-        }
+        Log::info('Record updated successfully.');
       }
+
+      DB::commit();
+      return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
+    } catch (\Exception $e) {
+      DB::reconnect();
+
+      DB::rollBack();
+
+      $errorCode = $e->getCode();
+      $errorMessage = $e->getMessage();
+
+      // Log the exception
+      // Log::error('Exception Message: ' . $e->getMessage());
+      // Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Code: ' . $e->getCode());
+
+      if ($errorCode === '22001') {
+          return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+      } elseif ($errorCode === '23000') {
+          return redirect()->back()->with('error', 'Database error: Duplicate entry.');
+      } elseif ($e->getCode() === 'HY000' && strpos($e->getMessage(), 'MySQL server has gone away') !== false) {
+          DB::reconnect();
+
+          Log::error('MySQL server has gone away. Please try again.');
+          return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+      } elseif ($errorCode === '08S01') {
+        return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+      } else {
+          return redirect()->back()->with('error', 'Database error: ' . $errorMessage);
+      }
+    }
   }
 
   protected function validatePEAppraisal(Request $request)
@@ -1043,30 +1022,32 @@ class SelfEvaluationController extends Controller
         ->where('sign_type', 'SE')
         ->first();
 
-      if ($existingSignature) {
-        // Update the existing signature data
-        $existingSignature->update([
-          'sign_data' => $signatureData,
-          'sign_type' => 'SE',
-        ]);
-      } else {
-        // Create a new signature if it doesn't exist
-        try {
-          // Create a new signature and retrieve its ID
-          $newSignature = Signature::create([
-            'appraisal_id' => $appraisalId,
+      try {
+        if ($existingSignature) {
+          // Update the existing signature data
+          $existingSignature->update([
             'sign_data' => $signatureData,
             'sign_type' => 'SE',
           ]);
+        } else {
+            // Create a new signature and retrieve its ID
+            $newSignature = Signature::create([
+              'appraisal_id' => $appraisalId,
+              'sign_data' => $signatureData,
+              'sign_type' => 'SE',
+            ]);
 
-          // Get the ID of the newly created signature
-          $newSignatureId = $newSignature->signature_id;
-        } catch (\Exception $e) {
-          // You can log the error or display a user-friendly message
-          Log::error('Exception Message: ' . $e->getMessage());
-          Log::error('Exception Line: ' . $e->getLine());
-          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-        }
+            // Get the ID of the newly created signature
+            $newSignatureId = $newSignature->signature_id;
+        }   
+      } catch (\Exception $e) {
+        // You can log the error or display a user-friendly message
+        // Log::error('Exception Message: ' . $e->getMessage());
+        // Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+        Log::error('Exception Line: ' . $e->getLine());
+        Log::error('Exception Code: ' . $e->getCode());
+
+        throw $e;
       }
     }
   }

@@ -14,10 +14,12 @@ use App\Models\LDP;
 use App\Models\JIC;
 use App\Models\Appraisals;
 use App\Models\Employees;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 
 class ISAppraisalController extends Controller
@@ -89,16 +91,16 @@ class ISAppraisalController extends Controller
     }
 
     $validator = $this->validateISAppraisal($request);
-
     if ($validator->fails()) {
       // Display validation errors using dd()
       dd($validator->errors());
 
-      //return redirect()->back()->withErrors($validator)->withInput();
+      // You can also redirect back with the errors if needed
+      // return redirect()->back()->withErrors($validator)->withInput();
     }
 
     DB::beginTransaction();
-    try {
+    try{
       $this->createSID($request);
       $this->createSR($request);
       $this->createS($request);
@@ -138,40 +140,21 @@ class ISAppraisalController extends Controller
 
       if ($allSubmitted) {
         $finalScore = $this->calculateFinalScore($appraisalData);
-        try {
-          FinalScores::updateOrCreate(
-            [
-              'employee_id' => $employee_id,
-              'department_id' => $departmentId,
-            ],
-            ['final_score' => $finalScore[0]]
-          );
 
-          Log::info('Record updated successfully.');
-          DB::commit();
-          return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submition Complete!');
-        } catch (\Exception $e) {
-          Log::error('Error while updating the record: ' . $e->getMessage());
-          Log::error('Exception Line: ' . $e->getLine());
-          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-          Log::error('Exception Code: ' . $errorCode);
+        FinalScores::updateOrCreate(
+          [
+            'employee_id' => $employee_id,
+            'department_id' => $departmentId,
+          ],
+          ['final_score' => $finalScore[0]]
+        );
 
-          $errorCode = $e->getCode();
-          $errorMessage = $e->getMessage();
-
-          // Check if it's the MySQL server has gone away error
-          if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
-            DB::reconnect();
-
-            return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
-          } elseif ($errorCode === '22001') {
-            return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
-          } else {
-            return redirect()->back()->with('error', 'Error while updating the record: ' . $errorMessage);
-          }
-        }
+        Log::info('Record updated successfully.');
       }
-    } catch (\Exception $e) {
+
+      DB::commit();
+      return redirect()->route('viewISAppraisalsOverview')->with('success', 'Submission Complete!');
+    } catch (\Exception $e) {      
       DB::reconnect();
 
       DB::rollBack();
@@ -180,24 +163,24 @@ class ISAppraisalController extends Controller
       $errorMessage = $e->getMessage();
 
       // Log the exception
-      Log::error('Exception Message: ' . $e->getMessage());
+      // Log::error('Exception Message: ' . $e->getMessage());
+      // Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
       Log::error('Exception Line: ' . $e->getLine());
-      Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
-      Log::error('Exception Code: ' . $errorCode);
+      Log::error('Exception Code: ' . $e->getCode());
 
-      if ($errorCode === '22001') {
-        return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
+      if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
+          DB::reconnect();
+
+          Log::error('MySQL server has gone away. Please try again.');
+          return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+      } elseif ($errorCode === '22001') {
+          return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
       } elseif ($errorCode === '23000') {
-        return redirect()->back()->with('error', 'Database error: Duplicate entry.');
-      } elseif ($e->getCode() === 'HY000' && strpos($e->getMessage(), 'MySQL server has gone away') !== false) {
-        DB::reconnect();
-
-        Log::error('MySQL server has gone away. Please try again.');
-        return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+          return redirect()->back()->with('error', 'Database error: Duplicate entry.');
       } elseif ($errorCode === '08S01') {
         return redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
       } else {
-        return redirect()->back()->with('error', 'Database error: ' . $errorMessage . "-" . $errorCode);
+          return redirect()->back()->with('error', 'Database error: ' . $errorMessage . $errorCode);
       }
     }
   }
@@ -735,7 +718,7 @@ class ISAppraisalController extends Controller
 
     $appraisalId = $request->input('appraisalID');
     $signatureData = $request->input('SIGN.JI.' . $appraisalId);
-
+    
     $maxAllowedSizeBytes = 1 * 1024 * 1024; // 25MB
     $dataSize = strlen($signatureData);
 
@@ -743,23 +726,21 @@ class ISAppraisalController extends Controller
       redirect()->back()->with('error', 'The uploaded esignature is too large. Please upload a smaller image.');
     }
 
-    // Check if the signature data exists and is not empty
-    if (!empty($signatureData)) {
-      // Try to find an existing signature
-      $existingSignature = Signature::where('appraisal_id', $appraisalId)
-        ->where('sign_type', 'IS')
-        ->first();
+    try {
+      if (!empty($signatureData)) {
+        // Try to find an existing signature
+        $existingSignature = Signature::where('appraisal_id', $appraisalId)
+          ->where('sign_type', 'IS')
+          ->first();
 
-      if ($existingSignature) {
-        // Update the existing signature data
-        $existingSignature->update([
-          'sign_data' => $signatureData,
-          'sign_type' => 'IS',
-        ]);
-      } else {
-        // Create a new signature if it doesn't exist
-        try {
-          // Create a new signature and retrieve its ID
+        if ($existingSignature) {
+          // Update the existing signature data
+          $existingSignature->update([
+            'sign_data' => $signatureData,
+            'sign_type' => 'IS',
+          ]);
+        } else {
+          // Create a new signature if it doesn't exist
           $newSignature = Signature::create([
             'appraisal_id' => $appraisalId,
             'sign_data' => $signatureData,
@@ -768,13 +749,16 @@ class ISAppraisalController extends Controller
 
           // Get the ID of the newly created signature
           $newSignatureId = $newSignature->signature_id;
-        } catch (\Exception $e) {
-          // You can log the error or display a user-friendly message
-          Log::error('Exception Message: ' . $e->getMessage());
-          Log::error('Exception Line: ' . $e->getLine());
-          Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
         }
-      }
+      } 
+    } catch (\Exception $e) {
+      // You can log the error or display a user-friendly message
+      // Log::error('Exception Message: ' . $e->getMessage());
+      // Log::error('Exception Stack Trace: ' . $e->getTraceAsString());
+      Log::error('Exception Line: ' . $e->getLine());
+      Log::error('Exception Code: ' . $e->getCode());
+
+      throw $e;
     }
   }
 

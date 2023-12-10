@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+artisan::command('logs:clean', function() {
+    array_map('unlink', array_filter((array) glob(storage_path('logs/*.log'))));
+    $this->comment('Logs cleaned!');
+ })->describe('Clean the log files');
