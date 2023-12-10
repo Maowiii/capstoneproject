@@ -300,82 +300,81 @@ class SelfEvaluationController extends Controller
 
     DB::beginTransaction();
     try {
-      $this->createSID($request);
-      $this->createSR($request);
-      $this->createS($request);
-      $this->createKRA($request);
-      $this->createWPA($request);
-      $this->createLDP($request);
-      $this->createJIC($request);
+        $this->createSID($request);
+        $this->createSR($request);
+        $this->createS($request);
+        $this->createKRA($request);
+        $this->createWPA($request);
+        $this->createLDP($request);
+        $this->createJIC($request);
 
-      $this->createSign($request);
+        $this->createSign($request);
 
-      $appraisalID = $request->input('appraisalID');
-      $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
-        ->first();
+        $appraisalID = $request->input('appraisalID');
+        $existingRecord = Appraisals::where('appraisal_id', $appraisalID)
+          ->first();
 
-      $date = Carbon::now();
-      $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
-      $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
+        $date = Carbon::now();
+        $getBHave = AppraisalAnswers::where('appraisal_id', $appraisalID)->average('score');
+        $getKRAave = KRA::where('appraisal_id', $appraisalID)->sum('weighted_total');
 
-      $existingRecord->update([
-        'date_submitted' => $date,
-        'bh_score' => $getBHave,
-        'kra_score' => $getKRAave,
-        'kra_locked' => false,
-        'pr_locked' => false,
-        'eval_locked' => false,
-        'locked' => true,
-      ]);
+        $existingRecord->update([
+          'date_submitted' => $date,
+          'bh_score' => $getBHave,
+          'kra_score' => $getKRAave,
+          'kra_locked' => false,
+          'pr_locked' => false,
+          'eval_locked' => false,
+          'locked' => true,
+        ]);
 
-      $employee_id = $existingRecord->employee_id;
-      $departmentId = $existingRecord->department_id;
+        $employee_id = $existingRecord->employee_id;
+        $departmentId = $existingRecord->department_id;
 
-      $appraisalData = Appraisals::where('employee_id', $employee_id)->get(); // Get all appraisals for the employee
-      // Check if all appraisals have a non-null date_submitted
-      $allSubmitted = $appraisalData->every(function ($appraisal) {
-        return $appraisal->date_submitted !== null;
-      });
+        $appraisalData = Appraisals::where('employee_id', $employee_id)->get(); // Get all appraisals for the employee
+        // Check if all appraisals have a non-null date_submitted
+        $allSubmitted = $appraisalData->every(function ($appraisal) {
+          return $appraisal->date_submitted !== null;
+        });
 
-      if ($allSubmitted) {
-        $finalScore = $this->calculateFinalScore($appraisalData);
+        if ($allSubmitted) {
+          $finalScore = $this->calculateFinalScore($appraisalData);
 
-        // Log some information for debugging
-        Log::info('Trying to update the record.');
-        Log::info('Table Name: ' . (new FinalScores)->getTable());
-        Log::info('Employee ID: ' . $employee_id);
-        Log::info('Final Score: ' . $finalScore[0]);
+          // Log some information for debugging
+          Log::info('Trying to update the record.');
+          Log::info('Table Name: ' . (new FinalScores)->getTable());
+          Log::info('Employee ID: ' . $employee_id);
+          Log::info('Final Score: ' . $finalScore[0]);
 
-        // Attempt to update the record
-        try {
-          FinalScores::updateOrCreate(
-            [
-              'employee_id' => $employee_id,
-              'department_id' => $departmentId,
-            ],
-            ['final_score' => $finalScore[0]]
-          );
+          // Attempt to update the record
+          try {
+            FinalScores::updateOrCreate(
+              [
+                'employee_id' => $employee_id,
+                'department_id' => $departmentId,
+              ],
+              ['final_score' => $finalScore[0]]
+            );
 
-          Log::info('Record updated successfully.');
-        } catch (\Exception $e) {
-          Log::error('Error while updating the record: ' . $e->getMessage());
+            Log::info('Record updated successfully.');
+            DB::commit();
+            return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
+          } catch (\Exception $e) {
+            Log::error('Error while updating the record: ' . $e->getMessage());
 
-          $errorCode = $e->getCode();
-          $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+            $errorMessage = $e->getMessage();
 
-          // Check if it's the MySQL server has gone away error
-          if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
-              DB::reconnect();
+            // Check if it's the MySQL server has gone away error
+            if ($errorCode === 'HY000' && strpos($errorMessage, 'MySQL server has gone away') !== false) {
+                DB::reconnect();
 
-              return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
-          } else {
-              return redirect()->back()->with('error', 'Error while updating the record: ' . $errorMessage);
+                return redirect()->back()->with('error', 'Oops! Something went wrong. Please try again. If the issue persists, it might be due to a temporary server problem. Please contact support for assistance.');
+            } else {
+                return redirect()->back()->with('error', 'Error while updating the record: ' . $errorMessage);
+            }
           }
         }
-      }
-
-      DB::commit();
-      return redirect()->route('viewPEAppraisalsOverview')->with('success', 'Submission Complete!');
       } catch (\Exception $e) {
         DB::reconnect();
 
@@ -1030,7 +1029,7 @@ class SelfEvaluationController extends Controller
     $appraisalId = $request->input('appraisalID');
     $signatureData = $request->input('SIGN.JI.' . $appraisalId);
     
-    $maxAllowedSizeBytes = 25 * 1024 * 1024; // 25MB
+    $maxAllowedSizeBytes = 1 * 1024 * 1024; // 25MB
     $dataSize = strlen($signatureData);
 
     if ($dataSize > $maxAllowedSizeBytes) {

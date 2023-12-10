@@ -20,6 +20,12 @@
         </div>
     </div>
 
+    @if(session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="content-container">
         <h2>Employee Information</h2>
         <div class="row g-3 align-items-center mb-3">
@@ -613,7 +619,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="signatory_modal" data-bs-backdrop="static">
+        <div class="modal fade modal-lg" id="signatory_modal" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content" id="signatory">
                     <div class="modal-header">
@@ -1404,14 +1410,51 @@
                     }
                 });
             });
-            updateFrequencyCounter('SID_table');
-            updateFrequencyCounter('SR_table');
-            updateFrequencyCounter('S_table');
-            loadTableData();
 
-            updateBHTotal();
-            updateWeightedTotal();
-            formChecker();
+            $('#submit-btn-confirm').on('click', function() {
+                var fileInput = $('#uploadsign_1')[0];
+
+                if (fileInput && fileInput.files.length === 0) {
+                    $('#uploadsign_1').addClass('is-invalid');
+                    return;
+                } else {
+                    var selectedFile = fileInput.files[0];
+
+                    var maxSizeInBytes = 0.5 * 1024 * 1024; // Example: 5 MB
+                    if (selectedFile.size > maxSizeInBytes) {
+                        alert('The uploaded esignature is too large. Please upload a smaller image.');
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var fileData = event.target.result;
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: '{{ route('pe.submitICSignature') }}',
+                            type: 'POST',
+                            data: {
+                                appraisalId: appraisalId,
+                                esignature: fileData,
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    loadSignature();
+                                    // console.log('Esignature Updated.');
+                                    formChecker();
+                                } else {
+                                    // console.log('Esignature Updated bot else');
+                                }
+                            },
+                            error: function(xhr, status, error) {}
+                        });
+                    };
+
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
 
             ////////////////////////// SEND REQUEST ////////////////////////////////
             $('#sendrequest').click(function() {
@@ -1484,6 +1527,15 @@
             function refreshPage() {
                 location.reload();
             }  
+
+            updateFrequencyCounter('SID_table');
+            updateFrequencyCounter('SR_table');
+            updateFrequencyCounter('S_table');
+            loadTableData();
+
+            updateBHTotal();
+            updateWeightedTotal();
+            formChecker();
         });
 
         function loadTableData() {
