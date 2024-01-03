@@ -11,8 +11,10 @@ class PEAppraisalsController extends Controller
   public function displayPEAppraisalsOverview()
   {
     if (session()->has('account_id')) {
-      $activeEvalYear = EvalYear::where('status', 'active')->first();
-      return view('pe-pages.pe_appraisals_overview', compact('activeEvalYear'));
+      $evaluationYears = EvalYear::all();
+      $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+
+      return view('pe-pages.pe_appraisals_overview', compact('evaluationYears', 'activeEvalYear'));
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }

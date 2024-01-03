@@ -157,11 +157,42 @@ class SelfEvaluationController extends Controller
       throw new \Exception('User not found.');
     }
 
-    $appraisee = Employees::where('account_id', $account_id)->get();
+    $selectedYearDates = null;
+    $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+    $selectedYear = $request->input('selectedYear');
+    $search = $request->input('search');
 
-    $appraisals = Appraisals::where('employee_id', $user->employee_id)
-      ->with('evaluator', 'employee')
-      ->get();
+    $sy_start = null;
+    $sy_end = null;
+
+    if ($selectedYear) {
+      $parts = explode('_', $selectedYear);
+
+      if (count($parts) >= 2) {
+        $sy_start = $parts[0];
+        $sy_end = $parts[1];
+      }
+
+      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
+      $table = 'appraisals_' . $selectedYear;
+
+      $appraisals = Appraisals::from($table)
+        ->where('employee_id', $user->employee_id)
+        ->with('employee')
+        ->get();
+    } elseif ($activeEvalYear) {
+      $sy_start = $activeEvalYear->sy_start;
+      $sy_end = $activeEvalYear->sy_end;
+
+      $selectedYearDates = $activeEvalYear;
+
+      $appraisals = Appraisals::where('employee_id', $user->employee_id)
+        ->with('evaluator', 'employee')
+        ->get();
+    } else {
+      return response()->json(['success' => false, 'error' => 'There is no selected nor ongoing year.']);
+    }
+    $appraisee = Employees::where('account_id', $account_id)->get();
 
     $status = $this->calculateStatus($appraisals);
 
@@ -179,7 +210,6 @@ class SelfEvaluationController extends Controller
 
     return response()->json($data);
   }
-
 
   public function viewAppraisal($appraisal_id)
   {

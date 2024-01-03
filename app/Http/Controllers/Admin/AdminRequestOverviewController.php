@@ -44,6 +44,7 @@ class AdminRequestOverviewController extends Controller
         if (!$selectedYear && !$activeEvalYear) {
             return response()->json(['success' => false, 'error' => 'No selected nor ongoing year.']);
         }
+        
         $selectedYear = $request->input('selectedYear') ?? $activeEvalYear->sy_start . '_' . $activeEvalYear->sy_end;
         $formRequestTable = 'form_request_' . $selectedYear;
         $appraisalTable = 'appraisals_' . $selectedYear;

@@ -386,12 +386,14 @@ class PEInternalCustomerController extends Controller
     $appraisal = Appraisals::find($appraisalId);
     Log::info('appraisal');
     Log::info($appraisal);
-    $locked = $appraisal->locked;
+    $locked = $appraisal->date_submitted;
 
     $appraiseeId = $request->input('appraiseeId');
     $accountId = session('account_id');
     Log::info('accountId');
     Log::info($accountId);
+    Log::info('appraiseeId');
+    Log::info($appraiseeId);
 
     $shouldHideSignatory = ($appraiseeId == $accountId);
     $hasPermission = true;

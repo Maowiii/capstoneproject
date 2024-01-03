@@ -5,6 +5,25 @@
 @endsection
 
 @section('content')
+    <div class="row g-3 align-items-start mb-3">
+        <div class="col-auto">
+            <h4>School Year:</h4>
+        </div>
+        <div class="col">
+            <select class="form-select align-middle" id="evaluation-year-select">
+                @if (!$activeEvalYear)
+                <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+                @endif
+                @foreach ($evaluationYears as $year)
+                <option value="{{ $year->sy_start }}_{{ $year->sy_end }}" @if ($activeEvalYear && $year->eval_id ===
+                    $activeEvalYear->eval_id) selected @endif>
+                    {{ $year->sy_start }} - {{ $year->sy_end }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
     <div class='d-flex gap-3'>
         <div class="content-container text-middle">
             <h4>School Year:</h4>
@@ -254,12 +273,23 @@
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var container = null; // Declare the container variable
 
-        function loadTableData(page = 1) {
+        var globalSelectedYear = null;
+        const activeYear = $('#evaluation-year-select').val();
+
+        $( '#evaluation-year-select' ).change( function ()
+        {
+            var selectedYear = $( this ).val();
+            globalSelectedYear = selectedYear;
+            loadTableData( selectedYear );
+        } );
+
+        function loadTableData(selectedYear = null, page = 1) {
             $.ajax({
                 url: '{{ route('getISData') }}',
                 type: 'GET',
                 data: {
-                    page: page
+                    page: page,
+                    selectedYear: selectedYear,
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
@@ -292,10 +322,16 @@
 
                                 if (appraisal.evaluation_type === 'self evaluation') {
                                     if (appraisal.date_submitted !== null) {
-                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
+                                        var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?sy=" + encodeURIComponent( selectedYear );
+                                        url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                        url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                        url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                        url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
+
+                                        viewLink = $('<a>')
+                                            .addClass('btn btn-outline-primary')
+                                            .attr( "href", url.replace( ':appraisal_id', appraisal.appraisal_id ) )
                                             .text('View');
                                     } else {
                                         viewLink = $('<a>').addClass('btn btn-outline-primary disabled')
@@ -322,7 +358,6 @@
                                                     appraisalId);
 
                                                 loadEmployeeData(employeeId);
-
                                             });
                                     } else {
                                         if (appraisal.date_submitted !== null) {
@@ -396,20 +431,37 @@
                                         }                                       
                                     }
                                 } else if (appraisal.evaluation_type === 'is evaluation') {
-                                    if (appraisal.date_submitted !== null) {
-                                        AppraiseLink = $('<a>').addClass(
-                                                'btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                    console.log(activeYear);
+                                    console.log(selectedYear);
+                                    console.log(activeYear === selectedYear || selectedYear == null);
+                                    if (activeYear === selectedYear || selectedYear == null){
+                                        if (appraisal.date_submitted !== null) {
+                                            AppraiseLink = $('<a>')
+                                                .addClass('btn btn-outline-primary')
+                                                .attr('href',`{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
                                                 .replace(':appraisal_id', appraisal_id))
-                                            .text('View');
+                                                .text('View');
+                                        } else {
+                                            AppraiseLink = $('<a>').addClass(
+                                                    'btn btn-outline-primary')
+                                                .attr('href',
+                                                    `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
+                                                    .replace(':appraisal_id', appraisal_id))
+                                                .text('Appraise');
+                                        }
                                     } else {
-                                        AppraiseLink = $('<a>').addClass(
-                                                'btn btn-outline-primary')
-                                            .attr('href',
-                                                `{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text('Appraise');
+                                        // Append the Self-Evaluation link to the first <td>
+                                        var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                        url += "?sy=" + encodeURIComponent( selectedYear );
+                                        url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                        url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                        url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                        url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
+
+                                        AppraiseLink = $( '<a>' )
+                                        .addClass( 'btn btn-outline-primary' )
+                                        .attr( "href", url.replace( ':appraisal_id', appraisal.appraisal_id ) )
+                                        .text( 'View' );
                                     }
                                 }
                             });
@@ -429,7 +481,8 @@
                                             url: '{{ route('getScoreSummary') }}',
                                             type: 'POST',
                                             data: {
-                                                employeeID: appraisee.employee_id
+                                                employeeID: appraisee.employee_id,
+                                                selectedYear: selectedYear,
                                             },
                                             headers: {
                                                 'X-CSRF-TOKEN': csrfToken

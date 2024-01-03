@@ -25,8 +25,11 @@ class ISAppraisalsOverviewController extends Controller
       $appraisals = Employees::where('department_id', $department_id)->get();
 
       $activeEvalYear = EvalYear::where('status', 'active')->first();
+      $evaluationYears = EvalYear::all();
+
       return view('is-pages.is_appraisals_overview')
         ->with('appraisals', $appraisals)
+        ->with('evaluationYears', $evaluationYears)
         ->with('activeEvalYear', $activeEvalYear);
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
@@ -39,64 +42,98 @@ class ISAppraisalsOverviewController extends Controller
       return view('auth.login');
     }
 
+    // Handle the rest of your logic here, using $employee
+    // $activeYear = EvalYear::where('status', 'active')->first();
+
+    // if ($activeYear) {
+    //   $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+
+    //   foreach ($appraisee as $appraiseeItem) {
+    //     //Log::info($appraiseeItem);
+    //     $existingAppraisals = Appraisals::where('employee_id', $appraiseeItem->employee_id)->count();
+    //     //Log::info($existingAppraisals);
+
+    //     // If no existing appraisal records, create new ones
+    //     // if ($existingAppraisals == 0) {
+    //     //   foreach ($evaluationTypes as $evaluationType) {
+    //     //     $evaluatorId = null;
+
+    //     //     if ($evaluationType === 'self evaluation') {
+    //     //       $evaluatorId = $appraiseeItem->employee_id;
+    //     //     } elseif ($evaluationType === 'is evaluation') {
+    //     //       $departmentId = $appraiseeItem->department_id;
+    //     //       $isAccount = Accounts::where('type', 'IS')
+    //     //         ->whereHas('employee', function ($query) use ($departmentId) {
+    //     //           $query->where('department_id', $departmentId);
+    //     //         })->first();
+
+    //     //       if ($isAccount) {
+    //     //         $evaluatorId = $isAccount->employee->employee_id;
+    //     //       }
+    //     //     }
+
+    //     //     Appraisals::create([
+    //     //       'evaluation_type' => $evaluationType,
+    //     //       'employee_id' => $appraiseeItem->employee_id,
+    //     //       'evaluator_id' => $evaluatorId,
+    //     //       'department_id' => $appraiseeItem->department_id,
+    //     //       // Corrected this line
+    //     //     ]);
+    //     //   }
+    //     // }
+    //   }
+    // }
+
     $account_id = session()->get('account_id');
     $user = Employees::where('account_id', $account_id)->first();
 
-    $department_id = $user->department_id;
-    $appraisee = Employees::where('department_id', $department_id)
-      ->where('employee_id', '<>', $user->account_id)
-      ->whereHas('account', function ($query) {
-        $query->where('type', 'PE');
-      })
-      ->paginate(10);
+    $selectedYearDates = null;
+    $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+    $selectedYear = $request->input('selectedYear');
+    $search = $request->input('search');
 
-    // Handle the rest of your logic here, using $employee
-    $activeYear = EvalYear::where('status', 'active')->first();
+    $sy_start = null;
+    $sy_end = null;
 
-    if ($activeYear) {
-      $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
+    if ($selectedYear) {
+      $parts = explode('_', $selectedYear);
 
-      foreach ($appraisee as $appraiseeItem) {
-        //Log::info($appraiseeItem);
-        // Check if the employee has existing appraisal records
-        $existingAppraisals = Appraisals::where('employee_id', $appraiseeItem->employee_id)->count();
-        //Log::info($existingAppraisals);
-
-        // If no existing appraisal records, create new ones
-        if ($existingAppraisals == 0) {
-          foreach ($evaluationTypes as $evaluationType) {
-            $evaluatorId = null;
-
-            if ($evaluationType === 'self evaluation') {
-              $evaluatorId = $appraiseeItem->employee_id;
-            } elseif ($evaluationType === 'is evaluation') {
-              $departmentId = $appraiseeItem->department_id;
-              $isAccount = Accounts::where('type', 'IS')
-                ->whereHas('employee', function ($query) use ($departmentId) {
-                  $query->where('department_id', $departmentId);
-                })->first();
-
-              if ($isAccount) {
-                $evaluatorId = $isAccount->employee->employee_id;
-              }
-            }
-
-            Appraisals::create([
-              'evaluation_type' => $evaluationType,
-              'employee_id' => $appraiseeItem->employee_id,
-              'evaluator_id' => $evaluatorId,
-              'department_id' => $appraiseeItem->department_id,
-              // Corrected this line
-            ]);
-          }
-        }
+      if (count($parts) >= 2) {
+        $sy_start = $parts[0];
+        $sy_end = $parts[1];
       }
-    }
 
-    $appraisals = Appraisals::where('department_id', $user->department_id)
-      ->where('employee_id', '<>', $user->account_id)
-      ->with('employee', 'evaluator')
-      ->paginate(40);
+      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
+      $table = 'appraisals_' . $selectedYear;
+
+      $department_id = $user->department_id;
+      $appraisee = Employees::where('department_id', $department_id)
+        ->where('employee_id', '<>', $user->account_id)
+        ->whereHas('account', function ($query) {
+          $query->where('type', 'PE');
+        })
+        ->paginate(10);
+
+      $appraisals = Appraisals::from($table)
+        ->where('department_id', $user->department_id)
+        ->where('employee_id', '<>', $user->account_id)
+        ->with('employee', 'evaluator')
+        ->paginate(40);
+
+    } elseif ($activeEvalYear) {
+      $department_id = $user->department_id;
+      $appraisee = Employees::where('department_id', $department_id)
+        ->where('employee_id', '<>', $user->account_id)
+        ->whereHas('account', function ($query) {
+          $query->where('type', 'PE');
+        })
+        ->paginate(10);
+
+      $appraisals = Appraisals::where('department_id', $user->department_id)
+        ->where('employee_id', '<>', $user->account_id)
+        ->with('employee', 'evaluator')
+        ->paginate(40);
+    }
 
     $appraisalsCollection = $appraisals->getCollection();
 
@@ -440,8 +477,34 @@ class ISAppraisalsOverviewController extends Controller
 
     $employeeID = $request->input('employeeID');
 
-    // Retrieve appraisals
-    $appraisals = Appraisals::where('employee_id', $employeeID)->get(); 
+    $selectedYearDates = null;
+    $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+    $selectedYear = $request->input('selectedYear');
+    $search = $request->input('search');
+
+    $sy_start = null;
+    $sy_end = null;
+
+    if ($selectedYear) {
+      $parts = explode('_', $selectedYear);
+
+      if (count($parts) >= 2) {
+        $sy_start = $parts[0];
+        $sy_end = $parts[1];
+      }
+
+      $selectedYearDates = EvalYear::where('sy_start', $sy_start)->first();
+      $table = 'appraisals_' . $selectedYear;
+
+      $appraisals = Appraisals::from($table)
+      ->where('employee_id', $employeeID)
+      ->get();
+      
+    } elseif ($activeEvalYear) {
+      // Retrieve appraisals
+      $appraisals = Appraisals::where('employee_id', $employeeID)
+      ->get();
+    }
 
     $appraiseeFinalScores = $this->calculateFinalScores($appraisals);
 

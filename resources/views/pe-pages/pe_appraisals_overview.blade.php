@@ -1,49 +1,71 @@
 @extends('layout.master')
 
 @section('title')
-    <h1>Appraisals Overview</h1>
+<h1>Appraisals Overview</h1>
 @endsection
 
 @section('content')
-    <div class='d-flex gap-3'>
-        <div class="content-container text-middle">
-            <h4>School Year:</h4>
-            @if ($activeEvalYear)
-                <p>{{ $activeEvalYear->sy_start }} - {{ $activeEvalYear->sy_end }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
-        <div class="content-container text-middle">
-            <h4>KRA Encoding:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->kra_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->kra_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
-        <div class="content-container text-middle">
-            <h4>Performance Review:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->pr_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->pr_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
-        <div class="content-container text-middle">
-            <h4>Evaluation:</h4>
-            @if ($activeEvalYear)
-                <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_start)) }} -
-                    {{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}</p>
-            @else
-                <p>-</p>
-            @endif
-        </div>
+<div class="row g-3 align-items-start mb-3">
+    <div class="col-auto">
+        <h4>School Year:</h4>
     </div>
-    <div class="content-container">
-        <div class="table-responsive">
+    <div class="col">
+        <select class="form-select align-middle" id="evaluation-year-select">
+            @if (!$activeEvalYear)
+            <option value="">Select an Evaluation Year (no ongoing evaluation)</option>
+            @endif
+            @foreach ($evaluationYears as $year)
+            <option value="{{ $year->sy_start }}_{{ $year->sy_end }}" @if ($activeEvalYear && $year->eval_id ===
+                $activeEvalYear->eval_id) selected @endif>
+                {{ $year->sy_start }} - {{ $year->sy_end }}
+            </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class='d-flex gap-3'>
+    <div class="content-container text-middle">
+        <h4>School Year:</h4>
+        @if ($activeEvalYear)
+        <p>{{ $activeEvalYear->sy_start }} - {{ $activeEvalYear->sy_end }}</p>
+        @else
+        <p>-</p>
+        @endif
+    </div>
+    <div class="content-container text-middle">
+        <h4>KRA Encoding:</h4>
+        @if ($activeEvalYear)
+        <p>{{ date('F d, Y', strtotime($activeEvalYear->kra_start)) }} -
+            {{ date('F d, Y', strtotime($activeEvalYear->kra_end)) }}
+        </p>
+        @else
+        <p>-</p>
+        @endif
+    </div>
+    <div class="content-container text-middle">
+        <h4>Performance Review:</h4>
+        @if ($activeEvalYear)
+        <p>{{ date('F d, Y', strtotime($activeEvalYear->pr_start)) }} -
+            {{ date('F d, Y', strtotime($activeEvalYear->pr_end)) }}
+        </p>
+        @else
+        <p>-</p>
+        @endif
+    </div>
+    <div class="content-container text-middle">
+        <h4>Evaluation:</h4>
+        @if ($activeEvalYear)
+        <p>{{ date('F d, Y', strtotime($activeEvalYear->eval_start)) }} -
+            {{ date('F d, Y', strtotime($activeEvalYear->eval_end)) }}
+        </p>
+        @else
+        <p>-</p>
+        @endif
+    </div>
+</div>
+<div class="content-container">
+    <div class="table-responsive">
         <table class='table'>
             <thead>
                 <tr>
@@ -59,179 +81,253 @@
 
             </tbody>
         </table>
-        </div>
     </div>
-    <script>
-        $(document).ready(function() {
-            loadTableData();
-        });
+</div>
+<script>
+    $( document ).ready( function (){
+        loadTableData();
+    });
 
-        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    var csrfToken = document.querySelector( 'meta[name="csrf-token"]' ).getAttribute( 'content' );
 
-        function loadTableData() {
-            $.ajax({
-                url: '{{ route('getPEData') }}',
-                type: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#PE_appraisals_table_body').empty();
+    var globalSelectedYear = null;
+    const activeYear = $('#evaluation-year-select').val();
 
-                        var appraisees = response.appraisee;
-                        var appraisals = response.appraisals;
+    $( '#evaluation-year-select' ).change( function ()
+    {
+        var selectedYear = $( this ).val();
+        globalSelectedYear = selectedYear;
+        loadTableData( selectedYear );
+        // console.log('Selected Year: ' + selectedYear);
+        // console.log('Active Year: ' + activeYear);
+    } );
 
-                        appraisees.forEach(function(appraisee) {
-                            // Create a new table row for each appraisee
-                            var newRow = $('<tr>').attr('id', appraisee.employee_id);
+    function loadTableData ( selectedYear = null )
+    {
+        $.ajax( {
+            url: '{{ route('getPEData') }}',
+            type: 'GET',
+            data: {
+                selectedYear: selectedYear,
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function ( response )
+            {
+                if ( response.success )
+                {
+                    $( '#PE_appraisals_table_body' ).empty();
 
-                            // Filter appraisals for the current appraisee
-                            var employeeAppraisals = appraisals.filter(function(appraisal) {
-                                return appraisal.employee_id === appraisee.employee_id;
-                            });
+                    var appraisees = response.appraisee;
+                    var appraisals = response.appraisals;
 
-                            var viewLink = null;
-                            var ic1Link = null;
-                            var ic2Link = null;
-                            var AppraiseLink = null;
+                    appraisees.forEach( function ( appraisee )
+                    {
+                        // Create a new table row for each appraisee
+                        var newRow = $( '<tr>' ).attr( 'id', appraisee.employee_id );
 
-                            var hasSelfEvaluation = false; // Flag to track if self-evaluation is found
+                        // Filter appraisals for the current appraisee
+                        var employeeAppraisals = appraisals.filter( function ( appraisal )
+                        {
+                            return appraisal.employee_id === appraisee.employee_id;
+                        } );
 
-                            employeeAppraisals.forEach(function(appraisal) {
-                                // console.log(appraisal);
-                                var appraisal_id = encodeURIComponent(appraisal.appraisal_id);
-                                console.log(employeeAppraisals);
-                                // console.log(appraisal.date_submitted)
-                                if (appraisal.evaluation_type === 'self evaluation') {
-                                    hasSelfEvaluation = true; 
-                                    if (appraisal.date_submitted !== null) {
+                        var viewLink = null;
+                        var ic1Link = null;
+                        var ic2Link = null;
+                        var AppraiseLink = null;
+
+                        var hasSelfEvaluation = false; // Flag to track if self-evaluation is found
+
+                        employeeAppraisals.forEach( function ( appraisal )
+                        {
+                            // console.log(appraisal);
+                            var appraisal_id = encodeURIComponent( appraisal.appraisal_id );
+                            console.log( employeeAppraisals );
+                            // console.log(appraisal.date_submitted)
+                            if ( appraisal.evaluation_type === 'self evaluation' )
+                            {
+                                hasSelfEvaluation = true;
+
+                                console.log(activeYear === selectedYear || selectedYear == null);
+                                if (activeYear === selectedYear || selectedYear == null){
+                                    if ( appraisal.date_submitted !== null )
+                                    {
                                         // Append the Self-Evaluation link to the first <td>
-                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
+                                        viewLink = $( '<a>' ).addClass( 'btn btn-outline-primary' )
+                                            .attr( 'href',
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text('View');
+                                                    .replace( ':appraisal_id', appraisal_id ) )
+                                            .text( 'View' );
 
-                                        newRow.append($('<td>').append(viewLink));
-                                    } else {
-                                        viewLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',
+                                        newRow.append( $( '<td>' ).append( viewLink ) );
+                                    } else
+                                    {
+                                        viewLink = $( '<a>' ).addClass( 'btn btn-outline-primary' )
+                                            .attr( 'href',
                                                 `{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                                .replace(':appraisal_id', appraisal_id))
-                                            .text('Appraise');
+                                                    .replace( ':appraisal_id', appraisal_id ) )
+                                            .text( 'Appraise' );
 
-                                        newRow.append($('<td>').append(viewLink));
+                                        newRow.append( $( '<td>' ).append( viewLink ) );
                                     }
-                                } else if (appraisal.evaluation_type === 'is evaluation') {
-                                    if (appraisal.date_submitted !== null) {
-                                        AppraiseLink = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href',`{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}`
-                                            .replace(':appraisal_id', appraisal_id)).text('View');
+                                } else {
+                                    // Append the Self-Evaluation link to the first <td>
+                                    var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                    url += "?sy=" + encodeURIComponent( selectedYear );
+                                    url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                    url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                    url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                    url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
 
-                                        newRow.append($('<td>').append($('<div>').append(AppraiseLink)));
-                                    } else {
-                                        AppraiseLink = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
+                                    AppraiseLink = $( '<a>' )
+                                        .addClass( 'btn btn-outline-primary' )
+                                        .attr( "href", url.replace( ':appraisal_id', appraisal.appraisal_id ) )
+                                        .text( 'View' );
 
-                                        newRow.append(
-                                            $('<td>').append(
-                                                $('<div>').append(AppraiseLink)
-                                            ),
-                                        );
-                                    }                                
-                            } else if (appraisal.evaluation_type ===
-                                    'internal customer 1') {
-                                    if (appraisal.evaluator_id === null) {
-                                        ic1Link = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
-
-                                        newRow.append($('<td>').append($('<div>').append(ic1Link)));
-                                    } else {
-                                        if (appraisal.date_submitted !== null) {
-                                        var url =
-                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
-                                        url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
-                                        url += "&appraisee_name=" + encodeURIComponent(appraisal.employee.first_name + ' ' + appraisal.employee.last_name);
-                                        url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
-
-                                        ic1Link = $('<a>').addClass('btn btn-outline-primary')
-                                            .attr('href', url.replace(':appraisal_id', appraisal
-                                                .appraisal_id))
-                                            .text('View');
-                                        } else {
-                                            ic1Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                            .text('View'); 
-                                        }  
-
-                                        newRow.append($('<td>').append($('<div>').append(ic1Link)));
-                                    }
-                                } else if (appraisal.evaluation_type ==='internal customer 2') {
-                                    if (appraisal.evaluator_id === null) {
-                                        ic2Link = $('<a>').addClass('btn btn-outline-secondary disabled').text('View');
-
-                                        newRow.append($('<td>').append($('<div>').append(ic2Link)));
-                                    } else {
-                                        if (appraisal.date_submitted !== null) {
-                                            var url =
-                                            "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
-                                            url += "&appraisee_account_id=" + encodeURIComponent(appraisal.employee.account_id);
-                                            url += "&appraisee_name=" + encodeURIComponent(appraisal.employee.first_name + ' ' + appraisal.employee.last_name);
-                                            url += "&appraisee_department=" + encodeURIComponent(appraisal.employee.department.department_name);
-
-                                            ic2Link = $('<a>').addClass('btn btn-outline-primary')
-                                                .attr('href', url.replace(':appraisal_id', appraisal.appraisal_id))
-                                                .text('View');
-                                        } else {
-                                            ic2Link = $('<a>').addClass('btn btn-outline-primary disabled')
-                                                .text('View'); 
-                                        }
-
-                                        newRow.append($('<td>').append($('<div>').append(ic2Link)));
-                                    }
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( AppraiseLink ) ) );
                                 }
-                            });
+                                    
+                            } else if ( appraisal.evaluation_type === 'is evaluation' )
+                            {
+                                if ( appraisal.date_submitted !== null )
+                                {
+                                    var url = "{{ route('viewPEGOAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+                                    url += "?sy=" + encodeURIComponent( selectedYear );
+                                    url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                    url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                    url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                    url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
 
-                            // console.log(response.status);
+                                    AppraiseLink = $( '<a>' )
+                                        .addClass( 'btn btn-outline-primary' )
+                                        .attr( "href", url.replace( ':appraisal_id', appraisal.appraisal_id ) )
+                                        .text( 'View' );
 
-                            if (response.status === 'Complete') {
-                                newRow.append($('<td>').text(response.status));
-                            } else if (response.status === 'Pending') {
-                                newRow.append($('<td>').text(response.status));
-                            } 
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( AppraiseLink ) ) );
+                                } else
+                                {
+                                    AppraiseLink = $( '<a>' ).addClass( 'btn btn-outline-secondary disabled' ).text( 'View' );
 
-                            // Check if the user has submitted the self-evaluation
-                            // console.log(hasSelfEvaluation);
-                            // console.log(response.final_score);
-
-                            if (hasSelfEvaluation) {
-                                if (response.final_score.length !== 0 && response.status === 'Complete') {
-                                    // If the self-evaluation is submitted and final score is available, append the final score
-                                    // var finalScore = parseFloat(response.final_score).toFixed(2);
-                                    var finalScore = (response.final_score * 100) / 100;
-                                    // console.log(finalScore);
-                                    // console.log(finalScore.toFixed(2));
-
-                                    newRow.append($('<td>').text(finalScore.toFixed(2)));
-                                } else{ 
-                                    newRow.append($('<td>').text('-'));
+                                    newRow.append(
+                                        $( '<td>' ).append(
+                                            $( '<div>' ).append( AppraiseLink )
+                                        ),
+                                    );
                                 }
-                            } else if (!hasSelfEvaluation) {
-                                // If the user has no self-evaluation, display an empty cell
-                                newRow.append($('<td>').text('-'));
+                            } else if ( appraisal.evaluation_type ===
+                                'internal customer 1' )
+                            {
+                                if ( appraisal.evaluator_id === null )
+                                {
+                                    ic1Link = $( '<a>' ).addClass( 'btn btn-outline-secondary disabled' ).text( 'View' );
+
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( ic1Link ) ) );
+                                } else
+                                {
+                                    if ( appraisal.date_submitted !== null )
+                                    {
+                                        var url = "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+
+                                        url += "?sy=" + encodeURIComponent( selectedYear );
+                                        url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                        url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                        url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                        url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
+
+                                        ic1Link = $( '<a>' ).addClass( 'btn btn-outline-primary' )
+                                            .attr( 'href', url.replace( ':appraisal_id', appraisal.appraisal_id ) )
+                                            .text( 'View' );
+                                    } else
+                                    {
+                                        ic1Link = $( '<a>' ).addClass( 'btn btn-outline-primary disabled' )
+                                            .text( 'View' );
+                                    }
+
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( ic1Link ) ) );
+                                }
+                            } else if ( appraisal.evaluation_type === 'internal customer 2' )
+                            {
+                                if ( appraisal.evaluator_id === null )
+                                {
+                                    ic2Link = $( '<a>' ).addClass( 'btn btn-outline-secondary disabled' ).text( 'View' );
+
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( ic2Link ) ) );
+                                } else
+                                {
+                                    if ( appraisal.date_submitted !== null )
+                                    {
+                                        var url = "{{ route('viewPEAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
+
+                                        url += "?sy=" + encodeURIComponent( selectedYear );
+                                        url += "&appraisal_id=" + encodeURIComponent( appraisal.appraisal_id );
+                                        url += "&appraisee_account_id=" + encodeURIComponent( appraisal.employee.account_id );
+                                        url += "&appraisee_name=" + encodeURIComponent( appraisal.employee.first_name + ' ' + appraisal.employee.last_name );
+                                        url += "&appraisee_department=" + encodeURIComponent( appraisal.employee.department.department_name );
+
+                                        ic2Link = $( '<a>' ).addClass( 'btn btn-outline-primary' )
+                                            .attr( 'href', url.replace( ':appraisal_id', appraisal.appraisal_id ) )
+                                            .text( 'View' );
+                                    } else
+                                    {
+                                        ic2Link = $( '<a>' ).addClass( 'btn btn-outline-primary disabled' )
+                                            .text( 'View' );
+                                    }
+
+                                    newRow.append( $( '<td>' ).append( $( '<div>' ).append( ic2Link ) ) );
+                                }
                             }
+                        } );
 
-                            // Append the row to the table body
-                            $('#PE_appraisals_table_body').append(newRow);
-                        });
-                    } else {
-                        // console.log(response.error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // console.log(error);
+                        // console.log(response.status);
+
+                        if ( response.status === 'Complete' )
+                        {
+                            newRow.append( $( '<td>' ).text( response.status ) );
+                        } else if ( response.status === 'Pending' )
+                        {
+                            newRow.append( $( '<td>' ).text( response.status ) );
+                        }
+
+                        // Check if the user has submitted the self-evaluation
+                        // console.log(hasSelfEvaluation);
+                        // console.log(response.final_score);
+
+                        if ( hasSelfEvaluation )
+                        {
+                            if ( response.final_score.length !== 0 && response.status === 'Complete' )
+                            {
+                                // If the self-evaluation is submitted and final score is available, append the final score
+                                // var finalScore = parseFloat(response.final_score).toFixed(2);
+                                var finalScore = ( response.final_score * 100 ) / 100;
+                                // console.log(finalScore);
+                                // console.log(finalScore.toFixed(2));
+
+                                newRow.append( $( '<td>' ).text( finalScore.toFixed( 2 ) ) );
+                            } else
+                            {
+                                newRow.append( $( '<td>' ).text( '-' ) );
+                            }
+                        } else if ( !hasSelfEvaluation )
+                        {
+                            // If the user has no self-evaluation, display an empty cell
+                            newRow.append( $( '<td>' ).text( '-' ) );
+                        }
+
+                        // Append the row to the table body
+                        $( '#PE_appraisals_table_body' ).append( newRow );
+                    } );
+                } else
+                {
+                    // console.log(response.error);
                 }
-            });
-        }
-    </script>
+            },
+            error: function ( xhr, status, error )
+            {
+                // console.log(error);
+            }
+        } );
+    }
+</script>
 @endsection
