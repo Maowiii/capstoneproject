@@ -19,7 +19,9 @@ class Requests extends BaseModel
         'status',
         'action',
         'feedback',
-        'approver_id'
+        'approver_id',
+        'deadline_type',
+        'deadline'
     ];
 
     public function appraisal(): BelongsTo

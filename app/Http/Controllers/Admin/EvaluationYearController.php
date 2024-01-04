@@ -263,6 +263,8 @@ class EvaluationYearController extends Controller
       $table->text('request');
       $table->integer('approver_id')->nullable();
       $table->string('status');
+      $table->text('deadline_type')->nullable();
+      $table->date('deadline')->nullable();
       $table->tinyInteger('action')->nullable();
       $table->text('feedback')->nullable();
       $table->timestamps();

@@ -570,8 +570,6 @@
                 var appraisalId = urlParams.get('appraisal_id');
                 var appraiseeId = urlParams.get('appraisee_account_id');
 
-                console.log('Appraisal ID: ' + appraisalId);
-
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

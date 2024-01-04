@@ -292,7 +292,7 @@ class PEInternalCustomerController extends Controller
     $appraisal->update([
       'ic_score' => $totalWeightedScore,
       'date_submitted' => $date,
-      'locked' => true,
+      'eval_locked' => true,
     ]);
 
     // $allFormsSubmitted = Appraisals::where('employee_id', $employeeId)
@@ -384,16 +384,16 @@ class PEInternalCustomerController extends Controller
 
     $appraisalId = $request->input('appraisalId');
     $appraisal = Appraisals::find($appraisalId);
-    Log::info('appraisal');
     Log::info($appraisal);
-    $locked = $appraisal->date_submitted;
+    $locked = $appraisal->eval_locked;
+    Log::info("IC :" . $locked);
 
     $appraiseeId = $request->input('appraiseeId');
     $accountId = session('account_id');
-    Log::info('accountId');
-    Log::info($accountId);
-    Log::info('appraiseeId');
-    Log::info($appraiseeId);
+    // Log::info('accountId');
+    // Log::info($accountId);
+    // Log::info('appraiseeId');
+    // Log::info($appraiseeId);
 
     $shouldHideSignatory = ($appraiseeId == $accountId);
     $hasPermission = true;
