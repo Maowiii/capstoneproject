@@ -30,8 +30,9 @@ class AdminInternalCustomerController extends Controller
     }
 
     $sy = $request->input('sy');
-
-    if ($sy !== 'null') {
+    Log::info("sy: " . $sy);
+    
+    if ($sy !== null && $sy !== '' && $sy !== 'null') {
       $table = 'form_questions_' . $sy;
       $formQuestionsModel = new FormQuestions;
       $formQuestionsModel->setTable($table);
@@ -57,7 +58,7 @@ class AdminInternalCustomerController extends Controller
     $appraisalId = $request->input('appraisalId');
     $questionId = $request->input('questionId');
 
-    if ($sy !== 'null') {
+    if ($sy !== null && $sy !== '' && $sy !== 'null') {
       $table = 'appraisal_answers_' . $sy;
       $appraisalAnswersModel = new AppraisalAnswers;
       $appraisalAnswersModel->setTable($table);
@@ -87,8 +88,9 @@ class AdminInternalCustomerController extends Controller
 
     $sy = $request->input('sy');
     $appraisalId = $request->input('appraisalId');
+    Log::info("sy: " . $sy);
 
-    if ($sy !== 'null') {
+    if ($sy !== null && $sy !== '' && $sy !== 'null') {
       $table = 'comments_' . $sy;
       $commentsModel = new Comments;
       $commentsModel->setTable($table);
@@ -125,7 +127,7 @@ class AdminInternalCustomerController extends Controller
     $sy = $request->input('sy');
     $appraisalId = $request->input('appraisalId');
 
-    if ($sy !== 'null') {
+    if ($sy !== null && $sy !== '' && $sy !== 'null') {
       $appraisalTable = 'appraisals_' . $sy;
       $signatureTable = 'signature_' . $sy;
 

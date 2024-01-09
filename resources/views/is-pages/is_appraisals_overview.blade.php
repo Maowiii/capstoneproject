@@ -363,8 +363,8 @@
                                         if (appraisal.date_submitted !== null) {
                                         var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                        url += "?appraisal_id=" + encodeURIComponent(appraisal
-                                            .appraisal_id);
+                                        url += "?sy=" + encodeURIComponent(selectedYear);
+                                        url += "&appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
                                         url += "&appraisee_account_id=" + encodeURIComponent(
                                             appraisal.employee.account_id);
                                         url += "&appraisee_name=" + encodeURIComponent(appraisal
@@ -414,7 +414,8 @@
                                         if (appraisal.date_submitted !== null) {
                                             var url =
                                             "{{ route('viewAppraisal', ['appraisal_id' => ':appraisal_id']) }}";
-                                            url += "?appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
+                                            url += "?sy=" + encodeURIComponent(selectedYear);
+                                            url += "&appraisal_id=" + encodeURIComponent(appraisal.appraisal_id);
                                             url += "&appraisee_account_id=" + encodeURIComponent(
                                                 appraisal.employee.account_id);
                                             url += "&appraisee_name=" + encodeURIComponent(appraisal
