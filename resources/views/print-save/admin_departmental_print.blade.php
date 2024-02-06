@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row g-3 align-items-start mb-3">
-        <h2 id="school-year-heading">School Year: -</h2>
+        <h1 id="school-year-heading">School Year: -</h1>
     </div>
 
     <!-- BEHAVIORAL COMPETENCIES -->
@@ -146,7 +146,7 @@
             });
         }
 
-function loadSIDQuestions(departmentID, selectedYear = null) {
+        function loadSIDQuestions(departmentID, selectedYear = null) {
     return new Promise(function(resolve, reject) {
         $.ajax({
             headers: {
@@ -168,62 +168,15 @@ function loadSIDQuestions(departmentID, selectedYear = null) {
                         var sidTable = $('#sid_table tbody');
                         sidTable.empty();
 
-                        $.each(response.sid, function(index,
-                            item) {
+                        $.each(response.sid, function(index, item) {
 
                             var row = $("<tr class='text-center'>");
 
                             row.append($("<td>").text(item.question_order));
                             row.append($("<td class='text-start'>").text(item.question));
 
-                            if (item.average_score < totalAvgScore) {
-                                var cell = $("<td>");
-                                var container = $("<div>");
-
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                var icon = $("<i>")
-                                    .addClass('bx bxs-down-arrow')
-                                    .css('color', '#dc3545')
-                                    .attr('data-toggle', 'tooltip')
-                                    .attr('data-placement', 'top')
-                                    .attr('title',
-                                        'This question is below the total average score.');
-
-                                container.append(anchor, icon);
-                                cell.append(container);
-
-                                icon.tooltip();
-
-                                row.append(cell);
-                            } else {
-                                var cell = $("<td>");
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                cell.append(anchor);
-                                row.append(cell);
-                            }
+                            var cell = $("<td>").text(item.average_score);
+                            row.append(cell);
 
                             sidTable.append(row);
                         });
@@ -250,7 +203,7 @@ function loadSIDQuestions(departmentID, selectedYear = null) {
 }
 
 function loadSRQuestions(departmentID, selectedYear = null) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -261,7 +214,7 @@ function loadSRQuestions(departmentID, selectedYear = null) {
                 departmentID: departmentID,
                 selectedYear: selectedYear,
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
                     if (response.sr) {
                         var totalAvgScore = response.total_avg_score;
@@ -272,66 +225,18 @@ function loadSRQuestions(departmentID, selectedYear = null) {
                         var srTable = $('#sr_table tbody');
                         srTable.empty();
 
-                        $.each(response.sr, function(index,
-                            item) {
-
+                        $.each(response.sr, function (index, item) {
                             var row = $("<tr class='text-center'>");
 
                             row.append($("<td>").text(item.question_order));
                             row.append($("<td class='text-start'>").text(item.question));
 
-                            if (item.average_score < totalAvgScore) {
-                                var cell = $("<td>");
-                                var container = $("<div>");
+                            var cell = $("<td>").text(item.average_score);
 
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                var icon = $("<i>")
-                                    .addClass('bx bxs-down-arrow')
-                                    .css('color', '#dc3545')
-                                    .attr('data-toggle', 'tooltip')
-                                    .attr('data-placement', 'top')
-                                    .attr('title',
-                                        'This question is below the total average score.');
-
-                                container.append(anchor, icon);
-                                cell.append(container);
-
-                                icon.tooltip();
-
-                                row.append(cell);
-                            } else {
-                                var cell = $("<td>");
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                cell.append(anchor);
-                                row.append(cell);
-                            }
+                            row.append(cell);
 
                             srTable.append(row);
                         });
-
                     }
                 } else {
                     var row = $(
@@ -343,7 +248,7 @@ function loadSRQuestions(departmentID, selectedYear = null) {
                 }
                 resolve(); // Resolve the promise
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                     .responseJSON.error : 'An error occurred.';
                 console.error(errorMessage);
@@ -352,6 +257,7 @@ function loadSRQuestions(departmentID, selectedYear = null) {
         });
     });
 }
+
 
 function loadSQuestions(departmentID, selectedYear = null) {
     return new Promise(function(resolve, reject) {
@@ -375,72 +281,20 @@ function loadSQuestions(departmentID, selectedYear = null) {
                         var sTable = $('#s_table tbody');
                         sTable.empty();
 
-                        $.each(response.s, function(index,
-                            item) {
-
+                        $.each(response.s, function(index, item) {
                             var row = $("<tr class='text-center'>");
-
                             row.append($("<td>").text(item.question_order));
                             row.append($("<td class='text-start'>").text(item.question));
 
-                            if (item.average_score < totalAvgScore) {
-                                var cell = $("<td>");
-                                var container = $("<div>");
-
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                var icon = $("<i>")
-                                    .addClass('bx bxs-down-arrow')
-                                    .css('color', '#dc3545')
-                                    .attr('data-toggle', 'tooltip')
-                                    .attr('data-placement', 'top')
-                                    .attr('title',
-                                        'This question is below the total average score.');
-
-                                container.append(anchor, icon);
-                                cell.append(container);
-
-                                icon.tooltip();
-
-                                row.append(cell);
-                            } else {
-                                var cell = $("<td>");
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                cell.append(anchor);
-                                row.append(cell);
-                            }
+                            var cell = $("<td>").text(item.average_score);
+                            row.append(cell);
 
                             sTable.append(row);
                         });
-
                     }
                 } else {
                     console.log('Load S Questions: Failed.');
-                    var row = $(
-                        '<tr><td colspan="3"><p>-</p></td></tr>'
-                    );
+                    var row = $('<tr><td colspan="3"><p>-</p></td></tr>');
                     var sTable = $('#s_table tbody');
                     sTable.empty();
                     sTable.append(row);
@@ -456,6 +310,7 @@ function loadSQuestions(departmentID, selectedYear = null) {
         });
     });
 }
+
 
 function loadICQuestions(departmentID, selectedYear = null) {
     return new Promise(function(resolve, reject) {
@@ -488,55 +343,16 @@ function loadICQuestions(departmentID, selectedYear = null) {
                             row.append($("<td>").text(item.question_order));
                             row.append($("<td class='text-start'>").text(item.question));
 
+                            var cell = $("<td>").text(item.average_score);
                             if (item.average_score < totalAvgScore) {
-                                var cell = $("<td>");
-                                var container = $("<div>");
-
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                var icon = $("<i>")
-                                    .addClass('bx bxs-down-arrow')
-                                    .css('color', '#dc3545')
-                                    .attr('data-toggle', 'tooltip')
-                                    .attr('data-placement', 'top')
-                                    .attr('title',
-                                        'This question is below the total average score.');
-
-                                container.append(anchor, icon);
-                                cell.append(container);
-
-                                icon.tooltip();
-
-                                row.append(cell);
-                            } else {
-                                var cell = $("<td>");
-                                var anchor = $("<a href='#'>")
-                                    .text(item.average_score)
-                                    .addClass("view-ic-score")
-                                    .data("schoolYear", response.school_year)
-                                    .data("questionID", item.question_id)
-                                    .on("click", function(e) {
-                                        e.preventDefault();
-                                        var schoolYear = $(this).data("schoolYear");
-                                        var questionID = $(this).data("questionID");
-
-                                        viewScoreModal(departmentID, schoolYear, questionID);
-                                    });
-
-                                cell.append(anchor);
-                                row.append(cell);
+                                cell.css('color', '#dc3545');
+                                cell.attr('data-toggle', 'tooltip');
+                                cell.attr('data-placement', 'top');
+                                cell.attr('title', 'This question is below the total average score.');
+                                cell.tooltip();
                             }
 
+                            row.append(cell);
                             icTable.append(row);
                         });
 
@@ -560,5 +376,6 @@ function loadICQuestions(departmentID, selectedYear = null) {
         });
     });
 }
+
     </script>
 @endsection
