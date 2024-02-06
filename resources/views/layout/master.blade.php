@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
@@ -135,6 +135,23 @@
             </ul>
         @endif
 
+        @if (session()->get('user_level') === 'SA')
+            <ul class="list-group">
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewSADashboard') }}" class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-grid-alt'></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="list-group-item border-0">
+                    <a href="{{ route('viewSAEmployeeTable') }}" class="btn btn-link text-light text-decoration-none">
+                        <i class='bx bx-file'></i>
+                        <span>Employees</span>
+                    </a>
+                </li>
+            </ul>
+        @endif
+
         @if (session()->get('user_level') === 'CE')
             <ul class="list-group">
                 <li class="list-group-item border-0">
@@ -166,6 +183,28 @@
             <span class="logo-name">Adamson University</span>
         </div>
         <ul class="nav-links">
+            <!-- Super Admin Links -->
+            @if (session()->get('user_level') === 'SA')
+                <li>
+                    <a href="{{ route('viewSADashboard') }}">
+                        <i class='bx bx-grid-alt'></i>
+                        <span class="link_name">Dashboard</span>
+                    </a>
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="viewSADashboard">Dashboard</a></li>
+                    </ul>
+                </li>
+                <li id='super-admin-accountsNav'>
+                    <a href="{{ route('viewSAEmployeeTable') }}">
+                        <i class='bx bx-user-plus'></i>
+                        <span class="link_name">Employees</span>
+                    </a>
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="{{ route('viewSAEmployeeTable') }}">Employees</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
             <!-- Admin Links -->
             @if (session()->get('user_level') === 'AD')
                 <li>

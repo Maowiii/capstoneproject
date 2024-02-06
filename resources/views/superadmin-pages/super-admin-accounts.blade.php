@@ -7,22 +7,22 @@
 @section('content')
     <!-- @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        </button>
-                        <ul>
-                            @foreach ($errors->all() as $error)
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                </button>
+                <ul>
+                    @foreach ($errors->all() as $error)
     <li>{{ $error }}</li>
     @endforeach
-                        </ul>
-                    </div>
-                    
-                    <script>
-                        $(document).ready(function() {
-                            $(".alert").delay(5000).slideUp(200, function() {
-                                $(this).alert('close');
-                            });
-                        });
-                    </script>
+                </ul>
+            </div>
+            
+            <script>
+                $(document).ready(function() {
+                    $(".alert").delay(5000).slideUp(200, function() {
+                        $(this).alert('close');
+                    });
+                });
+            </script>
     @endif -->
 
     <div class="content-container">
@@ -277,7 +277,6 @@
             });
         </script>
     @endif
-
     <script>
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -318,11 +317,10 @@
                         var accounts = response.accounts;
                         var currentPage = response.current_page;
                         var data = response.accounts.data;
+
                         $('#employee_table_body').empty();
 
                         for (var i = 0; i < data.length; i++) {
-                            console.log(accounts);
-
                             var account = data[i];
                             var statusButton = account.status === 'active' ? 'Deactivate' : 'Activate';
                             var statusAction = account.status === 'active' ? 'deactivate' : 'activate';
@@ -347,13 +345,13 @@
                                 newRow.append($('<td>').text('Internal Customer'));
                             }
                             newRow.append($('<td>').text(account.employee.department ? account.employee
-                                .department.department_name : ''));
+                                .department
+                                .department_name : ''));
                             newRow.append($('<td>').text(account.status));
                             newRow.append($('<td>').append(
                                 $('<div>').addClass('btn-group').attr('role', 'group')
                                 .append(
                                     $('<button>').addClass('btn btn-outline-danger').text(statusButton)
-                                    .attr('id', 'statusbtn' + account.account_id)
                                     .attr('onclick', 'changeStatus(' + account.account_id + ', "' +
                                         statusAction + '")'),
                                     $('<button>').addClass('btn btn-outline-primary edit-btn')
@@ -361,15 +359,7 @@
                                     .attr('employee-id', account.employee.employee_id)
                                 )
                             ));
-
-                            console.log('account.type');
-                            console.log(account.type === 'AD' || account.type === 'SA');
-
                             $('#employee_table_body').append(newRow);
-                            if (account.type === 'AD' || account.type === 'SA') {
-                                newRow.find('#statusbtn' + account.account_id).prop('disabled', true).addClass(
-                                    'disabled');
-                            }
                         }
 
                         $('#accounts_pagination').empty();
@@ -458,43 +448,25 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update the button text based on the action
                         if (action === 'activate') {
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').text(
-                                'Deactivate');
+                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger')
+                                .text(
+                                    'Deactivate');
                         } else if (action === 'deactivate') {
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').text(
-                                'Activate');
+                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger')
+                                .text(
+                                    'Activate');
                         }
-
-                        // Disable the "Deactivate" button for Admin (AD) and Super Admin (SA) accounts
-                        console.log(response);
-                        var accountType = $('#' + accountId + ' td:nth-child(5)').text().trim();
-                        if (accountType === 'AD' || accountType === 'SA') {
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').prop('disabled',
-                                true);
-                            // Optionally, you can add a class to visually indicate that the button is disabled
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').addClass(
-                                'disabled');
-                        } else {
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').prop('disabled',
-                                false);
-                            // Remove the "disabled" class if the button should be enabled
-                            $('#employee_table tr#' + accountId + ' button.btn-outline-danger').removeClass(
-                                'disabled');
-                        }
-
                         loadTableData();
                     } else {
-                        // Handle error response
+                        // console.log(response.error);
                     }
                 },
                 error: function(xhr, status, error) {
-                    // Handle error
+                    // console.log(error);
                 }
             });
         }
-
 
         $(document).ready(function() {
             loadTableData();

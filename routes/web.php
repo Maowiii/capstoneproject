@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\SuperAdmin\SuperAdminDashboardController;
+use App\Http\Controllers\SuperAdmin\SuperAdminEmployeesController;
 use App\Http\Controllers\Admin\AdminAppraisalsOverviewController;
 use App\Http\Controllers\Admin\EditableAppraisalFormController;
 use App\Http\Controllers\Admin\EditableInternalCustomerFormController;
@@ -61,6 +63,19 @@ Route::post('/reset-password/reset', [AuthController::class, 'step3_ResetPasswor
 Route::get('two-factor/resend-code', [AuthController::class, 'sendCode'])->name('resend-code');
 Route::get('/logout-user', [AuthController::class, 'logout'])->name('logout-user');
 
+
+/* ----- SUPER ADMIN ----- */
+Route::get('/dashboard-superadmin', [SuperAdminDashboardController::class, 'displaySuperAdminDashboard'])->name('viewSADashboard');
+Route::get('/get-notifications', [SuperAdminDashboardController::class, 'getNotifications'])->name('sa.getNotifications');
+Route::get('/superadmin/employees', [SuperAdminEmployeesController::class, 'displayEmployeeTable'])->name('viewSAEmployeeTable');
+Route::post('/superadmin/employees/update-status', [SuperAdminEmployeesController::class, 'updateStatus'])->name('sa.updateEmployeeStatus');
+Route::post('/superadmin/employees/get-data', [SuperAdminEmployeesController::class, 'getData'])->name('sa.getEmployeeData');
+Route::post('/superadmin/employees/add', [SuperAdminEmployeesController::class, 'addEmployee'])->name('sa.addEmployee');
+Route::post('/superadmin/employees/import', [SuperAdminEmployeesController::class, 'importEmployee'])->name('sa.importEmployee');
+Route::post('/superadmin/employees/import-sample', [SuperAdminEmployeesController::class, 'importEmployeeSample'])->name('sa.importEmployeeSample');
+Route::post('/superadmin/employees/reset-password', [SuperAdminEmployeesController::class, 'employeeResetPassword'])->name('sa.resetEmployeePassword');
+Route::post('/superadmin/employees/edit', [SuperAdminEmployeesController::class, 'editEmployee'])->name('sa.editEmployee');
+Route::post('/superadmin/employees/save', [SuperAdminEmployeesController::class, 'saveEmployee'])->name('sa.saveEmployee');
 
 /* ----- ADMIN ----- */
 // Dashboard
@@ -291,7 +306,7 @@ Route::get('/TDM/accounts/{id}', function ($id) {
       "type" => $accounts->type,
       "first_login" => $accounts->first_login,
       "status" => $accounts->status,
-  ];
+    ];
     return response()->json($accountsArr);
   } else {
     return response()->json(["message" => "User ID not found"], 404);
@@ -322,26 +337,26 @@ Route::get('/TDM/accounts', function () {
 
 Route::post('/TDM/accounts/create', function (Request $request) {
   $validator = Validator::make($request->all(), [
-      'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
-      'type' => 'required',
+    'email' => 'required|email|ends_with:adamson.edu.ph|unique:accounts,email',
+    'type' => 'required',
   ], [
-      'email.required' => 'Please enter an Adamson email address.',
-      'email.ends_with' => 'Please enter an Adamson email address.',
-      'email.email' => 'Please enter a valid email address.',
-      'email.unique' => 'The email is already in use',
-      'type.required' => 'Please choose a user level.',
+    'email.required' => 'Please enter an Adamson email address.',
+    'email.ends_with' => 'Please enter an Adamson email address.',
+    'email.email' => 'Please enter a valid email address.',
+    'email.unique' => 'The email is already in use',
+    'type.required' => 'Please choose a user level.',
   ]);
 
   if ($validator->fails()) {
-      return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
+    return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
   }
 
   $randomPassword = Str::random(8);
   $accounts = Accounts::create([
-      'email' => $request->input('email'),
-      'default_password' => $randomPassword,
-      'type' => $request->input('type'),
-      'first_login' => 'true'
+    'email' => $request->input('email'),
+    'default_password' => $randomPassword,
+    'type' => $request->input('type'),
+    'first_login' => 'true'
   ]);
 
   if ($accounts) {
@@ -351,7 +366,7 @@ Route::post('/TDM/accounts/create', function (Request $request) {
       "type" => $accounts->type,
       "first_login" => $accounts->first_login,
       "status" => $accounts->status,
-  ];
+    ];
     return response()->json($accountsArr);
   } else {
     return response()->json(["message" => "User ID not found"], 404);
@@ -360,38 +375,41 @@ Route::post('/TDM/accounts/create', function (Request $request) {
 
 
 Route::post('/user/new', function (Request $request) {
-  $validator = Validator::make($request->all(), [
-  'name' => 'required|name',
-  'email' => 'required|email|ends_with:adamson.edu.ph|unique:user,email',
-  ], 
-      [
-          'email.required' => 'Please enter an Adamson email address.',
-          'email.ends_with' => 'Please enter an Adamson email address.',
-          'email.email' => 'Please enter a valid email address.',
-          'email.unique' => 'The email is already in use',
-      ]);
+  $validator = Validator::make(
+    $request->all(),
+    [
+      'name' => 'required|name',
+      'email' => 'required|email|ends_with:adamson.edu.ph|unique:user,email',
+    ],
+    [
+      'email.required' => 'Please enter an Adamson email address.',
+      'email.ends_with' => 'Please enter an Adamson email address.',
+      'email.email' => 'Please enter a valid email address.',
+      'email.unique' => 'The email is already in use',
+    ]
+  );
   if ($validator->fails()) {
-      return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
+    return response()->json(["message" => "Validation failed", "errors" => $validator->errors()], 400);
   }
 
   $randomPassword = Str::random(8);
 
   $user = Accounts::create([
-      'name' => $request->input('name'),
-      'email' => $request->input('email'),
-      'password' => $randomPassword
+    'name' => $request->input('name'),
+    'email' => $request->input('email'),
+    'password' => $randomPassword
   ]);
 
   if ($user) {
-      $userArr = [
-          "id" => $user->account_id,
-          "name" => $user->name,
-          "email" => $user->email,
-          "created_at" => $user->created_at,
-          "updated_at" => $user->updated_at,
-      ];
-      return response()->json($userArr);
+    $userArr = [
+      "id" => $user->account_id,
+      "name" => $user->name,
+      "email" => $user->email,
+      "created_at" => $user->created_at,
+      "updated_at" => $user->updated_at,
+    ];
+    return response()->json($userArr);
   } else {
-      return response()->json(["message" => "User ID not found"], 404);
+    return response()->json(["message" => "User ID not found"], 404);
   }
 });

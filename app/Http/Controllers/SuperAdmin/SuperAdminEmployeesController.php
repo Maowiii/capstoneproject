@@ -1,6 +1,8 @@
 <?php
-namespace App\Http\Controllers\Admin;
 
+namespace App\Http\Controllers\SuperAdmin;
+
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\NewPasswordEmail;
 use App\Models\Accounts;
@@ -10,21 +12,18 @@ use App\Models\Employees;
 use App\Models\EvalYear;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Imports\ImportEmployeeSample;
 use App\Imports\ImportEmployee;
 
-
-
-class EmployeeController extends Controller
+class SuperAdminEmployeesController extends Controller
 {
-  public function displayEmployeeTable()
+    public function displayEmployeeTable()
   {
     if (session()->has('account_id')) {
       $departments = Departments::all();
-      return view('admin-pages.employee_table')->with('departments', $departments);
+      return view('superadmin-pages.super-admin-accounts')->with('departments', $departments);
     } else {
       return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
     }
@@ -32,7 +31,7 @@ class EmployeeController extends Controller
 
   public function updateStatus(Request $request)
   {
-    if (!session()->has('account_id')) {
+    if (!session()->has('account_id')) {  
       return view('auth.login');
     }
 
@@ -148,42 +147,14 @@ class EmployeeController extends Controller
         }
 
         $departments = Departments::all();
-        return view('admin-pages.employee_table')->with('departments', $departments)->with('success', 'Accounts successfully created.');
+        return view('superadmin-pages.super-admin-accounts')->with('departments', $departments)->with('success', 'Accounts successfully created.');
       }catch (\Exception $e) {
         Log::error($e);
         $departments = Departments::all();
-        return view('admin-pages.employee_table')->with('departments', $departments);  
+        return view('superadmin-pages.super-admin-accounts')->with('departments', $departments);  
       }
 
-      // $activeYear = EvalYear::where('status', 'active')->first();
-      // if ($activeYear && !in_array($account->type, ['AD', 'IS', 'CE'])) {
-      //   $evaluationTypes = ['self evaluation', 'is evaluation', 'internal customer 1', 'internal customer 2'];
-      //   foreach ($evaluationTypes as $evaluationType) {
-      //     $evaluatorId = null;
-      //     $departmentId = $employee->department_id;
-
-      //     if ($evaluationType === 'self evaluation') {
-      //       $evaluatorId = $employee->employee_id;
-      //     } elseif ($evaluationType === 'is evaluation') {
-      //       $isAccount = Accounts::where('type', 'IS')
-      //         ->whereHas('employee', function ($query) use ($departmentId) {
-      //           $query->where('department_id', $departmentId);
-      //         })->first();
-
-      //       if ($isAccount) {
-      //         $evaluatorId = $isAccount->employee->employee_id;
-      //       }
-      //     }
-
-      //     Appraisals::create([
-      //       'evaluation_type' => $evaluationType,
-      //       'employee_id' => $employee->employee_id,
-      //       'evaluator_id' => $evaluatorId,
-      //       'department_id' => $departmentId
-      //     ]);
-      //   }
-      // }
-
+      
     }
   }
 
@@ -225,7 +196,7 @@ class EmployeeController extends Controller
 
       // Check if there are still failures after filtering
       if ($filteredFailures->isNotEmpty()) {
-        return view('admin-pages.employee_table')->with([
+        return view('superadmin-pages.super-admin-accounts')->with([
           'departments' => $departments,
           'failures' => $filteredFailures,
         ]);
@@ -243,7 +214,7 @@ class EmployeeController extends Controller
     // Log info message
     Log::info('All departments fetched.');
 
-    return view('admin-pages.employee_table')->with([
+    return view('superadmin-pages.super-admin-accounts')->with([
       'departments' => $departments,
       'success' => $status,
     ]);
@@ -291,7 +262,7 @@ class EmployeeController extends Controller
       // Log info message
       Log::info('All departments fetched.');
 
-      return view('admin-pages.employee_table')->with('departments', $departments);
+      return view('superadmin-pages.super-admin-accounts')->with('departments', $departments);
     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
       $departments = Departments::all();
       $failures = $e->failures();
@@ -383,5 +354,5 @@ class EmployeeController extends Controller
 
     return response()->json(['success' => true]);
   }
-
+    
 }

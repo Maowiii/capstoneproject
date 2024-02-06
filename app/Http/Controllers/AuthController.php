@@ -74,6 +74,11 @@ class AuthController extends Controller
             session()->put('title', 'Administrator');
             session()->put('user_level', 'AD');
             return redirect()->route('viewAdminDashboard');
+          } elseif ($accounts->type == 'SA'){
+            session()->put('full_name', 'Administrator'); // wala pang account
+            session()->put('title', 'Administrator');
+            session()->put('user_level', 'SA');
+            return redirect()->route('viewSADashboard');
           } else {
             $code = rand(1000, 9999);
             $accounts->verification_code = $code;
