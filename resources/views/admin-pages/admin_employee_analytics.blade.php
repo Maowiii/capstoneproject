@@ -195,7 +195,7 @@
     <div class="floating-container">
         <div class="fixed-right p-4">
             <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                <button class="btn btn-secondary btn-circle" id="print-button" >
                     <i class='bx bxs-printer'></i>
                 </button>
             </div>
@@ -224,6 +224,10 @@
             loadICChart(employeeID);
             loadICQuestions(employeeID, null);
 
+            $('#print-button').click(function() {
+                window.open("{{ route('ad.printEmployeeDashboard') }}?employee_id=" +employeeID +
+                    "&full_name=" + encodeURIComponent(employeeName), "_blank");
+            });
         });
 
         function getEmployeeInformation(employeeID) {

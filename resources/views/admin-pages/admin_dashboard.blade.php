@@ -241,7 +241,7 @@
     <div class="floating-container">
         <div class="fixed-right p-4">
             <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                <button class="btn btn-secondary btn-circle" id="print-button" target="_blank">
                     <i class='bx bxs-printer'></i>
                 </button>
             </div>
@@ -249,20 +249,18 @@
     </div>
 
     <script>
-        function printReport() {
-            window.print();
-        }
-
         $(document).ready(function() {
             // var firstColumnHeight = $('#firstColumn').height();
             // $('#secondColumn').css('height', firstColumnHeight);
-
+            $('#print-button').click(function() {
+                window.open("{{ route('ad.printAdminDashboard') }}", "_blank");
+            });
+            
             $(document).on('change', '#defaultAll', function() {
                 var isChecked = $(this).prop('checked');
                 //console.log('All checked!');
                 $('.department-checkbox').prop('checked', isChecked);
             });
-
 
             var globalSelectedYear = null;
             $('#evaluation-year-select').change(function() {
@@ -318,8 +316,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#school-year-heading').text('School Year: ' + response.schoolYear);
-                        $('#total-pe').text(response
-                            .totalPermanentEmployees);
+                        $('#total-pe').text(response.totalPermanentEmployees);
                         totalAppraisals = response.totalPermanentEmployees;
 
                         $('#avg-score').text(response.avgTotalScore);

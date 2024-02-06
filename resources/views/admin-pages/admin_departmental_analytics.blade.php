@@ -192,7 +192,7 @@
     <div class="floating-container">
         <div class="fixed-right p-4">
             <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary btn-circle" id="print-button" onclick="printReport()">
+                <button class="btn btn-secondary btn-circle" id="print-button" >
                     <i class='bx bxs-printer'></i>
                 </button>
             </div>
@@ -228,9 +228,6 @@
     </div>
 
     <script>
-        function printReport() {
-            window.print(); // Open the browser's print dialog
-        }
         $(document).ready(function() {
             const departmentName = new URLSearchParams(window.location.search).get('department_name');
             const departmentID = new URLSearchParams(window.location.search).get('department_id');
@@ -260,6 +257,10 @@
                 loadEmployeesTable(departmentID, query);
             });
 
+            $('#print-button').click(function() {
+                window.open("{{ route('ad.printDepartmentDashboard') }}?department_id=" +departmentID +
+                    "&department_name=" + encodeURIComponent(departmentName), "_blank");
+            });
         });
 
         function fetchAndDisplayDepartmentLineChart(departmentID) {

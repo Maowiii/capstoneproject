@@ -134,24 +134,42 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            const employeeID = new URLSearchParams(window.location.search).get('employee_id');
-            const employeeName = new URLSearchParams(window.location.search).get('full_name');
+    $(document).ready(function() {
+        const employeeID = new URLSearchParams(window.location.search).get('employee_id');
+        const employeeName = new URLSearchParams(window.location.search).get('full_name');
 
-            if (employeeName) {
-                $('#employee_analytics-heading').text(employeeName);
-            }
+        if (employeeName) {
+            $('#employee_analytics-heading').text(employeeName);
+        }
 
-            getEmployeeInformation(employeeID);
-            loadKRAS(employeeID, null);
-            loadSIDQuestions(employeeID, null);
-            loadSRQuestions(employeeID, null);
-            loadSQuestions(employeeID, null);
-            loadICQuestions(employeeID, null);
+        getEmployeeInformation(employeeID);
+        loadKRAS(employeeID, null);
+        loadSIDQuestions(employeeID, null);
+        loadSRQuestions(employeeID, null);
+        loadSQuestions(employeeID, null);
+        loadICQuestions(employeeID, null);
 
-        });
+        function loadDataAndPrint(employeeID) {
+            Promise.all([
+                loadKRAS(employeeID, null),
+                loadSIDQuestions(employeeID, null),
+                loadSRQuestions(employeeID, null),
+                loadSQuestions(employeeID, null),
+                loadICQuestions(employeeID, null)
+            ]).then(function() {
+                // All data has been loaded, now print
+                window.print();
+            }).catch(function(error) {
+                // Handle error if any of the data loading fails
+                console.error('Error loading data:', error);
+            });
+        }
 
-        function getEmployeeInformation(employeeID) {
+        loadDataAndPrint(employeeID);
+    });
+
+    function getEmployeeInformation(employeeID) {
+        return new Promise(function(resolve, reject) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -171,17 +189,22 @@
                         $('#last_name').val(employee.last_name);
                         $('#department').val(employee.department.department_name);
                         $('#job_title').val(employee.job_title);
+                        resolve();
+                    } else {
+                        reject('Error: Unable to retrieve employee information.');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }
+        });
+    }
 
-        function loadSIDQuestions(employeeID, selectedYear = null, ) {
+    function loadSIDQuestions(employeeID, selectedYear = null, ) {
+        return new Promise(function(resolve, reject) {
             console.log('Employee ID: ' + employeeID);
             console.log('Selected Year: ' + selectedYear);
             $.ajax({
@@ -200,7 +223,7 @@
                         if (response.sid) {
                             var totalAvgScore = response.total_avg_score;
                             $('#sid-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#sid-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                            $('#school-year-heading').text('School Year: ' + response.school_year.replace(/_/g,
                                 '-'));
                             var sidTable = $('#sid_table tbody');
                             sidTable.empty();
@@ -264,7 +287,7 @@
 
                                 sidTable.append(row);
                             });
-
+                            resolve(response);
                         }
                     } else {
                         var row = $(
@@ -273,16 +296,19 @@
                         var sidTable = $('#sid_table tbody');
                         sidTable.empty();
                         sidTable.append(row);
+                        reject('Error loading SID questions');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }
-        function loadSRQuestions(employeeID, selectedYear = null) {
+        });
+    }
+    function loadSRQuestions(employeeID, selectedYear = null) {
+        return new Promise(function(resolve, reject) {
             console.log('Employee ID: ' + employeeID);
             console.log('Selected Year: ' + selectedYear);
             $.ajax({
@@ -366,7 +392,7 @@
 
                                 srTable.append(row);
                             });
-
+                            resolve(response);
                         }
                     } else {
                         var row = $(
@@ -375,17 +401,20 @@
                         var srTable = $('#sr_table tbody');
                         srTable.empty();
                         srTable.append(row);
+                        reject('Error loading SR questions');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }
+        });
+    }
 
-        function loadSQuestions(employeeID, selectedYear = null) {
+    function loadSQuestions(employeeID, selectedYear = null) {
+        return new Promise(function(resolve, reject) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -466,7 +495,7 @@
 
                                 sTable.append(row);
                             });
-
+                            resolve(response);
                         }
                     } else {
                         console.log('Load S Questions: Failed.');
@@ -476,17 +505,20 @@
                         var sTable = $('#s_table tbody');
                         sTable.empty();
                         sTable.append(row);
+                        reject('Error loading S questions');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }
+        });
+    }
 
-        function loadICQuestions(employeeID, selectedYear = null) {
+    function loadICQuestions(employeeID, selectedYear = null) {
+        return new Promise(function(resolve, reject) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -568,7 +600,7 @@
 
                                 icTable.append(row);
                             });
-
+                            resolve(response);
                         }
                     } else {
                         var row = $(
@@ -577,16 +609,19 @@
                         var icTable = $('#ic_table tbody');
                         icTable.empty();
                         icTable.append(row);
+                        reject('Error loading IC questions');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
                         .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }
-        function loadKRAS(employeeID, selectedYear = null) {
+        });
+    }
+    function loadKRAS(employeeID, selectedYear = null) {
+        return new Promise(function(resolve, reject) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -642,18 +677,22 @@
                                 '</tr>'
                             );
                         });
+                        resolve(response);
                     } else {
                         var kraTable = $('#kra_table tbody');
                         kraTable.empty();
                         kraTable.append('<tr><td colspan="6">-</td></tr>');
+                        reject('Error loading KRAs');
                     }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error :
                         'An error occurred.';
-                    // console.log(errorMessage);
+                    reject(errorMessage);
                 }
             });
-        }        
-    </script>
+        });
+    }        
+</script>
+
 @endsection

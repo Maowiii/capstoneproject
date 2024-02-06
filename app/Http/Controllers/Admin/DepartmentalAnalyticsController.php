@@ -911,4 +911,16 @@ class DepartmentalAnalyticsController extends Controller
 
     return response()->json(['success' => true, 'question' => $question, 'questionAnswers' => $questionAnswers]);
   }
+
+  public function printDepartmentDashboard()
+  {
+    if (session()->has('account_id')) {
+      // $evaluationYears = EvalYear::all();
+      // $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+
+      return view('print-save.admin_departmental_print');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+  }
 }

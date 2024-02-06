@@ -951,4 +951,17 @@ class AdminDashboardController extends Controller
       'data' => $data,
     ]);
   }
+
+  public function printAdminDashboard()
+  {
+    if (session()->has('account_id')) {
+      // $evaluationYears = EvalYear::all();
+      // $activeEvalYear = EvalYear::where('status', 'active')->first() ?? null;
+
+      return view('print-save.admin_dashboard_print');
+    } else {
+      return redirect()->route('viewLogin')->with('message', 'Your session has expired. Please log in again.');
+    }
+  }
+
 }

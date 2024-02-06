@@ -84,7 +84,7 @@ Route::get('/dashboard-admin/load-ic-questions', [AdminDashboardController::clas
 Route::get('/dashboard-admin/load-ic-chart', [AdminDashboardController::class, 'loadICChart'])->name('ad.loadICChart');
 Route::get('/dashboard-admin/load-category', [AdminDashboardController::class, 'loadPointCategory'])->name('ad.viewCategory');
 Route::get('/dashboard-admin/view-score', [AdminDashboardController::class, 'viewScore'])->name('ad.viewScoreModal');
-
+Route::get('/dashboard-admin/print/admin', [AdminDashboardController::class, 'printAdminDashboard'])->name('ad.printAdminDashboard');
 
 // Departmental Analytics
 Route::get('/dashboard-admin/department', [DepartmentalAnalyticsController::class, 'displayDepartmentalAnalytics'])->name('ad.viewDepartment');
@@ -109,6 +109,7 @@ Route::get('/dashboard-admin/department/load-ic-chart', [DepartmentalAnalyticsCo
 
 Route::get('/dashboard-admin/department/view-score', [DepartmentalAnalyticsController::class, 'viewScore'])->name('ad.viewDepartmentalScoreModal');
 
+Route::get('/dashboard-admin/print/department', [DepartmentalAnalyticsController::class, 'printDepartmentDashboard'])->name('ad.printDepartmentDashboard');
 
 // Employee Analytics
 Route::get('/dashboard-admin/employee', [EmployeeAnalyticsController::class, 'displayEmployeeAnalytics'])->name('ad.viewEmployeeAnalytics');
@@ -129,6 +130,8 @@ Route::get('/dashboard-admin/employee/load-s-chart', [EmployeeAnalyticsControlle
 
 Route::get('/dashboard-admin/employee/load-ic-questions', [EmployeeAnalyticsController::class, 'loadICQuestions'])->name('ad.loadEmployeeICQuestions');
 Route::get('/dashboard-admin/employee/load-ic-chart', [EmployeeAnalyticsController::class, 'loadICChart'])->name('ad.loadEmployeeICChart');
+
+Route::get('/dashboard-admin/print/employee', [EmployeeAnalyticsController::class, 'printEmployeeDashboard'])->name('ad.printEmployeeDashboard');
 
 //Appraisals Overview
 Route::get('/admin-appraisals-overview', [AdminAppraisalsOverviewController::class, 'displayAdminAppraisalsOverview'])->name('viewAdminAppraisalsOverview');
