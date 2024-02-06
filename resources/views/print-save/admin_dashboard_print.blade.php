@@ -106,403 +106,210 @@
             loadICQuestions(globalSelectedYear);
             loadSQuestions(globalSelectedYear);
             
-        function loadSIDQuestions(selectedYear = null) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadDashboardSIDQuestions') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
-                success: function(response) {
-                    //console.log(response);
-                    if (response.success) {
-                        if (response.sid) {
-                            var totalAvgScore = response.total_avg_score;
-                            $('#sid-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#sid-school-year').text('School Year: ' + response.school_year.replace(/_/g,
-                                '-'));
-                            var sidTable = $('#sid_table tbody');
-                            sidTable.empty();
+    function loadSIDQuestions(selectedYear = null) {
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '{{ route('ad.loadDashboardSIDQuestions') }}',
+        type: 'GET',
+        data: {
+            selectedYear: selectedYear,
+        },
+        success: function(response) {
+            //console.log(response);
+            if (response.success) {
+                if (response.sid) {
+                    var totalAvgScore = response.total_avg_score;
+                    $('#sid-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                    $('#sid-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                        '-'));
+                    var sidTable = $('#sid_table tbody');
+                    sidTable.empty();
 
-                            $.each(response.sid, function(index,
-                                item) {
+                    $.each(response.sid, function(index,
+                        item) {
 
-                                var row = $("<tr class='text-center'>");
+                        var row = $("<tr class='text-center'>");
 
-                                row.append($("<td>").text(item.question_order));
-                                row.append($("<td class='text-start'>").text(item.question));
+                        row.append($("<td>").text(item.question_order));
+                        row.append($("<td class='text-start'>").text(item.question));
 
-                                if (item.average_score < totalAvgScore) {
-                                    var cell = $("<td>");
-                                    var container = $("<div>");
+                        var cell = $("<td>");
+                        cell.text(item.average_score); // No longer a link
 
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
+                        row.append(cell);
 
-                                    var icon = $("<i>")
-                                        .addClass('bx bxs-down-arrow')
-                                        .css('color', '#dc3545')
-                                        .attr('data-toggle', 'tooltip')
-                                        .attr('data-placement', 'top')
-                                        .attr('title',
-                                            'This question is below the total average score.');
-
-                                    container.append(anchor, icon);
-                                    cell.append(container);
-
-                                    icon.tooltip();
-
-                                    row.append(cell);
-                                } else {
-                                    var cell = $("<td>");
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    cell.append(anchor);
-                                    row.append(cell);
-                                }
-
-                                sidTable.append(row);
-                            });
-
-                        }
-                    } else {
-                        var row = $(
-                            '<tr><td colspan="3"><p>-</p></td></tr>'
-                        );
-                        var sidTable = $('#sid_table tbody');
-                        sidTable.empty();
                         sidTable.append(row);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    });
+
                 }
-            });
+            } else {
+                var row = $(
+                    '<tr><td colspan="3"><p>-</p></td></tr>'
+                );
+                var sidTable = $('#sid_table tbody');
+                sidTable.empty();
+                sidTable.append(row);
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                .responseJSON.error : 'An error occurred.';
+            // console.log(errorMessage);
         }
+    });
+}
 
-        function loadSRQuestions(selectedYear = null) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadDashboardSRQuestions') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
-                success: function(response) {
-                    //console.log(response);
-                    if (response.success) {
-                        if (response.sr) {
-                            var totalAvgScore = response.total_avg_score;
-                            $('#sr-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#sr-school-year').text('School Year: ' + response.school_year.replace(/_/g,
-                                '-'));
+function loadSRQuestions(selectedYear = null) {
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '{{ route('ad.loadDashboardSRQuestions') }}',
+        type: 'GET',
+        data: {
+            selectedYear: selectedYear,
+        },
+        success: function(response) {
+            //console.log(response);
+            if (response.success) {
+                if (response.sr) {
+                    var totalAvgScore = response.total_avg_score;
+                    $('#sr-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                    $('#sr-school-year').text('School Year: ' + response.school_year.replace(/_/g,
+                        '-'));
 
-                            var srTable = $('#sr_table tbody');
-                            srTable.empty();
+                    var srTable = $('#sr_table tbody');
+                    srTable.empty();
 
-                            $.each(response.sr, function(index,
-                                item) {
+                    $.each(response.sr, function(index,
+                        item) {
 
-                                var row = $("<tr class='text-center'>");
+                        var row = $("<tr class='text-center'>");
 
-                                row.append($("<td>").text(item.question_order));
-                                row.append($("<td class='text-start'>").text(item.question));
+                        row.append($("<td>").text(item.question_order));
+                        row.append($("<td class='text-start'>").text(item.question));
 
-                                if (item.average_score < totalAvgScore) {
-                                    var cell = $("<td>");
-                                    var container = $("<div>");
+                        var cell = $("<td>").text(item.average_score);
+                        row.append(cell);
 
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    var icon = $("<i>")
-                                        .addClass('bx bxs-down-arrow')
-                                        .css('color', '#dc3545')
-                                        .attr('data-toggle', 'tooltip')
-                                        .attr('data-placement', 'top')
-                                        .attr('title',
-                                            'This question is below the total average score.');
-
-                                    container.append(anchor, icon);
-                                    cell.append(container);
-
-                                    icon.tooltip();
-
-                                    row.append(cell);
-                                } else {
-                                    var cell = $("<td>");
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    cell.append(anchor);
-                                    row.append(cell);
-                                }
-
-                                srTable.append(row);
-                            });
-
-                        }
-                    } else {
-                        var row = $(
-                            '<tr><td colspan="3"><p>-</p></td></tr>'
-                        );
-                        var srTable = $('#sr_table tbody');
-                        srTable.empty();
                         srTable.append(row);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    });
+
                 }
-            });
+            } else {
+                var row = $(
+                    '<tr><td colspan="3"><p>-</p></td></tr>'
+                );
+                var srTable = $('#sr_table tbody');
+                srTable.empty();
+                srTable.append(row);
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                .responseJSON.error : 'An error occurred.';
+            // console.log(errorMessage);
         }
+    });
+}
 
-        function loadICQuestions(selectedYear = null) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadDashboardICQuestions') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
-                success: function(response) {
-                    //console.log(response);
-                    if (response.success) {
-                        if (response.ic) {
-                            var totalAvgScore = response.total_avg_score;
-                            $('#ic-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#ic-school-year').text('School Year: ' + response.school_year.replace(/_/g,
-                                '-'));
+function loadICQuestions(selectedYear = null) {
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '{{ route('ad.loadDashboardICQuestions') }}',
+        type: 'GET',
+        data: {
+            selectedYear: selectedYear,
+        },
+        success: function(response) {
+            if (response.success) {
+                if (response.ic) {
+                    var totalAvgScore = response.total_avg_score;
+                    $('#ic-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                    $('#ic-school-year').text('School Year: ' + response.school_year.replace(/_/g, '-'));
 
-                            var icTable = $('#ic_table tbody');
-                            icTable.empty();
+                    var icTable = $('#ic_table tbody');
+                    icTable.empty();
 
-                            $.each(response.ic, function(index,
-                                item) {
+                    $.each(response.ic, function(index, item) {
+                        var row = $("<tr class='text-center'>");
+                        row.append($("<td>").text(item.question_order));
+                        row.append($("<td class='text-start'>").text(item.question));
 
-                                var row = $("<tr class='text-center'>");
-
-                                row.append($("<td>").text(item.question_order));
-                                row.append($("<td class='text-start'>").text(item.question));
-
-                                if (item.average_score < totalAvgScore) {
-                                    var cell = $("<td>");
-                                    var container = $("<div>");
-
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    var icon = $("<i>")
-                                        .addClass('bx bxs-down-arrow')
-                                        .css('color', '#dc3545')
-                                        .attr('data-toggle', 'tooltip')
-                                        .attr('data-placement', 'top')
-                                        .attr('title',
-                                            'This question is below the total average score.');
-
-                                    container.append(anchor, icon);
-                                    cell.append(container);
-
-                                    icon.tooltip();
-
-                                    row.append(cell);
-                                } else {
-                                    var cell = $("<td>");
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    cell.append(anchor);
-                                    row.append(cell);
-                                }
-
-                                icTable.append(row);
-                            });
-
+                        var cell = $("<td>").text(item.average_score);
+                        if (item.average_score < totalAvgScore) {
+                            cell.css('color', '#dc3545');
+                            cell.attr('title', 'This question is below the total average score.');
+                            cell.tooltip();
                         }
-                    } else {
-                        var row = $(
-                            '<tr><td colspan="3"><p>-</p></td></tr>'
-                        );
-                        var icTable = $('#ic_table tbody');
-                        icTable.empty();
+                        row.append(cell);
                         icTable.append(row);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
+                    });
+
                 }
-            });
+            } else {
+                var row = $('<tr><td colspan="3"><p>-</p></td></tr>');
+                var icTable = $('#ic_table tbody');
+                icTable.empty();
+                icTable.append(row);
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'An error occurred.';
+            // console.log(errorMessage);
         }
+    });
+}
 
-        function loadSQuestions(selectedYear = null) {
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('ad.loadDashboardSQuestions') }}',
-                type: 'GET',
-                data: {
-                    selectedYear: selectedYear,
-                },
-                success: function(response) {
-                    //console.log(response);
-                    if (response.success) {
-                        if (response.s) {
-                            var totalAvgScore = response.total_avg_score;
-                            $('#s-total-avg-score').text('Total Average Score: ' + totalAvgScore);
-                            $('#s-school-year').text('School Year: ' + response.school_year.replace(/_/g, '-'));
+function loadSQuestions(selectedYear = null) {
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '{{ route('ad.loadDashboardSQuestions') }}',
+        type: 'GET',
+        data: {
+            selectedYear: selectedYear,
+        },
+        success: function(response) {
+            if (response.success && response.s) {
+                var totalAvgScore = response.total_avg_score;
+                $('#s-total-avg-score').text('Total Average Score: ' + totalAvgScore);
+                $('#s-school-year').text('School Year: ' + response.school_year.replace(/_/g, '-'));
 
-                            var sTable = $('#s_table tbody');
-                            sTable.empty();
+                var sTable = $('#s_table tbody');
+                sTable.empty();
 
-                            $.each(response.s, function(index,
-                                item) {
+                $.each(response.s, function(index, item) {
+                    var row = $("<tr class='text-center'>");
+                    row.append($("<td>").text(item.question_order));
+                    row.append($("<td class='text-start'>").text(item.question));
 
-                                var row = $("<tr class='text-center'>");
-
-                                row.append($("<td>").text(item.question_order));
-                                row.append($("<td class='text-start'>").text(item.question));
-
-                                if (item.average_score < totalAvgScore) {
-                                    var cell = $("<td>");
-                                    var container = $("<div>");
-
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    var icon = $("<i>")
-                                        .addClass('bx bxs-down-arrow')
-                                        .css('color', '#dc3545')
-                                        .attr('data-toggle', 'tooltip')
-                                        .attr('data-placement', 'top')
-                                        .attr('title',
-                                            'This question is below the total average score.');
-
-                                    container.append(anchor, icon);
-                                    cell.append(container);
-
-                                    icon.tooltip();
-
-                                    row.append(cell);
-                                } else {
-                                    var cell = $("<td>");
-                                    var anchor = $("<a href='#'>")
-                                        .text(item.average_score)
-                                        .addClass("view-ic-score")
-                                        .data("schoolYear", response.school_year)
-                                        .data("questionID", item.question_id)
-                                        .on("click", function(e) {
-                                            e.preventDefault();
-                                            var schoolYear = $(this).data("schoolYear");
-                                            var questionID = $(this).data("questionID");
-
-                                            viewScoreModal(schoolYear, questionID);
-                                        });
-
-                                    cell.append(anchor);
-                                    row.append(cell);
-                                }
-
-                                sTable.append(row);
-                            });
-
-                        }
-                    } else {
-                        console.log('Load S Questions: Failed.');
-                        var row = $(
-                            '<tr><td colspan="3"><p>-</p></td></tr>'
-                        );
-                        var sTable = $('#s_table tbody');
-                        sTable.empty();
-                        sTable.append(row);
+                    var cell = $("<td>").text(item.average_score);
+                    if (item.average_score < totalAvgScore) {
+                        cell.css('color', '#dc3545');
+                        cell.attr('title', 'This question is below the total average score.');
                     }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                        .responseJSON.error : 'An error occurred.';
-                    // console.log(errorMessage);
-                }
-            });
+                    row.append(cell);
+                    sTable.append(row);
+                });
+            } else {
+                console.log('Load S Questions: Failed.');
+                var row = $('<tr><td colspan="3"><p>-</p></td></tr>');
+                var sTable = $('#s_table tbody');
+                sTable.empty();
+                sTable.append(row);
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'An error occurred.';
+            console.log(errorMessage);
         }
+    });
+}
     </script>
 @endsection

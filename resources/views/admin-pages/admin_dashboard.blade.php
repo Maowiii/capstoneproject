@@ -435,7 +435,7 @@
                                     var cell = $("<td>");
                                     var container = $("<div>");
 
-                                    var anchor = $("<a href='#'>")
+                                  var anchor = $("<a href='#'>")
                                         .text(item.average_score)
                                         .addClass("view-ic-score")
                                         .data("schoolYear", response.school_year)
@@ -447,7 +447,7 @@
                                             viewScoreModal(schoolYear, questionID);
                                         });
 
-                                    var icon = $("<i>")
+                                        var icon = $("<i>")
                                         .addClass('bx bxs-down-arrow')
                                         .css('color', '#dc3545')
                                         .attr('data-toggle', 'tooltip')
