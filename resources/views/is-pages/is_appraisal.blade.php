@@ -1057,36 +1057,6 @@
                 var form = $('.needs-validation');
                 var valid = true;
 
-                // // Select all input elements inside the form
-                // var inputElements = form.find('input:not([type="hidden"])');
-
-                // inputElements.each(function(index, inputElement) {
-                //     // Check if the input is marked as invalid
-                //     if ($(inputElement).hasClass('is-invalid')) {
-                //         valid = false;
-                //         console.error('Validation failed for', inputElement.name, ':', inputElement
-                //             .validationMessage);
-                //         inputElement.addClass('is-invalid');
-                //         inputElement.closest('td').addClass(
-                //             'border border-danger');
-                //         inputElement.focus();
-                //     }
-
-                //     // Check if the input is required and its value is empty
-                //     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
-                //         valid = false;
-                //         console.error('Validation failed for', inputElement.name,
-                //             ': This field is required.');
-                //         inputElement.addClass('is-invalid');
-                //         inputElement.closest('td').addClass(
-                //             'border border-danger');
-                //         inputElement.focus();
-                //     }
-                // });
-
-                // Get all required input elements
-                
-
                 if (!form[0].checkValidity()) {
                     event.preventDefault(); // Prevent the form from submitting
                     event.stopPropagation();
@@ -1112,8 +1082,7 @@
                         // Check if the required input is empty or has a validation error
                         if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
                             valid = false;
-                            console.error('Validation failed for', inputElement.name, ':', inputElement
-                                .validationMessage);
+                            console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
 
                             // Use the jQuery object to add the 'is-invalid' class
                             $inputElement.addClass('is-invalid');
@@ -1399,6 +1368,29 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
+                        var row = $('#jic_table_body tr').eq(jicID);
+
+                        var answerRadioYes = row.find('input[type="radio"][value="1"]');
+                        var answerRadioNo = row.find('input[type="radio"][value="0"]');
+
+                        $(answerRadioYes).add(answerRadioNo).on('change input', function() {
+                            // Handle the change event for radio buttons
+                            var $closestTD = $(this).closest('td');
+                            
+                            // Remove 'is-invalid' class from all radio buttons within the same <td>
+                            $closestTD.find('input[type="radio"]').removeClass('is-invalid');
+                            
+                            // Update the border class based on whether any radio button in the TD has 'is-invalid' class
+                            if ($closestTD.find('.form-check-input.is-invalid').length > 0) {
+                                $closestTD.addClass('border border-danger');
+                            } else {
+                                $closestTD.removeClass('border border-danger');
+                            }
+
+                            $('[name="' + field.attr('name') + '"]').removeClass('is-invalid');
+                            
+                            updateProgressBar();
+                        });
                         // console.log('Autosave successful.');
                         // console.log('FieldName Acquired: ' + fieldName);                    
                     },
@@ -1948,36 +1940,6 @@
                                     answerRadioNo.checked = true;
                                 }
 
-                                // $(answerRadioYes).on('invalid', function() {
-                                //     $(this).addClass('is-invalid');
-                                //     $(this).siblings('span').addClass('text-danger');
-                                // });
-
-                                // $(answerRadioNo).on('invalid', function() {
-                                //     $(this).addClass('is-invalid');
-                                //     $(this).siblings('span').addClass('text-danger');
-                                // });
-
-                                $(answerRadioYes).on('input', function() {
-                                    // Handle the change event for "Yes" radio button
-                                    var $closestTD = $(this).closest('td');
-                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                    $closestTD.removeClass('border border-danger');
-                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                    $closestTD.closest('.form-check-input').removeClass('is-invalid');
-                                    updateProgressBar();
-                                });
-
-                                $(answerRadioNo).on('input', function() {
-                                    // Handle the change event for "No" radio button
-                                    var $closestTD = $(this).closest('td');
-                                    $closestTD.find('.is-invalid').removeClass('is-invalid');
-                                    $closestTD.removeClass('border border-danger');
-                                    $closestTD.find('.form-check-input').removeClass('is-invalid');
-                                    $closestTD.closest('.form-check-input').removeClass('is-invalid');
-                                    updateProgressBar();
-                                });
-
                                 if (commentTextarea) {
                                     commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
                                 }
@@ -2002,6 +1964,7 @@
                                             'border border-danger');
                                     }
                                 });
+                                
                             } else {
                                 commentTextarea.required = true;
                                 answerRadioYes.required = true;

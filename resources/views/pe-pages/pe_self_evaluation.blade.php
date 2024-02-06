@@ -644,6 +644,7 @@
                     <button type="button" class="btn btn-primary" id="add-ldp-btn">Add Row</button>
                 </div>
             </div>
+
             <div class="content-container">
                 <h2>IV. Job Incumbent's Comments</h2>
                 <div class="table-responsive">
@@ -665,20 +666,19 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                            value="1" required>
+                                            value="1">
                                         <label class="form-check-label" for="inlineRadio1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[1][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                            value="0" required>
+                                            value="0">
                                         <label class="form-check-label" for="inlineRadio2">No</label>
                                     </div>
                                 </td>
                                 <td class="td-textarea">
                                     <div class="position-relative">
-                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
-                                            name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
+                                        <textarea class="textarea form-control border-0 autosave-field" name="feedback[1][{{ $appraisalId }}][comments]"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -686,27 +686,26 @@
                                 <td class='text-justify'>
                                     <textarea class='textarea border-0'
                                         value="My future work objectives and learning opportunities have been set for the
-                            next review period."
+                                next review period."
                                         name="feedback[2][{{ $appraisalId }}][question]" readonly></textarea>
                                 </td>
                                 <td>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                            value="1" required>
-                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                            value="1">
+                                        <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[2][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                            value="0" required>
-                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                            value="0">
+                                        <label class="form-check-label" for="inlineRadio2" required>No</label>
                                     </div>
                                 </td>
                                 <td class="td-textarea">
                                     <div class="position-relative">
-                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
-                                            name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
+                                        <textarea class="textarea form-control border-0 autosave-field" name="feedback[2][{{ $appraisalId }}][comments]"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -719,20 +718,19 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                            value="1" required>
-                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                            value="1">
+                                        <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[3][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                            value="0" required>
-                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                            value="0">
+                                        <label class="form-check-label" for="inlineRadio2" required>No</label>
                                     </div>
                                 </td>
                                 <td class="td-textarea">
                                     <div class="position-relative">
-                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
-                                            name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
+                                        <textarea class="textarea form-control border-0 autosave-field" name="feedback[3][{{ $appraisalId }}][comments]"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -745,20 +743,19 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio1"
-                                            value="1" required>
-                                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                            value="1">
+                                        <label class="form-check-label" for="inlineRadio1" required>Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input autosave-field" type="radio"
                                             name="feedback[4][{{ $appraisalId }}][answer]" id="inlineRadio2"
-                                            value="0" required>
-                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                            value="0">
+                                        <label class="form-check-label" for="inlineRadio2" required>No</label>
                                     </div>
                                 </td>
                                 <td class="td-textarea">
                                     <div class="position-relative">
-                                        <textarea class="textarea form-control border-0 autosave-field jicTA"
-                                            name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
+                                        <textarea class="textarea form-control border-0 autosave-field" name="feedback[4][{{ $appraisalId }}][comments]"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -949,6 +946,8 @@
         textareaElement2.innerText = valueToDisplay2;
         textareaElement3.innerText = valueToDisplay3;
         textareaElement4.innerText = valueToDisplay4;
+
+        $('input[type="radio"]').attr('required', 'required');
 
         ////////////////////////// EULA ///////////////////////////////
         
@@ -1150,37 +1149,6 @@
                 var form = $('.needs-validation');
                 var valid = true;
 
-                // Select all input elements inside the form
-                // var inputElements = form.find('input:not([type="hidden"])');
-
-                // inputElements.each(function(index, inputElement) {
-                //     // Check if the input is marked as invalid
-                //     if ($(inputElement).hasClass('is-invalid')) {
-                //         valid = false;
-                //         console.error('Validation failed for', inputElement.name, ':', inputElement
-                //             .validationMessage);
-
-                //         $(inputElement).addClass('is-invalid');
-                //         inputElement.focus();
-                //     }
-
-                //     // Check if the input is required and its value is empty
-                //     if ($(inputElement).attr('required') && $(inputElement).val().trim() === '') {
-                //         valid = false;
-                //         console.error('Validation failed for', inputElement.name,
-                //             ': This field is required.');
-
-                //         $(inputElement).addClass('is-invalid');
-                //         inputElement.focus();
-
-                //     }
-                // });
-
-                // Get all required input elements
-
-
-                // if (!valid || !form[0].checkValidity()) {
-
                 if (!form[0].checkValidity()) {
                     event.preventDefault(); 
                     event.stopPropagation();
@@ -1191,8 +1159,7 @@
                         // Handle invalid inputs, display error messages, etc.
                         invalidInputs.each(function(index, invalidInput) {
                             // Handle validation messages for invalid inputs
-                            console.error('Validation failed for', invalidInput.name, ':',
-                                invalidInput.validationMessage);
+                            console.error('Validation failed for', invalidInput.name, ':', invalidInput.validationMessage);
                             // Focus on the first invalid input
                             invalidInputs.focus();
                         });
@@ -1205,12 +1172,9 @@
                         var $inputElement = $(inputElement);
 
                         // Check if the required input is empty or has a validation error
-                        if ($inputElement.val() === '' || $inputElement.val() === null || !
-                            $inputElement[0].checkValidity()) {
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
                             valid = false;
-                            console.error('Validation failed for', inputElement.name, ':',
-                                inputElement
-                                .validationMessage);
+                            console.error('Validation failed for', inputElement.name, ':', inputElement.validationMessage);
 
                             // Use the jQuery object to add the 'is-invalid' class
                             $inputElement.addClass('is-invalid');
@@ -1220,14 +1184,10 @@
                             // Add an input event handler to remove the 'is-invalid' class
                             $inputElement.on('input', function() {
                                 $inputElement.removeClass('is-invalid');
-                                $inputElement.closest('input[type="radio"][value="1"]')
-                                    .removeClass('is-invalid');
-                                $inputElement.closest('input[type="radio"][value="0"]')
-                                    .removeClass('is-invalid');
-                                $inputElement.find('.form-check-input').removeClass(
-                                    'is-invalid');
-                                $inputElement.closest('td').removeClass(
-                                    'border border-danger');
+                                $inputElement.closest('input[type="radio"][value="1"]').removeClass('is-invalid');
+                                $inputElement.closest('input[type="radio"][value="0"]').removeClass('is-invalid');
+                                $inputElement.find('.form-check-input').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
                             });
                         }
                     });
@@ -1239,8 +1199,7 @@
                         var $inputElement = $(inputElement);
 
                         // Check if the required input is empty or has a validation error
-                        if ($inputElement.val() === '' || $inputElement.val() === null || !
-                            $inputElement[0].checkValidity()) {
+                        if ($inputElement.val() === '' || $inputElement.val() === null || !$inputElement[0].checkValidity()) {
                             valid = false;
                             console.error('Validation failed for', inputElement.name, ':',
                                 inputElement
@@ -1254,10 +1213,8 @@
                             // Add an input event handler to remove the 'is-invalid' class
                             $inputElement.on('input', function() {
                                 $inputElement.removeClass('is-invalid');
-                                $inputElement.find('.form-control').removeClass(
-                                    'is-invalid');
-                                $inputElement.closest('td').removeClass(
-                                    'border border-danger');
+                                $inputElement.find('.form-control').removeClass('is-invalid');
+                                $inputElement.closest('td').removeClass('border border-danger');
                             });
                         }
                     });
@@ -1562,18 +1519,38 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(response) {
-                        //updateProgressBar();
+                        var row = $('#jic_table_body tr').eq(jicID);
 
-                        // Handle the success response if needed
+                        var answerRadioYes = row.find('input[type="radio"][value="1"]');
+                        var answerRadioNo = row.find('input[type="radio"][value="0"]');
+
+                        $(answerRadioYes).add(answerRadioNo).on('change input', function() {
+                            // Handle the change event for radio buttons
+                            var $closestTD = $(this).closest('td');
+                            
+                            // Remove 'is-invalid' class from all radio buttons within the same <td>
+                            $closestTD.find('input[type="radio"]').removeClass('is-invalid');
+                            
+                            // Update the border class based on whether any radio button in the TD has 'is-invalid' class
+                            if ($closestTD.find('.form-check-input.is-invalid').length > 0) {
+                                $closestTD.addClass('border border-danger');
+                            } else {
+                                $closestTD.removeClass('border border-danger');
+                            }
+
+                            $('[name="' + field.attr('name') + '"]').removeClass('is-invalid');
+                            
+                            updateProgressBar();
+                        });      
+
                         // console.log('Autosave successful.');
-                        // console.log('FieldName Acquired: ' + fieldName);
+                        // console.log('FieldName Acquired: ' + fieldName);                    
                     },
                     error: function(xhr, status, error) {
                         // console.log('{{ route('autosaveLDPField') }}');
 
-                        // // Handle errors if any
+                        // Handle errors if any
                         // console.error('Autosave failed:', error);
-                        // console.log('FieldName Acquired: ' + fieldName);
                     }
                 });
             });
@@ -2283,51 +2260,26 @@
                         }
                         
                         // Loop through the jicData and populate the table rows with data
-                        data.jicData.forEach(function(jic, index = 1) {
-                            var row = document.querySelectorAll('#jic_table_body tr')[index];
+                        data.jicData.forEach(function(jic, index) {
+                            jicID = parseInt(jic.question_order)-1;
+                            
+                            var row = document.querySelectorAll('#jic_table_body tr')[jicID];
+
+                            var answerRadioYes = row.querySelector('input[type="radio"][value="1"]');
+                            var answerRadioNo = row.querySelector('input[type="radio"][value="0"]');
+
+                            var commentTextarea = row.querySelector('textarea[name^="comments"]');
 
                             if (row) {
-                                var answerRadioYes = row.querySelector('input[name="feedback[' + (index +
-                                    1) + '][{{ $appraisalId }}][answer]"][value="1"]');
-                                var answerRadioNo = row.querySelector('input[name="feedback[' + (index +
-                                    1) + '][{{ $appraisalId }}][answer]"][value="0"]');
-
                                 if (jic.answer === 1) {
                                     answerRadioYes.checked = true;
                                 } else if (jic.answer === 0) {
                                     answerRadioNo.checked = true;
                                 }
 
-                                $(answerRadioYes).on('invalid', function() {
-                                    $(this).addClass('is-invalid text-danger fw-bold');
-                                    $(this).siblings('span').addClass('text-danger');
-                                });
-
-                                $(answerRadioNo).on('invalid', function() {
-                                    $(this).addClass('is-invalid text-danger fw-bold');
-                                    $(this).siblings('span').addClass('text-danger');
-                                });
-
-                                $(answerRadioYes).on('input', function() {
-                                    var row = $(this).closest('tr');
-                                    row.find('.is-invalid').removeClass('is-invalid');
-                                    row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                    $(this).closest('tr').removeClass('text-danger fw-bold');
-                                    updateProgressBar();
-                                });
-
-                                $(answerRadioNo).on('input', function() {
-                                    var row = $(this).closest('tr');
-                                    row.find('.is-invalid').removeClass('is-invalid');
-                                    row.find('.text-danger').removeClass('text-danger fw-bold');
-
-                                    $(this).closest('tr').removeClass('text-danger fw-bold');
-                                    updateProgressBar();
-                                });
-
-                                var commentTextarea = row.querySelector('.textarea[name="feedback[' + (index +1) + '][{{ $appraisalId }}][comments]"]');
-                                commentTextarea.value = jic.comments;
+                                if (commentTextarea) {
+                                    commentTextarea.value = jic.comments || ''; // Use the comments value if it exists, or an empty string if it's null
+                                }
 
                                 // Attach input event handlers for validation
                                 $(commentTextarea).on('input', function() {
@@ -2349,11 +2301,21 @@
                                             'border border-danger');
                                     }
                                 });
+                                
+                                // $(answerRadioYes).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
 
-                                answerRadioYes.disabled = true;
-                                answerRadioNo.disabled = true;
-                                commentTextarea.disabled = true;
+                                // $(answerRadioNo).on('invalid', function() {
+                                //     $(this).addClass('is-invalid');
+                                //     $(this).siblings('span').addClass('text-danger');
+                                // });
                             } else {
+                                commentTextarea.required = true;
+                                answerRadioYes.required = true;
+                                answerRadioNo.required = true;
+                                
                                 // console.log('Row not found for index ' + index);
                             }
                         });
