@@ -259,7 +259,7 @@
 
             $(document).on('change', '#defaultAll', function() {
                 var isChecked = $(this).prop('checked');
-                console.log('All checked!');
+                //console.log('All checked!');
                 $('.department-checkbox').prop('checked', isChecked);
             });
 

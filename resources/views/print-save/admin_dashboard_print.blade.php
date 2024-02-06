@@ -1,4 +1,4 @@
-@extends('layout.master')
+@extends('layout.print')
 
 @section('title')
     <h1>Overall Dashboard</h1>
@@ -8,15 +8,13 @@
     <div class="row g-3 align-items-start mb-3">
         <h2 id="school-year-heading">School Year: -</h2>
     </div>
-
+    
     <!-- BEHAVIORAL COMPETENCIES -->
     <!-- Sustained Integral Development -->
     <div class="row">
-        <div class="col-lg-6 mb-3">
             <div class="content-container h-100">
                 <h2 class="text-center">Behavioral Competencies:</h2>
                 <h4 class="text-center">Search for Excellence and Sustained Integral Development:</h4>
-                <h5 class="text-center" id="sid-school-year">School Year:</h5>
                 <h5 class="text-center" id="sid-total-avg-score">Total Average Score:</h5>
                 <div class="table-responsive">
                     <table class="table table-sm mb-3" id="sid_table">
@@ -33,10 +31,8 @@
     
     <!-- Social Responsibility -->
     <div class="row">
-        <div class="col-lg-6 mb-3">
             <div class="content-container h-100">
                 <h4 class="text-center">Spirit of St. Vincent de Paul and Social Responsibility:</h4>
-                <h5 class="text-center" id="sr-school-year">School Year:</h5>
                 <h5 class="text-center" id="sr-total-avg-score">Total Average Score:</h5>
                 <div class="table-responsive">
                     <table class="table table-sm mb-3" id="sr_table">
@@ -49,14 +45,13 @@
                     </table>
                 </div>
             </div>
-        </div>
+    </div>
+
 
     <!-- Solidarity -->
     <div class="row">
-        <div class="col-lg-6 mb-3">
             <div class="content-container h-100">
                 <h4 class="text-center">Solidarity</h4>
-                <h5 class="text-center" id="s-school-year">School Year:</h5>
                 <h5 class="text-center" id="s-total-avg-score">Total Average Score:</h5>
                 <div class="table-responsive">
                     <table class="table table-sm mb-3" id="s_table">
@@ -69,14 +64,12 @@
                     </table>
                 </div>
             </div>
-        </div>
+    </div>
 
     <!-- Internal Customers -->
     <div class="row">
-        <div class="col-lg-6 mb-3">
-            <div class="content-container h-100">
+            <div class="content-container h-50">
                 <h2 class="text-center">Internal Customers:</h2>
-                <h5 class="text-center" id="ic-school-year">School Year:</h5>
                 <h5 class="text-center" id ="ic-total-avg-score">Total Average Score:</h5>
                 <div class="table-responsive">
                     <table class="table table-sm mb-3" id="ic_table">
@@ -89,23 +82,56 @@
                     </table>
                 </div>
             </div>
-        </div>
+    </div>
 
        <script>
         $(document).ready(function() {
         });
+        
         var globalSelectedYear = null;
             $('#evaluation-year-select').change(function() {
                 var selectedYear = $(this).val();
                 globalSelectedYear = selectedYear;
-                // console.log('Selected Year: ' + selectedYear);
+                console.log('Selected Year: ' + selectedYear);
                 loadICQuestions(selectedYear);
+                loadCards(selectedYear);
             });
+            loadCards(globalSelectedYear);
             loadSIDQuestions(globalSelectedYear);
             loadSRQuestions(globalSelectedYear);
             loadICQuestions(globalSelectedYear);
             loadSQuestions(globalSelectedYear);
-            
+        
+            function loadCards(selectedYear = null) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ad.loadCards') }}',
+                type: 'GET',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#school-year-heading').text('School Year: ' + response.schoolYear);
+                        $('#total-pe').text(response
+                            .totalPermanentEmployees);
+                        totalAppraisals = response.totalPermanentEmployees;
+
+                        $('#avg-score').text(response.avgTotalScore);
+
+                        $('#total-appraisals').text(response.totalAppraisals);
+                    } else {
+                        // console.log('Load Cards failed.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
     function loadSIDQuestions(selectedYear = null) {
     $.ajax({
         headers: {
@@ -312,4 +338,4 @@ function loadSQuestions(selectedYear = null) {
     });
 }
     </script>
-@endsection
+ @endsection

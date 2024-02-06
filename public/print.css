@@ -1,0 +1,353 @@
+/* Google Fonts Import Link */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+.content-section {
+    padding: 40px 60px 40px 60px;
+    position: relative;
+    height: 100vh;
+}
+.content-body {
+    height: 100%;
+}
+.content-divider {
+    margin: 0px 0px 30px 0px !important;
+    background-color: #164783 !important;
+    height: 5px;
+}
+.content-section .content-title {
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+.content-section .content-title .bx-menu,
+.content-section .content-title .text {
+    color: #11101d;
+    font-size: 35px;
+}
+.content-section .content-title .text {
+    font-size: 26px;
+    font-weight: 600;
+}
+.bx-menu {
+    cursor: pointer;
+}
+/* GLOBAL */
+body {
+    /*color: #f5f6fa !important;*/
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: #164783 !important;
+}
+
+p,
+label {
+    color: #212427 !important;
+}
+
+.content-container {
+    background: #ffffff;
+    padding: 30px;
+    height: auto;
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.dashboard-container {
+    background: #ffffff;
+    padding: 30px;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    min-width: 400px;
+}
+
+.dashboard-small-container {
+    background: #ffffff;
+    padding: 30px;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    min-width: 200px;
+}
+
+text,
+.text-blue {
+    color: #143a67 !important;
+}
+
+.xxs-column {
+    width: 45px !important;
+}
+.extra-small-column {
+    width: 50px !important;
+}
+.small-column {
+    width: 100px !important;
+}
+
+.medium-column {
+    width: 200px !important;
+}
+
+.large-column {
+    width: 350px !important;
+}
+
+.empty-cell {
+    height: 50px !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.table thead th {
+    color: #143a67 !important;
+    background-color: #c3d7f1 !important;
+}
+
+tbody {
+    vertical-align: middle;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+.text-middle {
+    text-align: center !important;
+}
+thead {
+    text-align: center;
+    vertical-align: middle;
+}
+
+td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-bordered {
+    border: solid #c3d7f1 1px !important;
+}
+
+tfoot tr {
+    background-color: #c3d7f1;
+}
+
+textarea {
+    margin: 0px !important;
+    resize: none;
+    padding: 8px;
+    height: 100px;
+    width: 100%;
+    border-radius: 5px;
+    resize: none !important;
+}
+
+.textarea {
+    margin: 0px;
+    padding: 8px;
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    resize: none;
+}
+
+.td-textarea {
+    padding: 0px !important;
+    margin: 0px;
+}
+
+.search-box {
+    width: 300px !important;
+    float: right;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.position-right {
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.form-control-right {
+    width: 300px !important;
+    text-align: right;
+}
+#ar,
+#obj,
+#krainput {
+    width: 120px !important;
+}
+#pi {
+    width: 130px !important;
+}
+#wt {
+    width: 90px !important;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background-color: #0b2a51 !important;
+    border: none !important;
+}
+
+.btn-primary:hover {
+    background-color: #5477a4 !important;
+}
+
+.btn-outline-primary {
+    border: solid #0b2a51 1px !important;
+    color: #0b2a51 !important;
+}
+
+.btn-outline-primary:hover {
+    border: solid #0b2a51 1px !important;
+    color: white !important;
+    background-color: #0b2a51 !important;
+}
+
+.hover-blue:hover {
+    background: #f5f6fa;
+    outline: none;
+    cursor: pointer;
+}
+#print-button {
+    border-radius: 60%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    align-items: center !important;
+    z-index: 95 !important;
+}
+.floating-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 95 !important;
+}
+.fixed-right.p-4 {
+    padding: 10px !important;
+    z-index: 95 !important;
+}
+/* MODALS */
+
+.row-checkbox {
+    margin: 0px;
+    padding: 0px;
+}
+.chooseIC {
+    width: 100%;
+    display: inline-block;
+}
+
+.chooseIC:hover {
+    cursor: pointer;
+}
+
+#checkboxes input[type="checkbox"] {
+    display: none;
+}
+
+#checkboxes input[type="checkbox"]:checked + .chooseIC {
+    background-color: #ace1af;
+}
+#SID_table input[type="radio"],
+#SR_table input[type="radio"],
+#S_table input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 9px !important;
+}
+#KRA_table_body input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 2px !important;
+}
+#IC_table .form-check-input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+}
+#jic_table .form-check-input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 5px !important;
+}
+.row-selected {
+    background-color: #ace1af;
+    border: #ace1af;
+}
+
+.is-grayed {
+    background-color: #e9ecef !important;
+    color: #999 !important;
+}
+
+.table-fit {
+    width: 1px;
+}
+.table-wrapper {
+    overflow: auto;
+    max-height: 250px;
+}
+#passchange .modal-footer {
+    justify-content: right;
+}
+#consentform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#consentform .modal-footer {
+    justify-content: center;
+}
+#consentform .modal-content {
+    display: flex;
+    flex-direction: column;
+}
+#consentform .modal-dialog {
+    max-width: 60%;
+}
+#consentform .modal-body {
+    text-align: justify;
+    padding: 25px !important;
+}
+#SummaryModal .modal-body {
+    max-width: 100% !important;
+}
+.pagination .active .page-link {
+    background-color: #164783 !important;
+    border-color: #164783 !important;
+    color: #fff !important;
+}
+.pagination .page-link {
+    color: #164783 !important;
+}
+
+#lockToast {
+    z-index: 99 !important;
+}
+
+.below-avg {
+    background-color: #ffeee6;
+    border-color: #ffeee6;
+}
+#disapproveButton {
+    margin-left: 15px !important;
+}
+
