@@ -1,4 +1,4 @@
-@extends('layout.master')
+@extends('layout.print')
 
 @section('title')
     <h1>Departmental Dashboard</h1>
