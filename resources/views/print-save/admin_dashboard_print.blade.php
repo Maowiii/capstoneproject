@@ -1,14 +1,14 @@
 @extends('layout.print')
 
 @section('title')
-    <h1 id="school-year-heading">School Year: -</h1>
+<h1 id="school-year-heading">School Year: -</h1>
 @endsection
 
 @section('content')
-
     <!-- BEHAVIORAL COMPETENCIES -->
     <!-- Sustained Integral Development -->
     <div class="row">
+        <div class="row g-2 align-items-start mb-3">
             <div class="content-container h-100">
                 <h2 class="text-center">Behavioral Competencies:</h2>
                 <h4 class="text-center">Search for Excellence and Sustained Integral Development:</h4>
@@ -25,7 +25,8 @@
                 </div>
             </div>
         </div>
-    
+    </div>
+
     <!-- Social Responsibility -->
     <div class="row">
             <div class="content-container h-100">

@@ -40,7 +40,7 @@
         <div class="content-container h-100">
             <h4 class="text-center">Key Results Area:</h4>
             <h5 class="text-center" id="s-total-avg-score">Total Average Score:</h5>
-            <h5 class="text-center" id="immediate-superior">Total Average Score:</h5>
+            <h5 class="text-center" id="immediate-superior">Total Average Score(Immediate Superior):</h5>
             <div class="table-responsive">
                 <table class="table table-sm mb-3" id="kra_table">
                     <thead class="align-middle">
@@ -55,7 +55,6 @@
                 </table>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- BEHAVIORAL COMPETENCIES -->
